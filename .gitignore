@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# gedit temp files
+*~
+
