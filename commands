@@ -1,0 +1,21 @@
+# get a remote repo
+git clone git@github.com:OliWenman/geant4tomosim.git
+
+# check what i have changed
+git status
+
+# add files to the repo
+git add .gitignore
+
+# commit those changes to the repository
+git commit -m "Added gedit to gitignore"
+ 
+# see whats happening
+gitk
+
+# put my changes on github
+git push
+
+# get changes off github
+git pull
+

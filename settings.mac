@@ -1,0 +1,16 @@
+#Gun Settings
+/gun/setEnergy 30 keV
+/gun/setBeamWidth 0.2 m
+/gun/setBeamHeight 0.2 m
+/gun/xPosition 1.2 m
+
+#World Settings
+/world/size 1.2 1 1 m
+
+#Detector Settings
+/detector/size 1 5 5 mm
+/detector/numberY 50
+/detector/numberZ 100
+
+#Seed settings (0 is random, input own number for your own seed)
+/run/seed 0
