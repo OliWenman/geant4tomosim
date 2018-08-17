@@ -1,5 +1,6 @@
 #include "TrackerHit.hh"
 #include "Analysis.hh"
+//#include "SaveData.hh"
 
 //#include "GlobalVariables.hh"
 
@@ -16,7 +17,9 @@
 G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator=0;
 
 TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0)
-{}
+{
+	//SaveDataClass = new SaveData();
+}
 
 TrackerHit::~TrackerHit() {}
 
