@@ -33,28 +33,26 @@ class TrackerHit : public G4VHit
     		virtual void Print();
 
     		// Set methods
-    		void SetTrackID  (G4int track)      { fTrackID = track; };
-    		void SetChamberNb(G4int chamb)      { fChamberNb = chamb; };
-    		void SetEdep     (G4double de)      { fEdep = de; };
-    		void SetPos      (G4ThreeVector xyz){ fPos = xyz; };
-		inline void SetParticle(G4ParticleDefinition* particle){ fParticle = particle; }
+    		void SetTrackID(G4int value){fTrackID = value;};
+    		void SetChamberNb(G4int value){fChamberNb = value;};
+    		void SetEdep(G4double value){fEdep = value;};
+    		void SetPos(G4ThreeVector xyz){fPos = xyz;};
+		inline void SetParticle(G4ParticleDefinition* particle){fParticle = particle;}
 
     		// Get methods
-    		G4int GetTrackID() const     { return fTrackID; };
-    		G4int GetChamberNb()    { return fChamberNb; };
-    		G4double GetEdep() const     { return fEdep; };
-    		G4ThreeVector GetPos() const { return fPos; };
-		inline G4ParticleDefinition* GetParticle(){ return fParticle; };
+    		G4int GetTrackID() const {return fTrackID;};
+    		G4int GetChamberNb() const {return fChamberNb;};
+    		G4double GetEdep() const {return fEdep;};
+    		G4ThreeVector GetPos() const {return fPos;};
+		inline G4ParticleDefinition* GetParticle(){return fParticle;};
 
   	private:
-
       		G4int         fTrackID;
       		G4int         fChamberNb;
       		G4double      fEdep;
       		G4ThreeVector fPos;
 		G4ParticleDefinition* fParticle;
 };
-
 
 typedef G4THitsCollection<TrackerHit> TrackerHitsCollection;
 

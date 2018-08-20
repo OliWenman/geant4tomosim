@@ -7,7 +7,7 @@
 #
 /tracking/verbose 0
 /hits/verbose 2
-/run/beamOn 20
+/run/beamOn 120
 
 /control/verbose 2
 

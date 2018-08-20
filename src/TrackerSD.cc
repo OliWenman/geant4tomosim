@@ -8,20 +8,21 @@
 #include "G4SDManager.hh"
 #include "G4ios.hh"
 
-Data *data = new Data();
-//Data *data = new Data();
+int Rows = 10;
+int Columns = 10;
+Data *data = new Data(Rows, Columns);
 
 TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL)
 {
   	collectionName.insert(hitsCollectionName);
-	//Data *data = new Data();
 }
 
 
 TrackerSD::~TrackerSD()
 {
 	delete fHitsCollection;
+	delete data;
 }
 
 
@@ -35,20 +36,12 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 
   	G4int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
   	hce->AddHitsCollection( hcID, fHitsCollection ); 
-
-	int Rows = 5;
-	int Columns = 5;
-
-	data -> SetUpDetectors(Rows, Columns);
 }
 
 
 
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
-	int Rows = 5;
-	int Columns = 5;
-
   	// energy deposit
   	G4double edep = aStep->GetTotalEnergyDeposit();
 
@@ -77,9 +70,6 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 {
-	int Rows = 5;
-	int Columns = 5;
-	//Data *data = new Data(Rows, Columns);
 	data -> Print();
 
   	if ( verboseLevel>1 ) 

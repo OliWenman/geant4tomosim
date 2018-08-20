@@ -7,7 +7,21 @@
 class Data
 {
 	public:
-		Data(){}
+		Data(G4int Nrow, G4int Ncolumn)
+		{
+			//Saves the rows and columns inputted using the Set methods
+			SetNumberRows(Nrow);
+			SetNumberColumns(Ncolumn);
+
+			//Creates a 2D vector when the object is created as big as the columns and rows inputted
+			std::vector<std::vector<G4int> > iDataMatrix;
+			iDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn));
+			
+			//Saves the matrix using the set method			
+			SetData(iDataMatrix);
+
+			SetNumberOfTotalHits(0);
+		}
 		
 		~Data(){};
 		
@@ -27,43 +41,37 @@ class Data
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
-	
-		void SetUpDetectors(G4int Nrow, G4int Ncolumn)
-		{
-			SetNumberRows(Nrow);
-			SetNumberColumns(Ncolumn);
-
-			std::vector<std::vector<G4int> > iDataMatrix;
-			iDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn));
-			SetData(iDataMatrix);
-
-			SetNumberOfTotalHits(0);
-		}
 
 		void SaveData(G4int DetectorNumber)
 		{
+			//Finds the number of columns the matrix has
 			G4int column = GetNumberColumns();
+			//Finds the coordinates of the detector inputted for the matrix
 			G4int x = Quotient(DetectorNumber, column);
 			G4int y = Remainder(DetectorNumber, column);
 
+			//+1 for a hit
 			++DataMatrix[x][y]; 
 
+			//Keeps track of the total number of hits
 			SetNumberOfTotalHits(GetNumberOfTotalHits() + 1);
 		}
 		
 		void Print()
 		{
-			std::vector <std::vector<int> > Data = GetData();
+			//Find each needed value using the Get functions
+			std::vector <std::vector<G4int> > Data = GetData();
 			G4int Nrows = GetNumberRows();
 			G4int Ncolumns = GetNumberColumns();
 			
-			for(G4int x = 0; x < Nrows; x++)  // loop 3 times for three lines
+			//Prints out the matrix
+			for(G4int x = 0; x < Nrows; x++)  
     			{
-    				for(G4int y = 0; y < Ncolumns; y++)  // loop for the three elements on the line
+    				for(G4int y = 0; y < Ncolumns; y++)  
         			{	
 					std::cout << Data[x][y] << " ";
         			}
-    				std::cout << std::endl;  // when the inner loop is done, go to a new line
+    				std::cout << std::endl;  
     			}
 		}
 

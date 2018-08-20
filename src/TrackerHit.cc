@@ -16,10 +16,9 @@
 
 G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator=0;
 
-TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0)
-{}
+TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0){}
 
-TrackerHit::~TrackerHit() {}
+TrackerHit::~TrackerHit(){}
 
 TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 {
@@ -64,7 +63,6 @@ void TrackerHit::Draw()
   	}
 }
 
-
 void TrackerHit::Print()
 {	
 	G4double x = fPos.x();
@@ -73,7 +71,7 @@ void TrackerHit::Print()
 	G4double weight = 1;
 
 
-  	G4cout << "Detector " << fChamberNb << ": " << fParticle << G4endl;
+  	G4cout << "Detector " << fChamberNb << G4endl;
      	       //<< "Edep: "
                //<< std::setw(7) << G4BestUnit(fEdep,"Energy")
                
@@ -85,12 +83,4 @@ void TrackerHit::Print()
 
   	// fill histograms
   	analysisManager->FillH2(0, y, z, weight);
-
-	/*std::ofstream myFile;
-	myFile.open("output.out");
-	if (myFile.is_open()) // Check that file is opened
-	{		
-		myFile << fChamberNb << ",\n";	
-		myFile.close();
-	}*/
 }
