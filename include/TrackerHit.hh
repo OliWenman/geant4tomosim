@@ -41,7 +41,7 @@ class TrackerHit : public G4VHit
 
     		// Get methods
     		G4int GetTrackID() const     { return fTrackID; };
-    		G4int GetChamberNb() const   { return fChamberNb; };
+    		G4int GetChamberNb()    { return fChamberNb; };
     		G4double GetEdep() const     { return fEdep; };
     		G4ThreeVector GetPos() const { return fPos; };
 		inline G4ParticleDefinition* GetParticle(){ return fParticle; };

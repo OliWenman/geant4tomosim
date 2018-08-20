@@ -8,7 +8,7 @@
 /world/size 1.2 1 1 m
 
 #Detector Settings
-/detector/size 1 5 5 mm
+/detector/size 1 20 20 mm
 /detector/numberY 5
 /detector/numberZ 5
 
