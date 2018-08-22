@@ -37,7 +37,7 @@ class TrackerSD : public G4VSensitiveDetector
     		virtual void   Initialize(G4HCofThisEvent* hitCollection);
     		virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 		virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
-    		//virtual void   EndOfEvent(G4Run* aRun, G4HCofThisEvent* hitCollection);
+    		//virtual void   EndOfEvent(const G4Run* aRun, G4HCofThisEvent* hitCollection);
 
   	private:
 

@@ -19,7 +19,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	SetNoDetectorsZ(NumDetectorsZ);
 
 	//Create the data object
-	data = new Data(NumDetectorsZ, NumDetectorsY);
+	data = new Data(NumDetectorsZ, NumDetectorsY, 5);
 
   	collectionName.insert(hitsCollectionName);	
 
@@ -58,24 +58,25 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   	TrackerHit* newHit = new TrackerHit();
 
 	//Save all the information about the particle that hit the detector
-  	newHit->SetTrackID  (aStep->GetTrack()->GetTrackID());
-  	newHit->SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
-  	newHit->SetEdep(edep);
-  	newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
-	newHit->SetParticle( aStep->GetTrack()->GetDefinition() );
+  	newHit -> SetTrackID  (aStep->GetTrack()->GetTrackID());
+  	newHit -> SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+  	newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());
+	newHit -> SetParticle( aStep->GetTrack()->GetDefinition() );
+	newHit -> SetEdep(edep);
 
 	//Save the information
-  	fHitsCollection->insert( newHit );
+  	fHitsCollection -> insert( newHit );
 
-	//Save the detector hit to the data class
+	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();
-	data -> SaveData(DetectorNumber);
+	G4double EnergyDeposit= newHit -> GetEdep();
+	data -> SaveHitData(DetectorNumber);
+	data -> SaveEnergyData(DetectorNumber, EnergyDeposit);
 
   	return true;
 }
-
-//Maybe try const 
-//void TrackerSD::EndOfEvent(G4Run* aRun, G4HCofThisEvent*)
+ 
+//void TrackerSD::EndOfEvent(const G4Run* aRun, G4HCofThisEvent*)
 void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 { 
 	//
@@ -94,7 +95,8 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 		if (EventID == 119)
 		{
 			G4cout << "The final resulting data : " << G4endl;
-			data -> Print();
+			data -> PrintHitData();
+			data -> PrintEnergyData();
 		}
 	}
 		
@@ -105,12 +107,14 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 		{	
 			//If there's a hit, print it if the verbose setting is greater than 0
 			for ( G4int i = 0; i < nofHits; i++ ) 
-			{	(*fHitsCollection)[i]->Print();	
+			{	(*fHitsCollection)[i] -> Print();	
 				(*fHitsCollection)[0] -> RootFile();}
 			
 			//Print the new matrix if the verbose setting is greater than 1
 			if ( verboseLevel > 1)
-			{	data -> Print();}
+			{	
+				data -> PrintHitData();
+			}
 		}
 		
   	}

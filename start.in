@@ -8,11 +8,11 @@
 #Gives information about particle 
 /tracking/verbose 0
 
-/hits/verbose 2
+/hits/verbose 0
 
 /control/verbose 0
 
 #Fire 120 particles
-/run/beamOn 50
+/run/beamOn 120
 
 /analysis/setActivation true
