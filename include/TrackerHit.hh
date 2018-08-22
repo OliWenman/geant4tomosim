@@ -31,6 +31,7 @@ class TrackerHit : public G4VHit
     		// methods from base class
     		virtual void Draw();
     		virtual void Print();
+		virtual void RootFile();
 
     		// Set methods
     		void SetTrackID(G4int value){fTrackID = value;};

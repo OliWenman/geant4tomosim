@@ -46,6 +46,7 @@ class Data
 		{
 			//Finds the number of columns the matrix has
 			G4int column = GetNumberColumns();
+			
 			//Finds the coordinates of the detector inputted for the matrix
 			G4int x = Quotient(DetectorNumber, column);
 			G4int y = Remainder(DetectorNumber, column);
@@ -64,14 +65,16 @@ class Data
 			G4int Nrows = GetNumberRows();
 			G4int Ncolumns = GetNumberColumns();
 			
+			G4cout << G4endl << "The updated matrix of hits " << G4endl;
+			
 			//Prints out the matrix
 			for(G4int x = 0; x < Nrows; x++)  
     			{
     				for(G4int y = 0; y < Ncolumns; y++)  
         			{	
-					std::cout << Data[x][y] << " ";
+					G4cout << Data[x][y] << " ";
         			}
-    				std::cout << std::endl;  
+    				G4cout << G4endl;  
     			}
 		}
 

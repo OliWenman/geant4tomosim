@@ -22,15 +22,17 @@ class DetectorConstructionMessenger: public G4UImessenger
 		DetectorConstructionMessenger(DetectorConstruction *ConstructDet);
 		~DetectorConstructionMessenger(void);
 
+		//Methods
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
-	private:
+	private:		
 		//Pointer to the DetectorConstruction class
 		DetectorConstruction *ConstructDet;
 
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *WorldDirectory;
 		G4UIdirectory *DetectorDirectory;
+		G4UIdirectory *TargetDirectory;
 		
 		//Pointers for different data members
 		//WORLD VARIABLES
@@ -41,7 +43,9 @@ class DetectorConstructionMessenger: public G4UImessenger
 		G4UIcmdWithAnInteger *NoDetectorsZ_Cmd;
 
 		G4UIcmdWith3VectorAndUnit *DetectorSize_Cmd;
-		
+
+		//TARGET VARIABLES
+		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
 };
 
 #endif 

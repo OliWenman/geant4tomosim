@@ -28,6 +28,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		inline void SetDetectorSize(G4ThreeVector value){DetectorSize_Cmd = value;}
 
+		inline void SetTargetPosition(G4ThreeVector value){TargetPosition_Cmd = value;}
+
 		//Get methods
 		G4ThreeVector GetWorldSize(){return WorldSize_Cmd;}
 
@@ -35,6 +37,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int GetNoDetectorsZ(){return NoDetectorsZ_Cmd;}
 
 		G4ThreeVector GetDetectorSize(){return DetectorSize_Cmd;}
+
+		G4ThreeVector GetTargetPosition(){return TargetPosition_Cmd;}
 
   	protected:
 		//Pointer to user step limits
@@ -52,6 +56,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int NoDetectorsZ_Cmd;
 
 		G4ThreeVector DetectorSize_Cmd;
+
+		//Target variables
+		G4ThreeVector TargetPosition_Cmd;
 };
 
 #endif

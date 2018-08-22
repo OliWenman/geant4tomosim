@@ -28,6 +28,8 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
 { 
+	G4int nbEventInRun = aRun->GetNumberOfEventToBeProcessed();
+	//G4cout << nbEventInRun << G4endl;
 
 	if (seedCmd != 0)	//Keeps the seed
 	{
@@ -52,12 +54,6 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 		<< G4endl << "The random seed is " << Setting << G4endl;
 
 	}
-	else
-	{
-		G4cout << G4endl << "================= Error invalid seed ===========================" << G4endl;
-	}
-
-	G4cout << G4endl <<"Test to see where this outputs " << G4endl;	
 
 	const G4String& name = "X-Ray_Picture";
 	const G4String& title = "Projection Test";

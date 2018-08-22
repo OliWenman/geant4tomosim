@@ -22,7 +22,6 @@ class RunActionMessenger: public G4UImessenger
 		~RunActionMessenger(void);
 
 		void SetNewValue(G4UIcommand* command, G4String newValue);
-		//G4String GetCurrentValue(G4UIcommand* command);
 		
 	private:
 		RunAction *RAction;

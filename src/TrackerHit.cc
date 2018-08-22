@@ -1,8 +1,5 @@
 #include "TrackerHit.hh"
 #include "Analysis.hh"
-//#include "SaveData.hh"
-
-//#include "GlobalVariables.hh"
 
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
@@ -10,9 +7,6 @@
 #include "G4Circle.hh"
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
-
-#include <iomanip>
-#include <fstream>
 
 G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator=0;
 
@@ -42,10 +36,10 @@ const TrackerHit& TrackerHit::operator=(const TrackerHit& right)
 }
 
 
-//G4int TrackerHit::operator==(const TrackerHit& right) const
-//{
-//  	return ( this == &right ) ? 1 : 0;
-//}
+G4int TrackerHit::operator==(const TrackerHit& right) const
+{
+  	return ( this == &right ) ? 1 : 0;
+}
 
 
 void TrackerHit::Draw()
@@ -65,20 +59,16 @@ void TrackerHit::Draw()
 
 void TrackerHit::Print()
 {	
-	G4double x = fPos.x();
+  	G4cout << "Detector " << fChamberNb << " has been hit with a energy deposit of " << G4BestUnit(fEdep,"Energy") << G4endl;             	
+}
+
+void TrackerHit::RootFile()
+{
 	G4double y = fPos.y();
 	G4double z = fPos.z();
 	G4double weight = 1;
 
-
-  	G4cout << "Detector " << fChamberNb << G4endl;
-     	       //<< "Edep: "
-               //<< std::setw(7) << G4BestUnit(fEdep,"Energy")
-               
-               //<< G4endl;
-
-	
-  	// get analysis manager
+	// get analysis manager
   	auto analysisManager = G4AnalysisManager::Instance();
 
   	// fill histograms

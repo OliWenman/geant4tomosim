@@ -65,9 +65,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//GEOMETRY POSISTION
 
 	//Target Position
-	G4double Target_positionX = 0*m;
-	G4double Target_positionY = 0*m;
-	G4double Target_positionZ = 0*m;
+	G4double TargetPositionX = TargetPosition_Cmd.x();
+	G4double TargetPositionY = TargetPosition_Cmd.y();
+	G4double TargetPositionZ = TargetPosition_Cmd.z();
 
 //--------------------------------------------------------------------------------	
 	
@@ -84,10 +84,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 //--------------------------------------------------------------------------------
 	//WORLD
-	//G4cout << G4endl << GetWorldSize() << G4endl;
-	//G4cout << G4endl << GetWorldSizeX() << G4endl;
-	//G4cout << G4endl << GetWorldSizeY() << G4endl;
-	//G4cout << G4endl << GetWorldSizeZ() << G4endl;
 	
 	G4Box* solidWorld = new G4Box("World",WorldSizeX, WorldSizeY, WorldSizeZ);
 
@@ -126,7 +122,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Create the world physical volume. The world is the only
 	//physical volume with no mother volume.
 	G4VPhysicalVolume* physTarget= new G4PVPlacement(0,            //no rotation
-							 G4ThreeVector(Target_positionX, Target_positionY, Target_positionZ),       
+							 G4ThreeVector(TargetPositionX, TargetPositionY, TargetPositionZ),       
 							 logicTarget,           //its logical volume
 							 "Target",               //its name
 							 logicWorld,                     //its mother  volume
@@ -182,8 +178,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	// Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection");
-  	G4SDManager::GetSDMpointer()->AddNewDetector(aTrackerSD);
+  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ);
+	//aTrackerSD -> SetNoDetectorsY(NumDetectorsY);
+	//aTrackerSD -> SetNoDetectorsZ(NumDetectorsZ);
+  	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
   	// Setting aTrackerSD to all logical volumes with the same name 
   	// of "myTarget".
   	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
@@ -191,7 +189,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	// Sets a max step length in the tracker region, with G4StepLimiter
   	G4double maxStep = 0.001*mm*DetectorSizeX;
   	fStepLimit = new G4UserLimits(maxStep);
-  	logic_Detector->SetUserLimits(fStepLimit);
+  	logic_Detector -> SetUserLimits(fStepLimit);
 
 	// Visualization attributes
   	G4VisAttributes* Detector_Colour = new G4VisAttributes(G4Colour(0.0,1.0,1.0));	//Cyan

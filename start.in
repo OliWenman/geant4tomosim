@@ -1,18 +1,18 @@
-# Macro file for example X-Ray
-#
+#Macro file for example X-Ray
+
 # Initialize kernel
 /run/initialize
-#
-# 1 event with printing hits
-#
+
+#1 event with printing hits
+
+#Gives information about particle 
 /tracking/verbose 0
+
 /hits/verbose 2
-/run/beamOn 120
 
-/control/verbose 2
+/control/verbose 0
 
-#/vis/scene/endOfEventAction accumulate
+#Fire 120 particles
+/run/beamOn 50
 
 /analysis/setActivation true
-
-

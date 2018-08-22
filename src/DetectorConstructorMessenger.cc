@@ -1,5 +1,6 @@
 #include "DetectorConstructionMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "TrackerSD.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -43,12 +44,26 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	NoDetectorsZ_Cmd -> SetDefaultValue(100);
 	NoDetectorsZ_Cmd -> SetGuidance("Pick the number of detectors you would like to have.  ");
 
+	//Detector Size command
 	DetectorSize_Cmd = new G4UIcmdWith3VectorAndUnit("/detector/size", this);
 	DetectorSize_Cmd -> SetGuidance("Set the detector size, x, y and z. ");
 	DetectorSize_Cmd -> SetParameterName("X","Y","Z",true,true);
 	DetectorSize_Cmd -> SetUnitCandidates("mm cm m ");
 	DetectorSize_Cmd -> SetDefaultUnit("m");
-	DetectorSize_Cmd -> SetDefaultValue(G4ThreeVector(0.001*m, 0.005*m, 0.005*m));	
+	DetectorSize_Cmd -> SetDefaultValue(G4ThreeVector(0.001*m, 0.005*m, 0.005*m));		
+
+//-----------------------------------------------------------------------------------------------------
+	//TARGET
+	//Directory
+	TargetDirectory = new G4UIdirectory("/Target/");
+	TargetDirectory -> SetGuidance("Commands to control the detector variables. ");
+	
+	TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/position", this);
+	TargetPosition_Cmd -> SetGuidance("Set the target position, x, y and z. ");
+	TargetPosition_Cmd -> SetParameterName("X","Y","Z",true,true);
+	TargetPosition_Cmd -> SetUnitCandidates("mm cm m ");
+	TargetPosition_Cmd -> SetDefaultUnit("m");
+	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));		
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
@@ -60,6 +75,9 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete NoDetectorsY_Cmd;
 	delete NoDetectorsZ_Cmd;
 	delete DetectorSize_Cmd;
+
+	delete TargetDirectory;
+	delete TargetPosition_Cmd;
 }
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -79,5 +97,9 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	else if( command == DetectorSize_Cmd )
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue));
+	}
+	else if( command == TargetPosition_Cmd )
+	{
+		ConstructDet -> SetTargetPosition(TargetPosition_Cmd -> GetNew3VectorValue(newValue));	
 	}
 }
