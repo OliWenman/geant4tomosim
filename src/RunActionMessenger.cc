@@ -10,6 +10,8 @@
 
 RunActionMessenger::RunActionMessenger(RunAction *run):G4UImessenger(), RAction(run)
 {	
+	G4cout << G4endl << "RunActionMessenger has been created " << G4endl;
+
 	runDirectory = new G4UIdirectory("/run/");
 	runDirectory -> SetGuidance("Commands to control RunAction class");
 
@@ -21,6 +23,8 @@ RunActionMessenger::RunActionMessenger(RunAction *run):G4UImessenger(), RAction(
 RunActionMessenger::~RunActionMessenger()
 {
 	delete seedCmd;
+
+	G4cout << G4endl << "RunActionMessenger has been deleted " << G4endl;
 }
 
 void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -28,6 +32,6 @@ void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	if (command == seedCmd )
 	{
 		RAction -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));
-		G4cout << G4endl << G4endl << "Seed value is " << seedCmd << G4endl << G4endl;
+		G4cout << G4endl << "RunAction -> SetSeedOption command detected" << G4endl;
 	}
 }

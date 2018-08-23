@@ -15,9 +15,12 @@
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+#include "G4Run.hh"
 
 DetectorConstruction::DetectorConstruction():G4VUserDetectorConstruction()
 { 
+	G4cout << G4endl << "DetectorConstruction has been created "<< G4endl;
+
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
 }
@@ -176,9 +179,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							  	     false);	//overlaps checking    
 	}    
 
+	//G4int NoBins = GetNoBins();
+	G4cout << G4endl << "NoBins " << NoBins_Cmd << G4endl; 
+
 	// Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ);
+  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ, NoBins_Cmd);
+
 	//aTrackerSD -> SetNoDetectorsY(NumDetectorsY);
 	//aTrackerSD -> SetNoDetectorsZ(NumDetectorsZ);
   	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);

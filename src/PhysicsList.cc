@@ -4,6 +4,7 @@
 
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
+	G4cout << G4endl << "PhysicsList has been created " << G4endl;
 	SetVerboseLevel(1);
 
   	// EM physics

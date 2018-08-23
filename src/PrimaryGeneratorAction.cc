@@ -11,6 +11,8 @@
 
 PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 {
+	G4cout << G4endl << "PrimaryGeneratorAction has been created " << G4endl;
+
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 

@@ -15,6 +15,7 @@
 //DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector):ConstructDet(Detector)
 DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector): G4UImessenger(), ConstructDet(Detector)
 {	
+	G4cout << G4endl << "DetectorConstructionMessenger has been created" << G4endl;
 	//WORLD
 	//Directory
 	WorldDirectory = new G4UIdirectory("/world/");
@@ -64,6 +65,13 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	TargetPosition_Cmd -> SetUnitCandidates("mm cm m ");
 	TargetPosition_Cmd -> SetDefaultUnit("m");
 	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));		
+
+//------------------------------------------------------------------------------------------------------
+	//Data Manipulation
+	//Number in y direction command
+	NoBins_Cmd = new G4UIcmdWithAnInteger("/data/bins", this);
+	NoBins_Cmd -> SetDefaultValue(5);
+	NoBins_Cmd -> SetGuidance("Pick the number of bins you would like the energy to be sorted into.  ");
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
@@ -78,6 +86,10 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 
 	delete TargetDirectory;
 	delete TargetPosition_Cmd;
+
+	delete NoBins_Cmd;
+
+	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
 }
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -85,21 +97,31 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	if( command == WorldSize_Cmd )
 	{
 		ConstructDet -> SetWorldSize(WorldSize_Cmd -> GetNew3VectorValue(newValue));
+		G4cout << G4endl << "DetectorConstruction -> SetWorldSize command detected "<< G4endl;
 	}
 	else if( command == NoDetectorsY_Cmd )
   	{ 			
 		ConstructDet -> SetNoDetectorsY(NoDetectorsY_Cmd -> GetNewIntValue(newValue));
+		G4cout << G4endl << "DetectorConstruction -> SetNoDetectorsY command detected "<< G4endl;
 	}
 	else if ( command == NoDetectorsZ_Cmd )
 	{
 		ConstructDet -> SetNoDetectorsZ(NoDetectorsZ_Cmd -> GetNewIntValue(newValue));
+		G4cout << G4endl << "DetectorConstruction -> SetNoDetectorsZ command detected "<< G4endl;
 	}
 	else if( command == DetectorSize_Cmd )
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue));
+		G4cout << G4endl << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
 	}
 	else if( command == TargetPosition_Cmd )
 	{
 		ConstructDet -> SetTargetPosition(TargetPosition_Cmd -> GetNew3VectorValue(newValue));	
+		G4cout << G4endl << "DetectorConstruction -> SetTargetPosition command detected "<< G4endl;
+	}
+	else if( command == NoBins_Cmd )
+	{
+		ConstructDet -> SetNoBins(NoBins_Cmd -> GetNewIntValue(newValue));	
+		G4cout << G4endl << "DetectorConstruction -> SetNoBins command detected "<< G4endl;
 	}
 }

@@ -9,11 +9,14 @@
 
 #Detector Settings
 /detector/size 1 5 5 mm
-/detector/numberY 10
+/detector/numberY 20
 /detector/numberZ 10
 
 #World Settings
 /Target/position -20 0 0 cm
+
+#Data Settings
+/data/bins 4
 
 #Seed settings (0 is random, input own number for your own seed)
 /run/seed 0

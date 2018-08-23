@@ -1,5 +1,6 @@
 #include "RunAction.hh"
 #include "RunActionMessenger.hh"
+#include "Data.hh"
 
 #include "Analysis.hh"
 
@@ -10,8 +11,12 @@
 #include "Randomize.hh"
 #include "time.h"
 
+//#include "GlobalClasses.hh"
+
 RunAction::RunAction(): G4UserRunAction()
 { 
+	G4cout << G4endl << "RunAction has been created " << G4endl;
+
 	runMessenger = new RunActionMessenger(this);
 	
 	// Create analysis manager
@@ -28,15 +33,16 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
 { 
-	G4int nbEventInRun = aRun->GetNumberOfEventToBeProcessed();
-	//G4cout << nbEventInRun << G4endl;
+	G4int NoEvents = aRun->GetNumberOfEventToBeProcessed();
+	SetTotalNoEvents(NoEvents);
 
 	if (seedCmd != 0)	//Keeps the seed
 	{
 		CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 		G4cout << G4endl << "-----------------------------------------------------"
-		<< G4endl << "The seed is fixed as input != 0. Seed = " << seedCmd << G4endl;
+		<< G4endl << "The seed is fixed as input != 0. Seed = " << seedCmd << G4endl
+		<< "-----------------------------------------------------" << G4endl;
 		
 	}
 	else if (seedCmd == 0)	//Random seed
@@ -49,9 +55,9 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 		CLHEP::HepRandom::setTheSeed(Setting);
 	
 		G4cout << G4endl << "-----------------------------------------------------"
-		<< G4endl << "The seed is random as input = " << seedCmd << G4endl;
-		G4cout << G4endl << "-----------------------------------------------------"
-		<< G4endl << "The random seed is " << Setting << G4endl;
+		<< G4endl << "The seed is set to random. Seed = as input = " << Setting
+		<< G4endl << "-----------------------------------------------------" << G4endl;
+		
 
 	}
 
@@ -77,7 +83,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 //----------------------------------------------------------------------------
   	//inform the runManager to save random number seed
-  	//G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  	//G4RunManager::GetRunManager()->SetRandomNumberStore(true);
 
 	//Get analysis manager
   	auto analysisManager = G4AnalysisManager::Instance();
@@ -100,7 +106,6 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 void RunAction::EndOfRunAction(const G4Run*)
 {
-	
 	// Save histograms
   	auto analysisManager = G4AnalysisManager::Instance();
   	analysisManager->Write();

@@ -9,9 +9,11 @@
 class Data
 {
 	public:
-		Data(G4int Nrow, G4int Ncolumn, G4int Nbins)
+		Data()//G4int Nrow, G4int Ncolumn, G4int Nbins)
 		{
-			//Saves the rows and columns inputted using the Set methods
+
+			G4cout << G4endl << "Data has been created " << G4endl;
+			/*//Saves the rows and columns inputted using the Set methods
 			SetNumberRows(Nrow);
 			SetNumberColumns(Ncolumn);
 			SetNumberBins(Nbins);
@@ -30,10 +32,17 @@ class Data
 			SetHitData(iHitDataMatrix);
 			SetEnergyData(iEnergyMatrix);
 
-			SetNumberOfTotalHits(0);
+			SetNumberOfTotalHits(0);*/
+
+
 		}
+
+		//Data() {G4cout << G4endl << "Data has been created in RunAction" << G4endl;}
 		
-		~Data(){};
+		~Data()
+		{
+			G4cout << G4endl << "Data class has been deleted "<< G4endl;		
+		};
 		
 		//Get Methods
 		std::vector <std::vector<int> > GetHitData(){ return HitDataMatrix;}
@@ -65,6 +74,30 @@ class Data
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
 
+		void SetUpMatricies(G4int Nrow, G4int Ncolumn, G4int Nbins)
+		{
+			//Saves the rows and columns inputted using the Set methods
+			SetNumberRows(Nrow);
+			SetNumberColumns(Ncolumn);
+			SetNumberBins(Nbins);
+		
+			G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
+
+			//Creates a 2D vector when the object is created as big as the columns and rows inputted
+			std::vector<std::vector<G4int> > iHitDataMatrix;
+			iHitDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn));
+			
+			//Creates a 2D vector when the object is created as big as the columns and rows inputted
+			std::vector<std::vector<G4int> > iEnergyMatrix;
+			iEnergyMatrix.resize(bins, std::vector<G4int>(EnergyColumns));
+			
+			//Saves the matrix using the set method			
+			SetHitData(iHitDataMatrix);
+			SetEnergyData(iEnergyMatrix);
+
+			SetNumberOfTotalHits(0);
+		}
+
 		void SaveHitData(G4int DetectorNumber)
 		{
 			//Finds the number of columns the matrix has
@@ -84,7 +117,7 @@ class Data
 		void PrintHitData()
 		{
 			//Find each needed value using the Get functions
-			std::vector <std::vector<G4int> > Data = GetHitData();
+			std::vector <std::vector<G4int> > HitData = GetHitData();
 			G4int Nrows = GetNumberRows();
 			G4int Ncolumns = GetNumberColumns();
 			
@@ -95,7 +128,7 @@ class Data
     			{
     				for(G4int y = 0; y < Ncolumns; y++)  
         			{	
-					G4cout << Data[x][y] << " ";
+					G4cout << HitData[x][y] << " ";
         			}
     				G4cout << G4endl;  
     			}
@@ -110,15 +143,13 @@ class Data
 			G4double BinSize = MaxEnergy/GetNumberBins();
 			
 			G4int BinNumber = floor(edep/BinSize);
-			
-			G4cout << "It has been placed in bin number: " << BinNumber << G4endl;
 
 			++EnergyMatrix[BinNumber][DetectorNumber];
 		}
 		
 		void PrintEnergyData()
 		{
-			std::vector <std::vector<G4int> > Data = GetEnergyData();
+			std::vector <std::vector<G4int> > EnergyData = GetEnergyData();
 			G4cout << G4endl << "The updated matrix of energy " << G4endl;
 
 			G4cout << "            ";
@@ -138,7 +169,7 @@ class Data
 					{
 						G4cout << "Detector " << x << ": ";
 					}
-					G4cout << Data[y][x] << " ";
+					G4cout << EnergyData[y][x] << " ";
         			}
     				G4cout << G4endl;  
     			}

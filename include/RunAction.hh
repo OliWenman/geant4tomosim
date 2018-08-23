@@ -7,6 +7,7 @@
 #include "G4UImessenger.hh"
 
 class RunActionMessenger;
+class Data;
 
 class G4Run;
 
@@ -21,8 +22,10 @@ class RunAction : public G4UserRunAction
     		virtual void EndOfRunAction(const G4Run* run);
 
 		inline void SetSeedOption(G4int value){seedCmd = value;}
+		inline void SetTotalNoEvents(G4int value){TotalNoEvents = value;}
 
 		G4int GetSeedOption(){return seedCmd;}
+		G4int GetTotalNoEvents(){return TotalNoEvents;}
 
 	private:
 		//Pointer to PrimaryGeneratorActionMessenger
@@ -30,6 +33,7 @@ class RunAction : public G4UserRunAction
 		
 		//Declaring data variables
 		G4int seedCmd;
+		G4int TotalNoEvents;
 };
 
 

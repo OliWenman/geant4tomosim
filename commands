@@ -19,4 +19,15 @@ git push
 # get changes off github
 git pull
 
+#To merge branch with master copy
+#move to master
+git checkout master
 
+#update
+git pull
+
+#merge in the new branch
+git merge new_branch
+
+#there should be no problems if you have merge master in first, so just push back up
+git push 

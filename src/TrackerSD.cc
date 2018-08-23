@@ -10,30 +10,33 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4Run.hh"
+//#include "GlobalClasses.hh"
 
-TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ) 
+TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL)
 {
-	//Save the number of detectors into its own class
+	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
+
+	//Save the variables into its own class
 	SetNoDetectorsY(NumDetectorsY);
 	SetNoDetectorsZ(NumDetectorsZ);
+	SetNoBins(NoBins);
 
 	//Create the data object
-	data = new Data(NumDetectorsZ, NumDetectorsY, 5);
+	data = new Data();
+	data -> SetUpMatricies(NumDetectorsZ, NumDetectorsY, NoBins);
 
   	collectionName.insert(hitsCollectionName);	
-
-	
 }
-
 
 TrackerSD::~TrackerSD()
 {
 	//Free up memory
 	delete fHitsCollection;
 	delete data;
-}
 
+	G4cout << G4endl << "TrackerSD has been deleted "<< G4endl;
+}
 
 void TrackerSD::Initialize(G4HCofThisEvent* hce)
 {	
@@ -44,8 +47,6 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
   	G4int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
   	hce->AddHitsCollection( hcID, fHitsCollection ); 
 }
-
-
 
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
@@ -86,9 +87,19 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 		G4int TotalEventID = 0;
 
   		const G4Event* CurrentEvent = G4RunManager::GetRunManager()->GetCurrentEvent();
+
+		//G4Step* aStep;
+		//G4StepPoint* preStepPoint = aStep -> GetPreStepPoint();
+		//G4TouchableHistory* theTouchable = (G4TouchableHistory*)(preStepPoint -> GetTouchable());
+		//G4int copyNo = theTouchable -> GetVolume() -> GetCopyNo();
+		
 		//G4int NumberOfEventsLeft = aRun -> GetNumberOfEventToBeProcessed();
 		
 		//G4cout << G4endl << NumberOfEventsLeft << G4endl;
+
+		//const G4Run* aRun;
+		//G4int NumberOfEventsLeft = aRun -> GetNumberOfEventToBeProcessed();
+		//G4cout << "Test: " << NumberOfEventsLeft << G4endl;
 			
   		if(CurrentEvent) EventID = CurrentEvent -> GetEventID();
 

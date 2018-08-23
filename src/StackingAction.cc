@@ -7,6 +7,8 @@
 
 StackingAction::StackingAction(): G4UserStackingAction(), fParticle(0) 
 {
+	G4cout << G4endl << "StackingAction has been created" << G4endl;
+
   	fKillSecondary  = true;
   	fParticle       = 0; 
 }

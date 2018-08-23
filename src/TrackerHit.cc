@@ -10,9 +10,11 @@
 
 G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator=0;
 
-TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0){}
+TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0)
+{}
 
-TrackerHit::~TrackerHit(){}
+TrackerHit::~TrackerHit()
+{}
 
 TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 {
