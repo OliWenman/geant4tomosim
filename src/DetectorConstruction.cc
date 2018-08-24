@@ -20,7 +20,7 @@
 
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 
-	G4cout << G4endl << "DetectorConstruction has been created "<< G4endl;
+	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
@@ -33,66 +33,18 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	//Obtain pointer to NIST material manager
-	G4NistManager* nist = G4NistManager::Instance();
-
-//--------------------------------------------------------------------------------
-		
-	//Build materials for world and target
-	G4Material* air = nist->FindOrBuildMaterial("G4_AIR");
-	G4Material* Pb =  nist->FindOrBuildMaterial("G4_Pb");
-	G4Material* Al =  nist->FindOrBuildMaterial("G4_Al");
-
-//--------------------------------------------------------------------------------
-	
-	//GEOMETRY SIZE
-
 	//World Geometry
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
+	SetWorldSize(WorldSize_Cmd);
 
-	//Target geometry
-	G4double innerRadius = 1*cm;
-	G4double outerRadius = 1.50*cm;
-	G4double hz = WorldSizeZ/2;
-	G4double startAngle = 0.*deg;
-	G4double spanningAngle = 360.*deg;
-
-	//Detector geometry
-	G4double DetectorSizeX = DetectorSize_Cmd.x();
-	G4double DetectorSizeY = DetectorSize_Cmd.y();
-	G4double DetectorSizeZ = DetectorSize_Cmd.z();
-
-//---------------------------------------------------------------------------------
-
-	//GEOMETRY POSISTION
-
-	//Target Position
-	G4double TargetPositionX = TargetPosition_Cmd.x();
-	G4double TargetPositionY = TargetPosition_Cmd.y();
-	G4double TargetPositionZ = TargetPosition_Cmd.z();
-
-//--------------------------------------------------------------------------------	
-	
-	//VARIABLES	
-
-	//Detectors
-	G4int CopyNo = 0;
-	G4int NumDetectorsY = GetNoDetectorsY();
-	G4int NumDetectorsZ = GetNoDetectorsZ();
-
-	G4int TotalNumDetectors = NumDetectorsY * NumDetectorsZ;
-	G4String filterName = "gammaFilter";
-	G4String particleName = "gamma";
-
-//--------------------------------------------------------------------------------
 	//WORLD
-	
-	G4Box* solidWorld = new G4Box("World",WorldSizeX, WorldSizeY, WorldSizeZ);
+	G4Box* solidWorld = new G4Box("World", WorldSizeX, WorldSizeY, WorldSizeZ);
 
 	//Fill the world with air
-	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, air, "World");
+	G4Material* WorldMaterial = FindMaterial("G4_AIR");
+	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, WorldMaterial, "World");
 
 	//Create the world physical volume. The world is the only
 	//physical volume with no mother volume.
@@ -109,9 +61,33 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   	G4VisAttributes* World_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicWorld -> SetVisAttributes(World_Colour);
 
-//--------------------------------------------------------------------------------
-	//TARGET
+	SetUpTarget(TargetPosition_Cmd, "G4_Al", logicWorld);
 
+	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, "G4_Pb", logicWorld);
+
+	return physWorld;
+
+	G4cout << G4endl << "The world has been created succesfully ";  
+}
+
+void DetectorConstruction::SetUpTarget(G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox)
+{
+	G4ThreeVector WorldSize = GetWorldSize();
+	G4double WorldSizeZ = WorldSize.z();
+	
+	//Target geometry
+	G4double innerRadius = 1*cm;
+	G4double outerRadius = 1.50*cm;
+	G4double hz = WorldSizeZ/2;
+	G4double startAngle = 0.*deg;
+	G4double spanningAngle = 360.*deg;
+
+	//Target Position
+	G4double TargetPositionX = TargetPosition.x();
+	G4double TargetPositionY = TargetPosition.y();
+	G4double TargetPositionZ = TargetPosition.z();
+
+	//TARGET
    	G4Tubs* TargetTube = new G4Tubs("TargetGeometry",
 					 innerRadius,
                   			 outerRadius,
@@ -119,93 +95,101 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                   			 startAngle,
                   			 spanningAngle);
 
-	//Fill the world with air
-	G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, Al, "Al_Target");
+	//Fill the target with its material
+	G4Material* TargetMaterial = FindMaterial(Material);
+	G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, TargetMaterial, "Al_Target");
 
 
-	//Create the world physical volume. The world is the only
-	//physical volume with no mother volume.
+	//Create the target physical volume
 	G4VPhysicalVolume* physTarget= new G4PVPlacement(0,            //no rotation
 							 G4ThreeVector(TargetPositionX, TargetPositionY, TargetPositionZ),       
 							 logicTarget,           //its logical volume
 							 "Target",               //its name
-							 logicWorld,                     //its mother  volume
+							 logicMotherBox,                     //its mother  volume
 							 false,                 //no boolean operation
 							 0,                     //copy number
 							 true);		//overlaps checking                     
 
-	// Visualization attributes
+	//Visualization attributes
   	G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicTarget -> SetVisAttributes(Target_Colour);
+	
+	G4cout << G4endl << "The target has been created succesfully ";  
+}
+	
 
-//--------------------------------------------------------------------------------
-	//DETECTORS
-
-	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
-
-	//Create the Detector logical volume by
-	//assigning the material of the target 
-	G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector, Pb, "LogicDetector");
-
-	//Create the Detector physical volume by placing it in the
-	//"logicWorld" logical volume.
-
-	//Intial Detector Position
-	G4double IntDetectorPosX = -WorldSizeX + DetectorSizeX * 2;
-	G4double IntDetectorPosY = -NumDetectorsY * DetectorSizeY;
-	G4double IntDetectorPosZ = -NumDetectorsZ * DetectorSizeZ;
-
+void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
+{
+	//Variables
+	G4int CopyNo = 0;
+	G4int TotalNoDetectors = NoDetectorsY * NoDetectorsZ;	
+	G4double DetectorSizeX = DetectorSize.x();
+	G4double DetectorSizeY = DetectorSize.y();
+	G4double DetectorSizeZ = DetectorSize.z();
+	G4ThreeVector WorldSize = GetWorldSize();
+	G4double WorldSizeX = WorldSize.x();
+	//Intial detector position
+	G4double iDetectorPosX = -WorldSizeX + DetectorSizeX * 2;
+	G4double iDetectorPosY = -NoDetectorsY * DetectorSizeY;
+	G4double iDetectorPosZ = -NoDetectorsZ * DetectorSizeZ;
 	//Detector Position
 	G4double DetectorPosX = -WorldSizeX + DetectorSizeX * 2;
-	G4double DetectorPosY = -NumDetectorsY * DetectorSizeY;
-	G4double DetectorPosZ = -NumDetectorsZ * DetectorSizeZ;
+	G4double DetectorPosY = -NoDetectorsY * DetectorSizeY;
+	G4double DetectorPosZ = -NoDetectorsZ * DetectorSizeZ;
+	
+	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
 
-	for (CopyNo; CopyNo < TotalNumDetectors; CopyNo++)
+	//Create the detector logical volume by assigning the material of the detectors 
+	G4Material* DetectorMaterial = FindMaterial(Material);
+	G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector,DetectorMaterial, "LogicDetector");
+
+	//Create the detector physical volume by placing it in the "logicWorld" logical volume.
+	for (CopyNo; CopyNo < TotalNoDetectors; CopyNo++)
 	{
-		if (DetectorPosY >= -IntDetectorPosY)
+		if (DetectorPosY >= -iDetectorPosY)
 		{
-			DetectorPosY = IntDetectorPosY;
+			DetectorPosY = iDetectorPosY;
 			DetectorPosZ = DetectorPosZ + DetectorSizeZ * 2;
 		}
-			
 		DetectorPosY = DetectorPosY + 2*DetectorSizeY;
-	
 		G4VPhysicalVolume* phys_Detector = new G4PVPlacement(0,           //no rotation
 							  	     G4ThreeVector(DetectorPosX, DetectorPosY, DetectorPosZ),      
 							  	     logic_Detector,           //its logical volume
 							  	     "Detector",               //its name
-						          	     logicWorld,            //its mother  volume
+						          	     logicMotherBox,            //its mother  volume
 							  	     false,                 //no boolean operation
 						          	     CopyNo,                     //copy number
 							  	     false);	//overlaps checking    
 	}    
 	
-	// Sensitive detectors
+	//Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ, NoBins_Cmd, data);
-	
-
-	//aTrackerSD -> SetNoDetectorsY(NumDetectorsY);
-	//aTrackerSD -> SetNoDetectorsZ(NumDetectorsZ);
+  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, data);
   	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
-  	// Setting aTrackerSD to all logical volumes with the same name 
-  	// of "myTarget".
+  	//Setting aTrackerSD to all logical volumes with the same name as "LogicDetector".
   	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
 
-	// Sets a max step length in the tracker region, with G4StepLimiter
+	//Sets a max step length in the tracker region, with G4StepLimiter
   	G4double maxStep = 0.001*mm*DetectorSizeX;
   	fStepLimit = new G4UserLimits(maxStep);
   	logic_Detector -> SetUserLimits(fStepLimit);
 
-	// Visualization attributes
+	//Visualization attributes
   	G4VisAttributes* Detector_Colour = new G4VisAttributes(G4Colour(0.0,1.0,1.0));	//Cyan
   	logic_Detector -> SetVisAttributes(Detector_Colour);
-  	
-//--------------------------------------------------------------------------------
 
-	return physWorld;
+	G4cout << "The detectors have been created succesfully " << G4endl;  
 }
 
+G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
+{
+	//Obtain pointer to NIST material manager
+	G4NistManager* nist = G4NistManager::Instance();
+		
+	//Build materials 
+	G4Material* Material = nist->FindOrBuildMaterial(MaterialName);
 
-
+	return Material;
+}
+	
 
