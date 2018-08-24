@@ -4,7 +4,7 @@
 #include "globals.hh"
 #include <iostream>
 #include <vector>
-#include <math.h>       // Used to access the floor command floor 
+#include <math.h>       // Used to access the function floor 
 #include "G4SystemOfUnits.hh"
 
 class Data
@@ -14,8 +14,8 @@ class Data
 		virtual ~Data();
 		
 		//Get Methods
-		std::vector <std::vector<int> > GetHitData(){ return HitDataMatrix;}
-		std::vector <std::vector<int> > GetEnergyData(){return EnergyMatrix;}
+		std::vector <std::vector<G4int> > GetHitData(){ return HitDataMatrix;}
+		std::vector <std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		G4int GetHitElement(G4int x, G4int y){return HitDataMatrix[x][y];}	
 
@@ -26,6 +26,8 @@ class Data
 		G4int GetNumberOfTotalHits(){return TotalHits;}
 
 		G4double GetMaxEnergy(){return MaxE;}
+
+		G4int GetSeed(){return Seed;}
 
 		//Set Methods
 		void SetHitData(std::vector<std::vector<G4int> > UpdatedData){HitDataMatrix = UpdatedData;}
@@ -39,6 +41,8 @@ class Data
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
+		void SetSeed(G4int value){Seed = value;}
+
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
@@ -50,9 +54,10 @@ class Data
 		virtual void PrintEnergyData();
 
 	private:	
+
 		//Data members
-		std::vector<std::vector<int> > HitDataMatrix;
-		std::vector<std::vector<int> > EnergyMatrix;
+		std::vector<std::vector<G4int> > HitDataMatrix;
+		std::vector<std::vector<G4int> > EnergyMatrix;
 
 		G4int rows;
 		G4int columns;	
@@ -60,6 +65,8 @@ class Data
 
 		G4int TotalHits;
 		G4double MaxE;
+
+		G4int Seed;
 };
 
 #endif

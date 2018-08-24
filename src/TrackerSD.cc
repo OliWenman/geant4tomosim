@@ -10,10 +10,9 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4Run.hh"
-//#include "GlobalClasses.hh"
 
-TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins) 
-          : G4VSensitiveDetector(name), fHitsCollection(NULL)
+TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins, Data* DataObject) 
+          : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
 
@@ -23,7 +22,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	SetNoBins(NoBins);
 
 	//Create the data object
-	data = new Data();
+	//data = new Data();
 	data -> SetUpMatricies(NumDetectorsZ, NumDetectorsY, NoBins);
 
   	collectionName.insert(hitsCollectionName);	
@@ -80,13 +79,6 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 //void TrackerSD::EndOfEvent(const G4Run* aRun, G4HCofThisEvent*)
 void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 { 
-	//
-	if (verboseLevel == 0)
-	{
-		G4int EventID = 0;
-		G4int TotalEventID = 0;
-
-  		const G4Event* CurrentEvent = G4RunManager::GetRunManager()->GetCurrentEvent();
 
 		//G4Step* aStep;
 		//G4StepPoint* preStepPoint = aStep -> GetPreStepPoint();
@@ -100,16 +92,6 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 		//const G4Run* aRun;
 		//G4int NumberOfEventsLeft = aRun -> GetNumberOfEventToBeProcessed();
 		//G4cout << "Test: " << NumberOfEventsLeft << G4endl;
-			
-  		if(CurrentEvent) EventID = CurrentEvent -> GetEventID();
-
-		if (EventID == 119)
-		{
-			G4cout << "The final resulting data : " << G4endl;
-			data -> PrintHitData();
-			data -> PrintEnergyData();
-		}
-	}
 		
   	if ( verboseLevel > 0 ) 
 	{ 

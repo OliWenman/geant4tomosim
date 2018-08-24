@@ -3,6 +3,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include "Data.hh"
 
 #include "G4UImessenger.hh"
 
@@ -15,7 +16,7 @@ class G4Run;
 class RunAction : public G4UserRunAction
 {
   	public:
-    		RunAction();
+    		RunAction(Data* data);
     		virtual ~RunAction();
 
     		virtual void BeginOfRunAction(const G4Run* run);
@@ -30,6 +31,9 @@ class RunAction : public G4UserRunAction
 	private:
 		//Pointer to PrimaryGeneratorActionMessenger
 		RunActionMessenger* runMessenger;
+
+		//Pointer to Data class
+		Data* data;
 		
 		//Declaring data variables
 		G4int seedCmd;

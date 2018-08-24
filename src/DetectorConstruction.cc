@@ -1,6 +1,7 @@
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionMessenger.hh"
 #include "TrackerSD.hh"
+#include "Data.hh"
 
 #include "G4NistManager.hh"
 #include "G4SDManager.hh"
@@ -17,7 +18,7 @@
 #include "G4Colour.hh"
 #include "G4Run.hh"
 
-DetectorConstruction::DetectorConstruction():G4VUserDetectorConstruction()
+DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 
 	G4cout << G4endl << "DetectorConstruction has been created "<< G4endl;
 
@@ -178,13 +179,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 						          	     CopyNo,                     //copy number
 							  	     false);	//overlaps checking    
 	}    
-
-	//G4int NoBins = GetNoBins();
-	G4cout << G4endl << "NoBins " << NoBins_Cmd << G4endl; 
-
+	
 	// Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ, NoBins_Cmd);
+  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NumDetectorsY, NumDetectorsZ, NoBins_Cmd, data);
+	
 
 	//aTrackerSD -> SetNoDetectorsY(NumDetectorsY);
 	//aTrackerSD -> SetNoDetectorsZ(NumDetectorsZ);

@@ -15,4 +15,5 @@
 #Fire 120 particles
 /run/beamOn 120
 
-/analysis/setActivation true
+#/analysis/setActivation true
+

@@ -1,3 +1,6 @@
+#Seed settings (0 is random, input own number for your own seed)
+/run/seed 0
+
 #Gun Settings
 /gun/setEnergy 30 keV
 /gun/setBeamWidth 0.1 m
@@ -18,5 +21,3 @@
 #Data Settings
 /data/bins 4
 
-#Seed settings (0 is random, input own number for your own seed)
-/run/seed 0

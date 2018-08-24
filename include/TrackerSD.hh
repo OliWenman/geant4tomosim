@@ -4,7 +4,7 @@
 #include "G4VSensitiveDetector.hh"
 #include "G4UImessenger.hh"
 #include "TrackerHit.hh"
-#include "Data.hh"
+//#include "Data.hh"
 
 #include <vector>
 
@@ -22,7 +22,7 @@ class G4Run;
 class TrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins);
+		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins, Data* data);
     		virtual ~TrackerSD();
 
 		//Get methods
@@ -41,6 +41,7 @@ class TrackerSD : public G4VSensitiveDetector
     		virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 		virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
     		//virtual void   EndOfEvent(const G4Run* aRun, G4HCofThisEvent* hitCollection);
+
 
   	private:
 
