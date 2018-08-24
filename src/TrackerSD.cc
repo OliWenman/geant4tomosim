@@ -69,47 +69,41 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();
-	G4double EnergyDeposit= newHit -> GetEdep();
+	G4double EnergyDeposit = newHit -> GetEdep();
 	data -> SaveHitData(DetectorNumber);
 	data -> SaveEnergyData(DetectorNumber, EnergyDeposit);
 
   	return true;
 }
  
-//void TrackerSD::EndOfEvent(const G4Run* aRun, G4HCofThisEvent*)
 void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 { 
+	G4int eID = 0;
+  	const G4Event* evt = G4RunManager::GetRunManager() -> GetCurrentEvent();
+  	if(evt) eID = evt -> GetEventID();
 
-		//G4Step* aStep;
-		//G4StepPoint* preStepPoint = aStep -> GetPreStepPoint();
-		//G4TouchableHistory* theTouchable = (G4TouchableHistory*)(preStepPoint -> GetTouchable());
-		//G4int copyNo = theTouchable -> GetVolume() -> GetCopyNo();
+	if ( verboseLevel == 1 ) 
+	{ 
+		G4cout << G4endl << "Event " << eID;
+	}
 		
-		//G4int NumberOfEventsLeft = aRun -> GetNumberOfEventToBeProcessed();
-		
-		//G4cout << G4endl << NumberOfEventsLeft << G4endl;
-
-		//const G4Run* aRun;
-		//G4int NumberOfEventsLeft = aRun -> GetNumberOfEventToBeProcessed();
-		//G4cout << "Test: " << NumberOfEventsLeft << G4endl;
-		
-  	if ( verboseLevel > 0 ) 
+  	else if ( verboseLevel > 1 ) 
 	{ 
      		G4int nofHits = fHitsCollection -> entries();
+
+		G4cout << G4endl << "Event " << eID;
+		if (nofHits == 0)
+		{
+			G4cout << ": No hit ";
+		}
 		if (nofHits > 0)
 		{	
-			//If there's a hit, print it if the verbose setting is greater than 0
+			//If there's a hit, print it if the verbose setting is greater than 1
 			for ( G4int i = 0; i < nofHits; i++ ) 
 			{	(*fHitsCollection)[i] -> Print();	
-				(*fHitsCollection)[0] -> RootFile();}
-			
-			//Print the new matrix if the verbose setting is greater than 1
-			if ( verboseLevel > 1)
-			{	
-				data -> PrintHitData();
+				(*fHitsCollection)[0] -> RootFile();
 			}
 		}
-		
   	}
 }
 

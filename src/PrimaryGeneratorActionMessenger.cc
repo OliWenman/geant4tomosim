@@ -15,12 +15,6 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	gunDirectory = new G4UIdirectory("/gun/");
 	gunDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
 
-	ParticleX_Cmd = new G4UIcmdWithADoubleAndUnit("/gun/xPosition", this);
-	ParticleX_Cmd -> SetGuidance("Set the world size in the x direction. ");
-  	ParticleX_Cmd -> SetUnitCandidates("mm cm m ");
-	ParticleX_Cmd -> SetDefaultUnit("m");
-	ParticleX_Cmd -> SetDefaultValue(0.75);
-
 	energyCmd = new G4UIcmdWithADoubleAndUnit("/gun/setEnergy", this);
 	energyCmd -> SetGuidance("Set the kinetic energy. ");
   	energyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
@@ -40,8 +34,6 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 {
-	delete ParticleX_Cmd;	
-
 	delete gunDirectory;
 
 	delete energyCmd;
@@ -54,13 +46,7 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == ParticleX_Cmd )
-	{
-		ParticleX_Cmd -> GetNewUnitValue(newValue);
-		Action -> SetParticleX(ParticleX_Cmd -> GetNewDoubleValue(newValue)); 
-		G4cout << G4endl << "PrimaryGeneratorAction -> SetParticleX command detected " << G4endl;
-	}
-	else if( command == energyCmd )
+	if( command == energyCmd )
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		Action -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 

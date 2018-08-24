@@ -4,13 +4,14 @@
 #include "G4VUserActionInitialization.hh"
 
 class Data;
+class DetectorConstruction;
 
 // Action initialization class. 
 class ActionInitialization : public G4VUserActionInitialization
 {
   	public:
     		 
-		ActionInitialization(Data* data);
+		ActionInitialization(Data* data, DetectorConstruction* DC);
     		virtual ~ActionInitialization();
 
     		virtual void BuildForMaster() const;
@@ -18,6 +19,7 @@ class ActionInitialization : public G4VUserActionInitialization
 
 	private:
 		Data* data;
+		DetectorConstruction* DC;
 };
 
 #endif

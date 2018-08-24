@@ -8,13 +8,11 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
-G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator=0;
+G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator = 0;
 
-TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0)
-{}
+TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0) {}
 
-TrackerHit::~TrackerHit()
-{}
+TrackerHit::~TrackerHit(){}
 
 TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 {
@@ -25,7 +23,7 @@ TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 	fParticle  = right.fParticle;
 }
 
-const TrackerHit& TrackerHit::operator=(const TrackerHit& right)
+const TrackerHit& TrackerHit::operator = (const TrackerHit& right)
 {
   	fTrackID   = right.fTrackID;
   	fChamberNb = right.fChamberNb;
@@ -33,16 +31,13 @@ const TrackerHit& TrackerHit::operator=(const TrackerHit& right)
   	fPos       = right.fPos;
 	fParticle  = right.fParticle;
 
-
   	return *this;
 }
-
 
 G4int TrackerHit::operator==(const TrackerHit& right) const
 {
   	return ( this == &right ) ? 1 : 0;
 }
-
 
 void TrackerHit::Draw()
 {
@@ -55,13 +50,13 @@ void TrackerHit::Draw()
     		G4Colour colour(1.,0.,0.);
     		G4VisAttributes attribs(colour);
     		circle.SetVisAttributes(attribs);
-    		pVVisManager->Draw(circle);
+    		pVVisManager -> Draw(circle);
   	}
 }
 
 void TrackerHit::Print()
 {	
-  	G4cout << "Detector " << fChamberNb << " has been hit with a energy deposit of " << G4BestUnit(fEdep,"Energy") << G4endl;             	
+  	G4cout << ": Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");            	
 }
 
 void TrackerHit::RootFile()
@@ -76,3 +71,5 @@ void TrackerHit::RootFile()
   	// fill histograms
   	analysisManager->FillH2(0, y, z, weight);
 }
+
+

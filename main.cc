@@ -2,9 +2,7 @@
 #include "ActionInitialization.hh"
 #include "PhysicsList.hh"
 #include "StackingAction.hh"
-
 #include "Data.hh"
-
 #include "globals.hh"
 
 #ifdef G4MULTITHREADED
@@ -14,81 +12,62 @@
 #endif
 
 #include "G4UImanager.hh"
-
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
-
 int main(int argc,char** argv)
 {
-  	// Detect interactive mode (if no arguments) and define UI session
+  	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
-  	if ( argc == 1 ) 
+  	
+	if ( argc == 1 ) 
 	{
     		ui = new G4UIExecutive(argc, argv);
   	}
   
-  	// Construct the default run manager
+  	//Construct the default run manager
 	#ifdef G4MULTITHREADED
   		G4MTRunManager* runManager = new G4MTRunManager;
 	#else
   		G4RunManager* runManager = new G4RunManager;
 	#endif
   
-  	// Initialize visualization
+  	//Initialize visualization
   	G4VisManager* visManager = new G4VisExecutive;
-  	// G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
-  	// G4VisManager* visManager = new G4VisExecutive("Quiet");
-  	
-	visManager->Initialize();
+	visManager -> Initialize();
 
-  	// Get the pointer to the User Interface manager
+  	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
-	UImanager->ApplyCommand("/tracking/verbose 1");	
+	UImanager -> ApplyCommand("/tracking/verbose 0");	//Gives information about particle
+	UImanager -> ApplyCommand("/control/verbose 0");	
+	UImanager -> ApplyCommand("/hits/verbose 0");
 
+	//Creata an instance of the classes
 	Data* data = new Data();
-
-	// Set mandatory initialization classes
-  	// Detector construction
-  	runManager->SetUserInitialization(new DetectorConstruction(data));
-
-	// Physics list
+	DetectorConstruction* DC = new DetectorConstruction(data);
+  	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(new PhysicsList());
-   
-//--------------------------------------------------------------------------------------
+  	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
 
-  	// User action initialization
-  	runManager->SetUserInitialization(new ActionInitialization(data));
-
-  	// Process macro or start UI session
-  	//
+  	//Process macro files or start UI session
   	if ( ! ui ) 
 	{ 
     		// batch mode
     		G4String command = "/control/execute ";
     		G4String fileName = argv[1];
-    		UImanager->ApplyCommand(command+fileName);
+    		UImanager -> ApplyCommand(command+fileName);
   	}
   	else 
 	{ 
     		// interactive mode
-		UImanager->ApplyCommand("/control/execute settings.mac");
-		UImanager->ApplyCommand("/control/execute init_vis.mac");
-		UImanager->ApplyCommand("/control/execute vis.mac");
-		UImanager->ApplyCommand("/control/execute start.in");
-		
-
-
-    		ui->SessionStart();
+		UImanager -> ApplyCommand("/control/execute settings.mac");
+		UImanager -> ApplyCommand("/control/execute init_vis.mac");
+		UImanager -> ApplyCommand("/control/execute vis.mac");
+		UImanager -> ApplyCommand("/control/execute start.in");
+    		ui -> SessionStart();
    		delete ui;
   	}
 	
-
-  	// Job termination
-  	// Free the store: user actions, physics_list and detector_description are
-  	// owned and deleted by the run manager, so they should not be deleted 
-  	// in the main() program !
-  
   	delete visManager;
   	delete runManager;
 }

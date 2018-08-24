@@ -21,6 +21,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     		virtual G4VPhysicalVolume* Construct();
 
+		//virtual void SetUpWorld();
+		//virtual void SetUpTarget();
+		//virtual void SetUpDetector();
+		
+
 		//Set methods
 		inline void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
 
@@ -52,7 +57,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Pointer to DetectorConstructionMessenger
 		DetectorConstructionMessenger* detectorMessenger;
-
+		
+		//Pointer to the Data class
 		Data* data;
 
 		//DATA

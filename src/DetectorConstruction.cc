@@ -20,7 +20,7 @@
 
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 
-	G4cout << G4endl << "DetectorConstruction has been created "<< G4endl;
+	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
@@ -51,6 +51,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
+	SetWorldSize(WorldSize_Cmd);
 
 	//Target geometry
 	G4double innerRadius = 1*cm;

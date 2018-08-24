@@ -23,11 +23,11 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   	// periodic printing
 
-  	/*G4int eventID = event->GetEventID();
-    	G4cout << G4endl
-	       << "-----------------------------------------------------------------------------" 
-	       << G4endl
-	       <<"Event: " << eventID  << G4endl ;*/
+	/*if ( verboseLevel > 0 ) 
+	{ 
+  		G4int eventID = event->GetEventID();
+    		G4cout << G4endl <<"Event: " << eventID  << G4endl ;
+	}*/
 
 	//G4Step* aStep;
 	//G4StepPoint* preStepPoint = aStep -> GetPreStepPoint();

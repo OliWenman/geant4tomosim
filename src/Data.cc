@@ -1,4 +1,5 @@
 #include "Data.hh"
+#include <iomanip>
 
 Data::Data(){G4cout << G4endl << "Data class has been created "<< G4endl;}
 
@@ -97,9 +98,9 @@ void Data::PrintEnergyData()
         	{	
 			if (y == 0)
 			{
-				G4cout << "Detector " << x << ": ";
+				G4cout << "Detector " << x << ":" << std::setw(4);
 			}
-			G4cout << EnergyData[y][x] << " ";
+			G4cout << std::setw(4) << EnergyData[y][x] ;
         	}
     		G4cout << G4endl;  
     	}

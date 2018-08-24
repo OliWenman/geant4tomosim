@@ -8,6 +8,7 @@
 
 class G4Event;
 class PrimaryGeneratorActionMessenger;
+class DetectorConstruction;
 
 /// The primary generator action class with particle gun.
 
@@ -17,7 +18,7 @@ class PrimaryGeneratorActionMessenger;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction();    
+    		PrimaryGeneratorAction(DetectorConstruction* DC);    
     		virtual ~PrimaryGeneratorAction();
 
 	public:
@@ -27,8 +28,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetDefaultKinematic();
 
 		//Set methods
-		inline void SetParticleX(G4double value){ParticleX_Cmd = value;} 
-
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
 		inline void SetBeamWidthY(G4double value) {BeamWidthY_Cmd = value;} 
 		inline void SetBeamHeightZ(G4double value) {BeamHeightZ_Cmd = value;} 
@@ -36,11 +35,13 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		//Get methods
 		G4ParticleGun* GetParticleGun() {return ParticleGun;}
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
-		G4double GetParticleX(){return ParticleX_Cmd;}
 
   	private:
 		//Pointer to G4ParticleGun
     		G4ParticleGun* ParticleGun;
+
+		//Pointer to DetectorConstruction class
+		DetectorConstruction* DC;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;
@@ -49,9 +50,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double energyCmd;
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;
-		
-		G4double ParticleX_Cmd;
-
 };
 
 

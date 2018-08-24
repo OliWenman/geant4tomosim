@@ -33,10 +33,6 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
     		G4UIcmdWithADoubleAndUnit *energyCmd;  
 		G4UIcmdWithADoubleAndUnit *BeamWidthY_Cmd;
 		G4UIcmdWithADoubleAndUnit *BeamHeightZ_Cmd;
-
-		//Pointers for different data members
-		//WORLD VARIABLES
-		G4UIcmdWithADoubleAndUnit *ParticleX_Cmd;
 };
 
 #endif 

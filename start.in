@@ -1,19 +1,12 @@
-#Macro file for example X-Ray
+#Macro file for X-Ray simulation
 
-# Initialize kernel
+#Initialize kernel
 /run/initialize
 
-#1 event with printing hits
-
-#Gives information about particle 
-/tracking/verbose 0
-
+#Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits)
 /hits/verbose 0
 
-/control/verbose 0
+#Choose how many photons to use
+/run/beamOn 100
 
-#Fire 120 particles
-/run/beamOn 120
-
-#/analysis/setActivation true
-
+/analysis/setActivation true
