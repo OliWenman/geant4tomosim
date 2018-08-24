@@ -9,13 +9,14 @@
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 class DetectorConstructionMessenger;
+class Data;
 
 //Detector construction class to define materials and geometry.
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
-    		DetectorConstruction();
+    		DetectorConstruction(Data* data);
     		virtual ~DetectorConstruction();
 
     		virtual G4VPhysicalVolume* Construct();
@@ -44,12 +45,15 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 
+
   	protected:
 		//Pointer to user step limits
 		G4UserLimits* fStepLimit;            
 
 		//Pointer to DetectorConstructionMessenger
 		DetectorConstructionMessenger* detectorMessenger;
+
+		Data* data;
 
 		//DATA
 		//World variables

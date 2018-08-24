@@ -13,7 +13,7 @@
 
 //#include "GlobalClasses.hh"
 
-RunAction::RunAction(): G4UserRunAction()
+RunAction::RunAction(Data* DataObject): G4UserRunAction(), data(DataObject)
 { 
 	G4cout << G4endl << "RunAction has been created " << G4endl;
 
@@ -29,6 +29,7 @@ RunAction::~RunAction()
 {
 	delete runMessenger;
 	delete G4AnalysisManager::Instance();
+	delete data;
 }
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
@@ -40,10 +41,8 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 	{
 		CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 		CLHEP::HepRandom::setTheSeed(seedCmd);
-		G4cout << G4endl << "-----------------------------------------------------"
-		<< G4endl << "The seed is fixed as input != 0. Seed = " << seedCmd << G4endl
-		<< "-----------------------------------------------------" << G4endl;
-		
+
+		data -> SetSeed(seedCmd);
 	}
 	else if (seedCmd == 0)	//Random seed
 	{
@@ -51,14 +50,10 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 		CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 
 		///set random seed with system time
-		G4long Setting = time(NULL);
-		CLHEP::HepRandom::setTheSeed(Setting);
-	
-		G4cout << G4endl << "-----------------------------------------------------"
-		<< G4endl << "The seed is set to random. Seed = as input = " << Setting
-		<< G4endl << "-----------------------------------------------------" << G4endl;
-		
+		G4long RandomSeed = time(NULL);
+		CLHEP::HepRandom::setTheSeed(RandomSeed);
 
+		data -> SetSeed(RandomSeed);
 	}
 
 	const G4String& name = "X-Ray_Picture";
@@ -105,11 +100,15 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 
 void RunAction::EndOfRunAction(const G4Run*)
-{
+{	
+	G4cout << G4endl << "The simulation is complete" << G4endl;
+	G4cout << G4endl << "The seed value used for this simulation is " << data -> GetSeed() << G4endl;
+	data -> PrintHitData();
+	data -> PrintEnergyData();
+
 	// Save histograms
   	auto analysisManager = G4AnalysisManager::Instance();
   	analysisManager->Write();
   	analysisManager->CloseFile();
-
 }
 

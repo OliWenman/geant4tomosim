@@ -2,6 +2,9 @@
 #include "ActionInitialization.hh"
 #include "PhysicsList.hh"
 #include "StackingAction.hh"
+
+#include "Data.hh"
+
 #include "globals.hh"
 
 #ifdef G4MULTITHREADED
@@ -43,9 +46,11 @@ int main(int argc,char** argv)
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
 	UImanager->ApplyCommand("/tracking/verbose 1");	
 
+	Data* data = new Data();
+
 	// Set mandatory initialization classes
   	// Detector construction
-  	runManager->SetUserInitialization(new DetectorConstruction());
+  	runManager->SetUserInitialization(new DetectorConstruction(data));
 
 	// Physics list
 	runManager -> SetUserInitialization(new PhysicsList());
@@ -53,7 +58,7 @@ int main(int argc,char** argv)
 //--------------------------------------------------------------------------------------
 
   	// User action initialization
-  	runManager->SetUserInitialization(new ActionInitialization());
+  	runManager->SetUserInitialization(new ActionInitialization(data));
 
   	// Process macro or start UI session
   	//

@@ -1,6 +1,5 @@
 #include "Data.hh"
 
-
 Data::Data(){G4cout << G4endl << "Data class has been created "<< G4endl;}
 
 Data::~Data(){G4cout << G4endl << "Data class has been deleted "<< G4endl;}
@@ -52,7 +51,7 @@ void Data::PrintHitData()
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
 			
-	G4cout << G4endl << "The updated matrix of hits " << G4endl;
+	G4cout << G4endl << "Hit count data " << G4endl;
 			
 	//Prints out the matrix
 	for(G4int x = 0; x < Nrows; x++)  
@@ -81,7 +80,7 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 void Data::PrintEnergyData()
 {
 	std::vector <std::vector<G4int> > EnergyData = GetEnergyData();
-	G4cout << G4endl << "The updated matrix of energy " << G4endl;
+	G4cout << G4endl << "Energy detector data " << G4endl;
 
 	G4cout << "            ";
 			
