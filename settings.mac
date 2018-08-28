@@ -4,7 +4,7 @@
 /run/seed 0
 
 #Gun Settings
-/gun/setEnergy 30 keV
+/gun/setEnergy 50 keV
 /gun/setBeamWidth 0.1 m
 /gun/setBeamHeight 0.2 m
 
@@ -20,5 +20,5 @@
 /Target/position -20 0 0 cm
 
 #Data Settings
-/data/bins 3
+/data/bins 10
 

@@ -9,10 +9,9 @@
 
 class RunActionMessenger;
 class Data;
-
 class G4Run;
 
-/// Run action class
+//Run action class
 class RunAction : public G4UserRunAction
 {
   	public:
@@ -29,10 +28,8 @@ class RunAction : public G4UserRunAction
 		G4int GetTotalNoEvents(){return TotalNoEvents;}
 
 	private:
-		//Pointer to PrimaryGeneratorActionMessenger
+		//Pointers to classes
 		RunActionMessenger* runMessenger;
-
-		//Pointer to Data class
 		Data* data;
 		
 		//Declaring data variables

@@ -71,14 +71,11 @@ void Data::PrintHitData()
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
-	G4double MaxEnergy = 30*keV;
-
-	SetMaxEnergy(MaxEnergy);
-
-	G4double BinSize = MaxEnergy/GetNumberBins();
-			
+	//G4double MaxEnergy = 30*keV;
+	//SetMaxEnergy(MaxEnergy);
+	
+	G4double BinSize = GetMaxEnergy()/GetNumberBins();	
 	G4int BinNumber = floor(edep/BinSize);
-
 	++EnergyMatrix[BinNumber][DetectorNumber];
 }
 
@@ -129,7 +126,6 @@ void Data::WriteToTextFile()
    	std::vector <std::vector<G4int> > EnergyData = GetEnergyData();
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
-	G4double MaxEnergy = GetMaxEnergyy();
 
 	//G4int NoDigits = std::to_string(GetNumber).length();
 
@@ -146,7 +142,10 @@ void Data::WriteToTextFile()
 
 	outdata << "Variables used in this simulation are: " << std::endl;
 	outdata << "- Seed: " << GetSeed() << std::endl;
-	//outdata << "- Intial energy of the beam: " << MaxEnergy/*G4BestUnit(MaxEnergy,"Energy")*/ << std::endl;
+	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
+	outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;
+	outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
+	outdata << "- Number of photons used: " << GetNumberOfPhotons() << std::endl;
 	
 	outdata << std::endl;
 
@@ -160,7 +159,7 @@ void Data::WriteToTextFile()
     		outdata << std::endl;  
     	}
 
-	outdata<< G4endl << "Energy detector data (keV)" << G4endl;
+	outdata << G4endl << "Energy detector data (keV)" << G4endl;
 
 	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
 
@@ -194,7 +193,6 @@ void Data::WriteToTextFile()
     	}
 
   	 outdata.close();
-
 }
 
 

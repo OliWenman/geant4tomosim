@@ -11,12 +11,12 @@
 
 #include "Randomize.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object):G4VUserPrimaryGeneratorAction(), DC(DC_Object)
+PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), data(DataObject)
 {
 	G4cout << G4endl << "PrimaryGeneratorAction has been created ";
 
 	//Create a messenger for this class
-  	gunMessenger = new PrimaryGeneratorActionMessenger(this);
+  	gunMessenger = new PrimaryGeneratorActionMessenger(this, data);
 
 	//Set the number of particles for each event
 	G4int nofParticles = 1;

@@ -26,9 +26,9 @@ class Data
 		G4int GetNumberOfTotalHits(){return TotalHits;}
 
 		G4double GetMaxEnergy(){return MaxE;}
-		G4double GetMaxEnergyy(){return MaxE;}
 
 		G4int GetSeed(){return Seed;}
+		G4int GetNumberOfPhotons(){return NumberOfPhotons;}
 
 		//Set Methods
 		void SetHitData(std::vector<std::vector<G4int> > UpdatedData){HitDataMatrix = UpdatedData;}
@@ -41,9 +41,9 @@ class Data
 		void SetNumberOfTotalHits(G4int value){TotalHits = value;}
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
-		void SetMaxEnergyy(G4double value){MaxEnergy = value;}
 
 		void SetSeed(G4int value){Seed = value;}
+		void SetNumberOfPhotons(G4int value){NumberOfPhotons = value;}
 
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
@@ -68,9 +68,9 @@ class Data
 
 		G4int TotalHits;
 		G4double MaxE;
-		G4double MaxEnergy;
 
 		G4int Seed;
+		G4int NumberOfPhotons;
 };
 
 #endif

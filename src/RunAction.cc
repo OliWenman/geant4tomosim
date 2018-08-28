@@ -18,11 +18,6 @@ RunAction::RunAction(Data* DataObject): G4UserRunAction(), data(DataObject)
 	G4cout << G4endl << "RunAction has been created ";
 
 	runMessenger = new RunActionMessenger(this);
-	
-	// Create analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
-  	analysisManager->SetVerboseLevel(1);
-  	analysisManager->SetFirstHistoId(0);
 }
 
 RunAction::~RunAction()
@@ -36,6 +31,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 { 
 	G4int NoEvents = aRun -> GetNumberOfEventToBeProcessed();
 	SetTotalNoEvents(NoEvents);
+	data -> SetNumberOfPhotons(NoEvents);
 
 	if (seedCmd != 0)	//Keeps the seed
 	{
@@ -55,47 +51,6 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 		data -> SetSeed(RandomSeed);
 	}
-
-	const G4String& name = "X-Ray_Picture";
-	const G4String& title = "Projection Test";
-        G4int nxbins = 100;
-	G4double xmin = -0.5*m;
-	G4double xmax = 0.5*m;
-        G4int nybins = 100;
-	G4double ymin = -0.5*m;
-	G4double ymax = 0.5*m;
-
-        const G4String& xunitName = "m";
-        const G4String& yunitName = "m";
-        const G4String& zunitName = "m";
-        const G4String& xfcnName = "none";
-        const G4String& yfcnName = "none";
-        const G4String& zfcnName = "none";
-        const G4String& xbinSchemeName = "linear";
-        const G4String& ybinSchemeName = "linear";
-        const G4String& zbinSchemeName = "linear";
-
-
-//----------------------------------------------------------------------------
-  	//inform the runManager to save random number seed
-  	//G4RunManager::GetRunManager()->SetRandomNumberStore(true);
-
-	//Get analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
-  	// Open an output file
-  	analysisManager->OpenFile("Output");
-
-	// Creating histograms
-  	analysisManager->CreateH2(name, title,
-               			  nxbins, xmin, xmax,
-               			  nybins, ymin, ymax,
-               			  xunitName,
-               			  yunitName,
-               			  xfcnName,
-               		          yfcnName,
-               			  xbinSchemeName,
-               			  ybinSchemeName);
-
 }
 
 
@@ -108,10 +63,5 @@ void RunAction::EndOfRunAction(const G4Run*)
 	data -> PrintHitData();
 	data -> PrintEnergyData();
 	data -> WriteToTextFile();
-
-	// Save histograms
-  	auto analysisManager = G4AnalysisManager::Instance();
-  	analysisManager->Write();
-  	analysisManager->CloseFile();
 }
 

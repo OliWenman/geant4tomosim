@@ -25,7 +25,7 @@ void ActionInitialization::Build() const
   	SetUserAction(new RunAction(data));	
 	SetUserAction(new StackingAction());
   	SetUserAction(new EventAction());
-	SetUserAction(new PrimaryGeneratorAction(DC));
+	SetUserAction(new PrimaryGeneratorAction(DC, data));
 }  
 
 

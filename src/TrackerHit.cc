@@ -59,17 +59,3 @@ void TrackerHit::Print()
   	G4cout << ": Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");            	
 }
 
-void TrackerHit::RootFile()
-{
-	G4double y = fPos.y();
-	G4double z = fPos.z();
-	G4double weight = 1;
-
-	// get analysis manager
-  	auto analysisManager = G4AnalysisManager::Instance();
-
-  	// fill histograms
-  	analysisManager->FillH2(0, y, z, weight);
-}
-
-

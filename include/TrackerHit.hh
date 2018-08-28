@@ -8,11 +8,10 @@
 #include "tls.hh"
 #include "G4ParticleDefinition.hh"
 
-/// Tracker hit class
-///
-/// It defines data members to store the trackID, chamberNb, energy deposit,
-/// and position of charged particles in a selected volume:
-/// - fTrackID, fChamberNB, fEdep, fPos
+//Tracker hit class.
+//It defines data members to store the trackID, chamberNb, energy deposit,
+//and position of charged particles in a selected volume:
+//- fTrackID, fChamberNB, fEdep, fPos
 
 class TrackerHit : public G4VHit
 {
@@ -31,7 +30,6 @@ class TrackerHit : public G4VHit
     		// methods from base class
     		virtual void Draw();
     		virtual void Print();
-		virtual void RootFile();
 
     		// Set methods
     		void SetTrackID(G4int value){fTrackID = value;};

@@ -21,8 +21,6 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	SetNoDetectorsZ(NumDetectorsZ);
 	SetNoBins(NoBins);
 
-	//Create the data object
-	//data = new Data();
 	data -> SetUpMatricies(NumDetectorsZ, NumDetectorsY, NoBins);
 
   	collectionName.insert(hitsCollectionName);	
@@ -50,7 +48,7 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
   	//Energy deposit
-  	G4double edep = aStep->GetTotalEnergyDeposit();
+  	G4double edep = aStep -> GetTotalEnergyDeposit();
 
   	if (edep==0.) return false;
 
@@ -100,8 +98,8 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 		{	
 			//If there's a hit, print it if the verbose setting is greater than 1
 			for ( G4int i = 0; i < nofHits; i++ ) 
-			{	(*fHitsCollection)[i] -> Print();	
-				(*fHitsCollection)[0] -> RootFile();
+			{	
+				(*fHitsCollection)[i] -> Print();	
 			}
 		}
   	}

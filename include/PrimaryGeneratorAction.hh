@@ -16,7 +16,7 @@ class Data;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction(DetectorConstruction* DC);    
+    		PrimaryGeneratorAction(DetectorConstruction* DC, Data* data);    
     		virtual ~PrimaryGeneratorAction();
 
 	public:
