@@ -53,7 +53,6 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 	}
 }
 
-
 void RunAction::EndOfRunAction(const G4Run*)
 {	
 	G4cout << G4endl << "The simulation is complete" << G4endl;
@@ -62,6 +61,9 @@ void RunAction::EndOfRunAction(const G4Run*)
 	G4cout << G4endl << "The seed value used for this simulation is " << data -> GetSeed() << G4endl;
 	data -> PrintHitData();
 	data -> PrintEnergyData();
-	data -> WriteToTextFile();
+	if (TextFileCmd == "true")
+	{	
+		data -> WriteToTextFile();
+	}
 }
 

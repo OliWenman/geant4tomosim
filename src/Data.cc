@@ -9,7 +9,7 @@ Data::Data(){G4cout << G4endl << "Data class has been created "<< G4endl;}
 
 Data::~Data(){G4cout << G4endl << "Data class has been deleted "<< G4endl;}
 
-void Data::SetUpMatricies(G4int Nrow, G4int Ncolumn, G4int Nbins)
+void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins)
 {
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
@@ -118,6 +118,7 @@ void Data::PrintEnergyData()
 
 void Data::WriteToTextFile()
 {
+	G4cout << G4endl << "Writing the data to DataFile.txt" << G4endl;
 	//Create file stream
    	std::ofstream outdata; 
    
@@ -140,7 +141,7 @@ void Data::WriteToTextFile()
 
 	outdata << "Simulation of X-Ray radiation." << std::endl << std::endl;
 
-	outdata << "Variables used in this simulation are: " << std::endl;
+	outdata << "Conditioons used in this simulation are: " << std::endl;
 	outdata << "- Seed: " << GetSeed() << std::endl;
 	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
 	outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;
@@ -192,7 +193,8 @@ void Data::WriteToTextFile()
     		outdata << G4endl;  
     	}
 
-  	 outdata.close();
+  	outdata.close();
+	G4cout << G4endl << "Files have been successfully written to DataFile.txt" << G4endl;
 }
 
 

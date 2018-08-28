@@ -30,10 +30,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		inline void SetNoDetectorsY(G4int value){NoDetectorsY_Cmd = value;} 
 		inline void SetNoDetectorsZ(G4int value){NoDetectorsZ_Cmd = value;}
-
 		inline void SetDetectorSize(G4ThreeVector value){DetectorSize_Cmd = value;}
+		inline void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
 
 		inline void SetTargetPosition(G4ThreeVector value){TargetPosition_Cmd = value;}
+		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
 
 		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
 
@@ -42,10 +43,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}
 		G4int GetNoDetectorsZ(){return NoDetectorsZ_Cmd;}
-
 		G4ThreeVector GetDetectorSize(){return DetectorSize_Cmd;}
+		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 
 		G4ThreeVector GetTargetPosition(){return TargetPosition_Cmd;}
+		G4String GetTargetMaterial(){return TargetMaterial_Cmd;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 
@@ -63,11 +65,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Detector variables
 		G4int NoDetectorsY_Cmd;
 		G4int NoDetectorsZ_Cmd;
-
 		G4ThreeVector DetectorSize_Cmd;
+		G4String DetectorMaterial_Cmd;
 
 		//Target variables
 		G4ThreeVector TargetPosition_Cmd;
+		G4String TargetMaterial_Cmd;
 
 		//Data manipulation varaibles
 		G4int NoBins_Cmd;

@@ -21,7 +21,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	SetNoDetectorsZ(NumDetectorsZ);
 	SetNoBins(NoBins);
 
-	data -> SetUpMatricies(NumDetectorsZ, NumDetectorsY, NoBins);
+	data -> SetUpData(NumDetectorsZ, NumDetectorsY, NoBins);
 
   	collectionName.insert(hitsCollectionName);	
 }

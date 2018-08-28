@@ -24,11 +24,12 @@ class RunActionMessenger: public G4UImessenger
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
-		RunAction *RAction;
+		RunAction* RAction;
 
-		G4UIdirectory 		    *runDirectory;
+		G4UIdirectory* runDirectory;
 		
-		G4UIcmdWithAnInteger *seedCmd;
+		G4UIcmdWithAnInteger* seedCmd;
+		G4UIcmdWithAString* TextFileCmd;
 };
 
 #endif 

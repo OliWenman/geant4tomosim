@@ -2,6 +2,7 @@
 
 #Seed settings (0 is random, input own number for your own seed)
 /run/seed 0
+/run/TextFile true
 
 #Gun Settings
 /gun/setEnergy 50 keV
@@ -12,12 +13,14 @@
 /world/size 1.5 1 1 m
 
 #Detector Settings
-/detector/size 1 10 10 mm
+/detector/size 1 5 5 mm
 /detector/numberY 10
 /detector/numberZ 10
+/detector/material G4_SODIUM_IODIDE
 
 #World Settings
 /Target/position -20 0 0 cm
+/Target/material G4_Al
 
 #Data Settings
 /data/bins 10

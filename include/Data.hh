@@ -49,7 +49,7 @@ class Data
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
 
-		virtual void SetUpMatricies(G4int Nrow, G4int Ncolumn, G4int Nbins);
+		virtual void SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins);
 		virtual void SaveHitData(G4int DetectorNumber);
 		virtual void PrintHitData();
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);

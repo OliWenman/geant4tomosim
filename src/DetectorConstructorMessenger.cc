@@ -53,6 +53,10 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	DetectorSize_Cmd -> SetDefaultUnit("m");
 	DetectorSize_Cmd -> SetDefaultValue(G4ThreeVector(0.001*m, 0.005*m, 0.005*m));		
 
+	DetectorMaterial_Cmd = new G4UIcmdWithAString("/detector/material", this);
+	DetectorMaterial_Cmd -> SetGuidance("Set the material of the detector ");
+	DetectorMaterial_Cmd -> SetDefaultValue("G4_SODIUM_IODIDE");
+
 //-----------------------------------------------------------------------------------------------------
 	//TARGET
 	//Directory
@@ -64,7 +68,11 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	TargetPosition_Cmd -> SetParameterName("X","Y","Z",true,true);
 	TargetPosition_Cmd -> SetUnitCandidates("mm cm m ");
 	TargetPosition_Cmd -> SetDefaultUnit("m");
-	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));		
+	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));	
+
+	TargetMaterial_Cmd = new G4UIcmdWithAString("/Target/material", this);
+	TargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
+	TargetMaterial_Cmd -> SetDefaultValue("G4_Al");
 
 //------------------------------------------------------------------------------------------------------
 	//Data Manipulation
@@ -83,9 +91,11 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete NoDetectorsY_Cmd;
 	delete NoDetectorsZ_Cmd;
 	delete DetectorSize_Cmd;
+	delete DetectorMaterial_Cmd;
 
 	delete TargetDirectory;
 	delete TargetPosition_Cmd;
+	delete TargetMaterial_Cmd;
 
 	delete NoBins_Cmd;
 
@@ -114,10 +124,20 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue));
 		G4cout << G4endl << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
 	}
+	else if( command == DetectorMaterial_Cmd )
+	{
+		ConstructDet -> SetDetectorMaterial(newValue);
+		G4cout << G4endl << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
+	}
 	else if( command == TargetPosition_Cmd )
 	{
 		ConstructDet -> SetTargetPosition(TargetPosition_Cmd -> GetNew3VectorValue(newValue));	
 		G4cout << G4endl << "DetectorConstruction -> SetTargetPosition command detected "<< G4endl;
+	}
+	else if(command == TargetMaterial_Cmd )
+	{
+		ConstructDet -> SetTargetMaterial(newValue);	
+		G4cout << G4endl << "DetectorConstruction -> SetTargetMaterial command detected "<< G4endl;
 	}
 	else if( command == NoBins_Cmd )
 	{

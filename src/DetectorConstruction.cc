@@ -60,9 +60,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   	G4VisAttributes* World_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicWorld -> SetVisAttributes(World_Colour);
 
-	SetUpTarget(TargetPosition_Cmd, "G4_Al", logicWorld);
+	SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld);
 
-	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, "G4_Pb", logicWorld);
+	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
 	return physWorld;
 
@@ -186,7 +186,7 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	G4NistManager* nist = G4NistManager::Instance();
 		
 	//Build materials 
-	G4Material* Material = nist->FindOrBuildMaterial(MaterialName);
+	G4Material* Material = nist -> FindOrBuildMaterial(MaterialName);
 
 	return Material;
 }
