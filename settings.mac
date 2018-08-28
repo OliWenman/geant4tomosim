@@ -9,10 +9,10 @@
 /gun/setBeamHeight 0.2 m
 
 #World Settings
-/world/size 1 1 1 m
+/world/size 1.5 1 1 m
 
 #Detector Settings
-/detector/size 1 2 2 mm
+/detector/size 1 10 10 mm
 /detector/numberY 10
 /detector/numberZ 10
 
@@ -20,5 +20,5 @@
 /Target/position -20 0 0 cm
 
 #Data Settings
-/data/bins 6
+/data/bins 3
 

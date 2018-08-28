@@ -44,7 +44,7 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 
   	//Add this collection in hce
   	G4int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  	hce->AddHitsCollection( hcID, fHitsCollection ); 
+  	hce -> AddHitsCollection( hcID, fHitsCollection ); 
 }
 
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)

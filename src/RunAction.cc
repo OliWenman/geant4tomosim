@@ -34,7 +34,7 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
 { 
-	G4int NoEvents = aRun->GetNumberOfEventToBeProcessed();
+	G4int NoEvents = aRun -> GetNumberOfEventToBeProcessed();
 	SetTotalNoEvents(NoEvents);
 
 	if (seedCmd != 0)	//Keeps the seed
@@ -107,6 +107,7 @@ void RunAction::EndOfRunAction(const G4Run*)
 	G4cout << G4endl << "The seed value used for this simulation is " << data -> GetSeed() << G4endl;
 	data -> PrintHitData();
 	data -> PrintEnergyData();
+	data -> WriteToTextFile();
 
 	// Save histograms
   	auto analysisManager = G4AnalysisManager::Instance();

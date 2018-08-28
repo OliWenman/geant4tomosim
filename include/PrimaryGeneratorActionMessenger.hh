@@ -24,7 +24,7 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
-		PrimaryGeneratorAction *Action;
+		PrimaryGeneratorAction* Action;
 
 		G4UIdirectory *gunDirectory;
 		//Pointer to the G4UIdirectory

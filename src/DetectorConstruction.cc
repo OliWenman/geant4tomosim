@@ -16,7 +16,6 @@
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-#include "G4Run.hh"
 
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 
@@ -34,10 +33,10 @@ DetectorConstruction::~DetectorConstruction()
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
 	//World Geometry
+	SetWorldSize(WorldSize_Cmd);
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
-	SetWorldSize(WorldSize_Cmd);
 
 	//WORLD
 	G4Box* solidWorld = new G4Box("World", WorldSizeX, WorldSizeY, WorldSizeZ);

@@ -26,6 +26,7 @@ class Data
 		G4int GetNumberOfTotalHits(){return TotalHits;}
 
 		G4double GetMaxEnergy(){return MaxE;}
+		G4double GetMaxEnergyy(){return MaxE;}
 
 		G4int GetSeed(){return Seed;}
 
@@ -40,6 +41,7 @@ class Data
 		void SetNumberOfTotalHits(G4int value){TotalHits = value;}
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
+		void SetMaxEnergyy(G4double value){MaxEnergy = value;}
 
 		void SetSeed(G4int value){Seed = value;}
 
@@ -52,6 +54,7 @@ class Data
 		virtual void PrintHitData();
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);
 		virtual void PrintEnergyData();
+		virtual void WriteToTextFile();
 
 	private:	
 
@@ -65,6 +68,7 @@ class Data
 
 		G4int TotalHits;
 		G4double MaxE;
+		G4double MaxEnergy;
 
 		G4int Seed;
 };

@@ -50,7 +50,7 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		Action -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
-		G4cout << G4endl << "PrimaryGeneratorAction -> SetParticleEnergy command detected " << G4endl;
+		G4cout << G4endl << "PrimaryGeneratorAction -> SetParticleEnergy command detected. Value is  " << G4endl;
 	}
 	else if( command == BeamWidthY_Cmd )
   	{ 

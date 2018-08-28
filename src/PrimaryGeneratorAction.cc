@@ -1,6 +1,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "Data.hh"
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
@@ -35,8 +36,8 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 {
 	//Setup which particle is used and its starting conidiions
 	G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-	ParticleGun->SetParticleDefinition(particleDefinition);
-  	ParticleGun->SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	
+	ParticleGun -> SetParticleDefinition(particleDefinition);
+  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -49,10 +50,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   	G4double z0 = BeamHeightZ_Cmd * (G4UniformRand()-0.5);
 
 	//Apply the commands for starting energy and positon 
-	ParticleGun->SetParticleEnergy(energyCmd);
+	ParticleGun -> SetParticleEnergy(energyCmd);
+
   	ParticleGun->SetParticlePosition(G4ThreeVector(x0,y0, z0));
 
 	//Generate the particle in the event
-  	ParticleGun->GeneratePrimaryVertex(anEvent);
+  	ParticleGun -> GeneratePrimaryVertex(anEvent);
 }	
 

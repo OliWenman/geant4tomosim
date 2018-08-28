@@ -9,11 +9,9 @@
 class G4Event;
 class PrimaryGeneratorActionMessenger;
 class DetectorConstruction;
+class Data;
 
-/// The primary generator action class with particle gun.
-
-/// It defines a single particle which hits the Tracker 
-/// perpendicular to the input face. 
+//It defines a single particle which hits the detectors perpendicular to the input face
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -35,6 +33,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		//Get methods
 		G4ParticleGun* GetParticleGun() {return ParticleGun;}
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
+		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
 
   	private:
 		//Pointer to G4ParticleGun
@@ -42,6 +41,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		//Pointer to DetectorConstruction class
 		DetectorConstruction* DC;
+		Data* data;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;
