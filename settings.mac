@@ -1,12 +1,13 @@
 #Settings for the simulation
+#/physics/process EmStandard
 
-#Seed settings (0 is random, input own number for your own seed)
+#Seed settings (For the seed, 0 is random, input own number for your own seed)
 /run/seed 0
 /run/TextFile true
 
 #Gun Settings
-/gun/setEnergy 50 keV
-/gun/setBeamWidth 0.1 m
+/gun/setEnergy 30 keV
+/gun/setBeamWidth 0.2 m
 /gun/setBeamHeight 0.2 m
 
 #World Settings
@@ -14,8 +15,8 @@
 
 #Detector Settings
 /detector/size 1 5 5 mm
-/detector/numberY 10
-/detector/numberZ 10
+/detector/numberY 20
+/detector/numberZ 20
 /detector/material G4_SODIUM_IODIDE
 
 #World Settings
@@ -23,5 +24,4 @@
 /Target/material G4_Al
 
 #Data Settings
-/data/bins 10
-
+/data/bins 4

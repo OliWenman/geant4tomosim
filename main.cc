@@ -43,10 +43,10 @@ int main(int argc,char** argv)
 	UImanager -> ApplyCommand("/hits/verbose 0");
 
 	//Creata an instance of the classes
-	Data* data = new Data();
-	DetectorConstruction* DC = new DetectorConstruction(data);
-  	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(new PhysicsList());
+	Data* data = new Data();
+	DetectorConstruction* DC = new DetectorConstruction(data);  	
+	runManager -> SetUserInitialization(DC);
   	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
 
   	//Process macro files or start UI session

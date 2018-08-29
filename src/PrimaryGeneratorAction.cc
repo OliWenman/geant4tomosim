@@ -21,8 +21,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, 
 	//Set the number of particles for each event
 	G4int nofParticles = 1;
   	ParticleGun = new G4ParticleGun(nofParticles);
-
-	SetDefaultKinematic();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -43,7 +41,6 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 	//Allow the particles to be fired randomly within the beam width
-	//G4double x0 = ParticleX_Cmd;
 	G4ThreeVector WorldSize = DC -> GetWorldSize();
 	G4double x0 = WorldSize.x();
 	G4double y0 = BeamWidthY_Cmd * (G4UniformRand()-0.5);
@@ -56,5 +53,4 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
-}	
-
+} 

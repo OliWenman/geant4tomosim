@@ -6,6 +6,8 @@
 /// Modular physics list
 /// - G4EmStandardPhysics
 
+class PhysicsListMessenger;
+
 class PhysicsList: public G4VModularPhysicsList
 {
 	public:
@@ -13,9 +15,18 @@ class PhysicsList: public G4VModularPhysicsList
   		virtual ~PhysicsList();
 
   		virtual void SetCuts();
-};
+		
+		//Set methods
+		void SetPhysicsOption(G4String value){PhysicsProcessCmd = value;}
+	
+		//Get methods
+		G4String GetPhysicsOption(){return PhysicsProcessCmd;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+	private:
+		PhysicsListMessenger* physicsMessenger;
+		
+		G4String PhysicsProcessCmd;
+};
 
 #endif
 

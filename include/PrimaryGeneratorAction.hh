@@ -18,8 +18,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   	public:
     		PrimaryGeneratorAction(DetectorConstruction* DC, Data* data);    
     		virtual ~PrimaryGeneratorAction();
-
-	public:
     		virtual void GeneratePrimaries(G4Event* );
     		
 		//Set methods		

@@ -1,8 +1,6 @@
 #include "Data.hh"
 #include <iomanip>
-#include <iostream>
 #include <fstream>
-#include <cstdlib> // for exit function
 #include "G4UnitsTable.hh"
 
 Data::Data(){G4cout << G4endl << "Data class has been created "<< G4endl;}
@@ -71,9 +69,6 @@ void Data::PrintHitData()
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
-	//G4double MaxEnergy = 30*keV;
-	//SetMaxEnergy(MaxEnergy);
-	
 	G4double BinSize = GetMaxEnergy()/GetNumberBins();	
 	G4int BinNumber = floor(edep/BinSize);
 	++EnergyMatrix[BinNumber][DetectorNumber];
@@ -194,7 +189,7 @@ void Data::WriteToTextFile()
     	}
 
   	outdata.close();
-	G4cout << G4endl << "Files have been successfully written to DataFile.txt" << G4endl;
+	G4cout << G4endl << "The data has been successfully written to DataFile.txt" << G4endl;
 }
 
 
