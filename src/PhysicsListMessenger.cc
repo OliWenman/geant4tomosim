@@ -1,38 +1,32 @@
 #include "PhysicsListMessenger.hh"
 #include "PhysicsList.hh"
 
-#include "G4SystemOfUnits.hh"
-#include "G4UIcmdWithAString.hh"
-#include "G4UIcmdWithAnInteger.hh"
+#include "G4UIdirectory.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
-#include "G4UIcmdWithADouble.hh"
-#include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithAString.hh"
 
-PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):G4UImessenger(), Physics(PLObject)
-{	
-	G4cout << G4endl << "PhysicsListMessenger has been created " << G4endl;
+PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObject)
+{
+  	physicsDirectory = new G4UIdirectory("/physics/");
+  	physicsDirectory->SetGuidance("Commands to activate physics models and set cuts");
 
-	physicsDirectory = new G4UIdirectory("/physics/");
-	physicsDirectory -> SetGuidance("Commands to control what physics processes are involved");
-
-	PhysicsProcessCmd = new G4UIcmdWithAString("/physics/process", this);
-	PhysicsProcessCmd -> SetDefaultValue("EmStandard");
-	PhysicsProcessCmd -> SetGuidance("Choose what physics processes you would like to have ");
+  	PhysicsListCmd = new G4UIcmdWithAString("/physics/addPhysics",this);  
+  	PhysicsListCmd->SetGuidance("Add physics list.");
+  	PhysicsListCmd->SetParameterName("PList",false);
+  	PhysicsListCmd->AvailableForStates(G4State_PreInit);  
 }
 
 PhysicsListMessenger::~PhysicsListMessenger()
 {
-	delete physicsDirectory;
-	delete PhysicsProcessCmd;
-
-	G4cout << G4endl << "PhysicsListMessenger has been deleted " << G4endl;
+  	delete PhysicsListCmd;
+  	delete physicsDirectory;    
 }
 
 void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
-{
-	if (command == PhysicsProcessCmd)
-	{
-		Physics -> SetPhysicsOption(newValue);
-		G4cout << G4endl << "PhysicsList -> SetPhysicsOption command detected" << G4endl;
-	}
+{       
+  		if( command == PhysicsListCmd )
+   		{ 
+			G4cout << G4endl << "PhysicsList -> AddPhysicsList command detected " << G4endl;
+			Physics -> AddPhysicsList(newValue);
+		}
 }

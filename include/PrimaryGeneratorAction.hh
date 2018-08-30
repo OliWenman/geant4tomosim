@@ -7,6 +7,7 @@
 #include "G4UImessenger.hh"
 
 class G4Event;
+class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
 class DetectorConstruction;
 class Data;
@@ -36,6 +37,10 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   	private:
 		//Pointer to G4ParticleGun
     		G4ParticleGun* ParticleGun;
+
+		G4ParticleDefinition *gamma;
+		G4ParticleDefinition *electron;
+		G4ParticleDefinition *positron;
 
 		//Pointer to DetectorConstruction class
 		DetectorConstruction* DC;

@@ -2,31 +2,41 @@
 #define PhysicsList_h 1
 
 #include "G4VModularPhysicsList.hh"
+#include "G4EmConfigurator.hh"
+#include "globals.hh"
 
-/// Modular physics list
-/// - G4EmStandardPhysics
-
+class G4VPhysicsConstructor;
 class PhysicsListMessenger;
+class Data;
 
 class PhysicsList: public G4VModularPhysicsList
 {
 	public:
-  		PhysicsList();
+
+  		PhysicsList(Data* data);
   		virtual ~PhysicsList();
 
-  		virtual void SetCuts();
-		
-		//Set methods
-		void SetPhysicsOption(G4String value){PhysicsProcessCmd = value;}
-	
-		//Get methods
-		G4String GetPhysicsOption(){return PhysicsProcessCmd;}
+  		void ConstructParticle();
+
+  		void AddPhysicsList(G4String& name);
+  		void ConstructProcess();
+		void SetCuts(G4double aValue);
+		//void SetCuts();
 
 	private:
-		PhysicsListMessenger* physicsMessenger;
-		
-		G4String PhysicsProcessCmd;
+		Data* data;
+
+  		G4EmConfigurator em_config;
+
+  		G4double cutForGamma;
+  		G4double cutForElectron;
+  		G4double cutForPositron;
+
+  		G4String emName;
+  		G4VPhysicsConstructor* emPhysicsList;
+  		G4VPhysicsConstructor* decPhysicsList;
+
+  		PhysicsListMessenger* PhysicsMessenger;
 };
 
 #endif
-

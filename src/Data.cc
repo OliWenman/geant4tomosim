@@ -137,6 +137,7 @@ void Data::WriteToTextFile()
 	outdata << "Simulation of X-Ray radiation." << std::endl << std::endl;
 
 	outdata << "Conditioons used in this simulation are: " << std::endl;
+	outdata << "- Physics package: " << GetPhysicsUsed() << std::endl;
 	outdata << "- Seed: " << GetSeed() << std::endl;
 	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
 	outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;

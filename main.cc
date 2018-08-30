@@ -36,18 +36,20 @@ int main(int argc,char** argv)
   	G4VisManager* visManager = new G4VisExecutive;
 	visManager -> Initialize();
 
-  	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
+	//Creata an instance of the classes
+	Data* data = new Data();
+	DetectorConstruction* DC = new DetectorConstruction(data); 
+	PhysicsList* PL = new PhysicsList(data); 	
+	runManager -> SetUserInitialization(DC);
+	runManager -> SetUserInitialization(PL);
+  	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
+
+	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
 	UImanager -> ApplyCommand("/tracking/verbose 0");	//Gives information about particle
 	UImanager -> ApplyCommand("/control/verbose 0");	
 	UImanager -> ApplyCommand("/hits/verbose 0");
-
-	//Creata an instance of the classes
-	runManager -> SetUserInitialization(new PhysicsList());
-	Data* data = new Data();
-	DetectorConstruction* DC = new DetectorConstruction(data);  	
-	runManager -> SetUserInitialization(DC);
-  	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
+	UImanager -> ApplyCommand("/process/em/verbose 0");
 
   	//Process macro files or start UI session
   	if ( ! ui ) 

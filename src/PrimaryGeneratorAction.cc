@@ -33,13 +33,20 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 void PrimaryGeneratorAction::SetDefaultKinematic()
 {
 	//Setup which particle is used and its starting conidiions
-	G4ParticleDefinition* particleDefinition = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-	ParticleGun -> SetParticleDefinition(particleDefinition);
+	
+	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+
+	gamma=particleTable->FindParticle("gamma");
+	electron=particleTable->FindParticle("e-");
+	positron=particleTable->FindParticle("e+");
+
+	ParticleGun -> SetParticleDefinition(gamma);
   	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+	SetDefaultKinematic();
 	//Allow the particles to be fired randomly within the beam width
 	G4ThreeVector WorldSize = DC -> GetWorldSize();
 	G4double x0 = WorldSize.x();

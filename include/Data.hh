@@ -30,6 +30,8 @@ class Data
 		G4int GetSeed(){return Seed;}
 		G4int GetNumberOfPhotons(){return NumberOfPhotons;}
 
+		G4String GetPhysicsUsed(){return PhysicsUsed;}
+
 		//Set Methods
 		void SetHitData(std::vector<std::vector<G4int> > UpdatedData){HitDataMatrix = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> > UpdatedData){EnergyMatrix = UpdatedData;}
@@ -44,6 +46,8 @@ class Data
 
 		void SetSeed(G4int value){Seed = value;}
 		void SetNumberOfPhotons(G4int value){NumberOfPhotons = value;}
+
+		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
 
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
@@ -71,6 +75,8 @@ class Data
 
 		G4int Seed;
 		G4int NumberOfPhotons;
+
+		G4String PhysicsUsed;
 };
 
 #endif

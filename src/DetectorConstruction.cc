@@ -8,6 +8,7 @@
 
 #include "G4Tubs.hh"
 #include "G4Box.hh"
+#include "G4SubtractionSolid.hh"
 
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
@@ -60,7 +61,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   	G4VisAttributes* World_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicWorld -> SetVisAttributes(World_Colour);
 
-	SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld);
+	SetTargetCopyNo(0);
+
+	//SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld, "Tube");
+	SetUpTargetBox(G4ThreeVector(0.1*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
 
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
@@ -69,53 +73,80 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4cout << G4endl << "The world has been created succesfully ";  
 }
 
-void DetectorConstruction::SetUpTarget(G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox)
+void DetectorConstruction::SetUpTarget(G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox, G4String Shape)
 {
-	G4ThreeVector WorldSize = GetWorldSize();
-	G4double WorldSizeZ = WorldSize.z();
+	if (Shape == "Tube")
+	{
+		G4ThreeVector WorldSize = GetWorldSize();
+		G4double WorldSizeZ = WorldSize.z();
+		SetTargetCopyNo(GetTargetCopyNo() + 1);
 	
-	//Target geometry
-	G4double innerRadius = 1*cm;
-	G4double outerRadius = 1.50*cm;
-	G4double hz = WorldSizeZ/2;
-	G4double startAngle = 0.*deg;
-	G4double spanningAngle = 360.*deg;
+		//Target geometry
+		G4double innerRadius = 1*cm;
+		G4double outerRadius = 1.50*cm;
+		G4double hz = WorldSizeZ/2;
+		G4double startAngle = 0.*deg;
+		G4double spanningAngle = 360.*deg;
 
-	//Target Position
-	G4double TargetPositionX = TargetPosition.x();
-	G4double TargetPositionY = TargetPosition.y();
-	G4double TargetPositionZ = TargetPosition.z();
+		//Target Position
+		G4double TargetPositionX = TargetPosition.x();
+		G4double TargetPositionY = TargetPosition.y();
+		G4double TargetPositionZ = TargetPosition.z();
 
-	//TARGET
-   	G4Tubs* TargetTube = new G4Tubs("TargetGeometry",
-					 innerRadius,
-                  			 outerRadius,
-                  			 hz,
-                  			 startAngle,
-                  			 spanningAngle);
+		//TARGET
+   		G4Tubs* TargetTube = new G4Tubs("TargetGeometry",
+					 	innerRadius,
+                  			 	outerRadius,
+                  			 	hz,
+                  			 	startAngle,
+                  			 	spanningAngle);
+
+		//Fill the target with its material
+		G4Material* TargetMaterial = FindMaterial(Material);
+		G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, TargetMaterial, "Al_Target");
+
+
+		//Create the target physical volume
+		G4VPhysicalVolume* physTarget= new G4PVPlacement(0,            //no rotation
+							 	G4ThreeVector(TargetPositionX, TargetPositionY, TargetPositionZ),       
+							 	logicTarget,           //its logical volume
+							 	"Target",               //its name
+							 	logicMotherBox,                     //its mother  volume
+							 	false,                 //no boolean operation
+							 	0,                     //copy number
+							 	true);		//overlaps checking      
+		//Visualization attributes
+  		G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
+  		logicTarget -> SetVisAttributes(Target_Colour);
+	
+		G4cout << G4endl << "The target has been created succesfully ";  
+	}               
+
+}
+	
+void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVector InnerSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox)
+{
+	G4Box *outerBox = new G4Box("Outer Box", TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
+	G4Box *innerBox = new G4Box("Inner Box",(TargetSize.x()-InnerSize.x())/2.,(TargetSize.y()-InnerSize.y())/2.,(TargetSize.z()-InnerSize.z())/2.);
+	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("Hollow Box", outerBox, innerBox);
 
 	//Fill the target with its material
-	G4Material* TargetMaterial = FindMaterial(Material);
-	G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, TargetMaterial, "Al_Target");
-
+	G4Material* BoxMaterial = FindMaterial(Material);
+	G4LogicalVolume* logicHollowBox = new G4LogicalVolume(HollowBox, BoxMaterial, "logicBox");
 
 	//Create the target physical volume
-	G4VPhysicalVolume* physTarget= new G4PVPlacement(0,            //no rotation
-							 G4ThreeVector(TargetPositionX, TargetPositionY, TargetPositionZ),       
-							 logicTarget,           //its logical volume
-							 "Target",               //its name
+	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(0,            //no rotation
+							 G4ThreeVector(TargetPosition.x(), TargetPosition.y(), TargetPosition.z()),       
+							 logicHollowBox,           //its logical volume
+							 "HollowBox",               //its name
 							 logicMotherBox,                     //its mother  volume
 							 false,                 //no boolean operation
 							 0,                     //copy number
-							 true);		//overlaps checking                     
-
+							 true);		//overlaps checking      
 	//Visualization attributes
-  	G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
-  	logicTarget -> SetVisAttributes(Target_Colour);
-	
-	G4cout << G4endl << "The target has been created succesfully ";  
+  	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
+  	logicHollowBox -> SetVisAttributes(HollowBoxColour);
 }
-	
 
 void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
 {

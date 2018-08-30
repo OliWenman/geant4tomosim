@@ -21,7 +21,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     		virtual ~DetectorConstruction();
 
     		virtual G4VPhysicalVolume* Construct();
-		virtual void SetUpTarget(G4ThreeVector WorldSize, G4String Material, G4LogicalVolume* TargetMotherBox);
+		virtual void SetUpTarget(G4ThreeVector WorldSize, G4String Material, G4LogicalVolume* TargetMotherBox, G4String Shape);
+		virtual void SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVector InnerSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox);
 		virtual void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
 		virtual G4Material* FindMaterial(G4String material);
 		
@@ -35,6 +36,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		inline void SetTargetPosition(G4ThreeVector value){TargetPosition_Cmd = value;}
 		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
+		inline void SetTargetCopyNo(G4int value){TargetCopyNo = value;}
 
 		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
 
@@ -48,6 +50,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		G4ThreeVector GetTargetPosition(){return TargetPosition_Cmd;}
 		G4String GetTargetMaterial(){return TargetMaterial_Cmd;}
+		G4int GetTargetCopyNo(){return TargetCopyNo;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 
@@ -71,6 +74,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Target variables
 		G4ThreeVector TargetPosition_Cmd;
 		G4String TargetMaterial_Cmd;
+		G4int TargetCopyNo;
 
 		//Data manipulation varaibles
 		G4int NoBins_Cmd;

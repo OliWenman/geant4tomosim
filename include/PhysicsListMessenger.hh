@@ -28,7 +28,7 @@ class PhysicsListMessenger: public G4UImessenger
 
 		G4UIdirectory* physicsDirectory;
 		
-		G4UIcmdWithAString* PhysicsProcessCmd;
+		G4UIcmdWithAString* PhysicsListCmd;
 };
 
 #endif 
