@@ -92,33 +92,22 @@ void Data::PrintEnergyData()
 
 	G4cout << "          "; 
 	for (G4int n = 0; n < NoDigits; n++)
-	{
-		G4cout << " ";
-	}
-			
+		{G4cout << " ";}	
 	for (G4int x = 0 ; x < GetNumberBins(); x++)
-	{
-		G4cout << "   "; 
-		
+	{	G4cout << "   "; 
 		G4cout << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNumberBins() * (x+1))*1000;
 	}
 	G4cout << G4endl;
 
-
 	//Prints out the matrix
 	for(G4int x = 0 ; x < GetNumberRows()*GetNumberColumns(); x++)  
-    	{
-    		for( G4int y = 0 ; y < GetNumberBins(); y++)  
-        	{	
-			if (y == 0)
-			{
-				G4cout << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";
-			}
+    	{	for( G4int y = 0 ; y < GetNumberBins(); y++)  
+        	{	if (y == 0)
+				{G4cout << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";}
 			G4cout << "   " << std::setfill(' ') << std::setw(5) << EnergyData[y][x] ;
         	}
     		G4cout << G4endl;  
     	}
-
 }
 
 void Data::WriteToTextFile()
@@ -139,8 +128,7 @@ void Data::WriteToTextFile()
    	
 	//Output error if can't open file
 	if( !outdata ) 
-	{ 	
-      		std::cerr << "Error: file could not be opened" << std::endl;
+	{ 	std::cerr << "Error: file could not be opened" << std::endl;
       		exit(1);
    	}
 
@@ -182,28 +170,19 @@ void Data::WriteToTextFile()
 
 	outdata << "          "; 
 	for (G4int n = 0; n < NoDigits; n++)
-	{
-		outdata << " ";
-	}
+		{outdata << " ";}
 			
 	for (G4int x = 0 ; x < GetNumberBins(); x++)
-	{
-		outdata << "   "; 
-		
+	{	outdata << "   "; 
 		outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNumberBins() * (x+1))*1000;
 	}
 	outdata << G4endl;
 
-
 	//Prints out the matrix
 	for(G4int x = 0 ; x < GetNumberRows()*GetNumberColumns(); x++)  
-    	{
-    		for( G4int y = 0 ; y < GetNumberBins(); y++)  
-        	{	
-			if (y == 0)
-			{
-				outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";
-			}
+    	{	for( G4int y = 0 ; y < GetNumberBins(); y++)  
+        	{	if (y == 0)
+				{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";}
 			outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[y][x] ;
         	}
     		outdata << G4endl;  

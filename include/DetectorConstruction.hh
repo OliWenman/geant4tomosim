@@ -11,7 +11,6 @@ class G4LogicalVolume;
 class DetectorConstructionMessenger;
 class Data;
 class G4Material;
-//class G4RotationMatrix;
 
 //Detector construction class to define materials and geometry.
 

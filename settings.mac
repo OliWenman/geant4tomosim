@@ -14,9 +14,9 @@
 /world/size 1.5 1 1 m
 
 #Detector Settings
-/detector/size 1 5 5 mm
-/detector/numberY 3
-/detector/numberZ 3
+/detector/size 1 8 8 mm
+/detector/numberY 10
+/detector/numberZ 10
 /detector/material G4_SODIUM_IODIDE
 
 #World Settings
@@ -26,7 +26,7 @@
 #Data Settings
 /data/bins 4
 /data/NumberOfImages 5
-/data/NumberOfPhotons 100
+/data/NumberOfPhotons 5
 
 /run/initialize
 /hits/verbose 0

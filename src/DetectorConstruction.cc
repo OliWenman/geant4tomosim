@@ -21,17 +21,13 @@
 #include "G4Colour.hh"
 
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
-{ 
-	G4cout << G4endl << "DetectorConstruction has been created ";
+{ 	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
 }
 
-DetectorConstruction::~DetectorConstruction()
-{
-	delete detectorMessenger;
-}
+DetectorConstruction::~DetectorConstruction(){delete detectorMessenger;}
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
@@ -181,10 +177,8 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 
 	//Create the detector physical volume by placing it in the "logicWorld" logical volume.
 	for (CopyNo; CopyNo < TotalNoDetectors; CopyNo++)
-	{
-		if (DetectorPosY >= -iDetectorPosY)
-		{
-			DetectorPosY = iDetectorPosY;
+	{	if (DetectorPosY >= -iDetectorPosY)
+		{	DetectorPosY = iDetectorPosY;
 			DetectorPosZ = DetectorPosZ + DetectorSizeZ * 2;
 		}
 		DetectorPosY = DetectorPosY + 2*DetectorSizeY;
@@ -231,16 +225,14 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 G4double DetectorConstruction::RotationMatrix()
 {
 	if (GetNoImages() > 1)
-	{
-		G4double FullScan = 180*deg;
+	{	G4double FullScan = 180*deg;
 		G4double deltaTheta = FullScan/(GetNoImages());
 		
 		G4double RotateY = deltaTheta*GetCurrentImage();
 		return RotateY;
 	}
 	else 
-	{
-		G4double RotateY = 0.*deg;
+	{	G4double RotateY = 0.*deg;
 		return RotateY;
 	}
 }
