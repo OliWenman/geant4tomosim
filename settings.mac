@@ -15,8 +15,8 @@
 
 #Detector Settings
 /detector/size 1 5 5 mm
-/detector/numberY 10
-/detector/numberZ 10
+/detector/numberY 3
+/detector/numberZ 3
 /detector/material G4_SODIUM_IODIDE
 
 #World Settings

@@ -55,15 +55,25 @@ void Data::PrintHitData()
 	G4int Ncolumns = GetNumberColumns();
 			
 	G4cout << G4endl << "Hit count data " << G4endl;
-			
+	
+	G4int x = 0;
+	G4int y = 0;
+
 	//Prints out the matrix
-	for(G4int x = 0; x < Nrows; x++)  
+	G4cout << "[";
+	for(G4int x = 0 ; x < Nrows; x++)  
     	{
-    		for(G4int y = 0; y < Ncolumns; y++)  
-        	{	
-			G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";
-        	}
-    		G4cout << G4endl;  
+		if (x > 0)
+			{G4cout << " [";}
+		else
+			{G4cout << "[";}
+    		for(G4int y = 0 ; y < Ncolumns; y++)  
+        		{G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";}
+
+		if (y < Ncolumns - 1 && x < Nrows - 1)
+			{G4cout << "]," << G4endl;}	
+		else
+			{G4cout << "]]" << G4endl;}
     	}
 }
 
@@ -146,14 +156,24 @@ void Data::WriteToTextFile()
 	
 	outdata << std::endl;
 
+	G4int x = 0;
+	G4int y = 0;
+
 	outdata << "The hit count data" << std::endl;
-	for(G4int x = 0; x < Nrows; x++)  
+	outdata << "[";
+	for(G4int x = 0 ; x < Nrows; x++)  
     	{
-    		for(G4int y = 0; y < Ncolumns; y++)  
-        	{	
-			outdata << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";
-        	}
-    		outdata << std::endl;  
+		if (x > 0)
+			{outdata << " [";}
+		else
+			{outdata << "[";}
+    		for(G4int y = 0 ; y < Ncolumns; y++)  
+        		{outdata << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";}
+
+		if (y < Ncolumns - 1 && x < Nrows - 1)
+			{outdata << "]," << G4endl;}	
+		else
+			{outdata << "]]" << G4endl;}
     	}
 
 	outdata << G4endl << "Energy detector data (keV)" << G4endl;
