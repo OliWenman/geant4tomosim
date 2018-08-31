@@ -51,6 +51,11 @@ int main(int argc,char** argv)
 	UImanager -> ApplyCommand("/control/verbose 0");	
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
+	UImanager -> ApplyCommand("/event/verbose 0");
+	UImanager -> ApplyCommand("/run/verbose 0");
+	UImanager -> ApplyCommand("/analysis/verbose 0");
+	UImanager -> ApplyCommand("/geometry/navigator/verbose 0"); 
+	UImanager -> ApplyCommand("/cuts/verbose 0");
 
   	//Process macro files or start UI session
   	if ( ! ui ) 
@@ -67,14 +72,16 @@ int main(int argc,char** argv)
 		UImanager -> ApplyCommand("/control/execute init_vis.mac");
 		UImanager -> ApplyCommand("/control/execute vis.mac");
 		
-		
-		G4int Image = 1;
-		for (Image; Image <= DC -> GetNoImages(); Image++)
+		G4int Image = 0;
+		data -> SetNumberOfPhotons(DC -> GetNoPhotons());
+		data -> SetNumberOfImages(DC -> GetNoImages());
+		for (Image; Image < DC -> GetNoImages(); Image++)
 		{
+			data -> SetCurrentImage(Image);
 			DC -> SetCurrentImage(Image);
-			G4cout << G4endl << "RUN ABOUT TO BEGIN: IMAGE " <<  Image << G4endl;
+			G4cout << G4endl << "RUN ABOUT TO BEGIN: IMAGE " <<  Image+1 << G4endl;
 			runManager -> BeamOn(DC -> GetNoPhotons());
-			G4RunManager::GetRunManager()->ReinitializeGeometry();
+			//G4RunManager::GetRunManager()->ReinitializeGeometry();
 			//UImanager -> ApplyCommand("/control/execute start.in");
 		}
 		ui -> SessionStart();

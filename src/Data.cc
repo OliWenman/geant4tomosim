@@ -7,7 +7,7 @@ Data::Data(){G4cout << G4endl << "Data class has been created "<< G4endl;}
 
 Data::~Data(){G4cout << G4endl << "Data class has been deleted "<< G4endl;}
 
-void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins)
+void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins, G4int NImages)
 {
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
@@ -17,8 +17,12 @@ void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins)
 	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
 
 	//Creates a 2D vector when the object is created as big as the columns and rows inputted
-	std::vector<std::vector<G4int> > iHitDataMatrix;
-	iHitDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn));
+	std::vector<std::vector<std::vector<G4int> > > iHitDataMatrix;
+	//iHitDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn), std::vector<std::vector<G4int> >(GetNumberOfImages()));
+	
+	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(NImages)));
+
+	G4cout << G4endl << "The number of images is : " << GetNumberOfImages() << G4endl;
 			
 	//Creates a 2D vector when the object is created as big as the columns and rows inputted
 	std::vector<std::vector<G4int> > iEnergyMatrix;
@@ -27,8 +31,6 @@ void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins)
 	//Saves the matrix using the set method			
 	SetHitData(iHitDataMatrix);
 	SetEnergyData(iEnergyMatrix);
-
-	SetNumberOfTotalHits(0);
 }
 
 void Data::SaveHitData(G4int DetectorNumber)
@@ -39,18 +41,17 @@ void Data::SaveHitData(G4int DetectorNumber)
 	//Finds the coordinates of the detector inputted for the matrix
 	G4int x = Quotient(DetectorNumber, column);
 	G4int y = Remainder(DetectorNumber, column);
+	
+	G4int Image = GetCurrentImage();
 
 	//+1 for a hit
-	++HitDataMatrix[x][y]; 
-
-	//Keeps track of the total number of hits
-	SetNumberOfTotalHits(GetNumberOfTotalHits() + 1);
+	++HitDataMatrix[x][y][Image]; 
 }
 
 void Data::PrintHitData()
 {
 	//Find each needed value using the Get functions
-	std::vector <std::vector<G4int> > HitData = GetHitData();
+	std::vector<std::vector<std::vector<G4int> > > HitData = GetHitData();
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
 			
@@ -58,8 +59,10 @@ void Data::PrintHitData()
 	
 	G4int x = 0;
 	G4int y = 0;
+	G4int Image = GetCurrentImage();
 
 	//Prints out the matrix
+	G4cout << G4endl << "Image: " << Image+1 << G4endl; 
 	G4cout << "[";
 	for(G4int x = 0 ; x < Nrows; x++)  
     	{
@@ -68,7 +71,7 @@ void Data::PrintHitData()
 		else
 			{G4cout << "[";}
     		for(G4int y = 0 ; y < Ncolumns; y++)  
-        		{G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";}
+        		{G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y][Image] << " ";}
 
 		if (y < Ncolumns - 1 && x < Nrows - 1)
 			{G4cout << "]," << G4endl;}	
@@ -117,10 +120,11 @@ void Data::WriteToTextFile()
    	std::ofstream outdata; 
    
 	//Get needed variables to wrtie to file
-   	std::vector <std::vector<G4int> > HitData = GetHitData();
+   	std::vector<std::vector<std::vector<G4int> > > HitData = GetHitData();
    	std::vector <std::vector<G4int> > EnergyData = GetEnergyData();
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
+	G4int NImage = GetNumberOfImages();
 
 	//G4int NoDigits = std::to_string(GetNumber).length();
 
@@ -140,29 +144,36 @@ void Data::WriteToTextFile()
 	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
 	outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;
 	outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
-	outdata << "- Number of photons used: " << GetNumberOfPhotons() << std::endl;
+	outdata << "- Number of photons used per image: " << GetNumberOfPhotons() << std::endl;
+	outdata << "- Number of images: " << GetNumberOfImages() << std::endl;
 	
 	outdata << std::endl;
 
 	G4int x = 0;
 	G4int y = 0;
+	G4int Image = 0;
 
 	outdata << "The hit count data" << std::endl;
-	outdata << "[";
-	for(G4int x = 0 ; x < Nrows; x++)  
-    	{
-		if (x > 0)
-			{outdata << " [";}
-		else
-			{outdata << "[";}
-    		for(G4int y = 0 ; y < Ncolumns; y++)  
-        		{outdata << std::setfill(' ') << std::setw(5) << HitData[x][y] << " ";}
 
-		if (y < Ncolumns - 1 && x < Nrows - 1)
-			{outdata << "]," << G4endl;}	
-		else
-			{outdata << "]]" << G4endl;}
-    	}
+	for (G4int Image = 0; Image < NImage; Image++)
+	{
+		outdata << "Image: " << Image+1 << std::endl;
+		outdata << "[";
+		for(G4int x = 0 ; x < Nrows; x++)  
+    		{
+			if (x > 0)
+				{outdata << " [";}
+			else
+				{outdata << "[";}
+    			for(G4int y = 0 ; y < Ncolumns; y++)  
+        			{outdata << std::setfill(' ') << std::setw(5) << HitData[x][y][Image] << " ";}
+
+			if (y < Ncolumns - 1 && x < Nrows - 1)
+				{outdata << "]," << G4endl;}	
+			else
+				{outdata << "]]" << G4endl;}
+    		}
+	}
 
 	outdata << G4endl << "Energy detector data (keV)" << G4endl;
 

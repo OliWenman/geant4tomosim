@@ -27,12 +27,7 @@ RunAction::~RunAction()
 }
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
-{ 
-	G4cout << G4endl << "BeginOfRunAction" << G4endl;
-	G4int NoEvents = aRun -> GetNumberOfEventToBeProcessed();
-	SetTotalNoEvents(NoEvents);
-	data -> SetNumberOfPhotons(NoEvents);
-
+{	
 	if (seedCmd != 0)	//Keeps the seed
 	{
 		CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -55,19 +50,13 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {	
-	G4cout << G4endl << "The simulation is complete" << G4endl;
-	G4cout << G4endl << "The seed value used for this simulation is " << data -> GetSeed() << G4endl;
-
+	G4cout << G4endl << "Run complete!" << G4endl;
 	data -> PrintHitData();
-	//data -> PrintEnergyData();
+
 	if (TextFileCmd == "true")
-	{	
-		data -> WriteToTextFile();
-	}
+		{data -> WriteToTextFile();}
 	else 
-	{
-		G4cout << G4endl << "Data was not written to a file" << G4endl;
-	}
+		{G4cout << G4endl << "Data was not written to a file" << G4endl;}
 }
 
 

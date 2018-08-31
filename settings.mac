@@ -25,8 +25,10 @@
 
 #Data Settings
 /data/bins 4
-/data/NumberOfImages 5
-/data/NumberOfPhotons 5
+/data/NumberOfImages 10
+/data/NumberOfPhotons 100
 
+#/hits/verbose 0
 /run/initialize
-/hits/verbose 0
+
+/vis/scene/notifyHandlers scene-0

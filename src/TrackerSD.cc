@@ -11,19 +11,20 @@
 #include "G4RunManager.hh"
 #include "G4Run.hh"
 
-TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins, Data* DataObject) 
+TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins, G4int NoImages, Data* DataObject) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
 
-	//Save the variables into its own class
-	SetNoDetectorsY(NumDetectorsY);
-	SetNoDetectorsZ(NumDetectorsZ);
-	SetNoBins(NoBins);
-
-	data -> SetUpData(NumDetectorsZ, NumDetectorsY, NoBins);
-
-  	collectionName.insert(hitsCollectionName);	
+	if (data -> GetCurrentImage() == 0)
+	{		
+		//Save the variables into its own class
+		SetNoDetectorsY(NumDetectorsY);
+		SetNoDetectorsZ(NumDetectorsZ);
+		SetNoBins(NoBins);
+		data -> SetUpData(NumDetectorsZ, NumDetectorsY, NoBins, NoImages);	
+	}
+	collectionName.insert(hitsCollectionName);
 }
 
 TrackerSD::~TrackerSD()
@@ -81,26 +82,18 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
   	if(evt) eID = evt -> GetEventID();
 
 	if ( verboseLevel == 1 ) 
-	{ 
-		G4cout << G4endl << "Event " << eID;
-	}
+		{ G4cout << G4endl << "Event " << eID;}
 		
   	else if ( verboseLevel > 1 ) 
-	{ 
-     		G4int nofHits = fHitsCollection -> entries();
+	{	G4int nofHits = fHitsCollection -> entries();
 
 		G4cout << G4endl << "Event " << eID;
 		if (nofHits == 0)
-		{
-			G4cout << ": No hit ";
-		}
+			{G4cout << ": No hit ";}
 		if (nofHits > 0)
-		{	
-			//If there's a hit, print it if the verbose setting is greater than 1
-			for ( G4int i = 0; i < nofHits; i++ ) 
-			{	
-				(*fHitsCollection)[i] -> Print();	
-			}
+		{	//If there's a hit, print it if the verbose setting is greater than 1
+			for (G4int i = 0; i < nofHits; i++ ) 
+				{(*fHitsCollection)[i] -> Print();}
 		}
   	}
 }

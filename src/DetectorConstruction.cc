@@ -5,6 +5,7 @@
 
 #include "G4NistManager.hh"
 #include "G4SDManager.hh"
+#include "G4RunManager.hh"
 
 #include "G4Tubs.hh"
 #include "G4Box.hh"
@@ -63,6 +64,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld, "Tube");
 	SetUpTargetBox(G4ThreeVector(0.2*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
+	G4RunManager::GetRunManager()->ReinitializeGeometry();
 
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
@@ -194,7 +196,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	
 	//Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, data);
+  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, NoImages_Cmd, data);
   	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
   	//Setting aTrackerSD to all logical volumes with the same name as "LogicDetector".
   	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
