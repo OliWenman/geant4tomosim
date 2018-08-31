@@ -14,6 +14,8 @@
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UserLimits.hh"
+#include "G4RunManager.hh"
+#include "G4RotationMatrix.hh"
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
@@ -64,7 +66,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	SetTargetCopyNo(0);
 
 	//SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld, "Tube");
-	SetUpTargetBox(G4ThreeVector(0.1*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
+	SetUpTargetBox(G4ThreeVector(0.2*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
 
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
@@ -133,9 +135,13 @@ void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVecto
 	//Fill the target with its material
 	G4Material* BoxMaterial = FindMaterial(Material);
 	G4LogicalVolume* logicHollowBox = new G4LogicalVolume(HollowBox, BoxMaterial, "logicBox");
-
+	
+	G4RotationMatrix* ObjectRotation = new G4RotationMatrix();
+	ObjectRotation->rotateX(90.*deg);
+	ObjectRotation->rotateY(0.*deg);
+	ObjectRotation->rotateZ(RotationMatrix());
 	//Create the target physical volume
-	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(0,            //no rotation
+	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(ObjectRotation,            //no rotation
 							 G4ThreeVector(TargetPosition.x(), TargetPosition.y(), TargetPosition.z()),       
 							 logicHollowBox,           //its logical volume
 							 "HollowBox",               //its name
@@ -220,6 +226,23 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	G4Material* Material = nist -> FindOrBuildMaterial(MaterialName);
 
 	return Material;
+}
+
+G4double DetectorConstruction::RotationMatrix()
+{
+	if (GetNoImages() > 1)
+	{
+		G4double FullScan = 180*deg;
+		G4double deltaTheta = FullScan/(GetNoImages());
+		
+		G4double RotateY = deltaTheta*GetCurrentImage();
+		return RotateY;
+	}
+	else 
+	{
+		G4double RotateY = 0.*deg;
+		return RotateY;
+	}
 }
 	
 

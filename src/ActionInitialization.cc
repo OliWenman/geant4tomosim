@@ -7,6 +7,7 @@
 #include "RunAction.hh"
 #include "EventAction.hh"
 #include "StackingAction.hh"
+
 					     
 ActionInitialization::ActionInitialization(Data* DataObject, DetectorConstruction* DC_Object):G4VUserActionInitialization(), data(DataObject), DC(DC_Object)
 { 
@@ -26,6 +27,7 @@ void ActionInitialization::Build() const
 	SetUserAction(new StackingAction());
   	SetUserAction(new EventAction());
 	SetUserAction(new PrimaryGeneratorAction(DC, data));
+
 }  
 
 

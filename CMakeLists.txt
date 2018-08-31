@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(X-Ray_build_9.2)
+project(X-Ray_build)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -35,8 +35,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(X-Ray_test_9.2 main.cc ${sources} ${headers})
-target_link_libraries(X-Ray_test_9.2 ${Geant4_LIBRARIES})
+add_executable(X-Ray_Simulation main.cc ${sources} ${headers})
+target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -61,11 +61,11 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(X-Ray_build_9.2 DEPENDS X_ray_test_9.2)
+add_custom_target(X-Ray_build DEPENDS X-Ray_Simulation)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS X-Ray_test_9.2 DESTINATION bin)
+install(TARGETS X-Ray_Simulation DESTINATION bin)
 
 

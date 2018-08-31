@@ -11,6 +11,7 @@ class G4LogicalVolume;
 class DetectorConstructionMessenger;
 class Data;
 class G4Material;
+//class G4RotationMatrix;
 
 //Detector construction class to define materials and geometry.
 
@@ -25,6 +26,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		virtual void SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVector InnerSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox);
 		virtual void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
 		virtual G4Material* FindMaterial(G4String material);
+		virtual G4double RotationMatrix();
 		
 		//Set methods
 		inline void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
@@ -39,6 +41,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		inline void SetTargetCopyNo(G4int value){TargetCopyNo = value;}
 
 		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
+		inline void SetNoImages(G4int value){NoImages_Cmd = value;}
+		inline void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
+		inline void SetCurrentImage(G4int value){CurrentImage = value;}
 
 		//Get methods
 		G4ThreeVector GetWorldSize(){return WorldSize_Cmd;}
@@ -53,7 +58,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int GetTargetCopyNo(){return TargetCopyNo;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
-
+		G4int GetNoImages(){return NoImages_Cmd;}
+		G4int GetNoPhotons(){return NoPhotons_Cmd;}
+		G4int GetCurrentImage(){return CurrentImage;}
 
   	protected:
 		//Pointers to classes
@@ -78,6 +85,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Data manipulation varaibles
 		G4int NoBins_Cmd;
+		G4int NoImages_Cmd;
+		G4int NoPhotons_Cmd;
+		G4int CurrentImage;
 };
 
 #endif

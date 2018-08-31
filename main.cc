@@ -29,7 +29,7 @@ int main(int argc,char** argv)
 	#ifdef G4MULTITHREADED
   		G4MTRunManager* runManager = new G4MTRunManager;
 	#else
-  		G4RunManager* runManager = new G4RunManager;
+  		G4RunManager* runManager = new G4RunManager();
 	#endif
   
   	//Initialize visualization
@@ -43,6 +43,7 @@ int main(int argc,char** argv)
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
   	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
+
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -65,12 +66,24 @@ int main(int argc,char** argv)
 		UImanager -> ApplyCommand("/control/execute settings.mac");
 		UImanager -> ApplyCommand("/control/execute init_vis.mac");
 		UImanager -> ApplyCommand("/control/execute vis.mac");
-		UImanager -> ApplyCommand("/control/execute start.in");
-    		ui -> SessionStart();
+		
+		
+		G4int Image = 1;
+		for (Image; Image <= DC -> GetNoImages(); Image++)
+		{
+			DC -> SetCurrentImage(Image);
+			G4cout << G4endl << "RUN ABOUT TO BEGIN: IMAGE " <<  Image << G4endl;
+			runManager -> BeamOn(DC -> GetNoPhotons());
+			G4RunManager::GetRunManager()->ReinitializeGeometry();
+			//UImanager -> ApplyCommand("/control/execute start.in");
+		}
+		ui -> SessionStart();
    		delete ui;
   	}
 	
   	delete visManager;
   	delete runManager;
+
+	return 0;
 }
 

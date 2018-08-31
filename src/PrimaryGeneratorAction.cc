@@ -36,9 +36,9 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 	
 	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
-	gamma=particleTable->FindParticle("gamma");
-	electron=particleTable->FindParticle("e-");
-	positron=particleTable->FindParticle("e+");
+	gamma = particleTable -> FindParticle("gamma");
+	electron = particleTable -> FindParticle("e-");
+	positron = particleTable -> FindParticle("e+");
 
 	ParticleGun -> SetParticleDefinition(gamma);
   	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	

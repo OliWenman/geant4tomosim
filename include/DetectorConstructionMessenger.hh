@@ -33,6 +33,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		G4UIdirectory *WorldDirectory;
 		G4UIdirectory *DetectorDirectory;
 		G4UIdirectory *TargetDirectory;
+		G4UIdirectory *DataDirectory;
 		
 		//Pointers for different data members
 		//WORLD VARIABLES
@@ -41,9 +42,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//DETECTOR VARIABLES
 		G4UIcmdWithAnInteger *NoDetectorsY_Cmd;
 		G4UIcmdWithAnInteger *NoDetectorsZ_Cmd;
-
 		G4UIcmdWith3VectorAndUnit *DetectorSize_Cmd;
-
 		G4UIcmdWithAString *DetectorMaterial_Cmd;
 
 		//TARGET VARIABLES
@@ -52,6 +51,9 @@ class DetectorConstructionMessenger: public G4UImessenger
 
 		//DATA MANIPULATION VARIABLES
 		G4UIcmdWithAnInteger *NoBins_Cmd;
+		G4UIcmdWithAnInteger *NoImages_Cmd;
+		G4UIcmdWithAnInteger *NoPhotons_Cmd;
+
 		
 };
 

@@ -65,6 +65,7 @@ class Data
 		//Data members
 		std::vector<std::vector<G4int> > HitDataMatrix;
 		std::vector<std::vector<G4int> > EnergyMatrix;
+		std::vector<std::vector<std::vector<G4int> > > DMatrix;
 
 		G4int rows;
 		G4int columns;	

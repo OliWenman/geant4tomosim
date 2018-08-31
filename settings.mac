@@ -25,3 +25,8 @@
 
 #Data Settings
 /data/bins 4
+/data/NumberOfImages 5
+/data/NumberOfPhotons 100
+
+/run/initialize
+/hits/verbose 0
