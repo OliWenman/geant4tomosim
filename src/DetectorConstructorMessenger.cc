@@ -90,6 +90,11 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	NoPhotons_Cmd = new G4UIcmdWithAnInteger("/data/NumberOfPhotons", this);
 	NoPhotons_Cmd -> SetDefaultValue(1000);
 	NoPhotons_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
+
+	Visualization_Cmd = new G4UIcmdWithAString("/data/Visualization", this);
+	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
+	Visualization_Cmd -> SetDefaultValue("true");
+	
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
@@ -111,6 +116,7 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete NoBins_Cmd;
 	delete NoImages_Cmd;
 	delete NoPhotons_Cmd;
+	delete Visualization_Cmd;
 
 	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
 }
@@ -166,5 +172,10 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		ConstructDet -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
 		G4cout << G4endl << "DetectorConstruction -> SetNoPhotons command detected "<< G4endl;
+	}
+	else if( command == Visualization_Cmd )
+	{
+		ConstructDet -> SetVisualization(newValue);	
+		G4cout << G4endl << "DetectorConstruction -> SetVisualization command detected "<< G4endl;
 	}
 }

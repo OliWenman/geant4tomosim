@@ -34,6 +34,7 @@
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2
 # (if too many tracks cause core dump => /tracking/storeTrajectory 0)
+#/tracking/storeTrajectory 0
 #
 # Draw hits at end of event:
 /vis/scene/add/hits
@@ -55,7 +56,7 @@
 #/vis/modeling/trajectories/drawByParticleID-0/set e+ yellow
 #
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+#/vis/scene/endOfEventAction accumulate
 /vis/scene/endOfEventAction accumulate 200
 #
 # Re-establish auto refreshing and verbosity:

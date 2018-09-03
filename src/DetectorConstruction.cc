@@ -17,6 +17,7 @@
 #include "G4UserLimits.hh"
 #include "G4RunManager.hh"
 #include "G4RotationMatrix.hh"
+#include "G4GeometryManager.hh"
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
@@ -64,7 +65,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld, "Tube");
 	SetUpTargetBox(G4ThreeVector(0.2*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
-	G4RunManager::GetRunManager()->ReinitializeGeometry();
+	//G4RunManager::GetRunManager()->ReinitializeGeometry();
 
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
@@ -227,10 +228,14 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 G4double DetectorConstruction::RotationMatrix()
 {
 	if (GetNoImages() > 1)
-	{	G4double FullScan = 180*deg;
+	{	
+		G4GeometryManager::GetInstance()->OpenGeometry();
+		G4double FullScan = 180*deg;
 		G4double deltaTheta = FullScan/(GetNoImages());
 		
 		G4double RotateY = deltaTheta*GetCurrentImage();
+		G4GeometryManager::GetInstance()->CloseGeometry();
+		G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		return RotateY;
 	}
 	else 

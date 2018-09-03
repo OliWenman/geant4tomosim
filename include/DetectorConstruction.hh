@@ -43,6 +43,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		inline void SetNoImages(G4int value){NoImages_Cmd = value;}
 		inline void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
 		inline void SetCurrentImage(G4int value){CurrentImage = value;}
+		inline void SetVisualization(G4String value){Visualization_Cmd = value;}
 
 		//Get methods
 		G4ThreeVector GetWorldSize(){return WorldSize_Cmd;}
@@ -60,6 +61,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int GetNoImages(){return NoImages_Cmd;}
 		G4int GetNoPhotons(){return NoPhotons_Cmd;}
 		G4int GetCurrentImage(){return CurrentImage;}
+		G4String GetVisualization(){return Visualization_Cmd;}
 
   	protected:
 		//Pointers to classes
@@ -87,6 +89,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int NoImages_Cmd;
 		G4int NoPhotons_Cmd;
 		G4int CurrentImage;
+		G4String Visualization_Cmd;
 };
 
 #endif
