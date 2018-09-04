@@ -57,36 +57,54 @@ int main(int argc,char** argv)
 	{
 		UImanager -> ApplyCommand("/control/execute init_vis.mac");
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
+		G4cout << G4endl << "GRAPHICS SYSTEM ENABLED: Will increase computational time." << G4endl << G4endl;
 	}
+	
+	//Save variables to needed classes
 	G4int Image = 0;
 	data -> SetNumberOfPhotons(DC -> GetNoPhotons());
 	data -> SetNumberOfImages(DC -> GetNoImages());
 
-	G4Timer MyFullTime;
-	MyFullTime.Start();
+	//Start the simulation timer
+	G4Timer FullTime;
+	FullTime.Start();
 
 	for (Image; Image < DC -> GetNoImages(); Image++)
 	{
+		G4Timer LoopTimer;
+		LoopTimer.Start();
 		data -> SetCurrentImage(Image);
 		DC -> SetCurrentImage(Image);
 		
 		G4cout << G4endl << "================================================================================"
-		       << G4endl << std::setfill(' ') << std::setw(5) << "RUN ABOUT TO BEGIN: IMAGE " <<  Image+1
-	               << G4endl << "================================================================================";
+		       << G4endl << "                           PROCESSING IMAGE " <<  Image+1
+	               << G4endl << "================================================================================" << G4endl;
 		
 		runManager -> BeamOn(DC -> GetNoPhotons());
+		G4RunManager::GetRunManager()->ReinitializeGeometry();
+		//G4RunManager::GetRunManager()->GeometryHasBeenModified();
+		LoopTimer.Stop();
+		G4cout << G4endl << "Run time [s] : " << LoopTimer << G4endl; 
 	}
 	
-	MyFullTime.Stop();
+	FullTime.Stop();
 
-	std::cout << "Simulation time [s] : "<< MyFullTime << '\n';
-	std::cout <<'\n';
-	ui -> SessionStart();
-   	
-	delete ui;
+	//data -> SetSimulationTime(FullTime.GetRealElapsed() );
+
+	G4cout << G4endl << "================================================================================"
+	       << G4endl << "                      The simulation is complete! "
+	       << G4endl << "             Total simulation time [s] : "<< FullTime.GetRealElapsed()
+	       << G4endl << "================================================================================" << G4endl;
 	
+	ui -> SessionStart();   	
+
+	G4cout << G4endl << "Deleting ui";
+	delete ui;
+	G4cout << G4endl << "Deleting visManager" << G4endl;
   	delete visManager;
+	G4cout << G4endl << "Deleting runManager " << G4endl;
   	delete runManager;
+	delete data;
 
 	return 0;
 }

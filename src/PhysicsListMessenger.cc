@@ -19,7 +19,8 @@ PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObje
 PhysicsListMessenger::~PhysicsListMessenger()
 {
   	delete PhysicsListCmd;
-  	delete physicsDirectory;    
+  	delete physicsDirectory;   
+	G4cout << G4endl << "PhysicsListMessenger has been deleted " << G4endl; 
 }
 
 void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

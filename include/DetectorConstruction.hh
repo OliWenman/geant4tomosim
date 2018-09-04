@@ -10,6 +10,7 @@ class G4VPhysicalVolume;
 class G4LogicalVolume;
 class DetectorConstructionMessenger;
 class Data;
+class TrackerSD;
 class G4Material;
 
 //Detector construction class to define materials and geometry.
@@ -26,6 +27,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		virtual void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
 		virtual G4Material* FindMaterial(G4String material);
 		virtual G4double RotationMatrix();
+		virtual void AttachSensitiveDetector(G4LogicalVolume* volume);
 		
 		//Set methods
 		inline void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
@@ -68,6 +70,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4UserLimits* fStepLimit;            
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
+		TrackerSD* aTrackerSD;
 
 		//DATA
 		//World variables

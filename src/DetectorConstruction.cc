@@ -18,6 +18,9 @@
 #include "G4RunManager.hh"
 #include "G4RotationMatrix.hh"
 #include "G4GeometryManager.hh"
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4SolidStore.hh"
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
@@ -29,10 +32,16 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
   	detectorMessenger = new DetectorConstructionMessenger(this);	
 }
 
-DetectorConstruction::~DetectorConstruction(){delete detectorMessenger;}
+DetectorConstruction::~DetectorConstruction(){delete detectorMessenger; G4cout << G4endl << "DetectorConstruction has been deleted " << G4endl;}
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+	//Clean old geometry, if any
+        G4GeometryManager::GetInstance()->OpenGeometry();
+        G4PhysicalVolumeStore::GetInstance()->Clean();
+        G4LogicalVolumeStore::GetInstance()->Clean();
+        G4SolidStore::GetInstance()->Clean();
+
 	//World Geometry
 	SetWorldSize(WorldSize_Cmd);
 	G4double WorldSizeX = WorldSize_Cmd.x();
@@ -151,6 +160,7 @@ void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVecto
 	//Visualization attributes
   	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicHollowBox -> SetVisAttributes(HollowBoxColour);
+	G4cout << G4endl << "The target has been created succesfully " << G4endl;  
 }
 
 void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
@@ -195,12 +205,14 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 							  	     false);	//overlaps checking    
 	}    
 	
-	//Sensitive detectors
+	/*//Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
-  	TrackerSD* aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, NoImages_Cmd, data);
+  	aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, NoImages_Cmd, data);
   	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
   	//Setting aTrackerSD to all logical volumes with the same name as "LogicDetector".
-  	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
+  	SetSensitiveDetector("LogicDetector", aTrackerSD, true);*/
+
+	AttachSensitiveDetector(logic_Detector);
 
 	//Sets a max step length in the tracker region, with G4StepLimiter
   	G4double maxStep = 0.001*mm*DetectorSizeX;
@@ -243,5 +255,24 @@ G4double DetectorConstruction::RotationMatrix()
 		return RotateY;
 	}
 }
-	
+
+ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
+{
+  	if (!volume) return;                  // Avoid unnecessary work
+
+  	// Check if sensitive detector has already been created
+	const G4String trackerChamberSDname = "TrackerChamberSD";
+ 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector(trackerChamberSDname, false);
+
+  	if (!theSD) 
+	{
+      		G4cout << "Creating the Sensitive Detector"  << G4endl;
+
+    		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), GetNoBins(), GetNoImages(), data);
+	}
+
+	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
+	SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+}
 

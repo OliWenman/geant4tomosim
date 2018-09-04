@@ -22,8 +22,9 @@ RunAction::RunAction(Data* DataObject): G4UserRunAction(), data(DataObject)
 RunAction::~RunAction()
 {
 	delete runMessenger;
-	delete G4AnalysisManager::Instance();
-	delete data;
+	//delete G4AnalysisManager::Instance();
+	//delete data;
+	G4cout << G4endl << "RunAction has been deleted " << G4endl;
 }
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
@@ -46,17 +47,20 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 		data -> SetSeed(RandomSeed);
 	}
+
+	G4cout << G4endl << "Starting Run." << G4endl;
+	G4cout << G4endl << "Processing..." << G4endl << G4endl;
 }
 
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {	
-	G4cout << G4endl << "Run complete!" << G4endl;
+	G4cout << G4endl << "Run complete" << G4endl;
 	data -> PrintHitData();
 
 	if (TextFileCmd == "true")
 		{data -> WriteToTextFile();}
 	else 
-		{G4cout << G4endl << "Data was not written to a file" << G4endl;}
+		{G4cout << G4endl << "Data was not written to a text file" << G4endl;}
 }
 
 

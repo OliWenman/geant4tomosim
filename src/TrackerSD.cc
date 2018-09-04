@@ -29,10 +29,6 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 
 TrackerSD::~TrackerSD()
 {
-	//Free up memory
-	delete fHitsCollection;
-	delete data;
-
 	G4cout << G4endl << "TrackerSD has been deleted "<< G4endl;
 }
 

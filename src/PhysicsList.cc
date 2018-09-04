@@ -30,7 +30,8 @@ PhysicsList::~PhysicsList()
   	delete PhysicsMessenger;
   	delete emPhysicsList;
   	delete decPhysicsList;
-	delete data;
+	//delete data;
+	G4cout << G4endl << "PhysicsList has been deleted" << G4endl;
 }
 
 void PhysicsList::ConstructParticle()

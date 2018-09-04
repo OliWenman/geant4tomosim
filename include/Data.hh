@@ -32,6 +32,8 @@ class Data
 
 		G4String GetPhysicsUsed(){return PhysicsUsed;}
 
+		G4double GetSimulationTime(){return SimulationTime;}
+
 		//Set Methods
 		void SetHitData(std::vector<std::vector<std::vector<G4int> > > UpdatedData){HitDataMatrix = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
@@ -48,6 +50,8 @@ class Data
 		void SetCurrentImage(G4int value){CurrentImage = value;}
 
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
+
+		void SetSimulationTime(G4double value){SimulationTime = value;}
 
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
@@ -78,6 +82,7 @@ class Data
 		G4int CurrentImage;
 
 		G4String PhysicsUsed;
+		G4double SimulationTime;
 };
 
 #endif

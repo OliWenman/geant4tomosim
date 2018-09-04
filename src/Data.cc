@@ -21,8 +21,6 @@ void Data::SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins, G4int NImages)
 	//iHitDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn), std::vector<std::vector<G4int> >(GetNumberOfImages()));
 	
 	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(NImages)));
-
-	G4cout << G4endl << "The number of images is : " << GetNumberOfImages() << G4endl;
 			
 	//Creates a 2D vector when the object is created as big as the columns and rows inputted
 	std::vector<std::vector<G4int> > iEnergyMatrix;
@@ -55,14 +53,13 @@ void Data::PrintHitData()
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
 			
-	G4cout << G4endl << "Hit count data " << G4endl;
-	
 	G4int x = 0;
 	G4int y = 0;
 	G4int Image = GetCurrentImage();
 
 	//Prints out the matrix
-	G4cout << G4endl << "Image: " << Image+1 << G4endl; 
+	G4cout << G4endl << "Hit count data " << G4endl;
+	G4cout << "Image: " << Image+1 << G4endl; 
 	G4cout << "[";
 	for(G4int x = 0 ; x < Nrows; x++)  
     	{
@@ -71,13 +68,18 @@ void Data::PrintHitData()
 		else
 			{G4cout << "[";}
     		for(G4int y = 0 ; y < Ncolumns; y++)  
-        		{G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y][Image] << " ";}
-
+        	{	G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y][Image];
+			if ((Nrows - 1) == y)	
+				{G4cout << " ";}
+			else 
+				{G4cout << ",";}
+		}
 		if (y < Ncolumns - 1 && x < Nrows - 1)
 			{G4cout << "]," << G4endl;}	
 		else
 			{G4cout << "]]" << G4endl;}
-    	}
+    	
+	}
 }
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
@@ -146,6 +148,7 @@ void Data::WriteToTextFile()
 	outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
 	outdata << "- Number of photons used per image: " << GetNumberOfPhotons() << std::endl;
 	outdata << "- Number of images: " << GetNumberOfImages() << std::endl;
+	outdata << "- Real simulation time: " << GetSimulationTime() << std::endl;
 	
 	outdata << std::endl;
 
@@ -166,8 +169,12 @@ void Data::WriteToTextFile()
 			else
 				{outdata << "[";}
     			for(G4int y = 0 ; y < Ncolumns; y++)  
-        			{outdata << std::setfill(' ') << std::setw(5) << HitData[x][y][Image] << " ";}
-
+        		{	outdata << std::setfill(' ') << std::setw(5) << HitData[x][y][Image];
+				if ((Nrows - 1) == y)	
+					{outdata << " ";}
+				else 
+					{outdata << ",";}
+			}
 			if (y < Ncolumns - 1 && x < Nrows - 1)
 				{outdata << "]," << G4endl;}	
 			else
@@ -194,7 +201,7 @@ void Data::WriteToTextFile()
     	{	for( G4int y = 0 ; y < GetNumberBins(); y++)  
         	{	if (y == 0)
 				{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";}
-			outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[y][x] ;
+			outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[y][x];
         	}
     		outdata << G4endl;  
     	}

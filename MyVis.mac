@@ -5,7 +5,7 @@
 
 #Disable auto refresh and quieten vis messages whilst scene and trajectories are established:
 /vis/viewer/set/autoRefresh false
-/vis/verbose errors
+/vis/verbose 0 #errors
 
 #Draw geometry:
 /vis/drawVolume
@@ -22,7 +22,7 @@
 /vis/viewer/set/lineSegmentsPerCircle 100
 
 #Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 1 m
+#/vis/scene/add/axes 0 0 0 1 m
 
 # Draw smooth trajectories at end of event, showing trajectory pointsas markers 2 pixels wide:
 /vis/scene/add/trajectories smooth
@@ -58,7 +58,6 @@
 
 #Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true
-/vis/verbose warnings
 
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush
