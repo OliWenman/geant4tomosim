@@ -41,11 +41,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
 		inline void SetTargetCopyNo(G4int value){TargetCopyNo = value;}
 
-		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
-		inline void SetNoImages(G4int value){NoImages_Cmd = value;}
-		inline void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
 		inline void SetCurrentImage(G4int value){CurrentImage = value;}
-		inline void SetVisualization(G4String value){Visualization_Cmd = value;}
+		inline void SetNoImages(G4int value){NoImages = value;}
 
 		//Get methods
 		G4ThreeVector GetWorldSize(){return WorldSize_Cmd;}
@@ -59,11 +56,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String GetTargetMaterial(){return TargetMaterial_Cmd;}
 		G4int GetTargetCopyNo(){return TargetCopyNo;}
 
-		G4int GetNoBins(){return NoBins_Cmd;}
-		G4int GetNoImages(){return NoImages_Cmd;}
-		G4int GetNoPhotons(){return NoPhotons_Cmd;}
 		G4int GetCurrentImage(){return CurrentImage;}
-		G4String GetVisualization(){return Visualization_Cmd;}
+		G4int GetNoImages(){return NoImages;}
 
   	protected:
 		//Pointers to classes
@@ -88,11 +82,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int TargetCopyNo;
 
 		//Data manipulation varaibles
-		G4int NoBins_Cmd;
-		G4int NoImages_Cmd;
-		G4int NoPhotons_Cmd;
 		G4int CurrentImage;
-		G4String Visualization_Cmd;
+		G4int NoImages;
 };
 
 #endif

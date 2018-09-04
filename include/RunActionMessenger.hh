@@ -29,7 +29,7 @@ class RunActionMessenger: public G4UImessenger
 		G4UIdirectory* runDirectory;
 		
 		G4UIcmdWithAnInteger* seedCmd;
-		G4UIcmdWithAString* TextFileCmd;
+		G4UIcmdWithAString* PrintCmd;
 };
 
 #endif 

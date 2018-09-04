@@ -20,7 +20,7 @@ class Data;
 class TrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int Bins, G4int NoImages, Data* data);
+		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data);
     		virtual ~TrackerSD();
 
 		//Get methods

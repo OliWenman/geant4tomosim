@@ -7,6 +7,8 @@
 #include <math.h>       // Used to access the function floor 
 #include "G4SystemOfUnits.hh"
 
+class DataMessenger;
+
 class Data
 {
 	public:
@@ -31,6 +33,7 @@ class Data
 		G4int GetCurrentImage(){return CurrentImage;}
 
 		G4String GetPhysicsUsed(){return PhysicsUsed;}
+		G4String GetTextFileCmd(){return TextFileCmd;}
 
 		G4double GetSimulationTime(){return SimulationTime;}
 
@@ -50,14 +53,25 @@ class Data
 		void SetCurrentImage(G4int value){CurrentImage = value;}
 
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
+		void SetTextFileCmd(G4String value){TextFileCmd = value;}
 
 		void SetSimulationTime(G4double value){SimulationTime = value;}
+
+		//Commands
+		G4int GetNoBins(){return NoBins_Cmd;}
+		G4int GetNoImages(){return NoImages_Cmd;}
+		G4int GetNoPhotons(){return NoPhotons_Cmd;}
+		G4String GetVisualization(){return Visualization_Cmd;}
+		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
+		inline void SetNoImages(G4int value){NoImages_Cmd = value;}
+		inline void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
+		inline void SetVisualization(G4String value){Visualization_Cmd = value;}
 
 		//Method functions
 		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
 
-		virtual void SetUpData(G4int Nrow, G4int Ncolumn, G4int Nbins, G4int NoImages);
+		virtual void SetUpData(G4int Nrow, G4int Ncolumn);
 		virtual void SaveHitData(G4int DetectorNumber);
 		virtual void PrintHitData();
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);
@@ -69,6 +83,7 @@ class Data
 		//Data members
 		std::vector<std::vector<std::vector<G4int> > > HitDataMatrix;
 		std::vector<std::vector<G4int> > EnergyMatrix;
+		DataMessenger* dataMessenger;
 
 		G4int rows;
 		G4int columns;	
@@ -82,7 +97,13 @@ class Data
 		G4int CurrentImage;
 
 		G4String PhysicsUsed;
+		G4String TextFileCmd;
 		G4double SimulationTime;
+
+		G4int NoBins_Cmd;
+		G4int NoImages_Cmd;
+		G4int NoPhotons_Cmd;
+		G4String Visualization_Cmd;
 };
 
 #endif

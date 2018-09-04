@@ -19,15 +19,15 @@ RunActionMessenger::RunActionMessenger(RunAction *run):G4UImessenger(), RAction(
 	seedCmd -> SetDefaultValue(0);
 	seedCmd -> SetGuidance("Choose random seed (0) or input your own. ");
 
-	TextFileCmd = new G4UIcmdWithAString("/run/TextFile", this);
-	TextFileCmd -> SetDefaultValue("true");
-	TextFileCmd -> SetGuidance("Choose if you want to save your simulation data to a text file ");
+	PrintCmd = new G4UIcmdWithAString("/run/print", this);
+	PrintCmd -> SetDefaultValue("false");
+	PrintCmd -> SetGuidance("Choose if you want to print your data at the end of a run ");
 }
 
 RunActionMessenger::~RunActionMessenger()
 {
 	delete seedCmd;
-	delete TextFileCmd;
+	delete PrintCmd;
 
 	G4cout << G4endl << "RunActionMessenger has been deleted " << G4endl;
 }
@@ -39,9 +39,9 @@ void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 		RAction -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));
 		G4cout << G4endl << "RunAction -> SetSeedOption command detected" << G4endl;
 	}
-	else if (command == TextFileCmd)
+	else if (command == PrintCmd)
 	{
-		RAction -> SetTextFileOption(newValue);
-		G4cout << G4endl << "RunAction -> SetTextFileOption command detected" << G4endl;
+		RAction -> SetPrintOption(newValue);
+		G4cout << G4endl << "RunAction -> SetPrintOption command detected" << G4endl;
 	}
 }

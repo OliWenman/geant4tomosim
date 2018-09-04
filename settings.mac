@@ -1,35 +1,34 @@
 #Settings for the simulation
-/physics/addPhysics EMStandardPhysics
+/physics/addPhysics EMStandardPhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 
-#Seed settings (For the seed, 0 is random, input own number for your own seed)
-/run/seed 0
-/run/TextFile true
-
-#Gun Settings
-/gun/setEnergy 50 keV
-/gun/setBeamWidth 0.2 m
-/gun/setBeamHeight 0.2 m
-
-#World Settings
-/world/size 1.5 1 1 m
-
-#Detector Settings
-/detector/size 1 3 3 mm
-/detector/numberY 20
-/detector/numberZ 20
-/detector/material G4_SODIUM_IODIDE
-
-#World Settings
-/Target/position -20 0 0 cm
-/Target/material G4_Al
+#Seed settings 
+/run/seed 0		#(For the seed, 0 is random, input own number for your own seed)
+/run/print false 	#(If you want to print hit information for each run)
 
 #Data Settings
-/data/bins 4
-/data/NumberOfImages 10
-/data/NumberOfPhotons 100000
-/data/Visualization false
+/data/Visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
+/data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors)
+/data/NumberOfImages 5		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
+/data/NumberOfPhotons 100	#(Choose the number of photons to be fired at the target)
 
-#/hits/verbose 0
+#Gun Settings
+/gun/setEnergy 50 keV		#(Set the initial energy of the monochromatic X-ray beam)
+/gun/setBeamWidth 0.3 m		#(Set the beam width)
+/gun/setBeamHeight 0.3 m	#(Set the beam height
+
+#World Settings
+/world/size 1.5 1 1 m		#(Set the world size, everything must beside of it)
+
+#Detector Settings
+/detector/size 1 6 6 mm			#(Set the detector dimensions)
+/detector/numberY 10			#(Set the number of detectors along the Y direction)
+/detector/numberZ 10			#(Set the number of detectors along the z direction)
+/detector/material G4_SODIUM_IODIDE	#(Set the material of the detectors)
+
+#Target Settings
+/Target/position -20 0 0 cm		#(Set the position of the target)
+/Target/material G4_Al			#(Set the material of the target)
+
 /run/initialize
-
-#/vis/scene/notifyHandlers scene-0
+/hits/verbose 2		#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))

@@ -45,9 +45,7 @@ target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
 #
 set(TEST_SCRIPTS 
     init_vis.mac 
-    vis.mac 
     MyVis.mac
-    start.in
     settings.mac)
 
 foreach(_script ${TEST_SCRIPTS})

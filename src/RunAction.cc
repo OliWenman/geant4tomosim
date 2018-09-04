@@ -2,8 +2,6 @@
 #include "RunActionMessenger.hh"
 #include "Data.hh"
 
-#include "Analysis.hh"
-
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
@@ -54,13 +52,13 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {	
-	G4cout << G4endl << "Run complete" << G4endl;
-	data -> PrintHitData();
+	G4cout << G4endl << "Run finished" << G4endl;
+	if (GetPrintOption() == "true")
+		{data -> PrintHitData();}
 
-	if (TextFileCmd == "true")
-		{data -> WriteToTextFile();}
-	else 
-		{G4cout << G4endl << "Data was not written to a text file" << G4endl;}
+	//Print the progress of the simulation
+	G4double Progress = ((data -> GetCurrentImage()+1)/(double)data -> GetNoImages())*100;
+	G4cout << G4endl << Progress << "%\ of the simulation is complete" << G4endl;
 }
 
 

@@ -23,11 +23,11 @@ class RunAction : public G4UserRunAction
 
 		inline void SetSeedOption(G4int value){seedCmd = value;}
 		inline void SetTotalNoEvents(G4int value){TotalNoEvents = value;}
-		inline void SetTextFileOption(G4String value){TextFileCmd = value;} 
+		inline void SetPrintOption(G4String value){PrintCmd = value;} 
 
 		G4int GetSeedOption(){return seedCmd;}
 		G4int GetTotalNoEvents(){return TotalNoEvents;}
-		G4String GetTextFileOption(){return TextFileCmd;}	
+		G4String GetPrintOption(){return PrintCmd;}	
 
 	private:
 		//Pointers to classes
@@ -37,7 +37,7 @@ class RunAction : public G4UserRunAction
 		//Declaring data variables
 		G4int seedCmd;
 		G4int TotalNoEvents;
-		G4String TextFileCmd;
+		G4String PrintCmd;
 };
 
 

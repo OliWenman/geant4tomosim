@@ -1,5 +1,4 @@
 #include "TrackerHit.hh"
-#include "Analysis.hh"
 
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"

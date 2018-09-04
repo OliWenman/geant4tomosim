@@ -1,4 +1,5 @@
 #Macro file for the visualization setting for the initialization phase of the simulation when running in interactive mode
+/run/initialize
 
 #Use this open statement to create a .heprep file suitable for viewing in HepRApp:
 /vis/open HepRepFile

@@ -75,25 +75,6 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	TargetMaterial_Cmd -> SetDefaultValue("G4_Al");
 
 //------------------------------------------------------------------------------------------------------
-	//Data Manipulation
-	DataDirectory = new G4UIdirectory("/data/");
-	DataDirectory -> SetGuidance("Commands to control the data variables. ");
-
-	NoBins_Cmd = new G4UIcmdWithAnInteger("/data/bins", this);
-	NoBins_Cmd -> SetDefaultValue(5);
-	NoBins_Cmd -> SetGuidance("Pick the number of bins you would like the energy to be sorted into.  ");
-
-	NoImages_Cmd = new G4UIcmdWithAnInteger("/data/NumberOfImages", this);
-	NoImages_Cmd -> SetDefaultValue(2);
-	NoImages_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
-
-	NoPhotons_Cmd = new G4UIcmdWithAnInteger("/data/NumberOfPhotons", this);
-	NoPhotons_Cmd -> SetDefaultValue(1000);
-	NoPhotons_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
-
-	Visualization_Cmd = new G4UIcmdWithAString("/data/Visualization", this);
-	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
-	Visualization_Cmd -> SetDefaultValue("true");
 	
 }
 
@@ -111,12 +92,6 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete TargetDirectory;
 	delete TargetPosition_Cmd;
 	delete TargetMaterial_Cmd;
-
-	delete DataDirectory;
-	delete NoBins_Cmd;
-	delete NoImages_Cmd;
-	delete NoPhotons_Cmd;
-	delete Visualization_Cmd;
 
 	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
 }
@@ -157,25 +132,5 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		ConstructDet -> SetTargetMaterial(newValue);	
 		G4cout << G4endl << "DetectorConstruction -> SetTargetMaterial command detected "<< G4endl;
-	}
-	else if( command == NoBins_Cmd )
-	{
-		ConstructDet -> SetNoBins(NoBins_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "DetectorConstruction -> SetNoBins command detected "<< G4endl;
-	}
-	else if( command == NoImages_Cmd )
-	{
-		ConstructDet -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "DetectorConstruction -> SetNoImages command detected "<< G4endl;
-	}
-	else if( command == NoPhotons_Cmd )
-	{
-		ConstructDet -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "DetectorConstruction -> SetNoPhotons command detected "<< G4endl;
-	}
-	else if( command == Visualization_Cmd )
-	{
-		ConstructDet -> SetVisualization(newValue);	
-		G4cout << G4endl << "DetectorConstruction -> SetVisualization command detected "<< G4endl;
 	}
 }

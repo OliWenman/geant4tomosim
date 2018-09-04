@@ -10,19 +10,20 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4Run.hh"
+#include "G4UnitsTable.hh"
 
-TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, G4int NoBins, G4int NoImages, Data* DataObject) 
+TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
 
 	if (data -> GetCurrentImage() == 0)
-	{		
+	{			
 		//Save the variables into its own class
 		SetNoDetectorsY(NumDetectorsY);
 		SetNoDetectorsZ(NumDetectorsZ);
-		SetNoBins(NoBins);
-		data -> SetUpData(NumDetectorsZ, NumDetectorsY, NoBins, NoImages);	
+
+		data -> SetUpData(NumDetectorsZ, NumDetectorsY);	
 	}
 	collectionName.insert(hitsCollectionName);
 }

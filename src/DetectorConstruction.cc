@@ -269,7 +269,7 @@ G4double DetectorConstruction::RotationMatrix()
 	{
       		G4cout << "Creating the Sensitive Detector"  << G4endl;
 
-    		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), GetNoBins(), GetNoImages(), data);
+    		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data);
 	}
 
 	SetSensitiveDetector("LogicDetector", aTrackerSD, true);

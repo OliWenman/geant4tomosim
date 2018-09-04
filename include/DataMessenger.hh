@@ -1,0 +1,38 @@
+#ifndef DataMessenger_h
+#define DataMessenger_h 1
+
+#include "G4UImessenger.hh"
+#include "globals.hh"
+
+class Data;
+
+class G4UImessenger;
+
+class G4UIdirectory;
+class G4UIcmdWithoutParameters;
+class G4UIcmdWithAString;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithADouble;
+class G4UIcmdWithAnInteger;
+
+class DataMessenger: public G4UImessenger 
+{ 
+	public:
+		DataMessenger(Data* data);
+		~DataMessenger(void);
+
+		void SetNewValue(G4UIcommand* command, G4String newValue);
+		
+	private:
+		Data* data;
+
+		G4UIdirectory* DataDirectory;
+
+    		G4UIcmdWithAString* TextFileCmd;
+		G4UIcmdWithAnInteger *NoBins_Cmd;
+		G4UIcmdWithAnInteger *NoImages_Cmd;
+		G4UIcmdWithAnInteger *NoPhotons_Cmd;
+		G4UIcmdWithAString *Visualization_Cmd;
+};
+
+#endif 

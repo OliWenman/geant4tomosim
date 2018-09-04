@@ -7,11 +7,7 @@
 
 #include "G4Timer.hh"
 
-#ifdef G4MULTITHREADED
-#include "G4MTRunManager.hh"
-#else
 #include "G4RunManager.hh"
-#endif
 
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
@@ -34,7 +30,7 @@ int main(int argc,char** argv)
   	G4VisManager* visManager = new G4VisExecutive;
 	visManager -> Initialize();
 
-	//Creata an instance of the classes
+	//Create an instance of the classes
 	Data* data = new Data();
 	DetectorConstruction* DC = new DetectorConstruction(data); 
 	PhysicsList* PL = new PhysicsList(data); 	
@@ -53,23 +49,22 @@ int main(int argc,char** argv)
     	//interactive mode
 	UImanager -> ApplyCommand("/control/execute settings.mac");
 	
-	if (DC -> GetVisualization() == "true")
+	if (data -> GetVisualization() == "true")
 	{
-		UImanager -> ApplyCommand("/control/execute init_vis.mac");
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
 		G4cout << G4endl << "GRAPHICS SYSTEM ENABLED: Will increase computational time." << G4endl << G4endl;
 	}
 	
 	//Save variables to needed classes
 	G4int Image = 0;
-	data -> SetNumberOfPhotons(DC -> GetNoPhotons());
-	data -> SetNumberOfImages(DC -> GetNoImages());
+	//data -> SetNumberOfPhotons(DC -> GetNoPhotons());
+	DC -> SetNoImages(data -> GetNoImages());
 
 	//Start the simulation timer
 	G4Timer FullTime;
 	FullTime.Start();
 
-	for (Image; Image < DC -> GetNoImages(); Image++)
+	for (Image; Image < data -> GetNoImages(); Image++)
 	{
 		G4Timer LoopTimer;
 		LoopTimer.Start();
@@ -80,7 +75,7 @@ int main(int argc,char** argv)
 		       << G4endl << "                           PROCESSING IMAGE " <<  Image+1
 	               << G4endl << "================================================================================" << G4endl;
 		
-		runManager -> BeamOn(DC -> GetNoPhotons());
+		runManager -> BeamOn(data -> GetNoPhotons());
 		G4RunManager::GetRunManager()->ReinitializeGeometry();
 		//G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		LoopTimer.Stop();
@@ -89,13 +84,19 @@ int main(int argc,char** argv)
 	
 	FullTime.Stop();
 
-	//data -> SetSimulationTime(FullTime.GetRealElapsed() );
+	data -> SetSimulationTime(FullTime.GetRealElapsed());
 
 	G4cout << G4endl << "================================================================================"
 	       << G4endl << "                      The simulation is complete! "
-	       << G4endl << "             Total simulation time [s] : "<< FullTime.GetRealElapsed()
+	       << G4endl << "             Total simulation time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 	
+
+	if (data -> GetTextFileCmd() == "true")
+		{data -> WriteToTextFile();}
+	else 
+		{G4cout << G4endl << "Data was not written to a text file" << G4endl;}
+
 	ui -> SessionStart();   	
 
 	G4cout << G4endl << "Deleting ui";
