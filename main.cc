@@ -19,16 +19,13 @@ int main(int argc,char** argv)
   	G4UIExecutive* ui = 0;
   	
 	if ( argc == 1 ) 
-	{
-    		ui = new G4UIExecutive(argc, argv);
-  	}
+		{ui = new G4UIExecutive(argc, argv);}
   
   	//Construct the default run manager
   	G4RunManager* runManager = new G4RunManager();
 
 	//Initialize visualization
-  	G4VisManager* visManager = new G4VisExecutive;
-	visManager -> Initialize();
+  	G4VisManager* visManager = new G4VisExecutive();
 
 	//Create an instance of the classes
 	Data* data = new Data();
@@ -37,7 +34,6 @@ int main(int argc,char** argv)
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
   	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
-
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -51,13 +47,13 @@ int main(int argc,char** argv)
 	
 	if (data -> GetVisualization() == "true")
 	{
+		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
 		G4cout << G4endl << "GRAPHICS SYSTEM ENABLED: Will increase computational time." << G4endl << G4endl;
 	}
 	
 	//Save variables to needed classes
 	G4int Image = 0;
-	//data -> SetNumberOfPhotons(DC -> GetNoPhotons());
 	DC -> SetNoImages(data -> GetNoImages());
 
 	//Start the simulation timer
@@ -79,7 +75,7 @@ int main(int argc,char** argv)
 		G4RunManager::GetRunManager()->ReinitializeGeometry();
 		//G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		LoopTimer.Stop();
-		G4cout << G4endl << "Run time [s] : " << LoopTimer << G4endl; 
+		G4cout << G4endl << "Run time : " << LoopTimer << G4endl; 
 	}
 	
 	FullTime.Stop();
@@ -91,7 +87,6 @@ int main(int argc,char** argv)
 	       << G4endl << "             Total simulation time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 	
-
 	if (data -> GetTextFileCmd() == "true")
 		{data -> WriteToTextFile();}
 	else 
@@ -101,88 +96,11 @@ int main(int argc,char** argv)
 
 	G4cout << G4endl << "Deleting ui";
 	delete ui;
-	G4cout << G4endl << "Deleting visManager" << G4endl;
-  	delete visManager;
+	G4cout << G4endl << "Deleting visManager" << G4endl; 
+	delete visManager;
 	G4cout << G4endl << "Deleting runManager " << G4endl;
   	delete runManager;
 	delete data;
 
 	return 0;
 }
-
-//-------------------------------------------------------------------------------------
-
-/*
-#ifdef G4VIS_USE
-	#include "G4VisExecutive.hh"
-#endif
-#ifdef G4UI_USE
-	#include "G4UIExecutive.hh"
-#endif
-
-#ifdef G4VIS_USE
-void visio(int argc, char* argv[])
-{
-		G4VisManager *visManager=new G4VisExecutive;
-		visManager->Initialize();
-#ifdef G4UI_USE
-		G4UIExecutive *ui = new G4UIExecutive(argc, argv);
-                G4UImanager *UImanager = G4UImanager::GetUIpointer();
-		UImanager -> ApplyCommand("/control/execute init_vis.mac");
-		UImanager->ApplyCommand("/control/execute vis.mac");     
-		ui->SessionStart();
-		delete ui;
-#endif
-		delete visManager;
-}
-#endif
-
-int main(int argc, char* argv[])
-{
-	G4RunManager *runManager=new G4RunManager();
-
-	//Creata an instance of the classes
-	Data* data = new Data();
-	DetectorConstruction* DC = new DetectorConstruction(data); 
-	PhysicsList* PL = new PhysicsList(data); 	
-	runManager -> SetUserInitialization(DC);
-	runManager -> SetUserInitialization(PL);
-  	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
-
-	// read the main mac file and execute the commands
-	G4UImanager* UImanager = G4UImanager::GetUIpointer();
-	G4String command = "/control/execute ";
-	//UImanager->ApplyCommand(command+myInputData->inputData.generalData.StartFileInputData); 
-	UImanager -> ApplyCommand("/hits/verbose 0");
-	UImanager -> ApplyCommand("/process/em/verbose 0");
-
-	UImanager -> ApplyCommand("/control/execute settings.mac");
-	G4int Image = 0;
-	data -> SetNumberOfPhotons(DC -> GetNoPhotons());
-	data -> SetNumberOfImages(DC -> GetNoImages());
-
-	G4Timer MyFullTime;
-	MyFullTime.Start();	
-
-	G4cout << G4endl << "Output test " << G4endl;
-
-	visio(argc, argv);
-
-	for (Image; Image < DC -> GetNoImages(); Image++)
-	{
-		G4cout << G4endl << "Output test 2 " << G4endl;
-		data -> SetCurrentImage(Image);
-		G4cout << G4endl << "Output test  3" << G4endl;
-		DC -> SetCurrentImage(Image);
-		G4cout << G4endl << "RUN ABOUT TO BEGIN: IMAGE " <<  Image+1 << G4endl;
-		runManager -> BeamOn(DC -> GetNoPhotons());
-	}
-	MyFullTime.Stop();
-	//loopElapsedTime=MyFullTime.GetUserElapsed();
-	std::cout << "Simulation time [s] : "<< MyFullTime << '\n';
-	std::cout <<'\n';
-	
-        delete runManager;
-        return 0;
-}*/
-

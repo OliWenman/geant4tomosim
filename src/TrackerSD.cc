@@ -17,6 +17,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 {
 	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
 
+	//Setup the data only at the begining of simulation
 	if (data -> GetCurrentImage() == 0)
 	{			
 		//Save the variables into its own class
@@ -48,7 +49,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   	//Energy deposit
   	G4double edep = aStep -> GetTotalEnergyDeposit();
 
-  	if (edep==0.) return false;
+  	if (edep == 0.) return false;
 
 	//Create the TrackHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();

@@ -16,6 +16,8 @@ class PhysicsList: public G4VModularPhysicsList
   		PhysicsList(Data* data);
   		virtual ~PhysicsList();
 
+		virtual void Print(G4String name);
+
   		void ConstructParticle();
 
   		void AddPhysicsList(G4String& name);
