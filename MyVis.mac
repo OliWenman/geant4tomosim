@@ -3,6 +3,8 @@
 
 #Use this open statement to create a .heprep file suitable for viewing in HepRApp:
 /vis/open HepRepFile
+/vis/heprep/setFileDir ./Data_Output/Visualization/
+/vis/heprep/setFileName X-RayData
 
 #Disable auto refresh and quieten vis messages whilst scene and trajectories are established:
 /vis/viewer/set/autoRefresh false

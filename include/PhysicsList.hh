@@ -34,9 +34,7 @@ class PhysicsList: public G4VModularPhysicsList
   		G4double cutForElectron;
   		G4double cutForPositron;
 
-  		G4String emName;
   		G4VPhysicsConstructor* emPhysicsList;
-  		G4VPhysicsConstructor* decPhysicsList;
 
   		PhysicsListMessenger* PhysicsMessenger;
 };

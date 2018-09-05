@@ -129,7 +129,7 @@ void Data::PrintEnergyData()
 
 void Data::WriteToTextFile()
 {
-	G4cout << G4endl << "Writing the data to DataFile.txt" << G4endl;
+	G4cout << G4endl << "Saving the data to DataFile.txt" << G4endl;
 	//Create file stream
    	std::ofstream outdata; 
    
@@ -140,9 +140,9 @@ void Data::WriteToTextFile()
 	G4int Ncolumns = GetNumberColumns();
 	G4int NImage = GetNoImages();
 
-	//G4int NoDigits = std::to_string(GetNumber).length();
+	G4String FilePath = "./Data_Output/Text/";
 
-	outdata.open("DataFile.txt"); 
+	outdata.open(FilePath+"DataFile.txt"); 
    	
 	//Output error if can't open file
 	if( !outdata ) 
@@ -222,7 +222,7 @@ void Data::WriteToTextFile()
     		}
 	}
 	outdata.close();
-	G4cout << G4endl << "The data has been successfully written to DataFile.txt" << G4endl << G4endl;
+	G4cout << G4endl << "The data has been successfully written to " << FilePath << "DataFile.txt" << G4endl << G4endl;
 }
 
 

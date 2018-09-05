@@ -1,6 +1,6 @@
 #Settings for the simulation
 
-/physics/addPhysics EmStandardPhysics_option5	#(Choose the Physics Package you want to include, refer to the README for details)
+/physics/addPhysics EMStandardPhysics	#(Choose the Physics Package you want to include, refer to the README for details)
 
 #Seed settings 
 /run/seed 0		#(For the seed, 0 is random, input own number for your own seed)

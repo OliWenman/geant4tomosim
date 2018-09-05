@@ -7,7 +7,6 @@
 
 //Physic lists (contained inside the Geant4 distribution)
 #include "G4EmStandardPhysics.hh"
-
 #include "G4EmStandardPhysics_option1.hh"
 #include "G4EmStandardPhysics_option2.hh"
 #include "G4EmStandardPhysics_option3.hh"

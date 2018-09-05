@@ -31,6 +31,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+file(COPY Data_Output DESTINATION ./)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
