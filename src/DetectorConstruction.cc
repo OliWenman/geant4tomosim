@@ -156,7 +156,7 @@ void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVecto
 							 logicMotherBox,                     //its mother  volume
 							 false,                 //no boolean operation
 							 0,                     //copy number
-							 true);		//overlaps checking      
+							 false);		//overlaps checking      
 	//Visualization attributes
   	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicHollowBox -> SetVisAttributes(HollowBoxColour);
@@ -204,15 +204,6 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 						          	     CopyNo,                     //copy number
 							  	     false);	//overlaps checking    
 	}    
-	
-	/*//Sensitive detectors
-  	G4String trackerChamberSDname = "TrackerChamberSD";
-  	aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, NoBins_Cmd, NoImages_Cmd, data);
-  	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
-  	//Setting aTrackerSD to all logical volumes with the same name as "LogicDetector".
-  	SetSensitiveDetector("LogicDetector", aTrackerSD, true);*/
-
-	AttachSensitiveDetector(logic_Detector);
 
 	//Sets a max step length in the tracker region, with G4StepLimiter
   	G4double maxStep = 0.001*mm*DetectorSizeX;
@@ -222,6 +213,17 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	//Visualization attributes
   	G4VisAttributes* Detector_Colour = new G4VisAttributes(G4Colour(0.0,1.0,1.0));	//Cyan
   	logic_Detector -> SetVisAttributes(Detector_Colour);
+
+	SaveDetectors(logic_Detector);
+	
+	/*//Sensitive detectors
+  	G4String trackerChamberSDname = "TrackerChamberSD";
+  	aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", NoDetectorsY, NoDetectorsZ, data);
+  	G4SDManager::GetSDMpointer() -> AddNewDetector(aTrackerSD);
+  	//Setting aTrackerSD to all logical volumes with the same name as "LogicDetector".
+  	SetSensitiveDetector("LogicDetector", aTrackerSD, true);*/
+	
+	AttachSensitiveDetector(logic_Detector);
 
 	G4cout << "The detectors have been created succesfully " << G4endl;  
 }

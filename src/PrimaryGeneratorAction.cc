@@ -54,9 +54,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	G4double y0 = BeamWidthY_Cmd * (G4UniformRand()-0.5);
   	G4double z0 = BeamHeightZ_Cmd * (G4UniformRand()-0.5);
 
-	//Apply the commands for starting energy and positon 
+	//Set the ParticleGun conditions
 	ParticleGun -> SetParticleEnergy(energyCmd);
-
   	ParticleGun->SetParticlePosition(G4ThreeVector(x0,y0, z0));
 
 	//Generate the particle in the event

@@ -44,8 +44,7 @@ target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
 # build. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(TEST_SCRIPTS 
-    init_vis.mac 
+set(TEST_SCRIPTS  
     MyVis.mac
     settings.mac)
 

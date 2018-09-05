@@ -59,12 +59,17 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages;}
 
+		void SaveDetectors(G4LogicalVolume* value){logic_Detector = value;}
+		G4LogicalVolume* GetDetectors(){return logic_Detector;}
+
   	protected:
 		//Pointers to classes
 		G4UserLimits* fStepLimit;            
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
 		TrackerSD* aTrackerSD;
+
+		G4LogicalVolume* logic_Detector;
 
 		//DATA
 		//World variables

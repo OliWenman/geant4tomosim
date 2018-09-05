@@ -1,15 +1,12 @@
 #include "TrackerSD.hh"
 #include "Data.hh"
-#include <vector>
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
-#include "G4ThreeVector.hh"
 #include "G4SDManager.hh"
-#include "G4ios.hh"
+
 #include "G4Event.hh"
 #include "G4RunManager.hh"
-#include "G4Run.hh"
 #include "G4UnitsTable.hh"
 
 TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject) 
@@ -29,10 +26,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	collectionName.insert(hitsCollectionName);
 }
 
-TrackerSD::~TrackerSD()
-{
-	G4cout << G4endl << "TrackerSD has been deleted "<< G4endl;
-}
+TrackerSD::~TrackerSD() {G4cout << G4endl << "TrackerSD has been deleted "<< G4endl;}
 
 void TrackerSD::Initialize(G4HCofThisEvent* hce)
 {	
@@ -62,7 +56,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	newHit -> SetEdep(edep);
 
 	//Save the information
-  	fHitsCollection -> insert( newHit );
+  	//fHitsCollection -> insert( newHit );
 
 	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();
