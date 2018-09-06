@@ -13,8 +13,38 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+#include "H5Cpp.h"
+#include "hdf5.h"
+
+void CompletionTime(double LoopTimer, int Image, int NoImages)
+{
+	G4double ETSeconds = (LoopTimer * NoImages) - (LoopTimer * Image);
+
+	if (ETSeconds > 60)
+	{
+		if(ETSeconds > 60*60)
+			{G4cout << G4endl << "Estimated completion time: " << int(ETSeconds/(60*60)) << " hours " << G4endl;}
+		else
+			{G4cout << G4endl << "Estimated completion time: " << int(ETSeconds/60) << " minutes " << G4endl;}
+	}
+	else
+		{G4cout << G4endl << "Estimated completion time: less than a minute " << G4endl;}
+}
+
 int main(int argc,char** argv)
 {
+	//hid_t       file;                          /* identifier */
+/*
+* Create a new file using H5ACC_TRUNC access,
+* default file creation properties, and default file
+* access properties.
+* Then close the file.
+*/
+	//file = H5Fcreate(FILE, H5ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	//status = H5Fclose(file);
+
+
+
   	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
   	
@@ -75,7 +105,7 @@ int main(int argc,char** argv)
 		G4RunManager::GetRunManager()->ReinitializeGeometry();
 		//G4RunManager::GetRunManager()->GeometryHasBeenModified();
 		LoopTimer.Stop();
-		G4cout << G4endl << "Run time : " << LoopTimer << G4endl; 
+		CompletionTime(LoopTimer.GetRealElapsed(), Image, data -> GetNoImages());
 	}
 	
 	FullTime.Stop();
@@ -84,7 +114,7 @@ int main(int argc,char** argv)
 
 	G4cout << G4endl << "================================================================================"
 	       << G4endl << "                      The simulation is complete! "
-	       << G4endl << "             Total simulation time : "<< FullTime
+	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 	
 	if (data -> GetTextFileCmd() == "true")

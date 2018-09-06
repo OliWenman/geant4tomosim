@@ -214,7 +214,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
   	G4VisAttributes* Detector_Colour = new G4VisAttributes(G4Colour(0.0,1.0,1.0));	//Cyan
   	logic_Detector -> SetVisAttributes(Detector_Colour);
 
-	SaveDetectors(logic_Detector);
+	//SaveDetectors(logic_Detector);
 	
 	/*//Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";

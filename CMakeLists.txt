@@ -2,7 +2,7 @@
 
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(X-Ray_build)
 
 #----------------------------------------------------------------------------
@@ -13,9 +13,13 @@ project(X-Ray_build)
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
+  find_package(HDF5 REQUIRED COMPONENTS C CXX)
 else()
   find_package(Geant4 REQUIRED)
+  find_package(HDF5 REQUIRED COMPONENTS C CXX)
 endif()
+
+
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
@@ -23,6 +27,7 @@ endif()
 #
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${HDF5_INCLUDE_DIRS})
 
 
 #----------------------------------------------------------------------------
@@ -37,7 +42,9 @@ file(COPY Data_Output DESTINATION ./)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(X-Ray_Simulation main.cc ${sources} ${headers})
-target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
+target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+#target_link_libraries( readdata ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+#target_link_libraries(X-Ray_Simulation ${h5c++})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -46,14 +53,13 @@ target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
 #
 set(TEST_SCRIPTS  
     MyVis.mac
-    settings.mac)
+    settings.mac
+    README.txt)
 
 foreach(_script ${TEST_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
-    )
+  configure_file(${PROJECT_SOURCE_DIR}/${_script}
+                 ${PROJECT_BINARY_DIR}/${_script}
+                 COPYONLY)
 endforeach()
 
 #----------------------------------------------------------------------------

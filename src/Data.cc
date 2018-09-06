@@ -140,7 +140,7 @@ void Data::PrintEnergyData()
 
 void Data::WriteToTextFile()
 {
-	G4cout << G4endl << "Saving the data to DataFile.txt" << G4endl;
+	G4cout << G4endl << "Saving the data... " << G4endl;
 	//Create file stream
    	std::ofstream outdata; 
    

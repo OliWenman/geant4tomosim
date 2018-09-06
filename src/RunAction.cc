@@ -57,7 +57,7 @@ void RunAction::EndOfRunAction(const G4Run* aRun)
 		{data -> PrintHitData();}
 
 	//Print the progress of the simulation
-	G4double Progress = ((data -> GetCurrentImage()+1)/(double)data -> GetNoImages())*100;
+	G4int Progress = ((data -> GetCurrentImage()+1)*100)/data -> GetNoImages();
 	G4cout << G4endl << Progress << "%\ of the simulation is complete" << G4endl;
 }
 

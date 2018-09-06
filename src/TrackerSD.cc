@@ -55,7 +55,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	newHit -> SetParticle( aStep->GetTrack()->GetDefinition() );
 	newHit -> SetEdep(edep);
 
-	//Save the information
+	//Save the information - keep?
   	//fHitsCollection -> insert( newHit );
 
 	//Save the detector hits to the data class

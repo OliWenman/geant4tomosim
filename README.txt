@@ -1,4 +1,6 @@
-Information on how to use this simulation.
+//////////////////////////////////////////////
+//INFORMATION ON HOW TO USE THIS SIMULATION //
+//////////////////////////////////////////////
 
 Below is a list of avaliable physics packages that are optimised for different needs. In "settings.mac", the command /physics/addPhysics PhysicsSetting , where PhysicsSetting is the name of the physics package, allows you to change the simulation to adopt the physic package you need. Simply change the command to the title of any of the below options. For example, "/physics/addPhysics EmLivermorePhysics". 
 
@@ -21,7 +23,7 @@ EmLivermorePhysics
 - Models based on Livermore data bases for electrons and gamma, enabled Rayleigh scattering, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4IonParameterisedLossModel for ion ionisation, and 20 bins per energy decade of physics tables.
 
 EmLivermorePolarizedPhysics)
-- Models for simulation of linear polarized gamma based on Livermore data bases for electrons and gamma .
+- Models for simulation of linear polarized gamma based on Livermore data bases for electrons and gamma.
     
 EmLowEPPhysics
 - Models based on Livermore data bases and new model for Compton scattering G4LowEPComptonModel, new low-energy model of multiple scattering G4LowEWenzelMscModel.
@@ -37,6 +39,6 @@ EmStandardPhysicsGS
 EmDNAPhysics
 - Low-energy Geant4-DNA physics.
 
-EmDNAPhysics_optionX, where X is 1 to 7
+EmDNAPhysics_optionX (where X is 1 to 7)
 - Alternative low-energy Geant4-DNA physics constructors. Refer to Geant4-DNA section.
 
