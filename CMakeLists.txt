@@ -12,11 +12,16 @@ project(X-Ray_build)
 #
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
+  #SET(GCC_COVERAGE_LINK_FLAGS    "lhdf5")
   find_package(Geant4 REQUIRED ui_all vis_all)
-  find_package(HDF5 REQUIRED COMPONENTS C CXX)
+  find_package(HDF5 REQUIRED)
+  #find_package(HDF5 REQUIRED COMPONENTS C CXX)
+  #find_package(HDF5 COMPONENTS C CXX HL REQUIRED)
 else()
   find_package(Geant4 REQUIRED)
-  find_package(HDF5 REQUIRED COMPONENTS C CXX)
+  find_package(HDF5 REQUIRED)
+  #find_package(HDF5 REQUIRED COMPONENTS C CXX)
+  #find_package(HDF5 COMPONENTS C CXX HL REQUIRED)
 endif()
 
 
@@ -28,6 +33,7 @@ endif()
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${HDF5_INCLUDE_DIRS})
+
 
 
 #----------------------------------------------------------------------------
@@ -42,8 +48,10 @@ file(COPY Data_Output DESTINATION ./)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(X-Ray_Simulation main.cc ${sources} ${headers})
-target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
-#target_link_libraries( readdata ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+link_directories(${HDF5_LIBRARY_DIRS} )
+target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_LIBRARIES} ${HDF5_HL_LIBRARIES} )
+
+# target_link_libraries( readdata ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
 #target_link_libraries(X-Ray_Simulation ${h5c++})
 
 #----------------------------------------------------------------------------

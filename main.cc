@@ -13,8 +13,8 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
-#include "H5Cpp.h"
 #include "hdf5.h"
+#include "H5Cpp.h"
 
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {
@@ -23,25 +23,21 @@ void CompletionTime(double LoopTimer, int Image, int NoImages)
 	if (ETSeconds > 60)
 	{
 		if(ETSeconds > 60*60)
-			{G4cout << G4endl << "Estimated completion time: " << int(ETSeconds/(60*60)) << " hours " << G4endl;}
+			{G4cout << G4endl << int(ETSeconds/(60*60)) << " hours left" << G4endl;}
 		else
-			{G4cout << G4endl << "Estimated completion time: " << int(ETSeconds/60) << " minutes " << G4endl;}
+			{G4cout << G4endl << int(ETSeconds/60) << " minutes left" << G4endl;}
 	}
 	else
-		{G4cout << G4endl << "Estimated completion time: less than a minute " << G4endl;}
+		{G4cout << G4endl << "Less than a minute left to go " << G4endl;}
 }
 
 int main(int argc,char** argv)
 {
-	//hid_t       file;                          /* identifier */
-/*
-* Create a new file using H5ACC_TRUNC access,
-* default file creation properties, and default file
-* access properties.
-* Then close the file.
-*/
-	//file = H5Fcreate(FILE, H5ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-	//status = H5Fclose(file);
+  	/* Create a new file using default properties. */
+   	//hit_t file_id = H5Fcreate(FILE, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+
+   	/* Terminate access to the file. */
+   	//herr_t status = H5Fclose(file_id);
 
 
 
@@ -79,7 +75,9 @@ int main(int argc,char** argv)
 	{
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
-		G4cout << G4endl << "GRAPHICS SYSTEM ENABLED: Will increase computational time." << G4endl << G4endl;
+		G4cout << G4endl << "================================================================================"
+		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
+	               << G4endl << "================================================================================" << G4endl;
 	}
 	
 	//Save variables to needed classes
@@ -134,3 +132,5 @@ int main(int argc,char** argv)
 
 	return 0;
 }
+
+

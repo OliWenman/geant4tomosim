@@ -28,6 +28,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		virtual G4Material* FindMaterial(G4String material);
 		virtual G4double RotationMatrix();
 		virtual void AttachSensitiveDetector(G4LogicalVolume* volume);
+		virtual G4ThreeVector OffSetRotation(G4ThreeVector, G4double, G4double); 
 		
 		//Set methods
 		inline void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
@@ -40,6 +41,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		inline void SetTargetPosition(G4ThreeVector value){TargetPosition_Cmd = value;}
 		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
 		inline void SetTargetCopyNo(G4int value){TargetCopyNo = value;}
+		inline void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 
 		inline void SetCurrentImage(G4int value){CurrentImage = value;}
 		inline void SetNoImages(G4int value){NoImages = value;}
@@ -55,6 +57,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4ThreeVector GetTargetPosition(){return TargetPosition_Cmd;}
 		G4String GetTargetMaterial(){return TargetMaterial_Cmd;}
 		G4int GetTargetCopyNo(){return TargetCopyNo;}
+		G4double GetOffSetRadius(){return OffSetRadius_Cmd;}
 
 		G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages;}
@@ -85,6 +88,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4ThreeVector TargetPosition_Cmd;
 		G4String TargetMaterial_Cmd;
 		G4int TargetCopyNo;
+		G4double OffSetRadius_Cmd;
 
 		//Data manipulation varaibles
 		G4int CurrentImage;

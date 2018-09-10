@@ -48,6 +48,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//TARGET VARIABLES
 		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
 		G4UIcmdWithAString *TargetMaterial_Cmd;
+		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 
 		
 };

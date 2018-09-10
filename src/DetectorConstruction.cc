@@ -3,6 +3,8 @@
 #include "TrackerSD.hh"
 #include "Data.hh"
 
+#include <math.h>	//Needed for sin and cos
+
 #include "G4NistManager.hh"
 #include "G4SDManager.hh"
 #include "G4RunManager.hh"
@@ -14,6 +16,7 @@
 #include "G4PVPlacement.hh"
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 #include "G4UserLimits.hh"
 #include "G4RunManager.hh"
 #include "G4RotationMatrix.hh"
@@ -47,6 +50,27 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
+
+	G4double DetectorSizeY = DetectorSize_Cmd.y();
+	G4double DetectorSizeZ = DetectorSize_Cmd.z();
+
+	if (WorldSizeY < DetectorSizeY * GetNoDetectorsY())
+	{
+		WorldSizeY = DetectorSizeY * GetNoDetectorsY();
+		G4cout << G4endl << "================================================================================"
+		       << G4endl << "         WARNING: Detectors are outside world volume in Y direction. "
+		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeY, "Length")
+	               << G4endl << "================================================================================" << G4endl;
+	}
+
+	if (WorldSizeZ < DetectorSizeZ * GetNoDetectorsZ())
+	{	
+		WorldSizeZ = DetectorSizeZ * GetNoDetectorsZ();
+		G4cout << G4endl << "================================================================================"
+		       << G4endl << "         WARNING: Detectors are outside world volume in Z direction. "
+		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeY, "Length")
+	               << G4endl << "================================================================================" << G4endl;
+	}
 
 	//WORLD
 	G4Box* solidWorld = new G4Box("World", WorldSizeX, WorldSizeY, WorldSizeZ);
@@ -144,19 +168,23 @@ void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVecto
 	G4Material* BoxMaterial = FindMaterial(Material);
 	G4LogicalVolume* logicHollowBox = new G4LogicalVolume(HollowBox, BoxMaterial, "logicBox");
 	
+	G4double RotateObject = RotationMatrix();
 	G4RotationMatrix* ObjectRotation = new G4RotationMatrix();
 	ObjectRotation->rotateX(90.*deg);
 	ObjectRotation->rotateY(0.*deg);
-	ObjectRotation->rotateZ(RotationMatrix());
+	ObjectRotation->rotateZ(RotateObject);
+
+	G4ThreeVector NewTargetPosition = OffSetRotation(TargetPosition, OffSetRadius_Cmd, RotateObject);
+
 	//Create the target physical volume
-	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(ObjectRotation,            //no rotation
-							 G4ThreeVector(TargetPosition.x(), TargetPosition.y(), TargetPosition.z()),       
-							 logicHollowBox,           //its logical volume
-							 "HollowBox",               //its name
-							 logicMotherBox,                     //its mother  volume
-							 false,                 //no boolean operation
-							 0,                     //copy number
-							 false);		//overlaps checking      
+	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(ObjectRotation,            
+							     NewTargetPosition,    
+							     logicHollowBox,           //its logical volume
+							     "HollowBox",               //its name
+							     logicMotherBox,                     //its mother  volume
+							     false,                 //no boolean operation
+							     0,                     //copy number
+							     false);		//overlaps checking      
 	//Visualization attributes
   	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicHollowBox -> SetVisAttributes(HollowBoxColour);
@@ -276,5 +304,20 @@ G4double DetectorConstruction::RotationMatrix()
 
 	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
 	SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+}
+
+G4ThreeVector DetectorConstruction::OffSetRotation(G4ThreeVector Centre, G4double Radius, G4double Angle)
+{
+	if (GetNoImages() > 1 && Radius != 0)
+	{	
+		G4double x0 = Centre.x();
+		G4double y0 = Centre.y();
+		G4double x = (x0+Radius)*cos(Angle);
+		G4double y = (y0+Radius)*sin(Angle);
+
+		return G4ThreeVector(x, 0 ,y);
+	}
+	else 
+		{return G4ThreeVector(0,0,0);}
 }
 

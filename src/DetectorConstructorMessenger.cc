@@ -74,6 +74,11 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	TargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
 	TargetMaterial_Cmd -> SetDefaultValue("G4_Al");
 
+	OffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet", this);
+	OffSetRadius_Cmd -> SetGuidance("Set the off set of the poisition of the target with a radius");
+	OffSetRadius_Cmd -> SetDefaultUnit("cm");
+	OffSetRadius_Cmd -> SetDefaultValue(0.5*cm);
+
 //------------------------------------------------------------------------------------------------------
 	
 }
@@ -92,6 +97,7 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete TargetDirectory;
 	delete TargetPosition_Cmd;
 	delete TargetMaterial_Cmd;
+	delete OffSetRadius_Cmd;
 
 	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
 }
@@ -132,5 +138,11 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		ConstructDet -> SetTargetMaterial(newValue);	
 		G4cout << G4endl << "DetectorConstruction -> SetTargetMaterial command detected "<< G4endl;
+	}
+	else if(command == OffSetRadius_Cmd )
+	{
+		OffSetRadius_Cmd -> GetNewUnitValue(newValue);
+		ConstructDet -> SetOffSetRadius(OffSetRadius_Cmd -> GetNewDoubleValue(newValue));	
+		G4cout << G4endl << "DetectorConstruction -> OffSetRadius_Cmd command detected "<< G4endl;
 	}
 }
