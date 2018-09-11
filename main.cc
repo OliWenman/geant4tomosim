@@ -14,7 +14,6 @@
 #include "G4UIExecutive.hh"
 
 #include "hdf5.h"
-#include "H5Cpp.h"
 
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {
@@ -34,12 +33,10 @@ void CompletionTime(double LoopTimer, int Image, int NoImages)
 int main(int argc,char** argv)
 {
   	/* Create a new file using default properties. */
-   	//hit_t file_id = H5Fcreate(FILE, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+   	//hid_t file_id = H5Fcreate("ff", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 
    	/* Terminate access to the file. */
    	//herr_t status = H5Fclose(file_id);
-
-
 
   	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
@@ -71,7 +68,7 @@ int main(int argc,char** argv)
     	//interactive mode
 	UImanager -> ApplyCommand("/control/execute settings.mac");
 	
-	if (data -> GetVisualization() == "true")
+	if (data -> GetVisualization() == true)
 	{
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
@@ -115,7 +112,7 @@ int main(int argc,char** argv)
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 	
-	if (data -> GetTextFileCmd() == "true")
+	if (data -> GetTextFileCmd() == true)
 		{data -> WriteToTextFile();}
 	else 
 		{G4cout << G4endl << "Data was not written to a text file" << G4endl;}
@@ -130,7 +127,11 @@ int main(int argc,char** argv)
   	delete runManager;
 	delete data;
 
-	return 0;
+//----------------------------------------------------------------------------------
+
+   return 0;
+
+
 }
 
 

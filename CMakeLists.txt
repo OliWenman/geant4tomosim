@@ -1,5 +1,22 @@
 # $Id: CMakeLists.txt 86065 2014-11-07 08:51:15Z gcosmo $
 
+#HDF5_INCLUDE_DIRS - Location of the hdf5 includes
+#HDF5_INCLUDE_DIR - Location of the hdf5 includes (deprecated)
+#HDF5_DEFINITIONS - Required compiler definitions for HDF5
+#HDF5_C_LIBRARIES - Required libraries for the HDF5 C bindings.
+#HDF5_CXX_LIBRARIES - Required libraries for the HDF5 C++ bindings
+#HDF5_Fortran_LIBRARIES - Required libraries for the HDF5 Fortran bindings
+#HDF5_HL_LIBRARIES - Required libraries for the HDF5 high level API
+#HDF5_Fortran_HL_LIBRARIES - Required libraries for the high level Fortran bindings.
+#HDF5_LIBRARIES - Required libraries for all requested bindings
+#HDF5_FOUND - true if HDF5 was found on the system
+#HDF5_LIBRARY_DIRS - the full set of library directories
+#HDF5_IS_PARALLEL - Whether or not HDF5 was found with parallel IO support
+#HDF5_C_COMPILER_EXECUTABLE - the path to the HDF5 C wrapper compiler
+#HDF5_CXX_COMPILER_EXECUTABLE - the path to the HDF5 C++ wrapper compiler
+#HDF5_Fortran_COMPILER_EXECUTABLE - the path to the HDF5 Fortran wrapper compiler
+#HDF5_DIFF_EXECUTABLE - the path to the HDF5 dataset comparison tool
+
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
@@ -14,14 +31,16 @@ option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
   #SET(GCC_COVERAGE_LINK_FLAGS    "lhdf5")
   find_package(Geant4 REQUIRED ui_all vis_all)
-  find_package(HDF5 REQUIRED)
+  #FIND_PACKAGE(HDF5 COMPONENTS C HL NO_MODULE REQUIRED shared)
+  #find_package(HDF5 REQUIRED)
   #find_package(HDF5 REQUIRED COMPONENTS C CXX)
-  #find_package(HDF5 COMPONENTS C CXX HL REQUIRED)
+  find_package(HDF5 REQUIRED COMPONENTS C CXX HL )
 else()
   find_package(Geant4 REQUIRED)
-  find_package(HDF5 REQUIRED)
+  #FIND_PACKAGE(HDF5 COMPONENTS C HL NO_MODULE REQUIRED shared)
+  #find_package(HDF5 REQUIRED)
   #find_package(HDF5 REQUIRED COMPONENTS C CXX)
-  #find_package(HDF5 COMPONENTS C CXX HL REQUIRED)
+  find_package(HDF5 REQUIRED COMPONENTS C CXX HL)
 endif()
 
 
@@ -34,6 +53,8 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${HDF5_INCLUDE_DIRS})
 
+# force compilation in pre-CXX11 mode
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=0")
 
 
 #----------------------------------------------------------------------------
@@ -49,9 +70,9 @@ file(COPY Data_Output DESTINATION ./)
 #
 add_executable(X-Ray_Simulation main.cc ${sources} ${headers})
 link_directories(${HDF5_LIBRARY_DIRS} )
-target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_LIBRARIES} ${HDF5_HL_LIBRARIES} )
+target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_LIBRARIES} ${HDF5_CXX_LIBRARIES} ${HDF5_HL_LIBRARIES} )
 
-# target_link_libraries( readdata ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
+#target_link_libraries( readdata ${HDF5_CXX_LIBRARIES} ${HDF5_LIBRARIES})
 #target_link_libraries(X-Ray_Simulation ${h5c++})
 
 #----------------------------------------------------------------------------

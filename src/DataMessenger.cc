@@ -15,7 +15,7 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 	DataDirectory = new G4UIdirectory("/data/");
 	DataDirectory -> SetGuidance("Commands to control Data class");
 
-	TextFileCmd = new G4UIcmdWithAString("/data/TextFile", this);
+	TextFileCmd = new G4UIcmdWithABool("/data/TextFile", this);
 	TextFileCmd -> SetGuidance("Choose if you would like the data to be saved to a text file ");
 	TextFileCmd -> SetDefaultValue("true");
 
@@ -31,7 +31,7 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 	NoPhotons_Cmd -> SetDefaultValue(1000);
 	NoPhotons_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
 
-	Visualization_Cmd = new G4UIcmdWithAString("/data/Visualization", this);
+	Visualization_Cmd = new G4UIcmdWithABool("/data/Visualization", this);
 	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
 	Visualization_Cmd -> SetDefaultValue("true");
 }

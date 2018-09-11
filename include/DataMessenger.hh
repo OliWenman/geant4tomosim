@@ -14,6 +14,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
+class G4UIcmdWithABool;
 
 class DataMessenger: public G4UImessenger 
 { 
@@ -28,11 +29,11 @@ class DataMessenger: public G4UImessenger
 
 		G4UIdirectory* DataDirectory;
 
-    		G4UIcmdWithAString* TextFileCmd;
+    		G4UIcmdWithABool* TextFileCmd;
 		G4UIcmdWithAnInteger *NoBins_Cmd;
 		G4UIcmdWithAnInteger *NoImages_Cmd;
 		G4UIcmdWithAnInteger *NoPhotons_Cmd;
-		G4UIcmdWithAString *Visualization_Cmd;
+		G4UIcmdWithABool *Visualization_Cmd;
 };
 
 #endif 

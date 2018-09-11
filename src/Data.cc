@@ -4,6 +4,11 @@
 #include <fstream>
 #include "G4UnitsTable.hh"
 
+#include "hdf5.h"
+#include "H5Cpp.h"
+
+using namespace H5;
+
 Data::Data()
 {
 	G4cout << G4endl << "Data class has been created "<< G4endl;
@@ -246,4 +251,7 @@ void Data::WriteToTextFile()
 
 }
 
+void Data::WriteToHDF5()
+{
 
+}
