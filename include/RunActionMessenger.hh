@@ -14,6 +14,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
+class G4UIcmdWithABool;
 
 class RunActionMessenger: public G4UImessenger 
 { 
@@ -29,7 +30,7 @@ class RunActionMessenger: public G4UImessenger
 		G4UIdirectory* runDirectory;
 		
 		G4UIcmdWithAnInteger* seedCmd;
-		G4UIcmdWithAString* PrintCmd;
+		G4UIcmdWithABool* PrintCmd;
 };
 
 #endif 

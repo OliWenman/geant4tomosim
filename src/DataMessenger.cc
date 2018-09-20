@@ -17,7 +17,11 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 
 	TextFileCmd = new G4UIcmdWithABool("/data/TextFile", this);
 	TextFileCmd -> SetGuidance("Choose if you would like the data to be saved to a text file ");
-	TextFileCmd -> SetDefaultValue("true");
+	TextFileCmd -> SetDefaultValue(true);
+
+	HDF5FileCmd = new G4UIcmdWithABool("/data/HDF5File", this);
+	HDF5FileCmd -> SetGuidance("Choose if you would like the data to be saved to a text file ");
+	HDF5FileCmd -> SetDefaultValue(true);
 
 	NoBins_Cmd = new G4UIcmdWithAnInteger("/data/bins", this);
 	NoBins_Cmd -> SetDefaultValue(5);
@@ -34,16 +38,22 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 	Visualization_Cmd = new G4UIcmdWithABool("/data/Visualization", this);
 	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
 	Visualization_Cmd -> SetDefaultValue("true");
+
+	seedCmd = new G4UIcmdWithAnInteger("/data/Seed", this);
+	seedCmd -> SetDefaultValue(0);
+	seedCmd -> SetGuidance("Enter a seed for the simulation. Input 0 for a random seed ");
 }
 
 DataMessenger::~DataMessenger()
 {
 	delete DataDirectory;
 	delete TextFileCmd;
+	delete HDF5FileCmd;
 	delete NoBins_Cmd;
 	delete NoImages_Cmd;
 	delete NoPhotons_Cmd;
 	delete Visualization_Cmd;
+	delete seedCmd;
 
 	G4cout << G4endl << "DataMessenger has been deleted " << G4endl;
 }
@@ -52,8 +62,13 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
 	if( command == TextFileCmd )
   	{ 
-		data -> SetTextFileCmd(newValue);
+		data -> SetTextFileCmd(TextFileCmd -> GetNewBoolValue(newValue));
 		G4cout << G4endl << "Data -> TextFile command detected  " << G4endl;
+	}	
+	else if( command == HDF5FileCmd )
+  	{ 
+		data -> SetHDF5FileCmd(HDF5FileCmd -> GetNewBoolValue(newValue));
+		G4cout << G4endl << "Data -> HDF5File command detected  " << G4endl;
 	}
 	else if( command == NoBins_Cmd )
 	{
@@ -63,7 +78,7 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	else if( command == NoImages_Cmd )
 	{
 		data -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetNoImages command detected "<< G4endl;
+		G4cout << G4endl << "Data -> SetNoImages command detected "<< data ->GetNoImages() << G4endl;
 	}
 	else if( command == NoPhotons_Cmd )
 	{
@@ -72,7 +87,12 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if( command == Visualization_Cmd )
 	{
-		data -> SetVisualization(newValue);	
+		data -> SetVisualization(Visualization_Cmd -> GetNewBoolValue(newValue));	
 		G4cout << G4endl << "Data -> SetVisualization command detected "<< G4endl;
+	}
+	else if( command == seedCmd )
+	{
+		data -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));	
+		G4cout << G4endl << "Data -> SetSeedOption command detected "<< G4endl;
 	}
 }

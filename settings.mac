@@ -7,30 +7,33 @@
 /run/print false    	#(If you want to print hit image information at the end of each run)
 
 #Data Settings
+#/data/Seed 0
 /data/Visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
-/data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors)
-/data/NumberOfImages 10		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 100	#(Choose the number of photons to be fired at the target)
+/data/HDF5File true
+/data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
+/data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
+/data/NumberOfPhotons 10000000	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
-/gun/setEnergy 40 keV		#(Set the initial energy of the monochromatic X-ray beam)
-/gun/setBeamWidth 0.2 m		#(Set the beam width)
-/gun/setBeamHeight 0.2 m	#(Set the beam height
+/gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
+/gun/setBeamWidth 2.1 mm		#(Set the beam width)
+/gun/setBeamHeight 2.5 mm			#(Set the beam height)
 
 #World Settings
-/world/size 1 1 1 m		#(Set the world size, everything must beside of it)
+/world/size 20 2.1 2.5 mm		#(Set the world size, everything must be inside of it)
 
 #Detector Settings
-/detector/size 1 10 3 mm			#(Set the detector dimensions)
-/detector/numberY 40			#(Set the number of detectors along the Y direction)
-/detector/numberZ 30    		#(Set the number of detectors along the z direction)
+/detector/size 5 21 25 um			#(Set the detector dimensions)
+/detector/numberY 100			#(Set the number of detectors along the Y direction)
+/detector/numberZ 100    		#(Set the number of detectors along the z direction)
 /detector/material G4_SODIUM_IODIDE	#(Set the material of the detectors)
 
 #Target Settings
-/Target/position -20 0 0 cm		#(Set the position of the target)
+/Target/NumberOfObjects 2
+/Target/position 0 0 0 cm		#(Set the position of the target)
 /Target/material G4_Al			#(Set the material of the target)
-/Target/OffSet 0.1 m			#(Set the off set radius of the target when it rotates)
+/Target/OffSet 0 m			#(Set the off set radius of the target when it rotates)
 
 /run/initialize
 #/hits/verbose 0		#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))

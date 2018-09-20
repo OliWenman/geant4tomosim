@@ -15,20 +15,47 @@
 
 #include "hdf5.h"
 
+//CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+//GenerateSeed(data);
+
+//Not sure if to keep or to use RunAction class to do it. Currently using RunAction
+void GenerateSeed(Data* data)
+{
+	G4int seedCmd = data -> GetSeedOption();	
+	if (seedCmd != 0)	//Keeps the seed
+	{		
+		CLHEP::HepRandom::setTheSeed(seedCmd);
+	}
+	else if (seedCmd == 0)	//Random seed
+	{
+		//set random seed with system time
+		seedCmd = time(NULL);
+		CLHEP::HepRandom::setTheSeed(seedCmd);
+	}
+	if (data -> GetCurrentImage() == 0)
+		{data -> SetSeedOption(seedCmd);}
+}
+
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {
+	//Calculates the estimated time
 	G4double ETSeconds = (LoopTimer * NoImages) - (LoopTimer * Image);
 
-	if (ETSeconds > 60)
+	if (NoImages > 1)
 	{
-		if(ETSeconds > 60*60)
-			{G4cout << G4endl << int(ETSeconds/(60*60)) << " hours left" << G4endl;}
+		//Prints out the sustiable units for the estimated time 
+		if (ETSeconds > 60)
+		{
+			if(ETSeconds > 60*60)
+				{G4cout << G4endl << int(ETSeconds/(60*60)) << " hours left" << G4endl;}
+			else
+				{G4cout << G4endl << int(ETSeconds/60) << " minutes left" << G4endl;}
+		}
 		else
-			{G4cout << G4endl << int(ETSeconds/60) << " minutes left" << G4endl;}
+			{G4cout << G4endl << "Less than a minute left to go " << G4endl;}
 	}
-	else
-		{G4cout << G4endl << "Less than a minute left to go " << G4endl;}
 }
+
 
 int main(int argc,char** argv)
 {
@@ -76,10 +103,9 @@ int main(int argc,char** argv)
 		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
 	               << G4endl << "================================================================================" << G4endl;
 	}
-	
+
 	//Save variables to needed classes
 	G4int Image = 0;
-	DC -> SetNoImages(data -> GetNoImages());
 
 	//Start the simulation timer
 	G4Timer FullTime;
@@ -87,24 +113,30 @@ int main(int argc,char** argv)
 
 	for (Image; Image < data -> GetNoImages(); Image++)
 	{
+		//Start internal looptimer to update the estimated time for completion
 		G4Timer LoopTimer;
 		LoopTimer.Start();
+
+		//Let other clases know what the current image is 
 		data -> SetCurrentImage(Image);
-		DC -> SetCurrentImage(Image);
 		
 		G4cout << G4endl << "================================================================================"
 		       << G4endl << "                           PROCESSING IMAGE " <<  Image+1
 	               << G4endl << "================================================================================" << G4endl;
 		
+		//Beam on to start the simulation
 		runManager -> BeamOn(data -> GetNoPhotons());
+		
+		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager()->ReinitializeGeometry();
-		//G4RunManager::GetRunManager()->GeometryHasBeenModified();
+		
+		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
 		CompletionTime(LoopTimer.GetRealElapsed(), Image, data -> GetNoImages());
 	}
 	
+	//Stop the full simulation time and save to data class
 	FullTime.Stop();
-
 	data -> SetSimulationTime(FullTime.GetRealElapsed());
 
 	G4cout << G4endl << "================================================================================"
@@ -112,13 +144,17 @@ int main(int argc,char** argv)
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 	
+	//Write data to file if command is turned on
 	if (data -> GetTextFileCmd() == true)
 		{data -> WriteToTextFile();}
+	else if(data -> GetHDF5FileCmd() == true)
+		{data -> WriteToHDF5();}
 	else 
-		{G4cout << G4endl << "Data was not written to a text file" << G4endl;}
+		{G4cout << G4endl << "The data from the simulation was not saved!" << G4endl;}
 
 	ui -> SessionStart();   	
 
+	//Delete the remaining pointers
 	G4cout << G4endl << "Deleting ui";
 	delete ui;
 	G4cout << G4endl << "Deleting visManager" << G4endl; 
@@ -127,11 +163,6 @@ int main(int argc,char** argv)
   	delete runManager;
 	delete data;
 
-//----------------------------------------------------------------------------------
-
-   return 0;
-
-
+   	return 0;
 }
-
 

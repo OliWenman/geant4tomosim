@@ -20,14 +20,15 @@ class RunAction : public G4UserRunAction
 
     		virtual void BeginOfRunAction(const G4Run* run);
     		virtual void EndOfRunAction(const G4Run* run);
+		virtual void GenerateSeed();
 
 		inline void SetSeedOption(G4int value){seedCmd = value;}
 		inline void SetTotalNoEvents(G4int value){TotalNoEvents = value;}
-		inline void SetPrintOption(G4String value){PrintCmd = value;} 
+		inline void SetPrintOption(G4bool value){PrintCmd = value;} 
 
 		G4int GetSeedOption(){return seedCmd;}
 		G4int GetTotalNoEvents(){return TotalNoEvents;}
-		G4String GetPrintOption(){return PrintCmd;}	
+		G4bool GetPrintOption(){return PrintCmd;}	
 
 	private:
 		//Pointers to classes
@@ -37,7 +38,7 @@ class RunAction : public G4UserRunAction
 		//Declaring data variables
 		G4int seedCmd;
 		G4int TotalNoEvents;
-		G4String PrintCmd;
+		G4bool PrintCmd;
 };
 
 

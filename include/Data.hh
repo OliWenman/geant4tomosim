@@ -21,16 +21,14 @@ class Data
 
 		G4int GetHitElement(G4int x, G4int y){return HitDataMatrix[x][y][0];}	
 
-		G4int GetNumberRows(){return rows;}
-		G4int GetNumberColumns(){return columns;}
+		inline G4int GetNumberRows(){return rows;}
+		inline G4int GetNumberColumns(){return columns;}
 
 		G4double GetMaxEnergy(){return MaxE;}
 
-		G4int GetSeed(){return Seed;}
-		G4int GetCurrentImage(){return CurrentImage;}
+		inline G4int GetCurrentImage(){return CurrentImage;}
 
 		G4String GetPhysicsUsed(){return PhysicsUsed;}
-		G4bool GetTextFileCmd(){return TextFileCmd;}
 
 		G4double GetSimulationTime(){return SimulationTime;}
 
@@ -43,11 +41,9 @@ class Data
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
-		void SetSeed(G4int value){Seed = value;}
-		void SetCurrentImage(G4int value){CurrentImage = value;}
+		inline void SetCurrentImage(G4int value){CurrentImage = value;}
 
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
-		void SetTextFileCmd(G4bool value){TextFileCmd = value;}
 
 		void SetSimulationTime(G4double value){SimulationTime = value;}
 
@@ -56,14 +52,20 @@ class Data
 		G4int GetNoImages(){return NoImages_Cmd;}
 		G4int GetNoPhotons(){return NoPhotons_Cmd;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
-		inline void SetNoBins(G4int value){NoBins_Cmd = value;}
-		inline void SetNoImages(G4int value){NoImages_Cmd = value;}
-		inline void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
-		inline void SetVisualization(G4bool value){Visualization_Cmd = value;}
+		G4bool GetTextFileCmd(){return TextFileCmd;}
+		G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
+		G4int GetSeedOption(){return seedCmd;}
+		void SetNoBins(G4int value){NoBins_Cmd = value;}
+		void SetNoImages(G4int value){NoImages_Cmd = value;}
+		void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
+		void SetVisualization(G4bool value){Visualization_Cmd = value;}
+		void SetTextFileCmd(G4bool value){TextFileCmd = value;}
+		void SetHDF5FileCmd(G4bool value){HDF5FileCmd = value;}
+		void SetSeedOption(G4int value){seedCmd = value;}
 
 		//Method functions
-		G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
-		G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
+		inline G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
+		inline G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
 
 		virtual void SetUpData(G4int Nrow, G4int Ncolumn);
 		virtual void SaveHitData(G4int DetectorNumber);
@@ -74,11 +76,11 @@ class Data
 		virtual void WriteToHDF5();
 
 	private:	
+		DataMessenger* dataMessenger;
 
 		//Data members
 		std::vector<std::vector<std::vector<G4int> > > HitDataMatrix;
 		std::vector<std::vector<std::vector<G4int> > > EnergyMatrix;
-		DataMessenger* dataMessenger;
 
 		G4int rows;
 		G4int columns;	
@@ -90,12 +92,14 @@ class Data
 
 		G4String PhysicsUsed;
 		G4bool TextFileCmd;
+		G4bool HDF5FileCmd;
 		G4double SimulationTime;
 
 		G4int NoBins_Cmd;
 		G4int NoImages_Cmd;
 		G4int NoPhotons_Cmd;
 		G4bool Visualization_Cmd;
+		G4int seedCmd;
 };
 
 #endif

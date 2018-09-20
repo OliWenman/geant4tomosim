@@ -19,8 +19,8 @@ RunActionMessenger::RunActionMessenger(RunAction *run):G4UImessenger(), RAction(
 	seedCmd -> SetDefaultValue(0);
 	seedCmd -> SetGuidance("Choose random seed (0) or input your own. ");
 
-	PrintCmd = new G4UIcmdWithAString("/run/print", this);
-	PrintCmd -> SetDefaultValue("false");
+	PrintCmd = new G4UIcmdWithABool("/run/print", this);
+	PrintCmd -> SetDefaultValue(false);
 	PrintCmd -> SetGuidance("Choose if you want to print your data at the end of a run ");
 }
 
@@ -41,7 +41,7 @@ void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if (command == PrintCmd)
 	{
-		RAction -> SetPrintOption(newValue);
+		RAction -> SetPrintOption(PrintCmd -> GetNewBoolValue(newValue));
 		G4cout << G4endl << "RunAction -> SetPrintOption command detected" << G4endl;
 	}
 }

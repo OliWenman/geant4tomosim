@@ -2,6 +2,7 @@
 #include "DetectorConstructionMessenger.hh"
 #include "TrackerSD.hh"
 #include "Data.hh"
+#include "TargetConstruction.hh"
 
 #include <math.h>	//Needed for sin and cos
 
@@ -33,12 +34,25 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
+	TC = new TargetConstruction(data->GetNoImages());
+	
 }
 
-DetectorConstruction::~DetectorConstruction(){delete detectorMessenger; G4cout << G4endl << "DetectorConstruction has been deleted " << G4endl;}
+DetectorConstruction::~DetectorConstruction()
+{	
+	delete detectorMessenger; 
+	delete TC;
+	G4cout << G4endl << "DetectorConstruction has been deleted " << G4endl;
+}
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+	if (GetCurrentImage() == 0)
+	{
+		TC -> SetNoImages(data ->GetNoImages());
+		TC -> SetVisualization(data->GetVisualization());
+	}
+
 	//Clean old geometry, if any
         G4GeometryManager::GetInstance()->OpenGeometry();
         G4PhysicalVolumeStore::GetInstance()->Clean();
@@ -50,7 +64,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
-
 	G4double DetectorSizeY = DetectorSize_Cmd.y();
 	G4double DetectorSizeZ = DetectorSize_Cmd.z();
 
@@ -74,8 +87,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//WORLD
 	G4Box* solidWorld = new G4Box("World", WorldSizeX, WorldSizeY, WorldSizeZ);
-
-	//Fill the world with air
+	
 	G4Material* WorldMaterial = FindMaterial("G4_AIR");
 	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, WorldMaterial, "World");
 
@@ -91,104 +103,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							 true);		//overlaps checking                     
 
 	// Visualization attributes
-  	G4VisAttributes* World_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
-  	logicWorld -> SetVisAttributes(World_Colour);
+	Visualization(logicWorld, G4Colour::White());
 
-	SetTargetCopyNo(0);
-
-	//SetUpTarget(TargetPosition_Cmd, GetTargetMaterial(), logicWorld, "Tube");
-	SetUpTargetBox(G4ThreeVector(0.2*m, 0.1*m, 0.1*m), G4ThreeVector(0.01*m, 0.01*m, 0.01*m), G4ThreeVector(0, 0, 0), GetTargetMaterial(), logicWorld);
-	//G4RunManager::GetRunManager()->ReinitializeGeometry();
+	TC->SetCurrentImage(data->GetCurrentImage());
+	TC->Construct(logicWorld);
 
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
-
+		
 	return physWorld;
 
 	G4cout << G4endl << "The world has been created succesfully ";  
-}
-
-void DetectorConstruction::SetUpTarget(G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox, G4String Shape)
-{
-	if (Shape == "Tube")
-	{
-		G4ThreeVector WorldSize = GetWorldSize();
-		G4double WorldSizeZ = WorldSize.z();
-		SetTargetCopyNo(GetTargetCopyNo() + 1);
-	
-		//Target geometry
-		G4double innerRadius = 1*cm;
-		G4double outerRadius = 1.50*cm;
-		G4double hz = WorldSizeZ/2;
-		G4double startAngle = 0.*deg;
-		G4double spanningAngle = 360.*deg;
-
-		//Target Position
-		G4double TargetPositionX = TargetPosition.x();
-		G4double TargetPositionY = TargetPosition.y();
-		G4double TargetPositionZ = TargetPosition.z();
-
-		//TARGET
-   		G4Tubs* TargetTube = new G4Tubs("TargetGeometry",
-					 	innerRadius,
-                  			 	outerRadius,
-                  			 	hz,
-                  			 	startAngle,
-                  			 	spanningAngle);
-
-		//Fill the target with its material
-		G4Material* TargetMaterial = FindMaterial(Material);
-		G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, TargetMaterial, "Al_Target");
-
-
-		//Create the target physical volume
-		G4VPhysicalVolume* physTarget= new G4PVPlacement(0,            //no rotation
-							 	G4ThreeVector(TargetPositionX, TargetPositionY, TargetPositionZ),       
-							 	logicTarget,           //its logical volume
-							 	"Target",               //its name
-							 	logicMotherBox,                     //its mother  volume
-							 	false,                 //no boolean operation
-							 	0,                     //copy number
-							 	true);		//overlaps checking      
-		//Visualization attributes
-  		G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
-  		logicTarget -> SetVisAttributes(Target_Colour);
-	
-		G4cout << G4endl << "The target has been created succesfully ";  
-	}               
-
-}
-	
-void DetectorConstruction::SetUpTargetBox(G4ThreeVector TargetSize, G4ThreeVector InnerSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicMotherBox)
-{
-	G4Box *outerBox = new G4Box("Outer Box", TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
-	G4Box *innerBox = new G4Box("Inner Box",(TargetSize.x()-InnerSize.x())/2.,(TargetSize.y()-InnerSize.y())/2.,(TargetSize.z()-InnerSize.z())/2.);
-	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("Hollow Box", outerBox, innerBox);
-
-	//Fill the target with its material
-	G4Material* BoxMaterial = FindMaterial(Material);
-	G4LogicalVolume* logicHollowBox = new G4LogicalVolume(HollowBox, BoxMaterial, "logicBox");
-	
-	G4double RotateObject = RotationMatrix();
-	G4RotationMatrix* ObjectRotation = new G4RotationMatrix();
-	ObjectRotation->rotateX(90.*deg);
-	ObjectRotation->rotateY(0.*deg);
-	ObjectRotation->rotateZ(RotateObject);
-
-	G4ThreeVector NewTargetPosition = OffSetRotation(TargetPosition, OffSetRadius_Cmd, RotateObject);
-
-	//Create the target physical volume
-	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(ObjectRotation,            
-							     NewTargetPosition,    
-							     logicHollowBox,           //its logical volume
-							     "HollowBox",               //its name
-							     logicMotherBox,                     //its mother  volume
-							     false,                 //no boolean operation
-							     0,                     //copy number
-							     false);		//overlaps checking      
-	//Visualization attributes
-  	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
-  	logicHollowBox -> SetVisAttributes(HollowBoxColour);
-	G4cout << G4endl << "The target has been created succesfully " << G4endl;  
 }
 
 void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
@@ -201,48 +125,54 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	G4double DetectorSizeZ = DetectorSize.z();
 	G4ThreeVector WorldSize = GetWorldSize();
 	G4double WorldSizeX = WorldSize.x();
-	//Intial detector position
-	G4double iDetectorPosX = -WorldSizeX + DetectorSizeX * 2;
-	G4double iDetectorPosY = -NoDetectorsY * DetectorSizeY;
-	G4double iDetectorPosZ = -NoDetectorsZ * DetectorSizeZ;
-	//Detector Position
+
 	G4double DetectorPosX = -WorldSizeX + DetectorSizeX * 2;
-	G4double DetectorPosY = -NoDetectorsY * DetectorSizeY;
-	G4double DetectorPosZ = -NoDetectorsZ * DetectorSizeZ;
-	
-	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
+
+	//G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
+	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY , DetectorSizeZ );
+
+	//Fill the world with air
+	G4double density = 1e-25*g/cm3;
+  	G4double pressure    = 3.e-18*pascal;
+  	G4double temperature = 2.73*kelvin;
+	G4int z = 1;
+	G4double a = 1.01*g/mole;
+  	G4Material* Vacuum = new G4Material("Galactic", z, a, density,kStateGas,temperature,pressure);
 
 	//Create the detector logical volume by assigning the material of the detectors 
 	G4Material* DetectorMaterial = FindMaterial(Material);
 	G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector,DetectorMaterial, "LogicDetector");
+	//G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector,Vacuum, "LogicDetector");
 
-	//Create the detector physical volume by placing it in the "logicWorld" logical volume.
-	for (CopyNo; CopyNo < TotalNoDetectors; CopyNo++)
-	{	if (DetectorPosY >= -iDetectorPosY)
-		{	DetectorPosY = iDetectorPosY;
-			DetectorPosZ = DetectorPosZ + DetectorSizeZ * 2;
+	G4double MaxLengthPositionY = NoDetectorsY*DetectorSizeY;
+	G4double MaxLengthPositionZ = NoDetectorsZ*DetectorSizeZ;
+
+	G4double StartingPositionY = -NoDetectorsY * DetectorSizeY + DetectorSizeY;
+	G4double StartingPositionZ = -NoDetectorsZ * DetectorSizeZ + DetectorSizeZ;
+
+	for (G4double DetectorPosY = StartingPositionY; DetectorPosY <= MaxLengthPositionY; DetectorPosY = DetectorPosY+(DetectorSizeY*2))
+	{	
+		for (G4double DetectorPosZ = StartingPositionZ; DetectorPosZ <= MaxLengthPositionZ; DetectorPosZ = DetectorPosZ+(DetectorSizeZ*2))
+		{
+			G4VPhysicalVolume* phys_Detector = new G4PVPlacement(0,           //no rotation
+							  	     	G4ThreeVector(DetectorPosX, DetectorPosY, DetectorPosZ),      
+							  	     	logic_Detector,           //its logical volume
+							  	     	"Detector",               //its name
+						          	    	 logicMotherBox,            //its mother  volume
+							  	    	 false,                 //no boolean operation
+						          	   	  CopyNo,                     //copy number
+							  	    	 false);	//overlaps checking    
+			CopyNo++;
 		}
-		DetectorPosY = DetectorPosY + 2*DetectorSizeY;
-		G4VPhysicalVolume* phys_Detector = new G4PVPlacement(0,           //no rotation
-							  	     G4ThreeVector(DetectorPosX, DetectorPosY, DetectorPosZ),      
-							  	     logic_Detector,           //its logical volume
-							  	     "Detector",               //its name
-						          	     logicMotherBox,            //its mother  volume
-							  	     false,                 //no boolean operation
-						          	     CopyNo,                     //copy number
-							  	     false);	//overlaps checking    
-	}    
+	}   
 
 	//Sets a max step length in the tracker region, with G4StepLimiter
-  	G4double maxStep = 0.001*mm*DetectorSizeX;
-  	fStepLimit = new G4UserLimits(maxStep);
-  	logic_Detector -> SetUserLimits(fStepLimit);
+  	//G4double maxStep = 0.001*mm*DetectorSizeX;
+  	//fStepLimit = new G4UserLimits(maxStep);
+  	//logic_Detector -> SetUserLimits(fStepLimit);
 
 	//Visualization attributes
-  	G4VisAttributes* Detector_Colour = new G4VisAttributes(G4Colour(0.0,1.0,1.0));	//Cyan
-  	logic_Detector -> SetVisAttributes(Detector_Colour);
-
-	//SaveDetectors(logic_Detector);
+	Visualization(logic_Detector, G4Colour::Cyan());
 	
 	/*//Sensitive detectors
   	G4String trackerChamberSDname = "TrackerChamberSD";
@@ -254,6 +184,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	AttachSensitiveDetector(logic_Detector);
 
 	G4cout << "The detectors have been created succesfully " << G4endl;  
+
 }
 
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
@@ -265,25 +196,6 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	G4Material* Material = nist -> FindOrBuildMaterial(MaterialName);
 
 	return Material;
-}
-
-G4double DetectorConstruction::RotationMatrix()
-{
-	if (GetNoImages() > 1)
-	{	
-		G4GeometryManager::GetInstance()->OpenGeometry();
-		G4double FullScan = 180*deg;
-		G4double deltaTheta = FullScan/(GetNoImages());
-		
-		G4double RotateY = deltaTheta*GetCurrentImage();
-		G4GeometryManager::GetInstance()->CloseGeometry();
-		G4RunManager::GetRunManager()->GeometryHasBeenModified();
-		return RotateY;
-	}
-	else 
-	{	G4double RotateY = 0.*deg;
-		return RotateY;
-	}
 }
 
  void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
@@ -306,18 +218,12 @@ G4double DetectorConstruction::RotationMatrix()
 	SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 }
 
-G4ThreeVector DetectorConstruction::OffSetRotation(G4ThreeVector Centre, G4double Radius, G4double Angle)
+void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-	if (GetNoImages() > 1 && Radius != 0)
-	{	
-		G4double x0 = Centre.x();
-		G4double y0 = Centre.y();
-		G4double x = (x0+Radius)*cos(Angle);
-		G4double y = (y0+Radius)*sin(Angle);
-
-		return G4ThreeVector(x, 0 ,y);
+	if (data -> GetVisualization() == true)
+	{
+		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	//Cyan
+  		LV -> SetVisAttributes(ObjectColour);
 	}
-	else 
-		{return G4ThreeVector(0,0,0);}
 }
 

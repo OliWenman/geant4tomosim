@@ -60,34 +60,36 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();
-	G4double EnergyDeposit = newHit -> GetEdep();
 	data -> SaveHitData(DetectorNumber);
-	data -> SaveEnergyData(DetectorNumber, EnergyDeposit);
+	data -> SaveEnergyData(DetectorNumber, newHit->GetEdep());
 
   	return true;
 }
  
 void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 { 
-	G4int eID = 0;
-  	const G4Event* evt = G4RunManager::GetRunManager() -> GetCurrentEvent();
-  	if(evt) eID = evt -> GetEventID();
+	if (verboseLevel > 0)
+	{	
+		G4int eID = 0;
+  		const G4Event* evt = G4RunManager::GetRunManager() -> GetCurrentEvent();
+  		if(evt) eID = evt -> GetEventID();
 
-	if ( verboseLevel == 1 ) 
-		{ G4cout << G4endl << "Event " << eID;}
+		if ( verboseLevel == 1 ) 
+			{ G4cout << G4endl << "Event " << eID;}
 		
-  	else if ( verboseLevel > 1 ) 
-	{	G4int nofHits = fHitsCollection -> entries();
+  		else if ( verboseLevel > 1 ) 
+		{	G4int nofHits = fHitsCollection -> entries();
 
-		G4cout << G4endl << "Event " << eID;
-		if (nofHits == 0)
+			G4cout << G4endl << "Event " << eID;
+			if (nofHits == 0)
 			{G4cout << ": No hit ";}
-		if (nofHits > 0)
-		{	//If there's a hit, print it if the verbose setting is greater than 1
-			for (G4int i = 0; i < nofHits; i++ ) 
-				{(*fHitsCollection)[i] -> Print();}
-		}
-  	}
+			if (nofHits > 0)
+			{	//If there's a hit, print it if the verbose setting is greater than 1
+				for (G4int i = 0; i < nofHits; i++ ) 
+					{(*fHitsCollection)[i] -> Print();}
+			}
+  		}
+	}
 }
 
 

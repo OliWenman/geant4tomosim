@@ -30,10 +30,12 @@ class DataMessenger: public G4UImessenger
 		G4UIdirectory* DataDirectory;
 
     		G4UIcmdWithABool* TextFileCmd;
+		G4UIcmdWithABool* HDF5FileCmd;
 		G4UIcmdWithAnInteger *NoBins_Cmd;
 		G4UIcmdWithAnInteger *NoImages_Cmd;
 		G4UIcmdWithAnInteger *NoPhotons_Cmd;
 		G4UIcmdWithABool *Visualization_Cmd;
+		G4UIcmdWithAnInteger *seedCmd;
 };
 
 #endif 

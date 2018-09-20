@@ -4,10 +4,10 @@
 #include <fstream>
 #include "G4UnitsTable.hh"
 
-#include "hdf5.h"
-#include "H5Cpp.h"
+//#include "hdf5.h"
+//#include "H5Cpp.h"
 
-using namespace H5;
+//using namespace H5;
 
 Data::Data()
 {
@@ -30,7 +30,7 @@ void Data::SetUpData(G4int Nrow, G4int Ncolumn)
 	//Finds the needed values user inputted
 	G4int Nbins = GetNoBins();
 	G4int NImages = GetNoImages();
-	
+
 	//Works out the number of detectors for the energy data
 	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
 
@@ -49,6 +49,7 @@ void Data::SetUpData(G4int Nrow, G4int Ncolumn)
 
 void Data::SaveHitData(G4int DetectorNumber)
 {
+	
 	//Finds the number of columns the matrix has
 	G4int column = GetNumberColumns();
 			
@@ -56,11 +57,8 @@ void Data::SaveHitData(G4int DetectorNumber)
 	G4int x = Quotient(DetectorNumber, column);
 	G4int y = Remainder(DetectorNumber, column);
 	
-	//Finds which image for the data to save to
-	G4int Image = GetCurrentImage();
-
 	//+1 for a hit
-	++HitDataMatrix[x][y][Image]; 
+	++HitDataMatrix[x][y][GetCurrentImage()]; 
 }
 
 void Data::PrintHitData()
@@ -100,9 +98,6 @@ void Data::PrintHitData()
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
-	//Finds which image to save the data to
-	G4int Image = GetCurrentImage();
-
 	//Calculates the size of each bin
 	G4double BinSize = GetMaxEnergy()/GetNoBins();	
 
@@ -110,7 +105,7 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 	G4int BinNumber = floor(edep/BinSize);
 
 	//+1 to the energy bin
-	++EnergyMatrix[BinNumber][DetectorNumber][Image];
+	++EnergyMatrix[BinNumber][DetectorNumber][GetCurrentImage()];
 }
 
 void Data::PrintEnergyData()
@@ -172,7 +167,7 @@ void Data::WriteToTextFile()
 
 	outdata << "Conditioons used in this simulation are: " << std::endl;
 	outdata << "- Physics package: " << GetPhysicsUsed() << std::endl;
-	outdata << "- Seed: " << GetSeed() << std::endl;
+	outdata << "- Seed: " << GetSeedOption() << std::endl;
 	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
 	outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;
 	outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
