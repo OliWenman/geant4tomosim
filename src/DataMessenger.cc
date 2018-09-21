@@ -37,7 +37,7 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 
 	Visualization_Cmd = new G4UIcmdWithABool("/data/Visualization", this);
 	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
-	Visualization_Cmd -> SetDefaultValue("true");
+	Visualization_Cmd -> SetDefaultValue(true);
 
 	seedCmd = new G4UIcmdWithAnInteger("/data/Seed", this);
 	seedCmd -> SetDefaultValue(0);
@@ -78,7 +78,7 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	else if( command == NoImages_Cmd )
 	{
 		data -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetNoImages command detected "<< data ->GetNoImages() << G4endl;
+		G4cout << G4endl << "Data -> SetNoImages command detected " << G4endl;
 	}
 	else if( command == NoPhotons_Cmd )
 	{

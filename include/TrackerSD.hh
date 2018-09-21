@@ -20,12 +20,13 @@ class Data;
 class TrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data);
+		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, G4bool DetectorEfficiency);
     		virtual ~TrackerSD();
 
 		//Get methods
 		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}
 		G4int GetNoDetectorsZ(){return NoDetectorsZ_Cmd;}
+		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		G4int GetNoBins(){return NoBins;}
 
@@ -33,6 +34,7 @@ class TrackerSD : public G4VSensitiveDetector
 		void SetNoDetectorsY(G4int value){NoDetectorsY_Cmd = value;}
 		void SetNoDetectorsZ(G4int value){NoDetectorsZ_Cmd = value;}
 		void SetNoBins(G4int value){NoBins = value;}
+		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
   
     		//Methods
     		virtual void   Initialize(G4HCofThisEvent* hitCollection);
@@ -48,6 +50,7 @@ class TrackerSD : public G4VSensitiveDetector
 		//Data variables 
 		G4int NoDetectorsY_Cmd;
 		G4int NoDetectorsZ_Cmd;
+		G4bool DetectorEfficiency_Cmd;
 
 		G4int NoBins;
 };

@@ -17,6 +17,7 @@ class PhysicsList: public G4VModularPhysicsList
   		virtual ~PhysicsList();
 
 		virtual void Print(G4String name);
+		virtual void AddProcess(G4String name);
 
   		void ConstructParticle();
 

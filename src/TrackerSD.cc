@@ -9,7 +9,7 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 
-TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject) 
+TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, G4bool DetectorEfficiency) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
@@ -20,6 +20,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 		//Save the variables into its own class
 		SetNoDetectorsY(NumDetectorsY);
 		SetNoDetectorsZ(NumDetectorsZ);
+		SetDetectorEfficiency(DetectorEfficiency);
 
 		data -> SetUpData(NumDetectorsZ, NumDetectorsY);	
 	}
@@ -43,7 +44,8 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   	//Energy deposit
   	G4double edep = aStep -> GetTotalEnergyDeposit();
 
-  	if (edep == 0.) return false;
+	if (GetDetectorEfficiency() == false)
+		{if (edep == 0.) return false;}
 
 	//Create the TrackHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
@@ -56,7 +58,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	newHit -> SetEdep(edep);
 
 	//Save the information - keep?
-  	//fHitsCollection -> insert( newHit );
+  	fHitsCollection -> insert( newHit );
 
 	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();

@@ -22,6 +22,10 @@
 
 #include "G4EmStandardPhysicsGS.hh"
 
+
+#include "G4PhotoElectricEffect.hh"
+#include "G4Gamma.hh"
+
 PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataObject)
 {
   	PhysicsMessenger = new PhysicsListMessenger(this);
@@ -41,7 +45,10 @@ PhysicsList::~PhysicsList()
 }
 
 void PhysicsList::ConstructParticle()
-	{emPhysicsList->ConstructParticle();}
+{
+	G4Gamma::GammaDefinition();	
+	emPhysicsList->ConstructParticle();
+}
 
 void PhysicsList::ConstructProcess()
 {
@@ -50,6 +57,7 @@ void PhysicsList::ConstructProcess()
 
   	//Electromagnetic physics list
   	emPhysicsList->ConstructProcess();
+	//AddProcess("PhotoElectricEffect");
   	em_config.AddModels();
 }
 
@@ -149,3 +157,10 @@ void PhysicsList::Print(G4String name)
 
 }
 
+void PhysicsList::AddProcess(G4String Name)
+{
+	G4PhotoElectricEffect* PhotoElectricEffect = new G4PhotoElectricEffect();
+  
+  	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();  
+  	ph->RegisterProcess(PhotoElectricEffect, G4Gamma::Gamma());
+}

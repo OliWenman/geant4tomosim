@@ -47,7 +47,7 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	if (GetCurrentImage() == 0)
+	if (data -> GetCurrentImage() == 0)
 	{
 		TC -> SetNoImages(data ->GetNoImages());
 		TC -> SetVisualization(data->GetVisualization());
@@ -131,18 +131,30 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	//G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
 	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY , DetectorSizeZ );
 
-	//Fill the world with air
-	G4double density = 1e-25*g/cm3;
-  	G4double pressure    = 3.e-18*pascal;
-  	G4double temperature = 2.73*kelvin;
-	G4int z = 1;
-	G4double a = 1.01*g/mole;
-  	G4Material* Vacuum = new G4Material("Galactic", z, a, density,kStateGas,temperature,pressure);
+	G4Material* NewMaterial;
+
+	if (GetDetectorEfficiency() == true && data -> GetCurrentImage() == 0)
+	{
+		//Create detectors out of a vacuum if 100% efficient		
+		
+		//Fill the world with air
+		G4double density = 1e-25*g/cm3;
+  		G4double pressure    = 3.e-18*pascal;
+  		G4double temperature = 2.73*kelvin;
+		G4int z = 1;
+		G4double a = 1.01*g/mole;
+  		NewMaterial = new G4Material("Galactic", z, a, density,kStateGas,temperature,pressure);
+	}
+	if (GetDetectorEfficiency() == true)
+		{Material = "Galactic";}
+	 
+
+	//Creates detectors out of specified material	
 
 	//Create the detector logical volume by assigning the material of the detectors 
 	G4Material* DetectorMaterial = FindMaterial(Material);
+		
 	G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector,DetectorMaterial, "LogicDetector");
-	//G4LogicalVolume* logic_Detector = new G4LogicalVolume(solid_Detector,Vacuum, "LogicDetector");
 
 	G4double MaxLengthPositionY = NoDetectorsY*DetectorSizeY;
 	G4double MaxLengthPositionZ = NoDetectorsZ*DetectorSizeZ;
@@ -167,9 +179,9 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	}   
 
 	//Sets a max step length in the tracker region, with G4StepLimiter
-  	//G4double maxStep = 0.001*mm*DetectorSizeX;
-  	//fStepLimit = new G4UserLimits(maxStep);
-  	//logic_Detector -> SetUserLimits(fStepLimit);
+  	G4double maxStep = 0.1*mm;
+  	fStepLimit = new G4UserLimits(maxStep);
+  	logic_Detector -> SetUserLimits(fStepLimit);
 
 	//Visualization attributes
 	Visualization(logic_Detector, G4Colour::Cyan());
@@ -211,7 +223,7 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	{
       		G4cout << "Creating the Sensitive Detector"  << G4endl;
 
-    		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data);
+    		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
 	}
 
 	SetSensitiveDetector("LogicDetector", aTrackerSD, true);

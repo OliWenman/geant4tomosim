@@ -56,6 +56,10 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	DetectorMaterial_Cmd -> SetGuidance("Set the material of the detector ");
 	DetectorMaterial_Cmd -> SetDefaultValue("G4_SODIUM_IODIDE");
 
+	DetectorEfficiency_Cmd = new G4UIcmdWithABool("/detector/MaxEfficiency", this);
+	DetectorEfficiency_Cmd -> SetGuidance("Set the efficncy of the detectors to be 100%\ efficient or realistic ");
+	DetectorEfficiency_Cmd -> SetDefaultValue("true");	
+
 //-----------------------------------------------------------------------------------------------------
 		
 }
@@ -70,6 +74,7 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete NoDetectorsZ_Cmd;
 	delete DetectorSize_Cmd;
 	delete DetectorMaterial_Cmd;
+	delete DetectorEfficiency_Cmd;
 
 	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
 }
@@ -100,5 +105,10 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		ConstructDet -> SetDetectorMaterial(newValue);
 		G4cout << G4endl << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
+	}
+	else if( command == DetectorEfficiency_Cmd )
+	{
+		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
+		G4cout << G4endl << "DetectorConstruction -> SetDetectorEfficiency command detected " << G4endl;
 	}
 }

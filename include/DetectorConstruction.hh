@@ -36,6 +36,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		inline void SetNoDetectorsZ(G4int value){NoDetectorsZ_Cmd = value;}
 		inline void SetDetectorSize(G4ThreeVector value){DetectorSize_Cmd = value;}
 		inline void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
+		inline void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
 
 		inline void SetCurrentImage(G4int value){CurrentImage = value;}
 		inline void SetNoImages(G4int value){NoImages = value;}
@@ -47,6 +48,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int GetNoDetectorsZ(){return NoDetectorsZ_Cmd;}
 		G4ThreeVector GetDetectorSize(){return DetectorSize_Cmd;}
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
+		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages;}
@@ -70,6 +72,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int NoDetectorsZ_Cmd;
 		G4ThreeVector DetectorSize_Cmd;
 		G4String DetectorMaterial_Cmd;
+		G4bool DetectorEfficiency_Cmd;
 
 		//Data manipulation varaibles
 		G4int CurrentImage;

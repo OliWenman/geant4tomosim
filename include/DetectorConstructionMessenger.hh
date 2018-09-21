@@ -15,6 +15,7 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWith3VectorAndUnit;
+class G4UIcmdWithABool;
 
 class DetectorConstructionMessenger: public G4UImessenger 
 { 
@@ -43,6 +44,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		G4UIcmdWithAnInteger *NoDetectorsZ_Cmd;
 		G4UIcmdWith3VectorAndUnit *DetectorSize_Cmd;
 		G4UIcmdWithAString *DetectorMaterial_Cmd;
+		G4UIcmdWithABool *DetectorEfficiency_Cmd;
 
 };
 
