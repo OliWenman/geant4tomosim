@@ -32,6 +32,8 @@ class Data
 
 		G4double GetSimulationTime(){return SimulationTime;}
 
+		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
+
 		//Set Methods
 		void SetHitData(std::vector<std::vector<std::vector<G4int> > > UpdatedData){HitDataMatrix = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<std::vector<G4int> > >  UpdatedData){EnergyMatrix = UpdatedData;}
@@ -41,11 +43,15 @@ class Data
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
-		inline void SetCurrentImage(G4int value){CurrentImage = value;}
+		void SetCurrentImage(G4int value){CurrentImage = value;}
 
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
 
 		void SetSimulationTime(G4double value){SimulationTime = value;}
+
+		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
+
+		
 
 		//Commands
 		G4int GetNoBins(){return NoBins_Cmd;}
@@ -67,7 +73,8 @@ class Data
 		inline G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
 		inline G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
 
-		virtual void SetUpData(G4int Nrow, G4int Ncolumn);
+		virtual void SetUpHitData(G4int Nrow, G4int Ncolumn);
+		virtual void SetUpEnergyData();
 		virtual void SaveHitData(G4int DetectorNumber);
 		virtual void PrintHitData();
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);
@@ -94,6 +101,7 @@ class Data
 		G4bool TextFileCmd;
 		G4bool HDF5FileCmd;
 		G4double SimulationTime;
+		G4bool DetectorEfficiency_Cmd;
 
 		G4int NoBins_Cmd;
 		G4int NoImages_Cmd;

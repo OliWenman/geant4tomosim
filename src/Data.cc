@@ -21,35 +21,40 @@ Data::~Data()
 	delete dataMessenger;
 }
 
-void Data::SetUpData(G4int Nrow, G4int Ncolumn)
+void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 {
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
 	
-	//Finds the needed values user inputted
-	G4int Nbins = GetNoBins();
+	//Finds the total number of images
 	G4int NImages = GetNoImages();
-
-	//Works out the number of detectors for the energy data
-	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
 
 	//Creates a 3D vector for the hit data
 	std::vector<std::vector<std::vector<G4int> > > iHitDataMatrix;
-	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(NImages)));
-			
+	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(NImages)));		
+	SetHitData(iHitDataMatrix);
+}
+
+void Data::SetUpEnergyData()
+{
+	G4int Nrow = GetNumberRows();
+	G4int Ncolumn = GetNumberColumns();
+
+	//Finds the total number of images
+	G4int NImages = GetNoImages();
+
 	//Creates a 3D vector for the energy data
 	std::vector<std::vector<std::vector<G4int> > > iEnergyMatrix;
+	//Works out the number of detectors for the energy data
+	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
+	G4int Nbins = GetNoBins();
 	iEnergyMatrix.resize(Nbins,std::vector<std::vector<G4int> >(EnergyColumns,std::vector<G4int>(NImages)));
-			
-	//Saves the matrix data using the set method			
-	SetHitData(iHitDataMatrix);
 	SetEnergyData(iEnergyMatrix);
 }
 
 void Data::SaveHitData(G4int DetectorNumber)
 {
-	
 	//Finds the number of columns the matrix has
 	G4int column = GetNumberColumns();
 			
@@ -209,41 +214,44 @@ void Data::WriteToTextFile()
 	outdata.close();
 	G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
 
-	G4String EnergyFileName = "EnergyFile.txt";
-	outdata.open(FilePath+EnergyFileName); 
-
-	outdata << G4endl << "Energy detector data (keV)" << G4endl;
-
-	//Finds how many digits the detector numbers need to be to keep aligned
-	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
-
-	//Saves the energy data for each image
-	for (G4int Image = 0 ; Image < NImage ; Image++)
+	if (GetDetectorEfficiency() == false)
 	{
-		outdata << G4endl << "Image: " << Image+1 << G4endl;
-		outdata << "          "; 
 
-		for (G4int n = 0; n < NoDigits; n++)
-			{outdata << " ";}
+		G4String EnergyFileName = "EnergyFile.txt";
+		outdata.open(FilePath+EnergyFileName); 
+
+		outdata << G4endl << "Energy detector data (keV)" << G4endl;
+
+		//Finds how many digits the detector numbers need to be to keep aligned
+		G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
+
+		//Saves the energy data for each image
+		for (G4int Image = 0 ; Image < NImage ; Image++)
+		{
+			outdata << G4endl << "Image: " << Image+1 << G4endl;
+			outdata << "          "; 
+	
+			for (G4int n = 0; n < NoDigits; n++)
+				{outdata << " ";}
 			
-		for (G4int x = 0 ; x < GetNoBins(); x++)
-		{	outdata << "   "; 
-			outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
+			for (G4int x = 0 ; x < GetNoBins(); x++)
+			{	outdata << "   "; 
+				outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
+			}
+			outdata << G4endl;
+
+			for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
+    			{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
+        			{	if (yE == 0)
+						{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
+					outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE][Image];
+        			}
+    				outdata << G4endl;  
+    			}
 		}
-		outdata << G4endl;
-
-		for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
-    		{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
-        		{	if (yE == 0)
-					{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
-				outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE][Image];
-        		}
-    			outdata << G4endl;  
-    		}
+		outdata.close();
+		G4cout << G4endl << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
 	}
-	outdata.close();
-	G4cout << G4endl << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
-
 }
 
 void Data::WriteToHDF5()

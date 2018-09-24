@@ -28,6 +28,7 @@ void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
   		if( command == PhysicsListCmd )
    		{ 
 			G4cout << G4endl << "PhysicsList -> AddPhysicsList command detected " << G4endl;
+			Physics ->SetPhysicsUsed(newValue);
 			Physics -> AddPhysicsList(newValue);
 		}
 }

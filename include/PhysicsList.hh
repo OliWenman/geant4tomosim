@@ -17,14 +17,14 @@ class PhysicsList: public G4VModularPhysicsList
   		virtual ~PhysicsList();
 
 		virtual void Print(G4String name);
-		virtual void AddProcess(G4String name);
-
+		void ConstructEM();
   		void ConstructParticle();
-
   		void AddPhysicsList(G4String& name);
   		void ConstructProcess();
 		void SetCuts(G4double aValue);
-		//void SetCuts();
+	
+		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
+		G4String GetPhysicsUsed(){return PhysicsUsed;}
 
 	private:
 		Data* data;
@@ -34,6 +34,7 @@ class PhysicsList: public G4VModularPhysicsList
   		G4double cutForGamma;
   		G4double cutForElectron;
   		G4double cutForPositron;
+		G4String PhysicsUsed;
 
   		G4VPhysicsConstructor* emPhysicsList;
 

@@ -26,6 +26,24 @@
 #include "G4PhotoElectricEffect.hh"
 #include "G4Gamma.hh"
 
+#include "G4ParticleDefinition.hh"
+#include "G4ProcessManager.hh"
+#include "G4ParticleTypes.hh"
+#include "G4ParticleTable.hh"
+
+#include "G4PhysicsListHelper.hh"
+
+#include "G4ComptonScattering.hh"
+#include "G4GammaConversion.hh"
+#include "G4PhotoElectricEffect.hh"
+#include "G4RayleighScattering.hh"
+
+#include "G4eMultipleScattering.hh"
+
+#include "G4eIonisation.hh"
+#include "G4eBremsstrahlung.hh"
+#include "G4eplusAnnihilation.hh"
+
 PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataObject)
 {
   	PhysicsMessenger = new PhysicsListMessenger(this);
@@ -33,7 +51,7 @@ PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataO
   	//EM physics
   	emPhysicsList = new G4EmStandardPhysics();
 
-	G4double Cutvalue = 0;
+	G4double Cutvalue = 1*mm;
 }
 
 PhysicsList::~PhysicsList()
@@ -46,8 +64,13 @@ PhysicsList::~PhysicsList()
 
 void PhysicsList::ConstructParticle()
 {
-	G4Gamma::GammaDefinition();	
+	G4Gamma::GammaDefinition();
+	G4Electron::ElectronDefinition();
+  	G4Positron::PositronDefinition();
+	G4GenericIon::GenericIonDefinition();
+
 	emPhysicsList->ConstructParticle();
+	
 }
 
 void PhysicsList::ConstructProcess()
@@ -56,10 +79,32 @@ void PhysicsList::ConstructProcess()
   	AddTransportation();
 
   	//Electromagnetic physics list
-  	emPhysicsList->ConstructProcess();
-	//AddProcess("PhotoElectricEffect");
-  	em_config.AddModels();
+	if (GetPhysicsUsed() == "EmPhotoElectricEffect") 
+		{ConstructEM();}
+	else
+		{emPhysicsList->ConstructProcess();}	
 }
+
+void PhysicsList::ConstructEM()
+{
+  	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
+  
+  	auto particleIterator=GetParticleIterator();
+  	particleIterator->reset();
+  	while( (*particleIterator)() )
+	{
+  	  	G4ParticleDefinition* particle = particleIterator->value();
+ 	   	G4String particleName = particle->GetParticleName();
+     
+   		if (particleName == "gamma") 
+			{ph->RegisterProcess(new G4PhotoElectricEffect, particle);}
+      			//ph->RegisterProcess(new G4ComptonScattering,   particle);
+      			//ph->RegisterProcess(new G4GammaConversion,     particle);
+      			//ph->RegisterProcess(new G4RayleighScattering, particle);
+      
+  	}
+}
+
 
 void PhysicsList::AddPhysicsList(G4String& name)
 {
@@ -131,6 +176,12 @@ void PhysicsList::AddPhysicsList(G4String& name)
     		Print(name);
 		data -> SetPhysicsUsed(name);
 	}
+	else if (name == "EmPhotoElectricEffect") 
+	{
+    		delete emPhysicsList;
+    		Print(name);
+		data -> SetPhysicsUsed(name);
+	}
 	else 
 	{	
 		delete emPhysicsList;
@@ -157,10 +208,6 @@ void PhysicsList::Print(G4String name)
 
 }
 
-void PhysicsList::AddProcess(G4String Name)
-{
-	G4PhotoElectricEffect* PhotoElectricEffect = new G4PhotoElectricEffect();
-  
-  	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();  
-  	ph->RegisterProcess(PhotoElectricEffect, G4Gamma::Gamma());
-}
+//--------------------------------------------------------------------------
+
+
