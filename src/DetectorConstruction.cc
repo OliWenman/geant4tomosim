@@ -47,12 +47,6 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	if (data -> GetCurrentImage() == 0)
-	{
-		TC -> SetNoImages(data ->GetNoImages());
-		TC -> SetVisualization(data->GetVisualization());
-	}
-
 	//Clean old geometry, if any
         G4GeometryManager::GetInstance()->OpenGeometry();
         G4PhysicalVolumeStore::GetInstance()->Clean();
@@ -60,12 +54,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         G4SolidStore::GetInstance()->Clean();
 
 	//World Geometry
-	SetWorldSize(WorldSize_Cmd);
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
+	SetWorldSize(G4ThreeVector(WorldSizeX,WorldSizeY,WorldSizeZ));
 	G4double DetectorSizeY = DetectorSize_Cmd.y();
 	G4double DetectorSizeZ = DetectorSize_Cmd.z();
+
+	if (data -> GetCurrentImage() == 0)
+	{
+		WorldSizeX = WorldSize_Cmd.x() + DetectorSize_Cmd.x()*2;
+		SetWorldSize(G4ThreeVector(WorldSizeX,WorldSizeY,WorldSizeZ));
+		TC -> SetNoImages(data ->GetNoImages());
+		TC -> SetVisualization(data->GetVisualization());
+
+	}
 
 	if (WorldSizeY < DetectorSizeY * GetNoDetectorsY())
 	{
@@ -210,7 +213,7 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	return Material;
 }
 
- void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
+void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
 {
   	if (!volume) return;                  // Avoid unnecessary work
 
@@ -228,6 +231,22 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 
 	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
 	SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+ 
+	/*if (!volume) return;                  // Avoid unnecessary work
+
+  	// Check if sensitive detector has already been created
+  	//const G4String& SDname = CDMSDetectorTypes::GetName(detectorType);
+  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector("TrackerChamberSD", false);
+
+  	if (!theSD) 
+	{
+    		//theSD = BuildSensitiveDetector();
+		aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
+		SetSensitiveDetector("LogicDetector", aTrackerSD, true);
+    		if (theSD) SDmanager->AddNewDetector(theSD);    // Store SD if built
+  	}*/
+
 }
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)

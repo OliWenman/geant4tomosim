@@ -42,6 +42,6 @@ void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	else if (command == PrintCmd)
 	{
 		RAction -> SetPrintOption(PrintCmd -> GetNewBoolValue(newValue));
-		G4cout << G4endl << "RunAction -> SetPrintOption command detected" << G4endl;
+		G4cout << "RunAction -> SetPrintOption command detected" << G4endl;
 	}
 }

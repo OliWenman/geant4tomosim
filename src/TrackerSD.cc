@@ -24,8 +24,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 		data -> SetDetectorEfficiency(DetectorEfficiency);
 
 		data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
-		if (GetDetectorEfficiency() == false)	
-			{data -> SetUpEnergyData();}
+		data -> SetUpEnergyData();
 	}
 	collectionName.insert(hitsCollectionName);
 }
@@ -44,11 +43,13 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
-  	//Energy deposit
-  	G4double edep = aStep -> GetTotalEnergyDeposit();
-
+	G4double edep;
 	if (GetDetectorEfficiency() == false)
-		{if (edep == 0.) return false;}
+	{	edep = aStep -> GetTotalEnergyDeposit();	
+		if (edep == 0.) return false;		
+	}
+	else
+		{edep = aStep -> GetTrack()-> GetTotalEnergy();}
 
 	//Create the TrackHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
@@ -66,8 +67,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	//Save the detector hits to the data class
 	G4int DetectorNumber = newHit -> GetChamberNb();
 	data -> SaveHitData(DetectorNumber);
-	if (GetDetectorEfficiency() == false)
-		{data -> SaveEnergyData(DetectorNumber, newHit->GetEdep());}
+	data -> SaveEnergyData(DetectorNumber, newHit->GetEdep());
 
   	return true;
 }

@@ -51,20 +51,20 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		Action -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
-		G4cout << G4endl << "PrimaryGeneratorAction -> SetParticleEnergy command detected  " << G4endl;
+		G4cout << "PrimaryGeneratorAction -> SetParticleEnergy command detected  " << G4endl;
 		data -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamWidthY_Cmd )
   	{ 
 		BeamWidthY_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamWidthY(BeamWidthY_Cmd -> GetNewDoubleValue(newValue)); 
-		G4cout << G4endl << "PrimaryGeneratorAction -> SetBeamWidthY command detected " << G4endl;
+		G4cout << "PrimaryGeneratorAction -> SetBeamWidthY command detected " << G4endl;
 	}
 	else if( command == BeamHeightZ_Cmd )
   	{ 
 		BeamHeightZ_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamHeightZ(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue)); 
-		G4cout << G4endl << "PrimaryGeneratorAction -> SetBeamHeightZ command detected " << G4endl;
+		G4cout << "PrimaryGeneratorAction -> SetBeamHeightZ command detected " << G4endl;
 	}
 }
 

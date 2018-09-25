@@ -1,9 +1,9 @@
 #Settings for the simulation
 
-/physics/addPhysics EMStandardPhysics	#(Choose the Physics Package you want to include, refer to the README for details)
-
+/physics/addPhysics/EM LivermorePhysics	#(Choose the Physics Package you want to include, refer to the README for details)
+		   
 #Seed settings 
-/run/seed 10000		#(For the seed, 0 is random, input own number for your own seed)
+/run/seed 100030		#(For the seed, 0 is random, input own number for your own seed)
 /run/print false    	#(If you want to print hit image information at the end of each run)
 
 #Data Settings
@@ -13,20 +13,20 @@
 /data/HDF5File true
 /data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
 /data/NumberOfImages 3		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 50    	#(Choose the number of photons to be fired at the target)
+/data/NumberOfPhotons 300    	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
-/gun/setBeamWidth 2.1 mm		#(Set the beam width)
-/gun/setBeamHeight 2.5 mm			#(Set the beam height)
+/gun/setBeamWidth 1 mm		#(Set the beam width)
+/gun/setBeamHeight 1 mm			#(Set the beam height)
 
 #World Settings
-/world/size 10 2.1 2.5 mm		#(Set the world size, everything must be inside of it)
+/world/size 10 1 1 mm		#(Set the world size, everything must be inside of it)
 
 #Detector Settings
 /detector/size 0.05 0.1 0.1 mm			#(Set the detector dimensions)
-/detector/numberY 21			#(Set the number of detectors along the Y direction)
-/detector/numberZ 25    			#(Set the number of detectors along the z direction)
+/detector/numberY 10			#(Set the number of detectors along the Y direction)
+/detector/numberZ 10    			#(Set the number of detectors along the z direction)
 /detector/material G4_SODIUM_IODIDE	#(Set the material of the detectors)
 /detector/MaxEfficiency true
 

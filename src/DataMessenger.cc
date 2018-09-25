@@ -63,36 +63,36 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	if( command == TextFileCmd )
   	{ 
 		data -> SetTextFileCmd(TextFileCmd -> GetNewBoolValue(newValue));
-		G4cout << G4endl << "Data -> TextFile command detected  " << G4endl;
+		G4cout << "Data -> TextFile command detected  " << G4endl;
 	}	
 	else if( command == HDF5FileCmd )
   	{ 
 		data -> SetHDF5FileCmd(HDF5FileCmd -> GetNewBoolValue(newValue));
-		G4cout << G4endl << "Data -> HDF5File command detected  " << G4endl;
+		G4cout << "Data -> HDF5File command detected  " << G4endl;
 	}
 	else if( command == NoBins_Cmd )
 	{
 		data -> SetNoBins(NoBins_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetNoBins command detected "<< G4endl;
+		G4cout << "Data -> SetNoBins command detected "<< G4endl;
 	}
 	else if( command == NoImages_Cmd )
 	{
 		data -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetNoImages command detected " << G4endl;
+		G4cout << "Data -> SetNoImages command detected " << G4endl;
 	}
 	else if( command == NoPhotons_Cmd )
 	{
 		data -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetNoPhotons command detected "<< G4endl;
+		G4cout << "Data -> SetNoPhotons command detected "<< G4endl;
 	}
 	else if( command == Visualization_Cmd )
 	{
 		data -> SetVisualization(Visualization_Cmd -> GetNewBoolValue(newValue));	
-		G4cout << G4endl << "Data -> SetVisualization command detected "<< G4endl;
+		G4cout << "Data -> SetVisualization command detected "<< G4endl;
 	}
 	else if( command == seedCmd )
 	{
 		data -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "Data -> SetSeedOption command detected "<< G4endl;
+		G4cout << "Data -> SetSeedOption command detected "<< G4endl;
 	}
 }

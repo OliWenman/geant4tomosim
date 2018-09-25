@@ -17,7 +17,7 @@ class PhysicsList: public G4VModularPhysicsList
   		virtual ~PhysicsList();
 
 		virtual void Print(G4String name);
-		void ConstructEM();
+		void ConstructEM(G4String Physics);
   		void ConstructParticle();
   		void AddPhysicsList(G4String& name);
   		void ConstructProcess();
@@ -25,6 +25,9 @@ class PhysicsList: public G4VModularPhysicsList
 	
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
 		G4String GetPhysicsUsed(){return PhysicsUsed;}
+
+		G4String LivermoreGamma = "LivermoreGamma";
+		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";
 
 	private:
 		Data* data;

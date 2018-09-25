@@ -58,22 +58,22 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	if( command == TargetPosition_Cmd )
 	{
 		TC -> SetTargetPosition(TargetPosition_Cmd -> GetNew3VectorValue(newValue));	
-		G4cout << G4endl << "TargetConstruction -> SetTargetPosition command detected "<< G4endl;
+		G4cout << "TargetConstruction -> SetTargetPosition command detected "<< G4endl;
 	}
 	else if(command == MasterTargetMaterial_Cmd )
 	{
 		TC -> SetMasterTargetMaterial(newValue);	
-		G4cout << G4endl << "TargetConstruction -> MasterSetTargetMaterial command detected "<< G4endl;
+		G4cout << "TargetConstruction -> MasterSetTargetMaterial command detected "<< G4endl;
 	}
 	else if(command == MasterOffSetRadius_Cmd )
 	{
 		MasterOffSetRadius_Cmd -> GetNewUnitValue(newValue);
 		TC -> SetMasterOffSetRadius(MasterOffSetRadius_Cmd -> GetNewDoubleValue(newValue));	
-		G4cout << G4endl << "TargetConstruction -> MasterOffSetRadius_Cmd command detected "<< G4endl;
+		G4cout << "TargetConstruction -> MasterOffSetRadius_Cmd command detected "<< G4endl;
 	}
 	else if( command == NumberOfObjects_Cmd )
 	{
 		TC -> SetNumberOfObjects(NumberOfObjects_Cmd -> GetNewIntValue(newValue));	
-		G4cout << G4endl << "TargetConstruction -> SetNumberOfObjects command detected "<< G4endl;
+		G4cout << "TargetConstruction -> SetNumberOfObjects command detected "<< G4endl;
 	}
 }

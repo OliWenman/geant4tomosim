@@ -109,8 +109,12 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 	//Calculates which bin the energy should be placed into
 	G4int BinNumber = floor(edep/BinSize);
 
-	//+1 to the energy bin
-	++EnergyMatrix[BinNumber][DetectorNumber][GetCurrentImage()];
+	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
+	if (BinNumber == GetNoBins())
+		{++EnergyMatrix[BinNumber-1][DetectorNumber][GetCurrentImage()];}
+	else
+		{//+1 to the energy bin
+		 ++EnergyMatrix[BinNumber][DetectorNumber][GetCurrentImage()];}
 }
 
 void Data::PrintEnergyData()
@@ -214,44 +218,42 @@ void Data::WriteToTextFile()
 	outdata.close();
 	G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
 
-	if (GetDetectorEfficiency() == false)
+
+	G4String EnergyFileName = "EnergyFile.txt";
+	outdata.open(FilePath+EnergyFileName); 
+
+	outdata << G4endl << "Energy detector data (keV)" << G4endl;
+
+	//Finds how many digits the detector numbers need to be to keep aligned
+	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
+
+	//Saves the energy data for each image
+	for (G4int Image = 0 ; Image < NImage ; Image++)
 	{
+		outdata << G4endl << "Image: " << Image+1 << G4endl;
+		outdata << "          "; 
 
-		G4String EnergyFileName = "EnergyFile.txt";
-		outdata.open(FilePath+EnergyFileName); 
-
-		outdata << G4endl << "Energy detector data (keV)" << G4endl;
-
-		//Finds how many digits the detector numbers need to be to keep aligned
-		G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
-
-		//Saves the energy data for each image
-		for (G4int Image = 0 ; Image < NImage ; Image++)
-		{
-			outdata << G4endl << "Image: " << Image+1 << G4endl;
-			outdata << "          "; 
-	
-			for (G4int n = 0; n < NoDigits; n++)
-				{outdata << " ";}
+		for (G4int n = 0; n < NoDigits; n++)
+			{outdata << " ";}
 			
-			for (G4int x = 0 ; x < GetNoBins(); x++)
-			{	outdata << "   "; 
-				outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
-			}
-			outdata << G4endl;
-
-			for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
-    			{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
-        			{	if (yE == 0)
-						{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
-					outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE][Image];
-        			}
-    				outdata << G4endl;  
-    			}
+		for (G4int x = 0 ; x < GetNoBins(); x++)
+		{	outdata << "   "; 
+			outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
 		}
-		outdata.close();
-		G4cout << G4endl << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
+		outdata << G4endl;
+
+		for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
+    		{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
+        		{	if (yE == 0)
+					{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
+				outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE][Image];
+        		}
+    			outdata << G4endl;  
+    		}
 	}
+	outdata.close();
+	G4cout << G4endl << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
+	
 }
 
 void Data::WriteToHDF5()

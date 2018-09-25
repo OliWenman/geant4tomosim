@@ -84,31 +84,31 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	if( command == WorldSize_Cmd )
 	{
 		ConstructDet -> SetWorldSize(WorldSize_Cmd -> GetNew3VectorValue(newValue)/2);
-		G4cout << G4endl << "DetectorConstruction -> SetWorldSize command detected "<< G4endl;
+		G4cout << "DetectorConstruction -> SetWorldSize command detected "<< G4endl;
 	}
 	else if( command == NoDetectorsY_Cmd )
   	{ 			
 		ConstructDet -> SetNoDetectorsY(NoDetectorsY_Cmd -> GetNewIntValue(newValue));
-		G4cout << G4endl << "DetectorConstruction -> SetNoDetectorsY command detected "<< G4endl;
+		G4cout << "DetectorConstruction -> SetNoDetectorsY command detected "<< G4endl;
 	}
 	else if ( command == NoDetectorsZ_Cmd )
 	{
 		ConstructDet -> SetNoDetectorsZ(NoDetectorsZ_Cmd -> GetNewIntValue(newValue));
-		G4cout << G4endl << "DetectorConstruction -> SetNoDetectorsZ command detected "<< G4endl;
+		G4cout << "DetectorConstruction -> SetNoDetectorsZ command detected "<< G4endl;
 	}
 	else if( command == DetectorSize_Cmd )
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
-		G4cout << G4endl << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
+		G4cout << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
 	}
 	else if( command == DetectorMaterial_Cmd )
 	{
 		ConstructDet -> SetDetectorMaterial(newValue);
-		G4cout << G4endl << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
+		G4cout << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
 	}
 	else if( command == DetectorEfficiency_Cmd )
 	{
 		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
-		G4cout << G4endl << "DetectorConstruction -> SetDetectorEfficiency command detected " << G4endl;
+		G4cout << "DetectorConstruction -> SetDetectorEfficiency command detected " << G4endl;
 	}
 }

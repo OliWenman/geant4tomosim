@@ -19,8 +19,8 @@ EmStandardPhysics_option3
 EmStandardPhysics_option4
 - Combination of EM models for simulation with high accuracy includes multiple scattering with “UseSafetyPlus” type of step limitation by combined G4WentzelVIModel and G4eCoulombScatteringModel for all particle types, for of e+- below 100 MeV G4GoudsmitSaundersonMscModel is used, RangeFactor = 0.02, Scin = 3 (error free stepping near the geometry boundary), reduced finalRange parameter of stepping function optimized per particle type, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4LowEPComptonModel below 20 MeV, G4PenelopeGammaConversionModel below 1 GeV, G4PenelopeIonisationModel for electrons and positrons below 100 keV, G4IonParameterisedLossModel for ion ionisation, G4Generator2BS angular generator for bremsstrahlung, and 20 bins per energy decade of physics tables.
   
-EmLivermorePhysics  
-- Models based on Livermore data bases for electrons and gamma, enabled Rayleigh scattering, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4IonParameterisedLossModel for ion ionisation, and 20 bins per energy decade of physics tables.
+*EmLivermorePhysics  
+- Models based on Livermore data bases for electrons and gamma, enabled Rayleigh scattering, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4IonParameterisedLossModel for ion ionisation, and 20 bins per energy decade of physics tables. Gamma, e- from 10 eV up to 1 GeV.
 
 EmLivermorePolarizedPhysics)
 - Models for simulation of linear polarized gamma based on Livermore data bases for electrons and gamma.
@@ -29,7 +29,7 @@ EmLowEPPhysics
 - Models based on Livermore data bases and new model for Compton scattering G4LowEPComptonModel, new low-energy model of multiple scattering G4LowEWenzelMscModel.
     
 EmPenelopePhysics
-- Penelope2008 models for electrons, positrons and gamma, enabled Rayleigh scattering, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4IonParameterisedLossModel for ion ionisation, and 20 bins per energy decade of physics tables.
+- Penelope2008 models for electrons, positrons and gamma, enabled Rayleigh scattering, enabled fluorescence, enabled nuclear stopping, enable accurate angular generator for ionisation models, G4IonParameterisedLossModel for ion ionisation, and 20 bins per energy decade of physics tables. Gamma, e- , e+ from 100 eV up to 1 GeV (2008 version).
     
 EmStandardPhysicsGS
 - Experimental physics with multiple scattering of e+- below 100 MeV simulated by G4GoudsmitSaundersonMscModel is done on top of the default EM physics.
