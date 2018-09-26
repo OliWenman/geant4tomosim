@@ -103,6 +103,8 @@ int main(int argc,char** argv)
 		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
 	               << G4endl << "================================================================================" << G4endl;
 	}
+	else 
+	{ visManager =0;}
 
 	//Save variables to needed classes
 	G4int Image = 0;

@@ -9,26 +9,27 @@
 
 G4ThreadLocal G4Allocator<TrackerHit>* TrackerHitAllocator = 0;
 
-TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0) {}
+TrackerHit::TrackerHit():G4VHit(), fTrackID(-1), fChamberNb(-1), fEdep(0.), fPos(G4ThreeVector()), fParticle(0)
+{}
 
 TrackerHit::~TrackerHit(){}
 
 TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 {
-  	fTrackID   = right.fTrackID;
+  	//fTrackID   = right.fTrackID;
   	fChamberNb = right.fChamberNb;
   	fEdep      = right.fEdep;
   	fPos       = right.fPos;
-	fParticle  = right.fParticle;
+	//fParticle  = right.fParticle;
 }
 
 const TrackerHit& TrackerHit::operator = (const TrackerHit& right)
 {
-  	fTrackID   = right.fTrackID;
+  	//fTrackID   = right.fTrackID;
   	fChamberNb = right.fChamberNb;
   	fEdep      = right.fEdep;
   	fPos       = right.fPos;
-	fParticle  = right.fParticle;
+	//fParticle  = right.fParticle;
 
   	return *this;
 }
@@ -50,11 +51,11 @@ void TrackerHit::Draw()
     		G4VisAttributes attribs(colour);
     		circle.SetVisAttributes(attribs);
     		pVVisManager -> Draw(circle);
-  	}
+	}
 }
 
 void TrackerHit::Print()
 {	
-  	G4cout << ": Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");            	
+  	G4cout << ": Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");          	
 }
 

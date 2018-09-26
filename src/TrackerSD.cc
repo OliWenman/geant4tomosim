@@ -51,15 +51,18 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	else
 		{edep = aStep -> GetTrack()-> GetTotalEnergy();}
 
-	//Create the TrackHit class object to record hits
+	//Create the TrackerHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
 
 	//Save all the information about the particle that hit the detector
-  	newHit -> SetTrackID  (aStep->GetTrack()->GetTrackID());
+  	//newHit -> SetTrackID  (aStep->GetTrack()->GetTrackID());
+	//newHit -> SetParticle( aStep->GetTrack()->GetDefinition() );
   	newHit -> SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
-  	newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());
-	newHit -> SetParticle( aStep->GetTrack()->GetDefinition() );
 	newHit -> SetEdep(edep);
+
+	//Needed for visualization of hits, only need it if it's turned on
+	if (data -> GetVisualization() == true)
+		{newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());}
 
 	//Save the information - keep?
   	fHitsCollection -> insert( newHit );

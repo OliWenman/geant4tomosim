@@ -175,7 +175,7 @@ void TargetConstruction::MasterVolume(G4String Shape,  G4LogicalVolume* logicMot
 	}
 	else if (Shape == "Box")
 	{
-		Box("Master", G4ThreeVector(1.05*mm, 1.05*mm, 1.25*mm), GetPosition(0), GetMasterTargetMaterial(), logicMotherBox);
+		Box("Master", G4ThreeVector(0.5*mm, 0.5*mm, 0.5*mm), GetPosition(0), GetMasterTargetMaterial(), logicMotherBox);
 	}
 }
 
@@ -189,6 +189,20 @@ G4double TargetConstruction::RotateObject()
 		G4double RotateY = deltaTheta * GetCurrentImage();
 		G4GeometryManager::GetInstance()->CloseGeometry();
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
+
+		/*//Delete and re-build the relevant physical volumes
+  		G4PhysicalVolumeStore* store = G4PhysicalVolumeStore::GetInstance();
+
+  		//Delete...
+  		G4VPhysicalVolume* myVol = store->GetVolume("RODetectorPhys");
+  		store->DeRegister(myVol);
+  		//..and rebuild
+  		G4VPhysicalVolume *RODetectorPhys = new G4PVPlacement(0,
+							detectorToWorldPosition,
+							RODetectorLog,
+							"RODetectorPhys",
+							worldLogical,							
+							false,0);*/
 		return RotateY;
 	}
 	else 

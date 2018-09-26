@@ -32,11 +32,13 @@ class TrackerHit : public G4VHit
     		virtual void Print();
 
     		// Set methods
-    		void SetTrackID(G4int value){fTrackID = value;};
-    		void SetChamberNb(G4int value){fChamberNb = value;};
-    		void SetEdep(G4double value){fEdep = value;};
-    		void SetPos(G4ThreeVector xyz){fPos = xyz;};
+    		inline void SetTrackID(G4int value){fTrackID = value;};
+    		inline void SetChamberNb(G4int value){fChamberNb = value;};
+    		inline void SetEdep(G4double value){fEdep = value;};
+    		inline void SetPos(G4ThreeVector xyz){fPos = xyz;};
 		inline void SetParticle(G4ParticleDefinition* particle){fParticle = particle;}
+
+		inline void SetDraw(G4bool value){DrawOption = value;}
 
     		// Get methods
     		G4int GetTrackID() const {return fTrackID;};
@@ -44,6 +46,7 @@ class TrackerHit : public G4VHit
     		G4double GetEdep() const {return fEdep;};
     		G4ThreeVector GetPos() const {return fPos;};
 		inline G4ParticleDefinition* GetParticle(){return fParticle;};
+		G4bool GetDraw() const {return DrawOption;}
 
   	private:
       		G4int         fTrackID;
@@ -51,6 +54,8 @@ class TrackerHit : public G4VHit
       		G4double      fEdep;
       		G4ThreeVector fPos;
 		G4ParticleDefinition* fParticle;
+
+		G4bool DrawOption;
 };
 
 typedef G4THitsCollection<TrackerHit> TrackerHitsCollection;

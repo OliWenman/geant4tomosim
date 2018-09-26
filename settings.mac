@@ -1,6 +1,6 @@
 #Settings for the simulation
 
-/physics/addPhysics/EM LivermorePhysics	#(Choose the Physics Package you want to include, refer to the README for details)
+/physics/addPhysics/EM LMPhotoElectricEffect	#(Choose the Physics Package you want to include, refer to the README for details)
 		   
 #Seed settings 
 /run/seed 100030		#(For the seed, 0 is random, input own number for your own seed)
@@ -8,27 +8,28 @@
 
 #Data Settings
 #/data/Seed 0
-/data/Visualization true	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/data/Visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
 /data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
-/data/NumberOfImages 3		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 300    	#(Choose the number of photons to be fired at the target)
+/data/NumberOfImages 2		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
+/data/NumberOfPhotons 100    	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
-/gun/setBeamWidth 1 mm		#(Set the beam width)
-/gun/setBeamHeight 1 mm			#(Set the beam height)
+/gun/setBeamWidth 2.5 mm		#(Set the beam width)
+/gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
 #World Settings
-/world/size 10 1 1 mm		#(Set the world size, everything must be inside of it)
+/world/size 20 2.5 2.1 mm		#(Set the world size, everything must be inside of it)
 
 #Detector Settings
-/detector/size 0.05 0.1 0.1 mm			#(Set the detector dimensions)
-/detector/numberY 10			#(Set the number of detectors along the Y direction)
-/detector/numberZ 10    			#(Set the number of detectors along the z direction)
-/detector/material G4_SODIUM_IODIDE	#(Set the material of the detectors)
-/detector/MaxEfficiency true
+#/detector/size 0.5 0.9765625 0.9722 um			#(Set the detector dimensions)
+/detector/size 0.5 0.1 0.1 mm	
+/detector/numberY 25			#(Set the number of detectors along the Y direction)
+/detector/numberZ 21    			#(Set the number of detectors along the z direction)
+/detector/material G4_Pb	#(Set the material of the detectors)
+/detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
 
 #Target Settings
 /Target/NumberOfObjects 2

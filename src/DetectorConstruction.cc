@@ -47,44 +47,39 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	//Clean old geometry, if any
-        G4GeometryManager::GetInstance()->OpenGeometry();
+	/*G4GeometryManager::GetInstance()->OpenGeometry();
         G4PhysicalVolumeStore::GetInstance()->Clean();
         G4LogicalVolumeStore::GetInstance()->Clean();
-        G4SolidStore::GetInstance()->Clean();
+	G4SolidStore::GetInstance()->Clean();*/
 
 	//World Geometry
 	G4double WorldSizeX = WorldSize_Cmd.x();
 	G4double WorldSizeY = WorldSize_Cmd.y();
 	G4double WorldSizeZ = WorldSize_Cmd.z();
-	SetWorldSize(G4ThreeVector(WorldSizeX,WorldSizeY,WorldSizeZ));
-	G4double DetectorSizeY = DetectorSize_Cmd.y();
-	G4double DetectorSizeZ = DetectorSize_Cmd.z();
 
 	if (data -> GetCurrentImage() == 0)
 	{
-		WorldSizeX = WorldSize_Cmd.x() + DetectorSize_Cmd.x()*2;
-		SetWorldSize(G4ThreeVector(WorldSizeX,WorldSizeY,WorldSizeZ));
+		WorldSizeX = WorldSize_Cmd.x() + DetectorSize_Cmd.x();
+		SetWorldSize(G4ThreeVector(WorldSizeX,WorldSize_Cmd.y(),WorldSize_Cmd.z()));
 		TC -> SetNoImages(data ->GetNoImages());
 		TC -> SetVisualization(data->GetVisualization());
-
 	}
 
-	if (WorldSizeY < DetectorSizeY * GetNoDetectorsY())
+	if (WorldSizeY < DetectorSize_Cmd.y() * GetNoDetectorsY())
 	{
-		WorldSizeY = DetectorSizeY * GetNoDetectorsY();
+		WorldSizeY = DetectorSize_Cmd.y() * GetNoDetectorsY();
 		G4cout << G4endl << "================================================================================"
 		       << G4endl << "         WARNING: Detectors are outside world volume in Y direction. "
-		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeY, "Length")
+		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeY*2, "Length")
 	               << G4endl << "================================================================================" << G4endl;
 	}
 
-	if (WorldSizeZ < DetectorSizeZ * GetNoDetectorsZ())
+	if (WorldSizeZ < DetectorSize_Cmd.z()* GetNoDetectorsZ())
 	{	
-		WorldSizeZ = DetectorSizeZ * GetNoDetectorsZ();
+		WorldSizeZ = DetectorSize_Cmd.z() * GetNoDetectorsZ();
 		G4cout << G4endl << "================================================================================"
 		       << G4endl << "         WARNING: Detectors are outside world volume in Z direction. "
-		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeY, "Length")
+		       << G4endl << "         World volume adjusted to fit them, needs to be at least " << G4BestUnit(WorldSizeZ*2, "Length")
 	               << G4endl << "================================================================================" << G4endl;
 	}
 
@@ -132,27 +127,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 	G4double DetectorPosX = -WorldSizeX + DetectorSizeX * 2;
 
 	//G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY ,  DetectorSizeZ );
-	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSizeX ,  DetectorSizeY , DetectorSizeZ );
-
-	G4Material* NewMaterial;
-
-	if (GetDetectorEfficiency() == true && data -> GetCurrentImage() == 0)
-	{
-		//Create detectors out of a vacuum if 100% efficient		
-		
-		//Fill the world with air
-		G4double density = 1e-25*g/cm3;
-  		G4double pressure    = 3.e-18*pascal;
-  		G4double temperature = 2.73*kelvin;
-		G4int z = 1;
-		G4double a = 1.01*g/mole;
-  		NewMaterial = new G4Material("Galactic", z, a, density,kStateGas,temperature,pressure);
-	}
-	if (GetDetectorEfficiency() == true)
-		{Material = "Galactic";}
-	 
-
-	//Creates detectors out of specified material	
+	G4Box* solid_Detector = new G4Box("DetectorGeometry", DetectorSize.x() ,  DetectorSize.y() , DetectorSize.z() );	
 
 	//Create the detector logical volume by assigning the material of the detectors 
 	G4Material* DetectorMaterial = FindMaterial(Material);
@@ -206,18 +181,18 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 {
 	//Obtain pointer to NIST material manager
 	G4NistManager* nist = G4NistManager::Instance();
-		
 	//Build materials 
 	G4Material* Material = nist -> FindOrBuildMaterial(MaterialName);
-
 	return Material;
 }
 
 void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
 {
-  	if (!volume) return;                  // Avoid unnecessary work
+  	if (!volume) 
+		{return;}                  // Avoid unnecessary work
 
   	// Check if sensitive detector has already been created
+	//const G4String& SDname = CDMSDetectorTypes::GetName("TrackerChamberSD");
 	const G4String trackerChamberSDname = "TrackerChamberSD";
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
   	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector(trackerChamberSDname, false);
@@ -227,10 +202,18 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
       		G4cout << "Creating the Sensitive Detector"  << G4endl;
 
     		aTrackerSD = new TrackerSD(trackerChamberSDname, "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
+		SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+		//volume -> SetSensitiveDetector(aTrackerSD);
+		
 	}
+	//SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+	volume -> SetSensitiveDetector(aTrackerSD);
 
-	SetSensitiveDetector("LogicDetector", aTrackerSD, true);
-	SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+	//SetSensitiveDetector("LogicDetector", aTrackerSD, true);
+	//SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built
+
+	//SetSensitiveDetector("LogicDetector", aTrackerSD, true);
+	//SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
  
 	/*if (!volume) return;                  // Avoid unnecessary work
 
