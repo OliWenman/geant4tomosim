@@ -77,6 +77,7 @@ class Data
 		virtual void SetUpEnergyData();
 		virtual void SaveHitData(G4int DetectorNumber);
 		virtual void PrintHitData();
+		virtual G4int BinNumber(G4int DetectorNumber, G4double edep);
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);
 		virtual void PrintEnergyData();
 		virtual void WriteToTextFile();

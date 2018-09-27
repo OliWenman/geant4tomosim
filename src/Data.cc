@@ -26,44 +26,30 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
-	
-	//Finds the total number of images
-	G4int NImages = GetNoImages();
 
 	//Creates a 3D vector for the hit data
 	std::vector<std::vector<std::vector<G4int> > > iHitDataMatrix;
-	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(NImages)));		
+	iHitDataMatrix.resize(Nrow,std::vector<std::vector<G4int> >(Ncolumn,std::vector<G4int>(GetNoImages())));		
 	SetHitData(iHitDataMatrix);
 }
 
 void Data::SetUpEnergyData()
 {
-	G4int Nrow = GetNumberRows();
-	G4int Ncolumn = GetNumberColumns();
-
-	//Finds the total number of images
-	G4int NImages = GetNoImages();
-
 	//Creates a 3D vector for the energy data
 	std::vector<std::vector<std::vector<G4int> > > iEnergyMatrix;
 	//Works out the number of detectors for the energy data
 	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
-	G4int Nbins = GetNoBins();
-	iEnergyMatrix.resize(Nbins,std::vector<std::vector<G4int> >(EnergyColumns,std::vector<G4int>(NImages)));
+	iEnergyMatrix.resize(GetNoBins(),std::vector<std::vector<G4int> >(EnergyColumns,std::vector<G4int>(GetNoImages())));
+	
 	SetEnergyData(iEnergyMatrix);
 }
 
 void Data::SaveHitData(G4int DetectorNumber)
-{
-	//Finds the number of columns the matrix has
-	G4int column = GetNumberColumns();
-			
+{	
 	//Finds the coordinates of the detector inputted for the matrix
-	G4int x = Quotient(DetectorNumber, column);
-	G4int y = Remainder(DetectorNumber, column);
+	//+1 for each hit. Written on one line to increase speed
 	
-	//+1 for a hit
-	++HitDataMatrix[x][y][GetCurrentImage()]; 
+	++HitDataMatrix[Quotient(DetectorNumber, GetNumberColumns())][Remainder(DetectorNumber, GetNumberColumns())][GetCurrentImage()]; 
 }
 
 void Data::PrintHitData()
@@ -101,20 +87,22 @@ void Data::PrintHitData()
 	}
 }
 
-void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
+G4int Data::BinNumber(G4int DetectorNumber, G4double edep)
 {
 	//Calculates the size of each bin
-	G4double BinSize = GetMaxEnergy()/GetNoBins();	
+	//floor function calculates which bin the energy should be placed into
+	return floor(edep/(GetMaxEnergy()/GetNoBins()));
+}
 
-	//Calculates which bin the energy should be placed into
-	G4int BinNumber = floor(edep/BinSize);
-
+void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
+{
+	G4int Bin = BinNumber(DetectorNumber, edep);
 	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
-	if (BinNumber == GetNoBins())
-		{++EnergyMatrix[BinNumber-1][DetectorNumber][GetCurrentImage()];}
+	if (Bin == GetNoBins())
+		{++EnergyMatrix[Bin -1][DetectorNumber][GetCurrentImage()];}
 	else
 		{//+1 to the energy bin
-		 ++EnergyMatrix[BinNumber][DetectorNumber][GetCurrentImage()];}
+		 ++EnergyMatrix[Bin][DetectorNumber][GetCurrentImage()];}
 }
 
 void Data::PrintEnergyData()

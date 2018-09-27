@@ -44,12 +44,7 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
 	G4double edep;
-	if (GetDetectorEfficiency() == false)
-	{	edep = aStep -> GetTotalEnergyDeposit();	
-		if (edep == 0.) return false;		
-	}
-	else
-		{edep = aStep -> GetTrack()-> GetTotalEnergy();}
+	edep = aStep-> GetTrack()-> GetTotalEnergy();
 
 	//Create the TrackerHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
@@ -62,15 +57,14 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	//Needed for visualization of hits, only need it if it's turned on
 	if (data -> GetVisualization() == true)
-		{newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());}
-
-	//Save the information - keep?
-  	fHitsCollection -> insert( newHit );
+	{
+		newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());
+	}
+	fHitsCollection -> insert( newHit );
 
 	//Save the detector hits to the data class
-	G4int DetectorNumber = newHit -> GetChamberNb();
-	data -> SaveHitData(DetectorNumber);
-	data -> SaveEnergyData(DetectorNumber, newHit->GetEdep());
+	data -> SaveHitData(newHit -> GetChamberNb());
+	data -> SaveEnergyData(newHit -> GetChamberNb(), newHit->GetEdep());
 
   	return true;
 }
