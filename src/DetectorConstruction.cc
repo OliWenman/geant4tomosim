@@ -47,12 +47,6 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	//G4GeometryManager::GetInstance()->OpenGeometry();
-       // G4PhysicalVolumeStore::GetInstance()->Clean();
-       // G4LogicalVolumeStore::GetInstance()->Clean();
-	//G4SolidStore::GetInstance()->Clean();
-	//SetWorldSize(G4ThreeVector(WorldSize_Cmd.x(),WorldSize_Cmd.y(),WorldSize_Cmd.z()));
-
 	if (data -> GetCurrentImage() == 0)
 	{
 		TC -> SetNoImages(data ->GetNoImages());

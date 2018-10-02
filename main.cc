@@ -56,6 +56,17 @@ void CompletionTime(double LoopTimer, int Image, int NoImages)
 	}
 }
 
+void SaveDataToFile(G4int Image, Data* data)
+{
+	//Write data to file if command is turned on
+	if (data -> GetTextFileCmd() == true)
+		{data -> WriteToTextFile();}
+	else if(data -> GetHDF5FileCmd() == true)
+		{data -> WriteToHDF5();}
+	else 
+		{G4cout << G4endl << "The data from the simulation was not saved!" << G4endl;}
+
+}
 
 int main(int argc,char** argv)
 {
@@ -132,6 +143,8 @@ int main(int argc,char** argv)
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager()->ReinitializeGeometry();
 		
+		SaveDataToFile(Image, data);
+
 		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
 		CompletionTime(LoopTimer.GetRealElapsed(), Image, data -> GetNoImages());
@@ -142,17 +155,9 @@ int main(int argc,char** argv)
 	data -> SetSimulationTime(FullTime.GetRealElapsed());
 
 	G4cout << G4endl << "================================================================================"
-	       << G4endl << "                      The simulation is complete! "
+	       << G4endl << "                      The simulation is finihsed! "
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
-	
-	//Write data to file if command is turned on
-	if (data -> GetTextFileCmd() == true)
-		{data -> WriteToTextFile();}
-	else if(data -> GetHDF5FileCmd() == true)
-		{data -> WriteToHDF5();}
-	else 
-		{G4cout << G4endl << "The data from the simulation was not saved!" << G4endl;}
 
 	ui -> SessionStart();   	
 

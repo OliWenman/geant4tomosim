@@ -1,19 +1,19 @@
 #Settings for the simulation
 
-/physics/addPhysics/EM LMPhotoElectricEffect	#(Choose the Physics Package you want to include, refer to the README for details)
+/physics/addPhysics/EM StandardPhysics	#(Choose the Physics Package you want to include, refer to the README for details)
 		   
 #Seed settings 
-/run/seed 0		#(For the seed, 0 is random, input own number for your own seed)
-/run/print false    	#(If you want to print hit image information at the end of each run)
+/run/seed 1538490338		#(For the seed, 0 is random, input own number for your own seed)
+/run/print false 	#(If you want to print hit image information at the end of each run)
 
 #Data Settings
 #/data/Seed 0
 /data/Visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
-/data/bins 5			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
+/data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
 /data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 10000000    	#(Choose the number of photons to be fired at the target)
+/data/NumberOfPhotons 1000000   	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
@@ -40,4 +40,4 @@
 /Target/OffSet 0.2 mm			#(Set the off set radius of the target when it rotates)
 
 /run/initialize
-/hits/verbose 1		#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))
+/hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))

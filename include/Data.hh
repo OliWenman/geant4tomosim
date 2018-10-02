@@ -16,10 +16,8 @@ class Data
 		virtual ~Data();
 		
 		//Get Methods
-		std::vector<std::vector<std::vector<G4int> > > GetHitData(){ return HitDataMatrix;}
-		std::vector<std::vector<std::vector<G4int> > > GetEnergyData(){return EnergyMatrix;}
-
-		G4int GetHitElement(G4int x, G4int y){return HitDataMatrix[x][y][0];}	
+		std::vector<std::vector<G4int> > GetHitData(){ return HitDataMatrix;}
+		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		inline G4int GetNumberRows(){return rows;}
 		inline G4int GetNumberColumns(){return columns;}
@@ -35,8 +33,8 @@ class Data
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		//Set Methods
-		void SetHitData(std::vector<std::vector<std::vector<G4int> > > UpdatedData){HitDataMatrix = UpdatedData;}
-		void SetEnergyData(std::vector<std::vector<std::vector<G4int> > >  UpdatedData){EnergyMatrix = UpdatedData;}
+		void SetHitData(std::vector<std::vector<G4int> > UpdatedData){HitDataMatrix = UpdatedData;}
+		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
@@ -87,8 +85,8 @@ class Data
 		DataMessenger* dataMessenger;
 
 		//Data members
-		std::vector<std::vector<std::vector<G4int> > > HitDataMatrix;
-		std::vector<std::vector<std::vector<G4int> > > EnergyMatrix;
+		std::vector<std::vector<G4int> > HitDataMatrix;
+		std::vector<std::vector<G4int> > EnergyMatrix;
 
 		G4int rows;
 		G4int columns;	
