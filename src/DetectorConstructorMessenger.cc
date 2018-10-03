@@ -1,5 +1,6 @@
 #include "DetectorConstructionMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "Data.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -12,7 +13,7 @@
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
 //DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector):ConstructDet(Detector)
-DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector): G4UImessenger(), ConstructDet(Detector)
+DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector, Data* DataObject): G4UImessenger(), ConstructDet(Detector), data(DataObject)
 {	
 	G4cout << G4endl << "DetectorConstructionMessenger has been created" << G4endl;
 	//WORLD
@@ -100,15 +101,18 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
 		G4cout << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
+		data -> SetDetectorDimensions(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
 	}
 	else if( command == DetectorMaterial_Cmd )
 	{
 		ConstructDet -> SetDetectorMaterial(newValue);
 		G4cout << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
+		data -> SetDetectorMaterial(newValue);
 	}
 	else if( command == DetectorEfficiency_Cmd )
 	{
 		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
 		G4cout << "DetectorConstruction -> SetDetectorEfficiency command detected " << G4endl;
+		data -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));
 	}
 }

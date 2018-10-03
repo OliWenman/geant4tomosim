@@ -30,21 +30,18 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
 
-	//Creates a 3D vector for the hit data
-	std::vector<G4int> iHitDataMatrix;
-	iHitDataMatrix.resize(Nrow*Ncolumn, 0);	
-	//std::vector < std::vector < int > > Matrix(10, std::vector< int >(10,0));	
+	//Creates a 1D vector for the hit data
+	std::vector<G4int> iHitDataMatrix(Nrow*Ncolumn, 0);
 	SetHitData(iHitDataMatrix);
 }
 
 void Data::SetUpEnergyData()
 {
-	//Creates a 3D vector for the energy data
-	std::vector<std::vector<G4int> > iEnergyMatrix;
 	//Works out the number of detectors for the energy data
 	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
-	iEnergyMatrix.resize(GetNoBins(),std::vector<G4int>(EnergyColumns,0));
-	
+
+	//Creates a 2D vector for the energy data	
+	std::vector<std::vector<G4int> > iEnergyMatrix(EnergyColumns, std::vector<G4int>(GetNoBins(),0));
 	SetEnergyData(iEnergyMatrix);
 }
 
@@ -98,10 +95,10 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 	G4int Bin = BinNumber(DetectorNumber, edep);
 	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
 	if (Bin == GetNoBins())
-		{++EnergyMatrix[Bin -1][DetectorNumber];}
+		{++EnergyMatrix[DetectorNumber][Bin-1];}
 	else
 		{//+1 to the energy bin
-		 ++EnergyMatrix[Bin][DetectorNumber];}
+		 ++EnergyMatrix[DetectorNumber][Bin];}
 }
 
 void Data::PrintEnergyData()
@@ -141,8 +138,8 @@ void Data::WriteToTextFile(G4String SimulationData)
 	//Get needed variables to wrtie to file
    	std::vector<G4int> HitData = GetHitData();
    	std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
-	G4int Nrows = GetNumberRows();
-	G4int Ncolumns = GetNumberColumns();
+	G4int TotalNoRows = GetNumberRows();
+	G4int TotalNoColumns = GetNumberColumns();
 	G4int CImage = GetCurrentImage();
 
 	G4String FilePath = "./Data_Output/Text/";
@@ -171,8 +168,8 @@ void Data::WriteToTextFile(G4String SimulationData)
 		outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
 		outdata << "- Beam dimensions: " << GetBeamWidth() << " x " << G4BestUnit(GetBeamHeight(), "Length") << std::endl << std::endl; 
 
-		outdata << "- Number of detectors: " << GetNumberColumns() << " x " << GetNumberRows() << std::endl;
-		outdata << "- Detector dimensions: " << G4BestUnit(DetectorDimensions.x(), "Length") << " x " << G4BestUnit(DetectorDimensions.y(), "Length") << " x " << G4BestUnit(DetectorDimensions.z(), "Length") << std::endl;
+		outdata << "- Number of detectors: " << TotalNoRows << " x " << TotalNoColumns << std::endl;
+		outdata << "- Detector dimensions: " << G4BestUnit(DetectorDimensions.x(), "Length") << "x " << G4BestUnit(DetectorDimensions.y(), "Length") << "x " << G4BestUnit(DetectorDimensions.z(), "Length") << std::endl;
 		if (GetDetectorEfficiency() == true)
 			{outdata << "- Detectors used are 100%\ efficient" << std::endl;}
 		else 
@@ -212,15 +209,15 @@ void Data::WriteToTextFile(G4String SimulationData)
 		outdata << std::endl << "Image: " << CImage+1 << std::endl << std::endl;
 		outdata << "[[";
 
-		for (G4int Element = 0; Element < Nrows*Ncolumns; Element++)
+		for (G4int Element = 0; Element <TotalNoColumns*TotalNoRows; Element++)
 		{
-			G4int Column = Remainder(Element, GetNumberColumns());	
-			G4int Row = Quotient(Element, GetNumberColumns()); 
+			G4int Column = Remainder(Element, TotalNoColumns);	
+			G4int Row = Quotient(Element, TotalNoColumns); 
 
-			if (Column >= GetNumberColumns()-1)
+			if (Column >= TotalNoColumns-1)
 			{
 				outdata << std::setfill(' ') << std::setw(5) << HitData[Element];
-				if (Column == GetNumberColumns()-1 && Row == GetNumberRows()-1)
+				if (Column == TotalNoColumns-1 && Row == TotalNoRows-1)
 					{outdata << "]]" << std::endl;}
 				else
 					{outdata << "]," << std::endl << " [";}
@@ -249,27 +246,30 @@ void Data::WriteToTextFile(G4String SimulationData)
 		outdata << G4endl << "Energy detector data (keV)" << G4endl;
 
 		//Finds how many digits the detector numbers need to be to keep aligned
-		G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
+		G4int NoDigits = std::to_string(TotalNoRows*TotalNoColumns).length();
 
 		outdata << G4endl << "Image: " << CImage+1 << G4endl;
-		outdata << "          "; 
-
-		for (G4int n = 0; n < NoDigits; n++)
-			{outdata << " ";}
 		
-		for (G4int x = 0 ; x < GetNoBins(); x++)
-		{	outdata << "   "; 
-			outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
-		}
-		outdata << G4endl;
+		outdata << std::endl;
+		outdata << "Detector Number:  ";
 
-		for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
-    		{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
-    		    	{	if (yE == 0)
-					{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
-				outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE];
+		for (G4int Number = 0; Number < TotalNoColumns*TotalNoRows; Number++)
+			{outdata << std::setfill(' ') << std::setw(NoDigits+10) << Number;}
+
+		outdata << std::endl;
+
+		for(G4int yE = 0 ; yE < GetNoBins(); yE++)  
+    		{	if( yE == GetNoBins()-1)
+				{outdata << "≤";}
+			else
+				{outdata << "<" ;}
+			outdata << std::setfill(' ') << std::setw(NoDigits+10) << G4BestUnit((GetMaxEnergy()/GetNoBins()) * (yE+1), "Energy");
+
+			for(G4int xE = 0 ; xE < TotalNoColumns*TotalNoRows; xE++)  
+    		    	{	
+				outdata << std::setfill(' ') << std::setw(NoDigits+10) << EnergyData[xE][yE];
        		 	}
-    			outdata << G4endl;  
+    			outdata << std::endl;
     		}
 
 		outdata.close();

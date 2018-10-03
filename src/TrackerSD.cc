@@ -19,7 +19,6 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	{			
 		//Save the variables into its own class
 		SetDetectorEfficiency(DetectorEfficiency);
-		data -> SetDetectorEfficiency(DetectorEfficiency);
 
 		data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
 		data -> SetUpEnergyData();
@@ -54,7 +53,8 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   		if (edep==0.) return false;
 	}
 	else 
-		{edep = aStep-> GetTrack()-> GetTotalEnergy();}
+		{//edep = aStep-> GetTrack()-> GetTotalEnergy();}
+		edep = aStep->GetPreStepPoint()->GetKineticEnergy();}
 
 	//Create the TrackerHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
@@ -69,7 +69,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	
 		//Needed for visualization of hits, only need it if it's turned on
 	
-		newHit -> SetPos (aStep->GetPostStepPoint()->GetPosition());
+		newHit -> SetPos (aStep->GetPreStepPoint()->GetPosition());
 	
 		fHitsCollection -> insert( newHit );
 	}
@@ -114,4 +114,5 @@ void TrackerSD::EndOfEvent(G4HCofThisEvent*)
 //146.61s 10,000,000 photons without data class
 //144.72s
 //151.34s without deleting newHit
+//72.88s 10,000,000 photons 1D data  
 

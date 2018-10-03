@@ -33,7 +33,7 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 { 	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
-  	detectorMessenger = new DetectorConstructionMessenger(this);	
+  	detectorMessenger = new DetectorConstructionMessenger(this, data);	
 	TC = new TargetConstruction(data->GetNoImages());
 	
 }
@@ -51,8 +51,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	{
 		TC -> SetNoImages(data ->GetNoImages());
 		TC -> SetVisualization(data->GetVisualization());
-		data -> SetDetectorMaterial(GetDetectorMaterial());
-		data -> SetDetectorDimensions(DetectorSize_Cmd);
 	}
 
 	if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
