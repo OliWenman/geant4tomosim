@@ -58,7 +58,7 @@ PhysicsList::~PhysicsList()
 	//if (GetPhysicsUsed() != LMPhotoElectricEffect || GetPhysicsUsed() != LivermoreGamma )
 	delete emPhysicsList;
   	
-	G4cout << G4endl << "PhysicsList has been deleted" << G4endl;
+	G4cout << G4endl << "PhysicsList has been deleted";
 }
 
 void PhysicsList::ConstructParticle()

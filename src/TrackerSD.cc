@@ -28,7 +28,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	collectionName.insert(hitsCollectionName);
 }
 
-TrackerSD::~TrackerSD() {G4cout << G4endl << "TrackerSD has been deleted "<< G4endl;}
+TrackerSD::~TrackerSD() {G4cout << G4endl << "TrackerSD has been deleted ";}
 
 void TrackerSD::Initialize(G4HCofThisEvent* hce)
 {	

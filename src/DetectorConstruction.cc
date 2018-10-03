@@ -42,7 +42,7 @@ DetectorConstruction::~DetectorConstruction()
 {	
 	delete detectorMessenger; 
 	delete TC;
-	G4cout << G4endl << "DetectorConstruction has been deleted " << G4endl;
+	G4cout << G4endl << "DetectorConstruction has been deleted ";
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

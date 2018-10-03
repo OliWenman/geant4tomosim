@@ -28,7 +28,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	//Free up memory
   	delete ParticleGun;
 	delete gunMessenger;
-	G4cout << G4endl << "PrimaryGeneratorAction has been deleted " << G4endl;
+	G4cout << G4endl << "PrimaryGeneratorAction has been deleted ";
 }
 
 void PrimaryGeneratorAction::SetDefaultKinematic()

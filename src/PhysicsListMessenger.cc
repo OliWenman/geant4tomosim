@@ -21,7 +21,7 @@ PhysicsListMessenger::~PhysicsListMessenger()
 {
   	delete PhysicsListCmd;
   	delete physicsDirectory;   
-	G4cout << G4endl << "PhysicsListMessenger has been deleted " << G4endl; 
+	G4cout << G4endl << "PhysicsListMessenger has been deleted "; 
 }
 
 void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

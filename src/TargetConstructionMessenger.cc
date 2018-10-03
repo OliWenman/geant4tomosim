@@ -50,7 +50,7 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete MasterOffSetRadius_Cmd;
 	delete NumberOfObjects_Cmd;
 
-	G4cout << G4endl << "TargetConstructionMessenger has been deleted "<< G4endl;
+	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
 }
 
 void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

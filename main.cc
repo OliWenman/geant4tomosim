@@ -60,7 +60,7 @@ void SaveDataToFile(G4int Image, Data* data)
 {
 	//Write data to file if command is turned on
 	if (data -> GetTextFileCmd() == true)
-		{data -> WriteToTextFile();}
+		{data -> WriteToTextFile("SimulationData");}
 	else if(data -> GetHDF5FileCmd() == true)
 		{data -> WriteToHDF5();}
 	else 
@@ -153,9 +153,10 @@ int main(int argc,char** argv)
 	//Stop the full simulation time and save to data class
 	FullTime.Stop();
 	data -> SetSimulationTime(FullTime.GetRealElapsed());
+	data -> WriteToTextFile("SimulationSettings");
 
 	G4cout << G4endl << "================================================================================"
-	       << G4endl << "                      The simulation is finihsed! "
+	       << G4endl << "                        The simulation is finihsed! "
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 
@@ -164,9 +165,9 @@ int main(int argc,char** argv)
 	//Delete the remaining pointers
 	G4cout << G4endl << "Deleting ui";
 	delete ui;
-	G4cout << G4endl << "Deleting visManager" << G4endl; 
+	G4cout << G4endl << "Deleting visManager"; 
 	delete visManager;
-	G4cout << G4endl << "Deleting runManager " << G4endl;
+	G4cout << G4endl << "Deleting runManager ";
   	delete runManager;
 	delete data;
 

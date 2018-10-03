@@ -16,7 +16,7 @@ class Data
 		virtual ~Data();
 		
 		//Get Methods
-		std::vector<std::vector<G4int> > GetHitData(){ return HitDataMatrix;}
+		std::vector<G4int> GetHitData(){ return HitDataMatrix;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		inline G4int GetNumberRows(){return rows;}
@@ -33,7 +33,7 @@ class Data
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		//Set Methods
-		void SetHitData(std::vector<std::vector<G4int> > UpdatedData){HitDataMatrix = UpdatedData;}
+		void SetHitData(std::vector<G4int> UpdatedData){HitDataMatrix = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
@@ -78,14 +78,14 @@ class Data
 		virtual G4int BinNumber(G4int DetectorNumber, G4double edep);
 		virtual void SaveEnergyData(G4int DetectorNumber, G4double edep);
 		virtual void PrintEnergyData();
-		virtual void WriteToTextFile();
+		virtual void WriteToTextFile(G4String);
 		virtual void WriteToHDF5();
 
 	private:	
 		DataMessenger* dataMessenger;
 
 		//Data members
-		std::vector<std::vector<G4int> > HitDataMatrix;
+		std::vector<G4int> HitDataMatrix;
 		std::vector<std::vector<G4int> > EnergyMatrix;
 
 		G4int rows;

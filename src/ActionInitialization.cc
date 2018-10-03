@@ -14,7 +14,7 @@ ActionInitialization::ActionInitialization(Data* DataObject, DetectorConstructio
 	G4cout << G4endl << "ActionInitialization has been created " << G4endl;
 }
 
-ActionInitialization::~ActionInitialization(){ G4cout << G4endl << "ActionIntialization has been deleted " << G4endl; }
+ActionInitialization::~ActionInitialization(){ G4cout << G4endl << "ActionIntialization has been deleted "; }
 
 void ActionInitialization::BuildForMaster() const
 {

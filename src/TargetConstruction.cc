@@ -36,7 +36,7 @@ TargetConstruction::TargetConstruction(G4int NoImages)
 
 TargetConstruction::~TargetConstruction()
 {
-	G4cout << G4endl << "TargetConstruction has been deleted" << G4endl;
+	G4cout << G4endl << "TargetConstruction has been deleted";
 	delete TCMessenger;
 }
 

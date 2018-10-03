@@ -29,7 +29,7 @@ RunActionMessenger::~RunActionMessenger()
 	delete seedCmd;
 	delete PrintCmd;
 
-	G4cout << G4endl << "RunActionMessenger has been deleted " << G4endl;
+	G4cout << G4endl << "RunActionMessenger has been deleted ";
 }
 
 void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

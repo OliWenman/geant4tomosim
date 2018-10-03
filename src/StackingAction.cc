@@ -13,7 +13,7 @@ StackingAction::StackingAction(): G4UserStackingAction(), fParticle(0)
   	fParticle       = 0; 
 }
 
-StackingAction::~StackingAction(){G4cout << G4endl << "StackingAction has been deleted " << G4endl;}
+StackingAction::~StackingAction(){G4cout << G4endl << "StackingAction has been deleted ";}
 
 G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrack)
 {

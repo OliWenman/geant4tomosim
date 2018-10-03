@@ -42,7 +42,7 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete BeamWidthY_Cmd;
 	delete BeamHeightZ_Cmd;
 
-	G4cout << G4endl << "PrimaryGeneratorActionMessenger has been deleted " << G4endl;
+	G4cout << G4endl << "PrimaryGeneratorActionMessenger has been deleted ";
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

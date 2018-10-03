@@ -76,7 +76,7 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete DetectorMaterial_Cmd;
 	delete DetectorEfficiency_Cmd;
 
-	G4cout << G4endl << "DetectorConstructionMessenger has been deleted "<< G4endl;
+	G4cout << G4endl << "DetectorConstructionMessenger has been deleted ";
 }
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)

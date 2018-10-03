@@ -20,7 +20,7 @@ RunAction::RunAction(Data* DataObject): G4UserRunAction(), data(DataObject)
 RunAction::~RunAction()
 {
 	delete runMessenger;
-	G4cout << G4endl << "RunAction has been deleted " << G4endl;
+	G4cout << G4endl << "RunAction has been deleted ";
 }
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)

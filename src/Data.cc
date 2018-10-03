@@ -19,7 +19,7 @@ Data::Data()
 
 Data::~Data()
 {
-	G4cout << G4endl << "Data class has been deleted "<< G4endl;
+	G4cout << G4endl << "Data class has been deleted ";
 	delete dataMessenger;
 }
 
@@ -30,8 +30,8 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	SetNumberColumns(Ncolumn);
 
 	//Creates a 3D vector for the hit data
-	std::vector<std::vector<G4int> > iHitDataMatrix;
-	iHitDataMatrix.resize(Nrow, std::vector<G4int>(Ncolumn,0));	
+	std::vector<G4int> iHitDataMatrix;
+	iHitDataMatrix.resize(Nrow*Ncolumn, 0);	
 	//std::vector < std::vector < int > > Matrix(10, std::vector< int >(10,0));	
 	SetHitData(iHitDataMatrix);
 }
@@ -52,42 +52,36 @@ void Data::SaveHitData(G4int DetectorNumber)
 	//Finds the coordinates of the detector inputted for the matrix
 	//+1 for each hit. Written on one line to increase speed
 	
-	++HitDataMatrix[Quotient(DetectorNumber, GetNumberColumns())][Remainder(DetectorNumber, GetNumberColumns())]; 
+	++HitDataMatrix[DetectorNumber]; 
 }
 
 void Data::PrintHitData()
 {
 	//Find each needed value using the Get functions
-	std::vector<std::vector<G4int> > HitData = GetHitData();
-	G4int Nrows = GetNumberRows();
-	G4int Ncolumns = GetNumberColumns();
+	std::vector<G4int> HitData = GetHitData();
 
-	G4int Image = GetCurrentImage();
-	
-	G4cout << G4endl << "Hit count data " << G4endl;
-	G4cout << "Image: " << Image+1 << G4endl; 
-	G4cout << "[";
+	//Prints the 1D Data as 2D	
+	G4cout << G4endl << "Hit count data: " << "Image " << GetCurrentImage()+1 << G4endl << G4endl;
+	G4cout << "[[";
 
-	//Prints out the HitData
-	G4int y = 0;
-	G4int x = 0;
-	for(G4int x = 0 ; x < Nrows; x++)  
-    	{
-		if (x > 0)
-			{G4cout << " [";}
-		else
-			{G4cout << "[";}
-    		for( G4int y = 0 ; y < Ncolumns; y++)  
-        	{	G4cout << std::setfill(' ') << std::setw(5) << HitData[x][y];
-			if ((Nrows - 1) == y)	
-				{G4cout << " ";}
-			else 
-				{G4cout << ",";}
+	for (G4int Element = 0; Element < GetNumberRows()*GetNumberColumns(); Element++)
+	{
+		G4int Column = Remainder(Element, GetNumberColumns());	
+		G4int Row = Quotient(Element, GetNumberColumns()); 
+
+		if (Column >= GetNumberColumns()-1)
+		{
+			G4cout << std::setfill(' ') << std::setw(5) << HitData[Element];
+			if (Column == GetNumberColumns()-1 && Row == GetNumberRows()-1)
+				{G4cout << "]]" << G4endl;}
+			else
+				{G4cout << "]," << G4endl << " [";}
 		}
-		if (y < Ncolumns - 1 && x < Nrows - 1)
-			{G4cout << "]," << G4endl;}	
-		else
-			{G4cout << "]]" << G4endl;}
+		else 
+		{
+			G4cout << std::setfill(' ') << std::setw(5) << HitData[Element];
+			G4cout << ",";
+		}
 	}
 }
 
@@ -112,10 +106,10 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 void Data::PrintEnergyData()
 {
 	//Gets the needed variables
-	G4int Image = GetCurrentImage();
 	std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
 	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
 
+	G4cout << G4endl << "Image " << GetCurrentImage()+1 << G4endl;
 	G4cout << G4endl << "Energy detector data (keV)" << G4endl;
 	G4cout << "          "; 
 	
@@ -139,12 +133,12 @@ void Data::PrintEnergyData()
     	}
 }
 
-void Data::WriteToTextFile()
+void Data::WriteToTextFile(G4String SimulationData)
 {
 	std::ofstream outdata; 
    
 	//Get needed variables to wrtie to file
-   	std::vector<std::vector<G4int> > HitData = GetHitData();
+   	std::vector<G4int> HitData = GetHitData();
    	std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
 	G4int Nrows = GetNumberRows();
 	G4int Ncolumns = GetNumberColumns();
@@ -153,7 +147,7 @@ void Data::WriteToTextFile()
 	G4String FilePath = "./Data_Output/Text/";
 
 	//Save the simulation settings to a textfile only once
-	if (CImage == 0)
+	if (SimulationData == "SimulationSettings")
 	{
 		G4String SettingsName = "SimulationSettings.txt";
 
@@ -176,7 +170,8 @@ void Data::WriteToTextFile()
 		outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
 		outdata << "- Number of photons used per image: " << GetNoPhotons() << std::endl;
 		outdata << "- Number of images: " << GetNoImages() << std::endl;
-		outdata << "- Real simulation time: " << GetSimulationTime() << std::endl;
+		outdata << "- Number of bins: " << GetNoBins() << std::endl;
+		outdata << "- Real simulation time: " << GetSimulationTime() << "s" << std::endl;
 		outdata << std::endl;
 
 		outdata.close();
@@ -184,96 +179,97 @@ void Data::WriteToTextFile()
 
 //--------------------------------------------------------------------------------------
 
-	//Save the HitData
-	G4String HitFileName = "HitDataFile.txt";
+	else 
+	{
+		G4cout << G4endl << "Saving the data... ";
+		//Save the HitData
+		G4String HitFileName = "HitDataFile.txt";
 
-	//If it is the first image, override the file. If not, append to the file 
-	if (CImage != 0)
-		{outdata.open(FilePath+HitFileName, std::ofstream::app); }
-	else
-		{outdata.open(FilePath+HitFileName);} 
+		//If it is the first image, override the file. If not, append to the file 
+		if (CImage != 0)
+			{outdata.open(FilePath+HitFileName, std::ofstream::app); }
+		else
+			{outdata.open(FilePath+HitFileName);} 
    	
-	//Output error if can't open file
-	if( !outdata ) 
-	{ 	std::cerr << "Error: file could not be opened" << std::endl;
-      		exit(1);
-   	}
+		//Output error if can't open file
+		if( !outdata ) 
+		{ 	std::cerr << "Error: file could not be opened" << std::endl;
+      			exit(1);
+   		}
 
-	//Save each image in the text file as a matrix
-	G4int y = 0;
-	G4int x = 0;
+		//Save each image in the text file as a matrix
+		outdata << std::endl << "Image: " << CImage+1 << std::endl << std::endl;
+		outdata << "[[";
 
-	outdata << std::endl << "Image: " << CImage+1 << std::endl << std::endl;
-	outdata << "[";
-	for( G4int x = 0; x < Nrows; x++)  
-    	{
-		if (x > 0)
-			{outdata << " [";}
-		else
-			{outdata << "[";}
-    		for( G4int y = 0 ; y < Ncolumns; y++)  
-        	{	
-			outdata << std::setfill(' ') << std::setw(5) << HitData[x][y];
-			if ((Nrows - 1) == y)	
-				{outdata << " ";}
+		for (G4int Element = 0; Element < Nrows*Ncolumns; Element++)
+		{
+			G4int Column = Remainder(Element, GetNumberColumns());	
+			G4int Row = Quotient(Element, GetNumberColumns()); 
+
+			if (Column >= GetNumberColumns()-1)
+			{
+				outdata << std::setfill(' ') << std::setw(5) << HitData[Element];
+				if (Column == GetNumberColumns()-1 && Row == GetNumberRows()-1)
+					{outdata << "]]" << std::endl;}
+				else
+					{outdata << "]," << std::endl << " [";}
+			}
 			else 
-				{outdata << ",";}
+			{
+				outdata << std::setfill(' ') << std::setw(5) << HitData[Element];
+				outdata << ",";
+			}
 		}
-		if (y < Ncolumns - 1 && x < Nrows - 1)
-			{outdata << "]," << G4endl;}	
-		else
-			{outdata << "]]" << G4endl;}
-    	}
-	
 
-	outdata.close();
-	G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
+		outdata.close();
+		G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
 
 //--------------------------------------------------------------------------------------
 
-	//Save the EnergyData
-	G4String EnergyFileName = "EnergyFile.txt";
+		//Save the EnergyData
+		G4String EnergyFileName = "EnergyFile.txt";
 	
-	//If it is the first image, override the file. If not, append to the file 
-	if (CImage != 0)
-		{outdata.open(FilePath+EnergyFileName, std::ofstream::app); }
-	else
-		{outdata.open(FilePath+EnergyFileName);} 
+		//If it is the first image, override the file. If not, append to the file 
+		if (CImage != 0)
+			{outdata.open(FilePath+EnergyFileName, std::ofstream::app); }
+		else
+			{outdata.open(FilePath+EnergyFileName);} 
 
-	outdata << G4endl << "Energy detector data (keV)" << G4endl;
+		outdata << G4endl << "Energy detector data (keV)" << G4endl;
 
-	//Finds how many digits the detector numbers need to be to keep aligned
-	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
+		//Finds how many digits the detector numbers need to be to keep aligned
+		G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
 
-	outdata << G4endl << "Image: " << CImage+1 << G4endl;
-	outdata << "          "; 
+		outdata << G4endl << "Image: " << CImage+1 << G4endl;
+		outdata << "          "; 
 
-	for (G4int n = 0; n < NoDigits; n++)
-		{outdata << " ";}
+		for (G4int n = 0; n < NoDigits; n++)
+			{outdata << " ";}
 		
-	for (G4int x = 0 ; x < GetNoBins(); x++)
-	{	outdata << "   "; 
-		outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
-	}
-	outdata << G4endl;
+		for (G4int x = 0 ; x < GetNoBins(); x++)
+		{	outdata << "   "; 
+			outdata << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
+		}
+		outdata << G4endl;
 
-	for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
-    	{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
-        	{	if (yE == 0)
-				{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
-			outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE];
-        	}
-    		outdata << G4endl;  
-    	}
+		for(G4int xE = 0 ; xE < GetNumberRows()*GetNumberColumns(); xE++)  
+    		{	for( G4int yE = 0 ; yE < GetNoBins(); yE++)  
+    		    	{	if (yE == 0)
+					{outdata << "Detector " << std::setfill('0') << std::setw(NoDigits) << xE << ":";}
+				outdata << "   " << std::setfill(' ') << std::setw(5) << EnergyData[yE][xE];
+       		 	}
+    			outdata << G4endl;  
+    		}
 
-	outdata.close();
-	G4cout << G4endl << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
+		outdata.close();
+		G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
 	
-	//Reset the data to zero ready for the next image
-	for(auto& x : HitData) memset(&x[0],0,sizeof(int)*x.size());
-	for(auto& x : EnergyData) memset(&x[0],0,sizeof(int)*x.size());
-	SetHitData(HitData);
-	SetEnergyData(EnergyData);
+		//Reset the data to zero ready for the next image
+		memset(&HitData[0], 0, sizeof(HitData[0]) * HitData.size());
+		for(auto& x : EnergyData) memset(&x[0],0,sizeof(int)*x.size());
+		SetHitData(HitData);
+		SetEnergyData(EnergyData);
+	}
 }
 
 void Data::WriteToHDF5()

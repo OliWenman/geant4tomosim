@@ -55,7 +55,7 @@ DataMessenger::~DataMessenger()
 	delete Visualization_Cmd;
 	delete seedCmd;
 
-	G4cout << G4endl << "DataMessenger has been deleted " << G4endl;
+	G4cout << G4endl << "DataMessenger has been deleted " << G4endl << G4endl;
 }
 
 void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
