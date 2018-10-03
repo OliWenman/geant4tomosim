@@ -2,10 +2,13 @@
 #define Data_h 1
 
 #include "globals.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "G4UserLimits.hh"
 #include <iostream>
 #include <vector>
 #include <math.h>       // Used to access the function floor 
 #include "G4SystemOfUnits.hh"
+#include "G4ThreeVector.hh"
 
 class DataMessenger;
 
@@ -21,8 +24,12 @@ class Data
 
 		inline G4int GetNumberRows(){return rows;}
 		inline G4int GetNumberColumns(){return columns;}
+		G4String GetDetectorMaterial(){return DetectorMaterial;}
+		G4ThreeVector GetDetectorDimensions(){return DetectorDimensions;}
 
 		G4double GetMaxEnergy(){return MaxE;}
+		G4double GetBeamWidth(){return BeamWidth;}
+		G4double GetBeamHeight(){return BeamHeight;}
 
 		inline G4int GetCurrentImage(){return CurrentImage;}
 
@@ -38,8 +45,12 @@ class Data
 		
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
+		void SetDetectorMaterial(G4String value){DetectorMaterial = value;}
+		void SetDetectorDimensions(G4ThreeVector value){DetectorDimensions = value;}
 
 		void SetMaxEnergy(G4double value){MaxE = value;}
+		void SetBeamWidth(G4double value){BeamWidth = value;}
+		void SetBeamHeight(G4double value){BeamHeight = value;}
 
 		void SetCurrentImage(G4int value){CurrentImage = value;}
 
@@ -90,8 +101,12 @@ class Data
 
 		G4int rows;
 		G4int columns;	
+		G4String DetectorMaterial;
+		G4ThreeVector DetectorDimensions;
 
 		G4double MaxE;
+		G4double BeamHeight;
+		G4double BeamWidth;
 
 		G4int Seed;
 		G4int CurrentImage;

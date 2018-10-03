@@ -5,6 +5,7 @@
 #include "G4UnitsTable.hh"
 //#include <string.h>
 #include <vector>
+#include "G4ThreeVector.hh"
 
 //#include "hdf5.h"
 //#include "H5Cpp.h"
@@ -150,6 +151,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 	if (SimulationData == "SimulationSettings")
 	{
 		G4String SettingsName = "SimulationSettings.txt";
+		G4ThreeVector DetectorDimensions = GetDetectorDimensions()*2;
 
 		outdata.open(FilePath+SettingsName); 
    	
@@ -162,15 +164,24 @@ void Data::WriteToTextFile(G4String SimulationData)
 		//Save information about the conditions used for the simulation
 		outdata << "Simulation of X-Ray data." << std::endl << std::endl;
 
-		outdata << "Conditioons used in this simulation are: " << std::endl;
+		outdata << "Conditioons used in this simulation: " << std::endl;
 		outdata << "- Physics package: " << GetPhysicsUsed() << std::endl;
-		outdata << "- Seed: " << GetSeedOption() << std::endl;
+		outdata << "- Seed: " << GetSeedOption() << std::endl << std::endl;
+
 		outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
-		outdata << "- Number of detectors along the y axis: " << GetNumberColumns() << std::endl;
-		outdata << "- Number of detectors along the z axis: " << GetNumberRows() << std::endl;
-		outdata << "- Number of photons used per image: " << GetNoPhotons() << std::endl;
+		outdata << "- Beam dimensions: " << GetBeamWidth() << " x " << G4BestUnit(GetBeamHeight(), "Length") << std::endl << std::endl; 
+
+		outdata << "- Number of detectors: " << GetNumberColumns() << " x " << GetNumberRows() << std::endl;
+		outdata << "- Detector dimensions: " << G4BestUnit(DetectorDimensions.x(), "Length") << " x " << G4BestUnit(DetectorDimensions.y(), "Length") << " x " << G4BestUnit(DetectorDimensions.z(), "Length") << std::endl;
+		if (GetDetectorEfficiency() == true)
+			{outdata << "- Detectors used are 100%\ efficient" << std::endl;}
+		else 
+			{outdata << "- Detector material: " << GetDetectorMaterial() << std::endl;}
+
+		outdata << std::endl <<"- Number of photons used per image: " << GetNoPhotons() << std::endl;
 		outdata << "- Number of images: " << GetNoImages() << std::endl;
-		outdata << "- Number of bins: " << GetNoBins() << std::endl;
+		outdata << "- Number of bins: " << GetNoBins() << std::endl << std::endl;
+
 		outdata << "- Real simulation time: " << GetSimulationTime() << "s" << std::endl;
 		outdata << std::endl;
 

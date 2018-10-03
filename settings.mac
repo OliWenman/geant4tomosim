@@ -13,7 +13,7 @@
 /data/HDF5File true
 /data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
 /data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 5000000   	#(Choose the number of photons to be fired at the target)
+/data/NumberOfPhotons 50000   	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
@@ -37,7 +37,7 @@
 /Target/NumberOfObjects 2
 /Target/position 0 0 0 cm		#(Set the position of the target)
 /Target/material G4_Al			#(Set the material of the target)
-/Target/OffSet 0.2 mm			#(Set the off set radius of the target when it rotates)
+/Target/OffSet 0.0 mm			#(Set the off set radius of the target when it rotates)
 
 /run/initialize
 /hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))

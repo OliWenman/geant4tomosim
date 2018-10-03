@@ -59,12 +59,14 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 		BeamWidthY_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamWidthY(BeamWidthY_Cmd -> GetNewDoubleValue(newValue)); 
 		G4cout << "PrimaryGeneratorAction -> SetBeamWidthY command detected " << G4endl;
+		data -> SetBeamWidth(BeamWidthY_Cmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamHeightZ_Cmd )
   	{ 
 		BeamHeightZ_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamHeightZ(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue)); 
 		G4cout << "PrimaryGeneratorAction -> SetBeamHeightZ command detected " << G4endl;
+		data -> SetBeamHeight(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue));
 	}
 }
 

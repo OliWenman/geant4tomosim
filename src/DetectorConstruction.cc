@@ -51,6 +51,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	{
 		TC -> SetNoImages(data ->GetNoImages());
 		TC -> SetVisualization(data->GetVisualization());
+		data -> SetDetectorMaterial(GetDetectorMaterial());
+		data -> SetDetectorDimensions(DetectorSize_Cmd);
 	}
 
 	if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
