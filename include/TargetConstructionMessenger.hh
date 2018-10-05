@@ -34,8 +34,8 @@ class TargetConstructionMessenger: public G4UImessenger
 
 		//TARGET VARIABLES
 		G4UIcmdWithAnInteger *NumberOfObjects_Cmd;
-		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
-		G4UIcmdWithAString *MasterTargetMaterial_Cmd;
-		G4UIcmdWithADoubleAndUnit *MasterOffSetRadius_Cmd;
+		//G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
+		G4UIcmdWithAString *TargetMaterial_Cmd;
+		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 };
 #endif

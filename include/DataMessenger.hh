@@ -36,6 +36,7 @@ class DataMessenger: public G4UImessenger
 		G4UIcmdWithAnInteger *NoPhotons_Cmd;
 		G4UIcmdWithABool *Visualization_Cmd;
 		G4UIcmdWithAnInteger *seedCmd;
+		G4UIcmdWithABool *EnergyDataCmd;
 };
 
 #endif 

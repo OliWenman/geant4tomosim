@@ -20,21 +20,21 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	TargetDirectory = new G4UIdirectory("/Target/");
 	TargetDirectory -> SetGuidance("Commands to control the detector variables. ");
 	
-	TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/position", this);
+	/*TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/position", this);
 	TargetPosition_Cmd -> SetGuidance("Set the target position, x, y and z. ");
 	TargetPosition_Cmd -> SetParameterName("X","Y","Z",true,true);
 	TargetPosition_Cmd -> SetUnitCandidates("mm cm m ");
 	TargetPosition_Cmd -> SetDefaultUnit("m");
-	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));	
+	TargetPosition_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));*/	
 
-	MasterTargetMaterial_Cmd = new G4UIcmdWithAString("/Target/material", this);
-	MasterTargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
-	MasterTargetMaterial_Cmd -> SetDefaultValue("G4_Al");
+	TargetMaterial_Cmd = new G4UIcmdWithAString("/Target/material", this);
+	TargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
+	TargetMaterial_Cmd -> SetDefaultValue("G4_Al");
 
-	MasterOffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet", this);
-	MasterOffSetRadius_Cmd -> SetGuidance("Set the off set of the poisition of the target with a radius");
-	MasterOffSetRadius_Cmd -> SetDefaultUnit("cm");
-	MasterOffSetRadius_Cmd -> SetDefaultValue(0.5*cm);
+	OffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet", this);
+	OffSetRadius_Cmd -> SetGuidance("Set the off set of the poisition of the target with a radius");
+	OffSetRadius_Cmd -> SetDefaultUnit("cm");
+	OffSetRadius_Cmd -> SetDefaultValue(0.5*cm);
 
 	NumberOfObjects_Cmd = new G4UIcmdWithAnInteger("/Target/NumberOfObjects",this);
 	NumberOfObjects_Cmd -> SetGuidance("Set the number of objects");
@@ -45,9 +45,9 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 TargetConstructionMessenger::~TargetConstructionMessenger()
 {
 	delete TargetDirectory;
-	delete TargetPosition_Cmd;
-	delete MasterTargetMaterial_Cmd;
-	delete MasterOffSetRadius_Cmd;
+	//delete TargetPosition_Cmd;
+	delete TargetMaterial_Cmd;
+	delete OffSetRadius_Cmd;
 	delete NumberOfObjects_Cmd;
 
 	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
@@ -55,21 +55,21 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 
 void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == TargetPosition_Cmd )
+	/*if( command == TargetPosition_Cmd )
 	{
 		TC -> SetTargetPosition(TargetPosition_Cmd -> GetNew3VectorValue(newValue));	
 		G4cout << "TargetConstruction -> SetTargetPosition command detected "<< G4endl;
-	}
-	else if(command == MasterTargetMaterial_Cmd )
+	}*/
+	if(command == TargetMaterial_Cmd )
 	{
-		TC -> SetMasterTargetMaterial(newValue);	
-		G4cout << "TargetConstruction -> MasterSetTargetMaterial command detected "<< G4endl;
+		TC -> SetTargetMaterial(newValue);	
+		G4cout << "TargetConstruction -> SetTargetMaterial command detected "<< G4endl;
 	}
-	else if(command == MasterOffSetRadius_Cmd )
+	else if(command == OffSetRadius_Cmd )
 	{
-		MasterOffSetRadius_Cmd -> GetNewUnitValue(newValue);
-		TC -> SetMasterOffSetRadius(MasterOffSetRadius_Cmd -> GetNewDoubleValue(newValue));	
-		G4cout << "TargetConstruction -> MasterOffSetRadius_Cmd command detected "<< G4endl;
+		OffSetRadius_Cmd -> GetNewUnitValue(newValue);
+		TC -> SetOffSetRadius(OffSetRadius_Cmd -> GetNewDoubleValue(newValue));	
+		G4cout << "TargetConstruction -> OffSetRadius_Cmd command detected "<< G4endl;
 	}
 	else if( command == NumberOfObjects_Cmd )
 	{

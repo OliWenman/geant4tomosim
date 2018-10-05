@@ -83,7 +83,8 @@ target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_LIBRARIES} ${H
 set(TEST_SCRIPTS  
     MyVis.mac
     settings.mac
-    README.txt)
+    README.txt
+    ViewImages.py)
 
 foreach(_script ${TEST_SCRIPTS})
   configure_file(${PROJECT_SOURCE_DIR}/${_script}

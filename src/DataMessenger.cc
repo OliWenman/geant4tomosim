@@ -42,6 +42,10 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 	seedCmd = new G4UIcmdWithAnInteger("/data/Seed", this);
 	seedCmd -> SetDefaultValue(0);
 	seedCmd -> SetGuidance("Enter a seed for the simulation. Input 0 for a random seed ");
+	
+	EnergyDataCmd = new G4UIcmdWithABool("/data/Energy", this);
+	EnergyDataCmd -> SetGuidance("Choose if you would like energy data to be processed");
+	EnergyDataCmd -> SetDefaultValue(false);
 }
 
 DataMessenger::~DataMessenger()
@@ -54,6 +58,7 @@ DataMessenger::~DataMessenger()
 	delete NoPhotons_Cmd;
 	delete Visualization_Cmd;
 	delete seedCmd;
+	delete EnergyDataCmd;
 
 	G4cout << G4endl << "DataMessenger has been deleted " << G4endl << G4endl;
 }
@@ -94,5 +99,10 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	{
 		data -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));	
 		G4cout << "Data -> SetSeedOption command detected "<< G4endl;
+	}
+	else if (command == EnergyDataCmd)
+	{
+		data -> SetEnergyDataOption(EnergyDataCmd -> GetNewBoolValue(newValue));
+		G4cout << "Data -> SetEnergyDataOption command detected "<< G4endl;
 	}
 }

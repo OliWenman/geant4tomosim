@@ -34,8 +34,7 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this, data);	
-	TC = new TargetConstruction(data->GetNoImages());
-	
+	TC = new TargetConstruction();
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -122,10 +121,10 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 
 	G4double DetectorPosX = -WorldSize.x() + DetectorSize.x() ;
 
-	for (G4double DetectorPosY = StartingPositionY; DetectorPosY <= MaxLengthPositionY; DetectorPosY = DetectorPosY+(DetectorSize.y()*2))
-	{	
-		for (G4double DetectorPosZ = StartingPositionZ; DetectorPosZ <= MaxLengthPositionZ; DetectorPosZ = DetectorPosZ+(DetectorSize.z()*2))
-		{
+	for (G4double DetectorPosZ = StartingPositionZ; DetectorPosZ <= MaxLengthPositionZ; DetectorPosZ = DetectorPosZ+(DetectorSize.z()*2))
+	{
+		for (G4double DetectorPosY = StartingPositionY; DetectorPosY <= MaxLengthPositionY; DetectorPosY = DetectorPosY+(DetectorSize.y()*2))
+		{			
 			G4VPhysicalVolume* phys_Detector = new G4PVPlacement(0,           //no rotation
 							  	     	G4ThreeVector(DetectorPosX, DetectorPosY, DetectorPosZ),      
 							  	     	logic_Detector,           //its logical volume
@@ -137,6 +136,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 			CopyNo++;
 		}
 	}   
+
 
 	//Visualization attributes
 	Visualization(logic_Detector, G4Colour::Cyan());
@@ -154,12 +154,9 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDe
 
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 {
-	G4Material* Material;
 	//Obtain pointer to NIST material manager
-	G4NistManager* nist = G4NistManager::Instance();
 	//Build materials 
-	return Material = nist -> FindOrBuildMaterial(MaterialName);
-	
+	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);;
 }
 
 void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 

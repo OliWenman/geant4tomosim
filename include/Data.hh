@@ -70,6 +70,7 @@ class Data
 		G4bool GetTextFileCmd(){return TextFileCmd;}
 		G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
 		G4int GetSeedOption(){return seedCmd;}
+		G4bool GetEnergyDataOption(){return EnergyDataCmd;}
 		void SetNoBins(G4int value){NoBins_Cmd = value;}
 		void SetNoImages(G4int value){NoImages_Cmd = value;}
 		void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
@@ -77,6 +78,7 @@ class Data
 		void SetTextFileCmd(G4bool value){TextFileCmd = value;}
 		void SetHDF5FileCmd(G4bool value){HDF5FileCmd = value;}
 		void SetSeedOption(G4int value){seedCmd = value;}
+		void SetEnergyDataOption(G4bool value){EnergyDataCmd = value;}
 
 		//Method functions
 		inline G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
@@ -122,6 +124,7 @@ class Data
 		G4int NoPhotons_Cmd;
 		G4bool Visualization_Cmd;
 		G4int seedCmd;
+		G4bool EnergyDataCmd;
 };
 
 #endif

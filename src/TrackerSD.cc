@@ -21,7 +21,8 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 		SetDetectorEfficiency(DetectorEfficiency);
 
 		data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
-		data -> SetUpEnergyData();
+		if (data -> GetEnergyDataOption() == true)
+			{data -> SetUpEnergyData();}
 	}
 	
 	collectionName.insert(hitsCollectionName);
@@ -77,7 +78,9 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 		{delete newHit;}
 	//Save the detector hits to the data class
 	data -> SaveHitData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
-	data-> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), edep);
+
+	if (data -> GetEnergyDataOption() == true)
+		{data-> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), edep);}
 
   	return true;
 }

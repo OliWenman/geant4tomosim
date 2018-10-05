@@ -160,7 +160,7 @@ int main(int argc,char** argv)
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 
-	ui -> SessionStart();   	
+	//ui -> SessionStart();   	
 
 	//Delete the remaining pointers
 	G4cout << G4endl << "Deleting ui";

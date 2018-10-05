@@ -6,6 +6,7 @@
 //#include <string.h>
 #include <vector>
 #include "G4ThreeVector.hh"
+#include <string> 
 
 //#include "hdf5.h"
 //#include "H5Cpp.h"
@@ -29,6 +30,7 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
+	G4cout << G4endl << "Number of particles per detector on average is " << double(GetNoPhotons()/(Nrow*Ncolumn)) << G4endl; 
 
 	//Creates a 1D vector for the hit data
 	std::vector<G4int> iHitDataMatrix(Nrow*Ncolumn, 0);
@@ -48,7 +50,7 @@ void Data::SetUpEnergyData()
 void Data::SaveHitData(G4int DetectorNumber)
 {	
 	//Finds the coordinates of the detector inputted for the matrix
-	//+1 for each hit. Written on one line to increase speed
+	//+1 for each hit.
 	
 	++HitDataMatrix[DetectorNumber]; 
 }
@@ -105,29 +107,37 @@ void Data::PrintEnergyData()
 {
 	//Gets the needed variables
 	std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
-	G4int NoDigits = std::to_string(GetNumberRows()*GetNumberColumns()).length();
+	G4int TotalNoRows = GetNumberRows();
+	G4int TotalNoColumns = GetNumberColumns();
 
 	G4cout << G4endl << "Image " << GetCurrentImage()+1 << G4endl;
 	G4cout << G4endl << "Energy detector data (keV)" << G4endl;
-	G4cout << "          "; 
 	
-	//Prints out the energy range of the bins
-	for (G4int n = 0; n < NoDigits; n++)
-		{G4cout << " ";}	
-	for (G4int x = 0 ; x < GetNoBins(); x++)
-	{	G4cout << "   "; 
-		G4cout << std::setfill(' ') << std::setw(5) << (GetMaxEnergy()/GetNoBins() * (x+1))*1000;
-	}
+	//Finds how many digits the detector numbers need to be to keep aligned
+	G4int NoDigits = std::to_string(TotalNoRows*TotalNoColumns).length();
+
+	G4cout << G4endl << "Image: " << GetCurrentImage()+1 << G4endl;
+		
+	G4cout << G4endl;
+	G4cout << "Detector Number:  ";
+
+	for (G4int Number = 0; Number < TotalNoColumns*TotalNoRows; Number++)
+		{G4cout << std::setfill(' ') << std::setw(NoDigits+10) << Number;}
+
 	G4cout << G4endl;
 
-	//Prints out the energy data
-	for(G4int x = 0 ; x < GetNumberRows()*GetNumberColumns(); x++)  
-    	{	for( G4int y = 0 ; y < GetNoBins(); y++)  
-        	{	if (y == 0)
-				{G4cout << "Detector " << std::setfill('0') << std::setw(NoDigits) << x << ":";}
-			G4cout << "   " << std::setfill(' ') << std::setw(5) << EnergyData[y][x] ;
-        	}
-    		G4cout << G4endl;  
+	for(G4int yE = 0 ; yE < GetNoBins(); yE++)  
+    	{	if( yE == GetNoBins()-1)
+			{G4cout << "≤";}
+		else
+			{G4cout << "<" ;}
+		G4cout << std::setfill(' ') << std::setw(NoDigits+10) << G4BestUnit((GetMaxEnergy()/GetNoBins()) * (yE+1), "Energy");
+
+		for(G4int xE = 0 ; xE < TotalNoColumns*TotalNoRows; xE++)  
+    		{	
+			G4cout << std::setfill(' ') << std::setw(NoDigits+10) << EnergyData[xE][yE];
+       		}
+    		G4cout << G4endl;
     	}
 }
 
@@ -148,7 +158,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 	if (SimulationData == "SimulationSettings")
 	{
 		G4String SettingsName = "SimulationSettings.txt";
-		G4ThreeVector DetectorDimensions = GetDetectorDimensions()*2;
+		G4ThreeVector DetDimensions = GetDetectorDimensions()*2;
 
 		outdata.open(FilePath+SettingsName); 
    	
@@ -159,7 +169,7 @@ void Data::WriteToTextFile(G4String SimulationData)
    		}
 
 		//Save information about the conditions used for the simulation
-		outdata << "Simulation of X-Ray data." << std::endl << std::endl;
+		outdata << "Simulation of X-ray data." << std::endl << std::endl;
 
 		outdata << "Conditioons used in this simulation: " << std::endl;
 		outdata << "- Physics package: " << GetPhysicsUsed() << std::endl;
@@ -169,15 +179,19 @@ void Data::WriteToTextFile(G4String SimulationData)
 		outdata << "- Beam dimensions: " << GetBeamWidth() << " x " << G4BestUnit(GetBeamHeight(), "Length") << std::endl << std::endl; 
 
 		outdata << "- Number of detectors: " << TotalNoRows << " x " << TotalNoColumns << std::endl;
-		outdata << "- Detector dimensions: " << G4BestUnit(DetectorDimensions.x(), "Length") << "x " << G4BestUnit(DetectorDimensions.y(), "Length") << "x " << G4BestUnit(DetectorDimensions.z(), "Length") << std::endl;
+		outdata << "- Detector dimensions: " << G4BestUnit(DetDimensions.x(), "Length") << "x " << G4BestUnit(DetDimensions.y(), "Length") << "x " << G4BestUnit(DetDimensions.z(), "Length") << std::endl;
 		if (GetDetectorEfficiency() == true)
 			{outdata << "- Detectors used are 100%\ efficient" << std::endl;}
 		else 
 			{outdata << "- Detector material: " << GetDetectorMaterial() << std::endl;}
 
-		outdata << std::endl <<"- Number of photons used per image: " << GetNoPhotons() << std::endl;
+		outdata << std::endl << "- Number of photons used per image: " << GetNoPhotons() << std::endl;
+		outdata << std::endl << "- Number of photons per detector on average is (assuming total number of detectors are the same dimensions as the beam): " << GetNoPhotons()/(TotalNoColumns*TotalNoRows) << std::endl;
 		outdata << "- Number of images: " << GetNoImages() << std::endl;
-		outdata << "- Number of bins: " << GetNoBins() << std::endl << std::endl;
+		if (GetEnergyDataOption() == true)
+			{outdata << "- Number of bins: " << GetNoBins() << std::endl << std::endl;}
+		else 
+			{outdata << "- Energy data was not recorded" << std::endl << std::endl;}
 
 		outdata << "- Real simulation time: " << GetSimulationTime() << "s" << std::endl;
 		outdata << std::endl;
@@ -190,96 +204,91 @@ void Data::WriteToTextFile(G4String SimulationData)
 	else 
 	{
 		G4cout << G4endl << "Saving the data... ";
-		//Save the HitData
-		G4String HitFileName = "HitDataFile.txt";
+		
+		std::string ImageNumberString = std::to_string(CImage+1);
 
-		//If it is the first image, override the file. If not, append to the file 
-		if (CImage != 0)
-			{outdata.open(FilePath+HitFileName, std::ofstream::app); }
-		else
-			{outdata.open(FilePath+HitFileName);} 
-   	
+		//Save the HitData
+		G4String HitFileName = "Image" + ImageNumberString + ".txt";
+
+   		outdata.open(FilePath+"HitData/"+HitFileName);
+		
 		//Output error if can't open file
 		if( !outdata ) 
 		{ 	std::cerr << "Error: file could not be opened" << std::endl;
       			exit(1);
    		}
 
+		//Finds how many digits the detector numbers need to be to keep aligned
+		G4int NDigits = std::to_string(HitData[0]).length() + 2 ;
+		
 		//Save each image in the text file as a matrix
-		outdata << std::endl << "Image: " << CImage+1 << std::endl << std::endl;
-		outdata << "[[";
-
-		for (G4int Element = 0; Element <TotalNoColumns*TotalNoRows; Element++)
+		for (G4int Element = 0; Element < TotalNoColumns*TotalNoRows; Element++)
 		{
 			G4int Column = Remainder(Element, TotalNoColumns);	
 			G4int Row = Quotient(Element, TotalNoColumns); 
 
+			outdata << std::setfill(' ') << std::setw(NDigits) << HitData[Element];
+
 			if (Column >= TotalNoColumns-1)
-			{
-				outdata << std::setfill(' ') << std::setw(5) << HitData[Element];
-				if (Column == TotalNoColumns-1 && Row == TotalNoRows-1)
-					{outdata << "]]" << std::endl;}
-				else
-					{outdata << "]," << std::endl << " [";}
-			}
-			else 
-			{
-				outdata << std::setfill(' ') << std::setw(5) << HitData[Element];
-				outdata << ",";
-			}
+				{outdata << std::endl;}
 		}
 
 		outdata.close();
 		G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
 
 //--------------------------------------------------------------------------------------
+		if (GetEnergyDataOption() == true)
+		{
+			G4String EnergyFileName = "EnergyDataFile" + ImageNumberString + ".txt";
 
-		//Save the EnergyData
-		G4String EnergyFileName = "EnergyFile.txt";
-	
-		//If it is the first image, override the file. If not, append to the file 
-		if (CImage != 0)
-			{outdata.open(FilePath+EnergyFileName, std::ofstream::app); }
-		else
-			{outdata.open(FilePath+EnergyFileName);} 
+			outdata.open(FilePath+"EnergyData/"+EnergyFileName);
 
-		outdata << G4endl << "Energy detector data (keV)" << G4endl;
+			//Output error if can't open file
+			if( !outdata ) 
+			{ 	std::cerr << "Error: file could not be opened" << std::endl;
+      				exit(1);
+   			}
 
-		//Finds how many digits the detector numbers need to be to keep aligned
-		G4int NoDigits = std::to_string(TotalNoRows*TotalNoColumns).length();
+			G4int NBins = GetNoBins();
+			G4double MaxEnergy = GetMaxEnergy();
 
-		outdata << G4endl << "Image: " << CImage+1 << G4endl;
+			//Finds how many digits the numbers needed to be to keep the columns aligned
+			NDigits = std::to_string(TotalNoRows*TotalNoColumns).length() + 1;
+			G4int NDigitsBinHits = std::to_string(EnergyData[0][NBins]).length();
+			if (NDigitsBinHits > NDigits)
+				{NDigits = NDigitsBinHits + 1;}
 		
-		outdata << std::endl;
-		outdata << "Detector Number:  ";
+			outdata << "Detector No: ";
 
-		for (G4int Number = 0; Number < TotalNoColumns*TotalNoRows; Number++)
-			{outdata << std::setfill(' ') << std::setw(NoDigits+10) << Number;}
+			for (G4int Number = 0; Number < TotalNoColumns*TotalNoRows; Number++)
+				{outdata << std::setfill(' ') << std::setw(NDigits) << Number;}
 
-		outdata << std::endl;
+			outdata << std::endl;
 
-		for(G4int yE = 0 ; yE < GetNoBins(); yE++)  
-    		{	if( yE == GetNoBins()-1)
-				{outdata << "≤";}
-			else
-				{outdata << "<" ;}
-			outdata << std::setfill(' ') << std::setw(NoDigits+10) << G4BestUnit((GetMaxEnergy()/GetNoBins()) * (yE+1), "Energy");
+			for(G4int EnergyBin = 0 ; EnergyBin < NBins; EnergyBin++)  
+    			{	if( EnergyBin == NBins-1)
+					{outdata << "≤";}
+				else
+					{outdata << "<" ;}
+				outdata << std::setfill(' ') << std::setw(NDigits) << G4BestUnit((MaxEnergy/NBins) * (EnergyBin+1), "Energy");
 
-			for(G4int xE = 0 ; xE < TotalNoColumns*TotalNoRows; xE++)  
-    		    	{	
-				outdata << std::setfill(' ') << std::setw(NoDigits+10) << EnergyData[xE][yE];
-       		 	}
-    			outdata << std::endl;
-    		}
+				for(G4int NDetector = 0 ; NDetector < TotalNoColumns*TotalNoRows; NDetector++)  
+    		    		{	
+					outdata << std::setfill(' ') << std::setw(NDigits) << EnergyData[NDetector][EnergyBin];
+       		 		}
+    				outdata << std::endl;
+    			}
 
-		outdata.close();
-		G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
+			outdata.close();
+			G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
+
+			for(auto& x : EnergyData) memset(&x[0],0,sizeof(int)*x.size());
+			SetEnergyData(EnergyData);
+		}
 	
 		//Reset the data to zero ready for the next image
 		memset(&HitData[0], 0, sizeof(HitData[0]) * HitData.size());
-		for(auto& x : EnergyData) memset(&x[0],0,sizeof(int)*x.size());
 		SetHitData(HitData);
-		SetEnergyData(EnergyData);
 	}
 }
 
