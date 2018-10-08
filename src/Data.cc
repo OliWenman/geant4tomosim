@@ -224,12 +224,12 @@ void Data::WriteToTextFile(G4String SimulationData)
 		//Save each image in the text file as a matrix
 		for (G4int Element = 0; Element < TotalNoColumns*TotalNoRows; Element++)
 		{
-			G4int Column = Remainder(Element, TotalNoColumns);	
-			G4int Row = Quotient(Element, TotalNoColumns); 
+			//G4int Column = Remainder(Element, TotalNoColumns);	
+			//G4int Row = Quotient(Element, TotalNoColumns); 
 
 			outdata << std::setfill(' ') << std::setw(NDigits) << HitData[Element];
 
-			if (Column >= TotalNoColumns-1)
+			if (Remainder(Element, TotalNoColumns) >= TotalNoColumns-1)
 				{outdata << std::endl;}
 		}
 

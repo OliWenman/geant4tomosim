@@ -13,7 +13,7 @@
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
 /data/bins 3			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
-/data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
+/data/NumberOfImages 2		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
 /data/NumberOfPhotons 10000000 	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings

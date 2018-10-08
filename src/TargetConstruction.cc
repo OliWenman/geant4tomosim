@@ -64,7 +64,7 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 {
 	SetVectorPosition(ObjectNumber, TargetPosition);
 
-	G4Box *Box = new G4Box("Box", TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
+	G4Box* Box = new G4Box("Box", TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
 
 	//Fill the target with its material
 	G4Material* BoxMaterial = FindMaterial(Material);
@@ -79,7 +79,7 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, TargetPosition, OffSetRadius_Cmd, DeltaAngle);
 
 	//Create the target physical volume
-	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(RotateObjectAngle,            
+	G4VPhysicalVolume* physBox = new G4PVPlacement(RotateObjectAngle,            
 							     NewTargetPosition,    
 							     logicBox,           //its logical volume
 							     "Box",               //its name

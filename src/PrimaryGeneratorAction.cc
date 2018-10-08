@@ -35,9 +35,9 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 {
 	//Setup which particle is used and its starting conidiions
 	
-	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+	//G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 
-	gamma = particleTable -> FindParticle("gamma");
+	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
 	ParticleGun -> SetParticleDefinition(gamma);
   	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	
@@ -53,7 +53,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	//Set the ParticleGun conditions
 	ParticleGun -> SetParticleEnergy(energyCmd);
-  	ParticleGun->SetParticlePosition(G4ThreeVector(WorldSize.x(),y0, z0));
+  	ParticleGun-> SetParticlePosition(G4ThreeVector(WorldSize.x(),y0, z0));
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
