@@ -5,11 +5,13 @@
 #include "G4SystemOfUnits.hh"
 //#include "G4PhysListFactory.hh"
 #include "G4VPhysicsConstructor.hh"
+#include "G4StepLimiter.hh"
 
 #include "G4ParticleDefinition.hh"
 #include "G4ProcessManager.hh"
 #include "G4ParticleTypes.hh"
 #include "G4ParticleTable.hh"
+#include "G4LossTableManager.hh"
 #include "G4PhysicsListHelper.hh"
 
 //Physic lists (contained inside the Geant4 distribution)
@@ -31,6 +33,7 @@
 #include "G4GammaConversion.hh"
 #include "G4PhotoElectricEffect.hh"
 #include "G4RayleighScattering.hh"
+#include "G4UAtomicDeexcitation.hh"
 
 #include "G4eMultipleScattering.hh"
 
@@ -41,6 +44,7 @@
 #include "G4LivermorePhotoElectricModel.hh"
 #include "G4LivermoreComptonModel.hh"
 #include "G4LivermoreRayleighModel.hh"
+#include "G4LivermoreIonisationModel.hh"
 
 PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataObject)
 {
@@ -50,12 +54,12 @@ PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataO
   	emPhysicsList = new G4EmStandardPhysics();
 
 	G4double Cutvalue = 1*mm;
+	
 }
 
 PhysicsList::~PhysicsList()
 {
   	delete PhysicsMessenger;
-	//if (GetPhysicsUsed() != LMPhotoElectricEffect || GetPhysicsUsed() != LivermoreGamma )
 	delete emPhysicsList;
   	
 	G4cout << G4endl << "PhysicsList has been deleted";
@@ -95,16 +99,18 @@ void PhysicsList::ConstructEM(G4String Physics)
  	   	G4String particleName = particle->GetParticleName();
 		G4ProcessManager* pmanager = particle->GetProcessManager(); 
      
-   		if (particleName == "gamma") 
-		{	
-			if (Physics == LMPhotoElectricEffect)
-			{
-				G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-				thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
-				//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
-				pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-			}
-			else if (Physics == LivermoreGamma)
+		if (Physics == LMPhotoElectricEffect)
+		{
+			//Adds only the photoelectric effect
+			G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
+			thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
+			//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
+			pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
+		}
+		else if (Physics == LivermoreGamma)
+		{
+			//Adds Livermore compton scattering, photoelectric effect, rayleigh scattering, ionization and fluoresence.
+			if (particleName == "gamma")
 			{
 				G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 				theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
@@ -115,7 +121,21 @@ void PhysicsList::ConstructEM(G4String Physics)
 				theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
 				//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
 				pmanager->AddDiscreteProcess(theRayleighScattering); 
+
 			}
+			else if (particleName == "e-")
+			{
+      				G4eIonisation* eIoni = new G4eIonisation();
+				eIoni ->SetEmModel(new G4LivermoreIonisationModel());
+      				//eIoni->SetStepFunction(0.1, 100*um);      
+      				pmanager->AddDiscreteProcess(eIoni); 
+
+			}
+			G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+  			de->SetFluo(true);
+  			de->SetAuger(false);   
+  			de->SetPIXE(false);  
+  			G4LossTableManager::Instance()->SetAtomDeexcitation(de);
   		}
 	}
 }

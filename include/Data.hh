@@ -9,6 +9,7 @@
 #include <math.h>       // Used to access the function floor 
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
+#include <climits>
 
 class DataMessenger;
 
@@ -30,6 +31,7 @@ class Data
 		G4double GetMaxEnergy(){return MaxE;}
 		G4double GetBeamWidth(){return BeamWidth;}
 		G4double GetBeamHeight(){return BeamHeight;}
+		G4double GetBeamLength(){return BeamLength;}
 
 		inline G4int GetCurrentImage(){return CurrentImage;}
 
@@ -51,6 +53,7 @@ class Data
 		void SetMaxEnergy(G4double value){MaxE = value;}
 		void SetBeamWidth(G4double value){BeamWidth = value;}
 		void SetBeamHeight(G4double value){BeamHeight = value;}
+		void SetBeamLength(G4double value){BeamLength = value;}
 
 		void SetCurrentImage(G4int value){CurrentImage = value;}
 
@@ -65,7 +68,7 @@ class Data
 		//Commands
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4int GetNoImages(){return NoImages_Cmd;}
-		G4int GetNoPhotons(){return NoPhotons_Cmd;}
+		G4String GetNoPhotons(){return NoPhotons_Cmd;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
 		G4bool GetTextFileCmd(){return TextFileCmd;}
 		G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
@@ -73,7 +76,7 @@ class Data
 		G4bool GetEnergyDataOption(){return EnergyDataCmd;}
 		void SetNoBins(G4int value){NoBins_Cmd = value;}
 		void SetNoImages(G4int value){NoImages_Cmd = value;}
-		void SetNoPhotons(G4int value){NoPhotons_Cmd = value;}
+		void SetNoPhotons(G4String value){NoPhotons_Cmd = value;}
 		void SetVisualization(G4bool value){Visualization_Cmd = value;}
 		void SetTextFileCmd(G4bool value){TextFileCmd = value;}
 		void SetHDF5FileCmd(G4bool value){HDF5FileCmd = value;}
@@ -109,6 +112,7 @@ class Data
 		G4double MaxE;
 		G4double BeamHeight;
 		G4double BeamWidth;
+		G4double BeamLength;
 
 		G4int Seed;
 		G4int CurrentImage;
@@ -121,7 +125,7 @@ class Data
 
 		G4int NoBins_Cmd;
 		G4int NoImages_Cmd;
-		G4int NoPhotons_Cmd;
+		G4String NoPhotons_Cmd;
 		G4bool Visualization_Cmd;
 		G4int seedCmd;
 		G4bool EnergyDataCmd;

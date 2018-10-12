@@ -7,9 +7,10 @@
 #include "RunAction.hh"
 #include "EventAction.hh"
 #include "StackingAction.hh"
+#include "TrackingAction.hh"
 
 					     
-ActionInitialization::ActionInitialization(Data* DataObject, DetectorConstruction* DC_Object):G4VUserActionInitialization(), data(DataObject), DC(DC_Object)
+ActionInitialization::ActionInitialization(Data* DataObject, DetectorConstruction* DC_Object):G4VUserActionInitialization() ,data(DataObject), DC(DC_Object)
 { 
 	G4cout << G4endl << "ActionInitialization has been created " << G4endl;
 }
@@ -27,6 +28,7 @@ void ActionInitialization::Build() const
 	SetUserAction(new StackingAction());
   	//SetUserAction(new EventAction());
 	SetUserAction(new PrimaryGeneratorAction(DC, data));
+	//SetUserAction(new TrackingAction());
 
 }  
 

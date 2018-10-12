@@ -6,6 +6,8 @@
 #include "globals.hh"
 
 #include "G4Timer.hh"
+#include <ctime>
+#include <climits>
 
 #include "G4RunManager.hh"
 
@@ -76,6 +78,13 @@ int main(int argc,char** argv)
    	/* Terminate access to the file. */
    	//herr_t status = H5Fclose(file_id);
 
+	time_t now = time(0);
+
+	// Convert now to tm struct for local timezone
+	tm* localtm = localtime(&now);
+	G4cout << G4endl << "This simulation started on: " << asctime(localtm) << G4endl;
+
+
   	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
   	
@@ -107,24 +116,28 @@ int main(int argc,char** argv)
 	UImanager -> ApplyCommand("/control/execute settings.mac");
 	
 	if (data -> GetVisualization() == true)
-	{
+	{	
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
-		G4cout << G4endl << "================================================================================"
+		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
+		       << G4endl 
 		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
-	               << G4endl << "================================================================================" << G4endl;
+	               << G4endl 
+		       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
 	}
 	else 
-	{ visManager =0;}
+		{visManager = 0;}
 
-	//Save variables to needed classes
-	G4int Image = 0;
+	G4int TotalImages = data -> GetNoImages();
+	unsigned long long int TotalParticles = std::stoull(data->GetNoPhotons());
+	G4cout << G4endl << "Number of photons per image is " << TotalParticles;
+	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(data -> GetNumberRows()*data->GetNumberColumns()) << G4endl; 
 
 	//Start the simulation timer
 	G4Timer FullTime;
 	FullTime.Start();
 
-	for (Image; Image < data -> GetNoImages(); Image++)
+	for (G4int Image = 0; Image < TotalImages; Image++)
 	{
 		//Start internal looptimer to update the estimated time for completion
 		G4Timer LoopTimer;
@@ -138,16 +151,16 @@ int main(int argc,char** argv)
 	               << G4endl << "================================================================================" << G4endl;
 		
 		//Beam on to start the simulation
-		runManager -> BeamOn(data -> GetNoPhotons());
+		runManager -> BeamOn(TotalParticles);
 		
 		//Prepare for next run that geometry has changed
-		G4RunManager::GetRunManager()->ReinitializeGeometry();
+		G4RunManager::GetRunManager() -> ReinitializeGeometry();
 		
 		SaveDataToFile(Image, data);
 
 		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
-		CompletionTime(LoopTimer.GetRealElapsed(), Image, data -> GetNoImages());
+		CompletionTime(LoopTimer.GetRealElapsed(), Image, TotalImages);
 	}
 	
 	//Stop the full simulation time and save to data class

@@ -12,6 +12,7 @@ class G4LogicalVolume;
 class DetectorConstructionMessenger;
 class Data;
 class TrackerSD;
+class VisTrackerSD;
 class G4Material;
 class TargetConstruction;
 
@@ -59,7 +60,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4UserLimits* fStepLimit;            
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
+
 		TrackerSD* aTrackerSD;
+		VisTrackerSD* VTrackerSD;
+
 		TargetConstruction* TC;
 
 		//G4LogicalVolume* logic_Detector;

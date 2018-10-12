@@ -29,7 +29,8 @@ class TrackerHit : public G4VHit
 
     		// methods from base class
     		virtual void Draw();
-    		virtual void Print();
+    		virtual void PrintEnergy();
+		virtual void PrintHit();
 
     		// Set methods
     		inline void SetTrackID(G4int value){fTrackID = value;};

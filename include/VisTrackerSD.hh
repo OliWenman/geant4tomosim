@@ -1,10 +1,9 @@
-#ifndef TrackerSD_h
-#define TrackerSD_h 1
+#ifndef VisTrackerSD_h
+#define VisTrackerSD_h 1
 
 #include "G4VSensitiveDetector.hh"
 #include "G4UImessenger.hh"
 #include "TrackerHit.hh"
-//#include "Data.hh"
 
 #include <vector>
 
@@ -17,11 +16,11 @@ class Data;
 //by Geant4 kernel at each step. A hit is created with each step with non zero 
 //energy deposit.
 
-class TrackerSD : public G4VSensitiveDetector
+class VisTrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, G4bool DetectorEfficiency);
-    		virtual ~TrackerSD();
+		VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, G4bool DetectorEfficiency);
+    		virtual ~VisTrackerSD();
 
 		//Get methods
 		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}

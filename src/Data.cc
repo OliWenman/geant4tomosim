@@ -30,7 +30,8 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
-	G4cout << G4endl << "Number of particles per detector on average is " << double(GetNoPhotons()/(Nrow*Ncolumn)) << G4endl; 
+	//G4cout << G4endl << "Number of photons is " << GetNoPhotons() << G4endl;
+	//G4cout << G4endl << "Number of particles per detector on average is " << double(GetNoPhotons()/(Nrow*Ncolumn)) << G4endl; 
 
 	//Creates a 1D vector for the hit data
 	std::vector<G4int> iHitDataMatrix(Nrow*Ncolumn, 0);
@@ -157,6 +158,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 	//Save the simulation settings to a textfile only once
 	if (SimulationData == "SimulationSettings")
 	{
+		G4cout << G4endl << "Saving the SimulationSettings... ";
 		G4String SettingsName = "SimulationSettings.txt";
 		G4ThreeVector DetDimensions = GetDetectorDimensions()*2;
 
@@ -164,7 +166,7 @@ void Data::WriteToTextFile(G4String SimulationData)
    	
 		//Output error if can't open file
 		if( !outdata ) 
-		{ 	std::cerr << "Error: file could not be opened" << std::endl;
+		{ 	std::cerr << "Error: " << SettingsName << " file could not be opened" << std::endl;
       			exit(1);
    		}
 
@@ -176,7 +178,8 @@ void Data::WriteToTextFile(G4String SimulationData)
 		outdata << "- Seed: " << GetSeedOption() << std::endl << std::endl;
 
 		outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(GetMaxEnergy(),"Energy") << std::endl;
-		outdata << "- Beam dimensions: " << GetBeamWidth() << " x " << G4BestUnit(GetBeamHeight(), "Length") << std::endl << std::endl; 
+		outdata << "- Beam dimensions: " << GetBeamWidth() << " x " << G4BestUnit(GetBeamHeight(), "Length") << std::endl; 
+		outdata << "- Distance beam travelled to the detectors: " << G4BestUnit(GetBeamLength(), "Length") << std::endl << std::endl;
 
 		outdata << "- Number of detectors: " << TotalNoRows << " x " << TotalNoColumns << std::endl;
 		outdata << "- Detector dimensions: " << G4BestUnit(DetDimensions.x(), "Length") << "x " << G4BestUnit(DetDimensions.y(), "Length") << "x " << G4BestUnit(DetDimensions.z(), "Length") << std::endl;
@@ -186,7 +189,8 @@ void Data::WriteToTextFile(G4String SimulationData)
 			{outdata << "- Detector material: " << GetDetectorMaterial() << std::endl;}
 
 		outdata << std::endl << "- Number of photons used per image: " << GetNoPhotons() << std::endl;
-		outdata << std::endl << "- Number of photons per detector on average is (assuming total number of detectors are the same dimensions as the beam): " << GetNoPhotons()/(TotalNoColumns*TotalNoRows) << std::endl;
+		outdata << std::endl << "- Number of photons per detector on average is (assuming total number of detectors are the same dimensions as the beam): "
+				     << std::stoull(GetNoPhotons())/(TotalNoColumns*TotalNoRows) << std::endl;
 		outdata << "- Number of images: " << GetNoImages() << std::endl;
 		if (GetEnergyDataOption() == true)
 			{outdata << "- Number of bins: " << GetNoBins() << std::endl << std::endl;}
@@ -214,7 +218,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 		
 		//Output error if can't open file
 		if( !outdata ) 
-		{ 	std::cerr << "Error: file could not be opened" << std::endl;
+		{ 	std::cerr << "Error: " << HitFileName << " file could not be opened" << std::endl;
       			exit(1);
    		}
 
@@ -245,7 +249,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 
 			//Output error if can't open file
 			if( !outdata ) 
-			{ 	std::cerr << "Error: file could not be opened" << std::endl;
+			{ 	std::cerr << "Error: " << EnergyFileName << " file could not be opened" << std::endl;
       				exit(1);
    			}
 

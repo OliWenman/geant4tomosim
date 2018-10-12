@@ -5,6 +5,7 @@
 #include "globals.hh"
 
 class G4Track;
+class G4Step;
 class G4ParticleDefinition;
 
 class StackingAction : public G4UserStackingAction

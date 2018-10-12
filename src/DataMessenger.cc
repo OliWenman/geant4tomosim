@@ -1,5 +1,7 @@
 #include "DataMessenger.hh"
 #include "Data.hh"
+#include <stdlib.h>
+#include <climits>
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithAString.hh"
@@ -31,9 +33,9 @@ DataMessenger::DataMessenger(Data *DataObject):data(DataObject)
 	NoImages_Cmd -> SetDefaultValue(2);
 	NoImages_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
 
-	NoPhotons_Cmd = new G4UIcmdWithAnInteger("/data/NumberOfPhotons", this);
-	NoPhotons_Cmd -> SetDefaultValue(1000);
-	NoPhotons_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
+	NoPhotons_Cmd = new G4UIcmdWithAString("/data/NumberOfPhotons", this);
+	//NoPhotons_Cmd -> SetDefaultValue(1000);
+	NoPhotons_Cmd -> SetGuidance("Pick the number of photons you would to have per image ");
 
 	Visualization_Cmd = new G4UIcmdWithABool("/data/Visualization", this);
 	Visualization_Cmd -> SetGuidance("Choose if you want visualization ");
@@ -87,8 +89,9 @@ void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if( command == NoPhotons_Cmd )
 	{
-		data -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
-		G4cout << "Data -> SetNoPhotons command detected "<< G4endl;
+		//data -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
+		G4cout << "Data -> SetNoPhotons command detected = "<< newValue <<G4endl;
+		data -> SetNoPhotons(newValue);
 	}
 	else if( command == Visualization_Cmd )
 	{

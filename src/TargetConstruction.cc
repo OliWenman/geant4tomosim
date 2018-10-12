@@ -48,16 +48,17 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 		SavePositionsArray(iPositions);
 	}
 	
+	//G4ThreeVector ObjectSize0 = G4ThreeVector(0.3*mm, 0.3*mm, 0.3*mm);
 	G4ThreeVector ObjectSize0 = G4ThreeVector(0.3*mm, 0.3*mm, 0.3*mm);
 	G4ThreeVector ObjectPosition0 = G4ThreeVector(0.0*mm, 0.0*mm, 0.0*mm);
 
-	G4ThreeVector ObjectSize1 = G4ThreeVector(0.3*mm, 0.6*mm, 0.4*mm);
-	G4ThreeVector ObjectPosition1 = G4ThreeVector(0.2*mm, 0.5*mm, 0.0*mm);	
+	//G4ThreeVector ObjectSize1 = G4ThreeVector(0.3*mm, 0.6*mm, 0.4*mm);
+	//G4ThreeVector ObjectPosition1 = G4ThreeVector(0.2*mm, 0.5*mm, 0.0*mm);	
 
 	G4String ObjectMaterial = GetTargetMaterial();
 
 	Box(0, ObjectSize0, ObjectPosition0, ObjectMaterial, World);
-	Box(1, ObjectSize1, ObjectPosition1, ObjectMaterial, World);
+	//Box(1, ObjectSize1, ObjectPosition1, ObjectMaterial, World);
 }
 
 void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox)

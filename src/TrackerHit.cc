@@ -54,8 +54,9 @@ void TrackerHit::Draw()
 	}
 }
 
-void TrackerHit::Print()
-{	
-  	G4cout << ": Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");          	
-}
+void TrackerHit::PrintEnergy()
+	{G4cout << " Detector " << fChamberNb << " hit -> Energy deposit = " << G4BestUnit(fEdep,"Energy");}
+
+void TrackerHit::PrintHit()
+	{G4cout << " Detector " << fChamberNb << " hit. "; }
 

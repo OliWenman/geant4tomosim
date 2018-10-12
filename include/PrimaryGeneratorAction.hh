@@ -34,6 +34,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
 		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
 
+		G4double WorldSizeX;
+
   	private:
 		//Pointer to G4ParticleGun
     		G4ParticleGun* ParticleGun;

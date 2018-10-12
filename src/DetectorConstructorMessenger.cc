@@ -84,8 +84,10 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 {
 	if( command == WorldSize_Cmd )
 	{
-		ConstructDet -> SetWorldSize(WorldSize_Cmd -> GetNew3VectorValue(newValue)/2);
+		G4ThreeVector Dimensions = WorldSize_Cmd -> GetNew3VectorValue(newValue);
+		ConstructDet -> SetWorldSize(Dimensions/2);
 		G4cout << "DetectorConstruction -> SetWorldSize command detected "<< G4endl;
+		data -> SetBeamLength(Dimensions.x());
 	}
 	else if( command == NoDetectorsY_Cmd )
   	{ 			

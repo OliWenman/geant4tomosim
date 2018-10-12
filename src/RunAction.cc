@@ -54,6 +54,6 @@ void RunAction::GenerateSeed()
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 	}
 
-	if (data ->GetCurrentImage() == 0)
+	if (data -> GetCurrentImage() == 0)
 		{data -> SetSeedOption(seedCmd);}
 }
