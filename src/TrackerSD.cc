@@ -43,6 +43,8 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if (EnergyOption_Cmd  == true)
 		{data -> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), aStep->GetPreStepPoint()->GetKineticEnergy());}
 
+	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+
   	return true;
 }
  

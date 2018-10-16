@@ -14,6 +14,9 @@
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include <fstream>
+#include <cstdlib>
+#include <string>
 
 #include "hdf5.h"
 
@@ -70,6 +73,32 @@ void SaveDataToFile(G4int Image, Data* data)
 
 }
 
+void BeamOn(G4RunManager* runManager, unsigned long long int nParticles)
+{
+	int limit = 2147483647;
+	
+	//unsigned long long int NumberOfParticles = (NumberOfLoops * limit) + (nParticles - (limit * NumberOfLoops));
+	
+	if (nParticles > limit)
+	{
+		//Rounds up to the nearest number
+		int NumberOfLoops = std::ceil(nParticles/limit);
+
+		for (int loop = 0 ; loop < NumberOfLoops ; loop++)
+		{
+			if (nParticles > limit)
+				{//Beam on to start the simulation
+				runManager -> BeamOn(limit);
+				nParticles = nParticles - limit;}
+			else 
+				{runManager -> BeamOn(nParticles);}	
+
+		}
+	}
+	else 
+		{runManager -> BeamOn(nParticles);}
+}
+
 int main(int argc,char** argv)
 {
   	/* Create a new file using default properties. */
@@ -87,6 +116,8 @@ int main(int argc,char** argv)
 
   	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
+
+	G4cout << G4endl << "test 1 " << G4endl;
   	
 	if ( argc == 1 ) 
 		{ui = new G4UIExecutive(argc, argv);}
@@ -151,7 +182,7 @@ int main(int argc,char** argv)
 	               << G4endl << "================================================================================" << G4endl;
 		
 		//Beam on to start the simulation
-		runManager -> BeamOn(TotalParticles);
+		BeamOn(runManager, TotalParticles);
 		
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager() -> ReinitializeGeometry();
@@ -173,7 +204,22 @@ int main(int argc,char** argv)
 	       << G4endl << "             Total simulation run time : "<< FullTime
 	       << G4endl << "================================================================================" << G4endl;
 
-	//ui -> SessionStart();   	
+	//ui -> SessionStart();   
+
+	std::ofstream outdata; 
+	G4String filepath = "./Data_Output/Text/SpeedTests/";
+	G4String txt = ".txt";
+
+	outdata.open(filepath+ std::to_string(TotalParticles) + txt, std::ios::out | std::ios::app);
+	
+	if( !outdata ) 
+	{ 	std::cerr << "Error: " << TotalParticles << " file could not be opened" << std::endl;
+      		exit(1);
+   	}
+	else
+	{ std::cout << std::endl << "File opened" << std::endl;}
+	outdata << FullTime.GetRealElapsed() << std::endl;
+	outdata.close();
 
 	//Delete the remaining pointers
 	G4cout << G4endl << "Deleting ui";

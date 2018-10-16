@@ -34,7 +34,7 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	//G4cout << G4endl << "Number of particles per detector on average is " << double(GetNoPhotons()/(Nrow*Ncolumn)) << G4endl; 
 
 	//Creates a 1D vector for the hit data
-	std::vector<G4int> iHitDataMatrix(Nrow*Ncolumn, 0);
+	std::vector<int> iHitDataMatrix(Nrow*Ncolumn, 0);
 	SetHitData(iHitDataMatrix);
 }
 
@@ -59,7 +59,7 @@ void Data::SaveHitData(G4int DetectorNumber)
 void Data::PrintHitData()
 {
 	//Find each needed value using the Get functions
-	std::vector<G4int> HitData = GetHitData();
+	std::vector<int> HitData = GetHitData();
 
 	//Prints the 1D Data as 2D	
 	G4cout << G4endl << "Hit count data: " << "Image " << GetCurrentImage()+1 << G4endl << G4endl;
@@ -147,7 +147,7 @@ void Data::WriteToTextFile(G4String SimulationData)
 	std::ofstream outdata; 
    
 	//Get needed variables to wrtie to file
-   	std::vector<G4int> HitData = GetHitData();
+   	std::vector<int> HitData = GetHitData();
    	std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
 	G4int TotalNoRows = GetNumberRows();
 	G4int TotalNoColumns = GetNumberColumns();

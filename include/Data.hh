@@ -9,7 +9,6 @@
 #include <math.h>       // Used to access the function floor 
 #include "G4SystemOfUnits.hh"
 #include "G4ThreeVector.hh"
-#include <climits>
 
 class DataMessenger;
 
@@ -20,7 +19,7 @@ class Data
 		virtual ~Data();
 		
 		//Get Methods
-		std::vector<G4int> GetHitData(){ return HitDataMatrix;}
+		std::vector<int> GetHitData(){ return HitDataMatrix;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		inline G4int GetNumberRows(){return rows;}
@@ -42,7 +41,7 @@ class Data
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		//Set Methods
-		void SetHitData(std::vector<G4int> UpdatedData){HitDataMatrix = UpdatedData;}
+		void SetHitData(std::vector<int> UpdatedData){HitDataMatrix = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
@@ -101,7 +100,7 @@ class Data
 		DataMessenger* dataMessenger;
 
 		//Data members
-		std::vector<G4int> HitDataMatrix;
+		std::vector<int> HitDataMatrix;
 		std::vector<std::vector<G4int> > EnergyMatrix;
 
 		G4int rows;

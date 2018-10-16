@@ -84,7 +84,8 @@ set(TEST_SCRIPTS
     MyVis.mac
     settings.mac
     README.txt
-    ViewImages.py)
+    ViewImages.py
+    SpeedTest.cc)
 
 foreach(_script ${TEST_SCRIPTS})
   configure_file(${PROJECT_SOURCE_DIR}/${_script}
