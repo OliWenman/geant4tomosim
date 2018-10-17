@@ -3,6 +3,7 @@
 #include "TrackerSD.hh"
 #include "VisTrackerSD.hh"
 #include "Data.hh"
+#include "Input.hh"
 #include "TargetConstruction.hh"
 
 #include <math.h>	//Needed for sin and cos
@@ -33,11 +34,11 @@
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 
-DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
+DetectorConstruction::DetectorConstruction(Data* DataObject, Input* InputObject):G4VUserDetectorConstruction(), data(DataObject), input(InputObject)
 { 	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
-  	detectorMessenger = new DetectorConstructionMessenger(this, data);	
+  	detectorMessenger = new DetectorConstructionMessenger(this, input);	
 	TC = new TargetConstruction();
 }
 
@@ -50,12 +51,12 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	CurrentImage = data -> GetCurrentImage();
+	CurrentImage = input -> GetCurrentImage();
 
 	if (CurrentImage == 0)
 	{
-		TC -> SetNoImages(data->GetNoImages());
-		TC -> SetVisualization(data->GetVisualization());
+		TC -> SetNoImages(input->GetNoImages());
+		TC -> SetVisualization(GetVisualization());
 	}
 
 	if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
@@ -203,7 +204,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 	{
       		G4cout << "Creating the Sensitive Detector"  << G4endl;
 	
-		if (data ->GetVisualization() == true)
+		if (GetVisualization() == true)
 		{
 			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
 			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
@@ -214,7 +215,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
 	}
-	if (data->GetVisualization() == true)
+	if (GetVisualization() == true)
 		{volume -> SetSensitiveDetector(VTrackerSD);}
 	else
 		{volume -> SetSensitiveDetector(aTrackerSD);}
@@ -222,7 +223,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-	if (data->GetVisualization() == true)
+	if (GetVisualization() == true)
 	{
 		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	//Cyan
   		LV -> SetVisAttributes(ObjectColour);

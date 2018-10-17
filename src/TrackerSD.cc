@@ -23,7 +23,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	if (EnergyOption_Cmd == true)
 		{data -> SetUpEnergyData();}
 	
-	collectionName.insert(hitsCollectionName);
+	//collectionName.insert(hitsCollectionName);
 }
 
 TrackerSD::~TrackerSD() {G4cout << G4endl << "TrackerSD has been deleted ";}
@@ -36,12 +36,13 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if (DetectorEfficiency_Cmd == false)
 	{
   		// energy deposit
-  		if (aStep->GetTotalEnergyDeposit()==0.) return false;
+  		if (aStep->GetTotalEnergyDeposit()== 0) return false;
 	}
 
-	data -> SaveHitData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+	data -> SaveHitData(nDetector);
 	if (EnergyOption_Cmd  == true)
-		{data -> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), aStep->GetPreStepPoint()->GetKineticEnergy());}
+		{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
 
 	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 

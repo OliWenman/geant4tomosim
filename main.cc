@@ -3,6 +3,7 @@
 #include "PhysicsList.hh"
 #include "StackingAction.hh"
 #include "Data.hh"
+#include "Input.hh"
 #include "globals.hh"
 
 #include "G4Timer.hh"
@@ -24,7 +25,7 @@
 //GenerateSeed(data);
 
 //Not sure if to keep or to use RunAction class to do it. Currently using RunAction
-void GenerateSeed(Data* data)
+/*void GenerateSeed(Data* data)
 {
 	G4int seedCmd = data -> GetSeedOption();	
 	if (seedCmd != 0)	//Keeps the seed
@@ -39,7 +40,7 @@ void GenerateSeed(Data* data)
 	}
 	if (data -> GetCurrentImage() == 0)
 		{data -> SetSeedOption(seedCmd);}
-}
+}*/
 
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {
@@ -65,7 +66,7 @@ void SaveDataToFile(G4int Image, Data* data)
 {
 	//Write data to file if command is turned on
 	if (data -> GetTextFileCmd() == true)
-		{data -> WriteToTextFile("SimulationData");}
+		{data -> WriteToTextFile();}
 	else if(data -> GetHDF5FileCmd() == true)
 		{data -> WriteToHDF5();}
 	else 
@@ -73,30 +74,36 @@ void SaveDataToFile(G4int Image, Data* data)
 
 }
 
+//Function to correctly input the correct number of particles if it is over the limit 
 void BeamOn(G4RunManager* runManager, unsigned long long int nParticles)
 {
-	int limit = 2147483647;
-	
-	//unsigned long long int NumberOfParticles = (NumberOfLoops * limit) + (nParticles - (limit * NumberOfLoops));
-	
+	//Max limit for an integer (for Geant4 BeamOn), must be unsigned long long int as well to compare it if input is above limit.
+	unsigned long long int limit = 2147483647;
+
+	//Checks to see if the input is above the limit
 	if (nParticles > limit)
 	{
-		//Rounds up to the nearest number
+		//Rounds up to the nearest number to do the correct number of loops
 		int NumberOfLoops = std::ceil(nParticles/limit);
 
-		for (int loop = 0 ; loop < NumberOfLoops ; loop++)
+		for (int loop = 1 ; loop <= NumberOfLoops ; loop++)
 		{
 			if (nParticles > limit)
-				{//Beam on to start the simulation
+			{	//Beam on to start the simulation with the max number limit
 				runManager -> BeamOn(limit);
-				nParticles = nParticles - limit;}
+				//Subtract from the true number of inputted particles until it is within the limit
+				nParticles = nParticles - limit;
+			}
 			else 
-				{runManager -> BeamOn(nParticles);}	
-
+			{	//Once within the limit, fire the remaining particles that are left 
+				runManager -> BeamOn(nParticles);
+			}	
 		}
 	}
 	else 
-		{runManager -> BeamOn(nParticles);}
+	{	//If the inputted number of particles is within the limit, fire that number of particles
+		runManager -> BeamOn(nParticles);
+	}
 }
 
 int main(int argc,char** argv)
@@ -107,8 +114,9 @@ int main(int argc,char** argv)
    	/* Terminate access to the file. */
    	//herr_t status = H5Fclose(file_id);
 
-	time_t now = time(0);
 
+	//Prints the time and date of the local time that the simulation started
+	time_t now = time(0);
 	// Convert now to tm struct for local timezone
 	tm* localtm = localtime(&now);
 	G4cout << G4endl << "This simulation started on: " << asctime(localtm) << G4endl;
@@ -116,8 +124,6 @@ int main(int argc,char** argv)
 
   	//Detect interactive mode (if no arguments) and define UI session
   	G4UIExecutive* ui = 0;
-
-	G4cout << G4endl << "test 1 " << G4endl;
   	
 	if ( argc == 1 ) 
 		{ui = new G4UIExecutive(argc, argv);}
@@ -130,11 +136,14 @@ int main(int argc,char** argv)
 
 	//Create an instance of the classes
 	Data* data = new Data();
-	DetectorConstruction* DC = new DetectorConstruction(data); 
-	PhysicsList* PL = new PhysicsList(data); 	
+	Input* input = new Input(data);
+	DetectorConstruction* DC = new DetectorConstruction(data, input); 
+	PhysicsList* PL = new PhysicsList(input); 
+
+	//Setup the Geant4 user and action intialization	
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
-  	runManager -> SetUserInitialization(new ActionInitialization(data, DC));
+  	runManager -> SetUserInitialization(new ActionInitialization(input, DC, data));
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -146,10 +155,13 @@ int main(int argc,char** argv)
     	//interactive mode
 	UImanager -> ApplyCommand("/control/execute settings.mac");
 	
-	if (data -> GetVisualization() == true)
+	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
+	if (DC -> GetVisualization() == true)
 	{	
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
+		
+		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
 		       << G4endl 
 		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
@@ -159,10 +171,13 @@ int main(int argc,char** argv)
 	else 
 		{visManager = 0;}
 
-	G4int TotalImages = data -> GetNoImages();
-	unsigned long long int TotalParticles = std::stoull(data->GetNoPhotons());
+	//Find the total number of images
+	G4int TotalImages = input -> GetNoImages();
+
+	//Find the total number of particles and convert to a number
+	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
 	G4cout << G4endl << "Number of photons per image is " << TotalParticles;
-	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(data -> GetNumberRows()*data->GetNumberColumns()) << G4endl; 
+	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC->GetNoDetectorsZ()) << G4endl; 
 
 	//Start the simulation timer
 	G4Timer FullTime;
@@ -176,6 +191,7 @@ int main(int argc,char** argv)
 
 		//Let other clases know what the current image is 
 		data -> SetCurrentImage(Image);
+		input ->SetCurrentImage(Image);
 		
 		G4cout << G4endl << "================================================================================"
 		       << G4endl << "                           PROCESSING IMAGE " <<  Image+1
@@ -196,8 +212,8 @@ int main(int argc,char** argv)
 	
 	//Stop the full simulation time and save to data class
 	FullTime.Stop();
-	data -> SetSimulationTime(FullTime.GetRealElapsed());
-	data -> WriteToTextFile("SimulationSettings");
+	input -> SetSimulationTime(FullTime.GetRealElapsed());
+	input -> WriteToTextFile();
 
 	G4cout << G4endl << "================================================================================"
 	       << G4endl << "                        The simulation is finihsed! "
@@ -206,18 +222,17 @@ int main(int argc,char** argv)
 
 	//ui -> SessionStart();   
 
+	//Save the times for speed tests
 	std::ofstream outdata; 
 	G4String filepath = "./Data_Output/Text/SpeedTests/";
 	G4String txt = ".txt";
-
 	outdata.open(filepath+ std::to_string(TotalParticles) + txt, std::ios::out | std::ios::app);
-	
 	if( !outdata ) 
 	{ 	std::cerr << "Error: " << TotalParticles << " file could not be opened" << std::endl;
       		exit(1);
    	}
 	else
-	{ std::cout << std::endl << "File opened" << std::endl;}
+		{std::cout << std::endl << "File opened" << std::endl;}
 	outdata << FullTime.GetRealElapsed() << std::endl;
 	outdata.close();
 

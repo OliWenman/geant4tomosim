@@ -10,6 +10,7 @@ class G4Event;
 class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
 class DetectorConstruction;
+class Input;
 class Data;
 
 //It defines a single particle which hits the detectors perpendicular to the input face
@@ -17,12 +18,12 @@ class Data;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction(DetectorConstruction* DC, Data* data);    
+    		PrimaryGeneratorAction(DetectorConstruction* DC, Input* input, Data* data);    
     		virtual ~PrimaryGeneratorAction();
     		virtual void GeneratePrimaries(G4Event* );
     		
 		//Set methods		
-		void SetDefaultKinematic();
+		virtual void SetDefaultKinematic();
 
 		//Set methods
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
@@ -46,6 +47,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		//Pointer to DetectorConstruction class
 		DetectorConstruction* DC;
+		Input* input;
 		Data* data;
 
 		//Pointer to PrimaryGeneratorActionMessenger

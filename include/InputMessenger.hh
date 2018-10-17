@@ -1,9 +1,10 @@
-#ifndef DataMessenger_h
-#define DataMessenger_h 1
+#ifndef InputMessenger_h
+#define InputMessenger_h 1
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
 
+class Input;
 class Data;
 
 class G4UImessenger;
@@ -16,18 +17,19 @@ class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithABool;
 
-class DataMessenger: public G4UImessenger 
+class InputMessenger: public G4UImessenger 
 { 
 	public:
-		DataMessenger(Data* data);
-		~DataMessenger(void);
+		InputMessenger(Input* input, Data* data);
+		~InputMessenger(void);
 
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
+		Input* input;
 		Data* data;
 
-		G4UIdirectory* DataDirectory;
+		G4UIdirectory* InputDirectory;
 
     		G4UIcmdWithABool* TextFileCmd;
 		G4UIcmdWithABool* HDF5FileCmd;

@@ -18,7 +18,6 @@ VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionN
 	//Setup the data only at the begining of simulation so it doesn't waste time doing work it has already done	
 	DetectorEfficiency_Cmd = DetectorEfficiency;
 	EnergyOption_Cmd = data ->GetEnergyDataOption();
-	Visualization_Cmd = data ->GetVisualization();
 
 	data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
 	if (EnergyOption_Cmd == true)
@@ -65,12 +64,14 @@ G4bool VisTrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	fHitsCollection -> insert( newHit );
 	
 	//Save the detector hits to the data class
-	data -> SaveHitData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+	data -> SaveHitData(nDetector);;
 
 	if (EnergyOption_Cmd  == true)
 		{data -> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), ParticleEnergy);}
 
 
+	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 	//G4Track*track;
 	//track->SetTrackStatus(fStopAndKill);
 	//aStep -> UpdateTrack;

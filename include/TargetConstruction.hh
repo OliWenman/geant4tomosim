@@ -24,11 +24,11 @@ class TargetConstruction
 
 		virtual void Construct(G4LogicalVolume *logicWorld);
 
-		virtual void Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicWorld);
-		virtual G4Material* FindMaterial(G4String MaterialName);
-		virtual G4double RotateObject();
-		virtual G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
-		virtual void Visualization(G4LogicalVolume*, G4Colour);
+		void Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicWorld);
+		G4Material* FindMaterial(G4String MaterialName);
+		G4double RotateObject();
+		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
+		void Visualization(G4LogicalVolume*, G4Colour);
  
 		inline void SetNumberOfObjects(G4int value){NumberOfObjects_Cmd = value;}
 		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}

@@ -5,7 +5,7 @@
 #include "globals.hh"
 
 class DetectorConstruction;
-class Data;
+class Input;
 
 class G4UImessenger;
 
@@ -21,7 +21,7 @@ class G4UIcmdWithABool;
 class DetectorConstructionMessenger: public G4UImessenger 
 { 
 	public:
-		DetectorConstructionMessenger(DetectorConstruction *ConstructDet, Data* data);
+		DetectorConstructionMessenger(DetectorConstruction *ConstructDet, Input* input);
 		~DetectorConstructionMessenger(void);
 
 		//Methods
@@ -30,7 +30,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 	private:		
 		//Pointer to the DetectorConstruction class
 		DetectorConstruction *ConstructDet;
-		Data* data;
+		Input* input;
 
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *WorldDirectory;
@@ -40,6 +40,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//Pointers for different data members
 		//WORLD VARIABLES
 		G4UIcmdWith3VectorAndUnit *WorldSize_Cmd;
+		G4UIcmdWithABool *Visualization_Cmd;
 
 		//DETECTOR VARIABLES
 		G4UIcmdWithAnInteger *NoDetectorsY_Cmd;

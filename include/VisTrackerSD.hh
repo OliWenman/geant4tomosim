@@ -23,15 +23,11 @@ class VisTrackerSD : public G4VSensitiveDetector
     		virtual ~VisTrackerSD();
 
 		//Get methods
-		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}
-		G4int GetNoDetectorsZ(){return NoDetectorsZ_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		G4int GetNoBins(){return NoBins;}
 
 		//Set methods
-		void SetNoDetectorsY(G4int value){NoDetectorsY_Cmd = value;}
-		void SetNoDetectorsZ(G4int value){NoDetectorsZ_Cmd = value;}
 		void SetNoBins(G4int value){NoBins = value;}
 		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
 		void SetEnergyOption(G4bool value){EnergyOption_Cmd = value;}
@@ -51,10 +47,6 @@ class VisTrackerSD : public G4VSensitiveDetector
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;
 		Data* data;
-
-		//Data variables 
-		G4int NoDetectorsY_Cmd;
-		G4int NoDetectorsZ_Cmd;
 
 		G4int NoBins;
 };

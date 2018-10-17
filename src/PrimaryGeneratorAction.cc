@@ -1,6 +1,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "Input.hh"
 #include "Data.hh"
 
 #include "G4Event.hh"
@@ -11,18 +12,20 @@
 
 #include "Randomize.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), data(DataObject)
+PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Input* InputObject, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), input(InputObject), data(DataObject)
 {
 	G4cout << G4endl << "PrimaryGeneratorAction has been created ";
 
 	//Create a messenger for this class
-  	gunMessenger = new PrimaryGeneratorActionMessenger(this, data);
+  	gunMessenger = new PrimaryGeneratorActionMessenger(this, input, data);
 
 	//Set the number of particles for each event
 	G4int nofParticles = 1;
   	ParticleGun = new G4ParticleGun(nofParticles);
 	
 	SetDefaultKinematic();
+
+	WorldSizeX = DC -> GetWorldSize().x();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -36,9 +39,6 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 void PrimaryGeneratorAction::SetDefaultKinematic()
 {
 	//Setup which particle is used and its starting conidiions
-	
-	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-
 	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
 	ParticleGun -> SetParticleDefinition(gamma);

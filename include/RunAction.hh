@@ -8,14 +8,14 @@
 #include "G4UImessenger.hh"
 
 class RunActionMessenger;
-class Data;
+class Input;
 class G4Run;
 
 //Run action class
 class RunAction : public G4UserRunAction
 {
   	public:
-    		RunAction(Data* data);
+    		RunAction(Input* input);
     		virtual ~RunAction();
 
     		virtual void BeginOfRunAction(const G4Run* run);
@@ -33,7 +33,7 @@ class RunAction : public G4UserRunAction
 	private:
 		//Pointers to classes
 		RunActionMessenger* runMessenger;
-		Data* data;
+		Input* input;
 		
 		//Declaring data variables
 		G4int seedCmd;

@@ -7,16 +7,16 @@
 
 class G4VPhysicsConstructor;
 class PhysicsListMessenger;
-class Data;
+class Input;
 
 class PhysicsList: public G4VModularPhysicsList
 {
 	public:
 
-  		PhysicsList(Data* data);
+  		PhysicsList(Input* input);
   		virtual ~PhysicsList();
 
-		virtual void Print(G4String name);
+		void Print(G4String name);
 		void ConstructEM(G4String Physics);
   		void ConstructParticle();
   		void AddPhysicsList(G4String& name);
@@ -30,7 +30,7 @@ class PhysicsList: public G4VModularPhysicsList
 		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";
 
 	private:
-		Data* data;
+		Input* input;
 
   		G4EmConfigurator em_config;
 

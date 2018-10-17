@@ -1,6 +1,6 @@
 #include "RunAction.hh"
 #include "RunActionMessenger.hh"
-#include "Data.hh"
+#include "Input.hh"
 
 #include "G4Run.hh"
 #include "G4RunManager.hh"
@@ -9,7 +9,7 @@
 #include "Randomize.hh"
 #include "time.h"
 
-RunAction::RunAction(Data* DataObject): G4UserRunAction(), data(DataObject)
+RunAction::RunAction(Input* InputObject): G4UserRunAction(), input(InputObject)
 { 
 	G4cout << G4endl << "RunAction has been created ";
 	runMessenger = new RunActionMessenger(this);
@@ -33,11 +33,9 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {	
 	G4cout << G4endl << "Run finished" << G4endl;
-	if (GetPrintOption() == true)
-		{data -> PrintHitData();}
 
 	//Print the progress of the simulation
-	G4int Progress = ((data -> GetCurrentImage()+1)*100)/data -> GetNoImages();
+	G4int Progress = ((input -> GetCurrentImage()+1)*100)/input -> GetNoImages();
 	G4cout << G4endl << Progress << "%\ of the simulation is complete" << G4endl;
 }
 
@@ -54,6 +52,6 @@ void RunAction::GenerateSeed()
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 	}
 
-	if (data -> GetCurrentImage() == 0)
-		{data -> SetSeedOption(seedCmd);}
+	if (input -> GetCurrentImage() == 0)
+		{input -> SetSeedOption(seedCmd);}
 }

@@ -2,6 +2,7 @@
 
 #include "DetectorConstruction.hh"
 #include "Data.hh"
+#include "Input.hh"
 
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
@@ -10,7 +11,7 @@
 #include "TrackingAction.hh"
 
 					     
-ActionInitialization::ActionInitialization(Data* DataObject, DetectorConstruction* DC_Object):G4VUserActionInitialization() ,data(DataObject), DC(DC_Object)
+ActionInitialization::ActionInitialization(Input* InputObject, DetectorConstruction* DC_Object, Data* DataObject):G4VUserActionInitialization() ,input(InputObject), DC(DC_Object), data(DataObject)
 { 
 	G4cout << G4endl << "ActionInitialization has been created " << G4endl;
 }
@@ -19,15 +20,15 @@ ActionInitialization::~ActionInitialization(){ G4cout << G4endl << "ActionIntial
 
 void ActionInitialization::BuildForMaster() const
 {
-  	SetUserAction(new RunAction(data));
+  	SetUserAction(new RunAction(input));
 }
 
 void ActionInitialization::Build() const
 {
-  	SetUserAction(new RunAction(data));	
+  	SetUserAction(new RunAction(input));	
 	SetUserAction(new StackingAction());
   	//SetUserAction(new EventAction());
-	SetUserAction(new PrimaryGeneratorAction(DC, data));
+	SetUserAction(new PrimaryGeneratorAction(DC, input, data));
 	//SetUserAction(new TrackingAction());
 
 }  

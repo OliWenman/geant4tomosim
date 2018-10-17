@@ -1,6 +1,6 @@
 #include "DetectorConstructionMessenger.hh"
 #include "DetectorConstruction.hh"
-#include "Data.hh"
+#include "Input.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -13,7 +13,7 @@
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
 //DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector):ConstructDet(Detector)
-DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector, Data* DataObject): G4UImessenger(), ConstructDet(Detector), data(DataObject)
+DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector, Input* InputObject): G4UImessenger(), ConstructDet(Detector), input(InputObject)
 {	
 	G4cout << G4endl << "DetectorConstructionMessenger has been created" << G4endl;
 	//WORLD
@@ -27,6 +27,10 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	WorldSize_Cmd -> SetUnitCandidates("mm cm m um ");
 	WorldSize_Cmd -> SetDefaultUnit("m");
 	WorldSize_Cmd -> SetDefaultValue(G4ThreeVector(0.9*m, 0.9*m, 0.9*m));
+
+	Visualization_Cmd = new G4UIcmdWithABool("/world/visualization", this);
+	Visualization_Cmd -> SetGuidance("Set if you would like the ouput of a .HepRep file to be visualized later ");
+	Visualization_Cmd -> SetDefaultValue("false");	
 	
 //-----------------------------------------------------------------------------------------------------
 	
@@ -69,6 +73,7 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 {
 	delete WorldDirectory;	
 	delete WorldSize_Cmd;
+	delete Visualization_Cmd;
 
 	delete DetectorDirectory;
 	delete NoDetectorsY_Cmd;
@@ -87,34 +92,41 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 		G4ThreeVector Dimensions = WorldSize_Cmd -> GetNew3VectorValue(newValue);
 		ConstructDet -> SetWorldSize(Dimensions/2);
 		G4cout << "DetectorConstruction -> SetWorldSize command detected "<< G4endl;
-		data -> SetBeamLength(Dimensions.x());
+		input -> SetBeamLength(Dimensions.x());
+	}
+	else if( command == Visualization_Cmd )
+	{
+		ConstructDet -> SetVisualization(Visualization_Cmd -> GetNewBoolValue(newValue));	
+		G4cout << "DetectorConstruction -> SetVisualization command detected " << G4endl;
 	}
 	else if( command == NoDetectorsY_Cmd )
   	{ 			
 		ConstructDet -> SetNoDetectorsY(NoDetectorsY_Cmd -> GetNewIntValue(newValue));
 		G4cout << "DetectorConstruction -> SetNoDetectorsY command detected "<< G4endl;
+		input -> SetNumberRows(NoDetectorsY_Cmd -> GetNewIntValue(newValue));	
 	}
 	else if ( command == NoDetectorsZ_Cmd )
 	{
 		ConstructDet -> SetNoDetectorsZ(NoDetectorsZ_Cmd -> GetNewIntValue(newValue));
 		G4cout << "DetectorConstruction -> SetNoDetectorsZ command detected "<< G4endl;
+		input -> SetNumberColumns(NoDetectorsZ_Cmd -> GetNewIntValue(newValue));
 	}
 	else if( command == DetectorSize_Cmd )
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
 		G4cout << "DetectorConstruction -> SetDetectorSize command detected "<< G4endl;
-		data -> SetDetectorDimensions(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
+		input -> SetDetectorDimensions(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
 	}
 	else if( command == DetectorMaterial_Cmd )
 	{
 		ConstructDet -> SetDetectorMaterial(newValue);
 		G4cout << "DetectorConstruction -> SetDetectorMaterial command detected "<< G4endl;
-		data -> SetDetectorMaterial(newValue);
+		input -> SetDetectorMaterial(newValue);
 	}
 	else if( command == DetectorEfficiency_Cmd )
 	{
 		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
 		G4cout << "DetectorConstruction -> SetDetectorEfficiency command detected " << G4endl;
-		data -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));
+		input -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));
 	}
 }

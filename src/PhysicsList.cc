@@ -1,6 +1,6 @@
 #include "PhysicsList.hh"
 #include "PhysicsListMessenger.hh"
-#include "Data.hh"
+#include "Input.hh"
 
 #include "G4SystemOfUnits.hh"
 //#include "G4PhysListFactory.hh"
@@ -46,7 +46,7 @@
 #include "G4LivermoreRayleighModel.hh"
 #include "G4LivermoreIonisationModel.hh"
 
-PhysicsList::PhysicsList(Data* DataObject) : G4VModularPhysicsList(), data(DataObject)
+PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(InputObject)
 {
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
@@ -147,75 +147,75 @@ void PhysicsList::AddPhysicsList(G4String& name)
   	if (name == "StandardPhysics")
 	{
 		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
 	}
 	else if (name == "StandardPhysics_option1") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmStandardPhysics_option1();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "StandardPhysics_option2") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmStandardPhysics_option2();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
   	else if (name == "StandardPhysics_option3") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmStandardPhysics_option3();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "StandardPhysics_option4") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmStandardPhysics_option4();
 		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "LivermorePhysics") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmLivermorePhysics();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "LivermorePolarizedPhysics") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmLivermorePolarizedPhysics();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "LowEPPhysics") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmLowEPPhysics();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
  	} 
 	else if (name == "PenelopePhysics") 
 	{
     		delete emPhysicsList;
     		emPhysicsList = new G4EmPenelopePhysics();
     		Print(EM+name);
-		data -> SetPhysicsUsed(EM+name);
+		input -> SetPhysicsUsed(EM+name);
 	}
 	else if (name == LMPhotoElectricEffect) 
 	{
     		emPhysicsList = 0;
     		Print(name);
-		data -> SetPhysicsUsed(name);
+		input -> SetPhysicsUsed(name);
 	}
 	else if (name == LivermoreGamma) 
 	{
     		emPhysicsList = 0;
     		Print(name);
-		data -> SetPhysicsUsed(name);
+		input -> SetPhysicsUsed(name);
 	}
 	else 
 	{	
