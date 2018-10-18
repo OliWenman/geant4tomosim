@@ -24,8 +24,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, 
   	ParticleGun = new G4ParticleGun(nofParticles);
 	
 	SetDefaultKinematic();
-
-	WorldSizeX = DC -> GetWorldSize().x();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

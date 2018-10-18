@@ -14,7 +14,7 @@ class PhysicsList: public G4VModularPhysicsList
 	public:
 
   		PhysicsList(Input* input);
-  		virtual ~PhysicsList();
+  		~PhysicsList();
 
 		void Print(G4String name);
 		void ConstructEM(G4String Physics);

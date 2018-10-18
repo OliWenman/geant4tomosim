@@ -53,7 +53,7 @@ PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(In
   	//EM physics
   	emPhysicsList = new G4EmStandardPhysics();
 
-	G4double Cutvalue = 1*mm;
+	G4double Cutvalue = 0.15*mm;
 	
 }
 

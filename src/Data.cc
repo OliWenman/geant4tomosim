@@ -31,8 +31,6 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
 	SetNumberColumns(Ncolumn);
-	//G4cout << G4endl << "Number of photons is " << GetNoPhotons() << G4endl;
-	//G4cout << G4endl << "Number of particles per detector on average is " << double(GetNoPhotons()/(Nrow*Ncolumn)) << G4endl; 
 
 	//Creates a 1D vector for the hit data
 	//std::vector<int> iHitDataMatrix(Nrow*Ncolumn, 0);
@@ -47,34 +45,23 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 
 void Data::SetUpEnergyData()
 {
-	//Works out the number of detectors for the energy data
-	G4int EnergyColumns = GetNumberRows() * GetNumberColumns();
-
 	//Creates a 2D vector for the energy data	
-	std::vector<std::vector<G4int> > iEnergyMatrix(EnergyColumns, std::vector<G4int>(GetNoBins(),0));
+	std::vector<std::vector<G4int> > iEnergyMatrix(rows * columns, std::vector<G4int>(NoBins_Cmd,0));
 	SetEnergyData(iEnergyMatrix);
 }
-
-/*void Data::SaveHitData(G4int DetectorNumber)
-{	
-	//Finds the coordinates of the detector inputted for the matrix
-	//+1 for each hit.
-	
-	++HitDataArray[DetectorNumber]; 
-}*/
 
 G4int Data::BinNumber(G4int DetectorNumber, G4double edep)
 {
 	//Calculates the size of each bin
 	//floor function calculates which bin the energy should be placed into
-	return floor(edep/(GetMaxEnergy()/GetNoBins()));
+	return floor(edep/(MaxE/NoBins_Cmd));
 }
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
 	G4int Bin = BinNumber(DetectorNumber, edep);
 	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
-	if (Bin == GetNoBins())
+	if (Bin == NoBins_Cmd)
 		{++EnergyMatrix[DetectorNumber][Bin-1];}
 	else
 		{//+1 to the energy bin
@@ -92,24 +79,22 @@ void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)
 
 void Data::WriteToTextFile()
 {
+	//Creation of the data stream
 	std::ofstream outdata; 
    
-	//Get needed variables to wrtie to file
-   	//std::vector<int> HitData = GetHitData();
-	//std::array<int> HitData = GetHitData();
-	G4int TotalNoRows = GetNumberRows();
-	G4int TotalNoColumns = GetNumberColumns();
 	G4int CImage = GetCurrentImage();
 
 	G4String FilePath = "./Data_Output/Text/";
 
-	G4cout << G4endl << "Saving the data... ";
+	G4cout << G4endl << "Saving the hit data... ";
 		
+	//File name is dependent of the image number
 	std::string ImageNumberString = std::to_string(CImage+1);
 
-	//Save the HitData
+	//Create the File name string
 	G4String HitFileName = "Image" + ImageNumberString + ".txt";
 
+	//Opens the data stream
    	outdata.open(FilePath+"HitData/"+HitFileName);
 		
 	//Output error if can't open file
@@ -121,28 +106,30 @@ void Data::WriteToTextFile()
 	//Finds how many digits the detector numbers need to be to keep aligned
 	G4int NDigits = std::to_string(HitDataArray[0]).length() + 2 ;
 		
-	//Save each image in the text file as a matrix
-	for (G4int Element = 0; Element < TotalNoColumns*TotalNoRows; Element++)
+	//Saves the 1D array as a 2D array
+	for (G4int Element = 0; Element < columns*rows; Element++)
 	{
-		//G4int Column = Remainder(Element, TotalNoColumns);	
-		//G4int Row = Quotient(Element, TotalNoColumns); 
-
 		outdata << std::setfill(' ') << std::setw(NDigits) << HitDataArray[Element];
 
-		if (Remainder(Element, TotalNoColumns) >= TotalNoColumns-1)
+		if (Remainder(Element, columns) >= columns-1)
 			{outdata << std::endl;}
 	}
 
+	//Let user know data has been saved successfully
 	outdata.close();
 	G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
 
 //--------------------------------------------------------------------------------------
-	if (GetEnergyDataOption() == true)
+	if (EnergyDataCmd == true)
 	{
-		std::vector<std::vector<G4int> > EnergyData = GetEnergyData();
+		G4cout << "Saving the energy data... " << G4endl;
+		
+		double MaxEnergy = GetMaxEnergy()*1000;
 
+		//Filename
 		G4String EnergyFileName = "EnergyDataFile" + ImageNumberString + ".txt";
 
+		//Opens the data stream
 		outdata.open(FilePath+"EnergyData/"+EnergyFileName);
 
 		//Output error if can't open file
@@ -150,69 +137,73 @@ void Data::WriteToTextFile()
 		{ 	std::cerr << "Error: " << EnergyFileName << " file could not be opened" << std::endl;
       			exit(1);
    		}
-
-		G4int NBins = GetNoBins();
-		G4double MaxEnergy = GetMaxEnergy();
-
-		//Finds how many digits the numbers needed to be to keep the columns aligned
-		G4int NDigitsDetectors = std::to_string(TotalNoRows*TotalNoColumns).length() + 1;
-		G4int NDigitsBinHits = std::to_string(EnergyData[0][NBins-1]).length() + 1;
-
-		G4int Spacing;
-
-		//Finds which spacing is bigger to keep aligned 
-		if (NDigitsDetectors >= NDigitsBinHits)
-			{Spacing = NDigitsDetectors;}
-		else
-			{Spacing =  NDigitsBinHits;}
-
 		
-		G4String String = "Detector No: ";
-		outdata << String;
+		
+		G4String DetectorString = "Detector No: ";
+		G4String EnergyString =   "Energy(keV): ";
 
-		G4int StringLength = String.length();
+		//Finds how many detectors there are and its string length
+		int NDigitsDetectors = std::to_string(columns*rows).length();
 
-		G4int EnergyNumberLength = std::to_string(1/MaxEnergy).length();
+		//Finds how many hits in the final bin for the first detector to find its string length
+		int NDigitsBinHits = std::to_string(EnergyMatrix[0][NoBins_Cmd-1]).length();
 
-		int Difference = EnergyNumberLength + 5 - StringLength;
-		if (EnergyNumberLength + 5 > StringLength)
+		//Finds the energy of the first column and its string length
+		int NDigitsEnergyColumnF = std::to_string((NoBins_Cmd/MaxEnergy)).length();
+
+		//Finds the energy of the last column and its string length
+		int NDigitsEnergyColumnL = std::to_string(MaxEnergy).length();
+
+		int NDigitsEnergyColumn;
+
+		if(NDigitsEnergyColumnF > NDigitsEnergyColumnL)
+			{NDigitsEnergyColumn = NDigitsEnergyColumnF;}
+		else
+			{NDigitsEnergyColumn = NDigitsEnergyColumnL;}
+
+		int LeftSpacing = NDigitsDetectors + 2;
+
+		int Spacing;
+
+		if(NDigitsBinHits > NDigitsEnergyColumn)
 		{
-			MakeSpaces(Difference, outdata);
+			Spacing = NDigitsBinHits + 1;
 		}
-			
+		else
+		{
+			Spacing = NDigitsEnergyColumn + 1;
+		}
 
-		for (G4int Number = 0; Number < TotalNoColumns*TotalNoRows; Number++)
-			{outdata << std::setfill(' ') << std::setw(Spacing) << Number;}
+		outdata << EnergyString << " "; MakeSpaces(LeftSpacing, outdata);
+
+		for( int nEnergy = 0; nEnergy < NoBins_Cmd ; nEnergy++)
+		{
+			outdata << std::setfill(' ') << std::setw(Spacing - 1) << ( MaxEnergy/NoBins_Cmd) * (nEnergy+1) << " ";
+		} 
 
 		outdata << std::endl;
 
-		for(G4int EnergyBin = 0 ; EnergyBin < NBins; EnergyBin++)  
-    		{	if( EnergyBin == NBins-1)
-				{outdata << "≤";}
-			else
-				{outdata << "<";}
+		for(G4int NDetector = 0 ; NDetector < columns*rows; NDetector++)  
+    		{	
+			outdata << DetectorString << std::setfill(' ') << std::setw(LeftSpacing) << NDetector;
 
-			MakeSpaces(Difference, outdata);
-			outdata <<  std::setfill(' ') << std::setw(Spacing) << G4BestUnit((MaxEnergy/NBins) * (EnergyBin+1), "Energy");
+			for(G4int EnergyBin = 0 ; EnergyBin < NoBins_Cmd; EnergyBin++)  
+    			{	
+				outdata << std::setfill(' ') << std::setw(Spacing) << EnergyMatrix[NDetector][EnergyBin];
+			}
+			outdata << std::endl;
+		}
 
-			for(G4int NDetector = 0 ; NDetector < TotalNoColumns*TotalNoRows; NDetector++)  
-    		    	{	
-				MakeSpaces(Difference, outdata);
-				outdata << std::setfill(' ') << std::setw(Spacing) << EnergyData[NDetector][EnergyBin];
-       		 	}
-    			outdata << std::endl;
-    		}
+
 
 		outdata.close();
 		G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
 
-		for(auto& x : EnergyData) memset(&x[0],0,sizeof(int)*x.size());
-		SetEnergyData(EnergyData);
+		for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
 	}
 	
 	//Reset the data to zero ready for the next image
-	memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * GetNumberRows()*GetNumberColumns());
-	//SetHitData(HitData);
+	memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
 }
 
 void Data::WriteToHDF5()

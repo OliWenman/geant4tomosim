@@ -12,10 +12,10 @@ class StackingAction : public G4UserStackingAction
 {
 	public:
   		StackingAction();
-  		virtual ~StackingAction();
+  		~StackingAction();
   		void SetKillStatus(G4bool value);
   		void SetKill(const G4String& name);
-  		virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track*);
+  		G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track*);
     
 	private:
   		G4bool fKillSecondary;

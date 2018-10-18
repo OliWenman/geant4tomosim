@@ -20,38 +20,23 @@ class Data;
 class TrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, G4bool DetectorEfficiency);
-    		virtual ~TrackerSD();
-
-		//Get methods
-		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
-
-		G4int GetNoBins(){return NoBins;}
-
-		//Set methods
-		void SetNoBins(G4int value){NoBins = value;}
-		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
-		void SetEnergyOption(G4bool value){EnergyOption_Cmd = value;}
-		void SetVisualization(G4bool value){Visualization_Cmd = value;}
+		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, const G4bool DetectorEfficiency, const G4bool EnergyDataOption);
+    		~TrackerSD();
   
     		//Methods
-    		virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    		virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
-		virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+    		//virtual void   Initialize(G4HCofThisEvent* hitCollection);
+    		G4bool ProcessHits(G4Step* step, G4TouchableHistory* );
+		void EndOfEvent(G4HCofThisEvent* hitCollection);
 
-		G4bool DetectorEfficiency_Cmd;
-		G4bool EnergyOption_Cmd;
 		G4bool Visualization_Cmd;
 
   	private:
+		bool DetectorEfficiency;
+		bool EnergyDataOption;
 
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;
 		Data* data;
-
-		//Data variables 
-
-	G4int NoBins;
 };
 
 #endif

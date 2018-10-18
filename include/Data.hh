@@ -17,16 +17,31 @@ class Data
 {
 	public:
 		Data();
-		virtual ~Data();
+		~Data();
 		
+		//Main functions
+		inline G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
+		inline G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
+
+		void SetUpHitData(G4int Nrow, G4int Ncolumn);
+		inline void SaveHitData(G4int DetectorNumber){&++HitDataArray[DetectorNumber];}
+
+		void SetUpEnergyData();
+		G4int BinNumber(G4int DetectorNumber, G4double edep);
+		void SaveEnergyData(G4int DetectorNumber, G4double edep);
+
+		void MakeSpaces(int nSpaces, std::ofstream &outdata);
+		void WriteToTextFile();
+		void WriteToHDF5();
+
 		//Get Methods
 		//std::vector<int> GetHitData(){ return HitDataMatrix;}
 		//std::array<int> GetHitData(){ return HitDataArray;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
-		inline G4int GetNumberRows(){return rows;}
-		inline G4int GetNumberColumns(){return columns;}
-		inline G4int GetCurrentImage(){return CurrentImage;}
+		G4int GetNumberRows(){return rows;}
+		G4int GetNumberColumns(){return columns;}
+		G4int GetCurrentImage(){return CurrentImage;}
 
 		//Set Methods
 		//void SetHitData(std::vector<int> UpdatedData){HitDataMatrix = UpdatedData;}
@@ -51,19 +66,6 @@ class Data
 		void SetHDF5FileCmd(G4bool value){HDF5FileCmd = value;}
 		void SetEnergyDataOption(G4bool value){EnergyDataCmd = value;}
 		void SetMaxEnergy(G4double value){MaxE = value;}
-
-		//Method functions
-		inline G4int Quotient(G4int dividend, G4int divisor ) {return dividend / divisor;}
-		inline G4int Remainder(G4int dividend, G4int divisor) {return dividend % divisor;}
-
-		void SetUpHitData(G4int Nrow, G4int Ncolumn);
-		void SetUpEnergyData();
-		inline void SaveHitData(G4int DetectorNumber){&++HitDataArray[DetectorNumber];}
-		G4int BinNumber(G4int DetectorNumber, G4double edep);
-		void SaveEnergyData(G4int DetectorNumber, G4double edep);
-		void MakeSpaces(int nSpaces, std::ofstream &outdata);
-		void WriteToTextFile();
-		void WriteToHDF5();
 
 	private:	
 		DataMessenger* dataMessenger;

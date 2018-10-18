@@ -17,7 +17,7 @@ class Input
 {
 	public:
 		Input(Data* data);
-		virtual ~Input();
+		~Input();
 		
 		void WriteToTextFile();
 

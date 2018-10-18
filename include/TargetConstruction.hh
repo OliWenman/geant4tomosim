@@ -20,9 +20,9 @@ class TargetConstruction
 {
 	public:
 		TargetConstruction();
-		virtual ~TargetConstruction();
+		~TargetConstruction();
 
-		virtual void Construct(G4LogicalVolume *logicWorld);
+		void Construct(G4LogicalVolume *logicWorld);
 
 		void Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicWorld);
 		G4Material* FindMaterial(G4String MaterialName);

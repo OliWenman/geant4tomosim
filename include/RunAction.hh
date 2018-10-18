@@ -16,11 +16,11 @@ class RunAction : public G4UserRunAction
 {
   	public:
     		RunAction(Input* input);
-    		virtual ~RunAction();
+    		~RunAction();
 
-    		virtual void BeginOfRunAction(const G4Run* run);
-    		virtual void EndOfRunAction(const G4Run* run);
-		virtual void GenerateSeed();
+    		void BeginOfRunAction(const G4Run* run);
+    		void EndOfRunAction(const G4Run* run);
+		void GenerateSeed();
 
 		inline void SetSeedOption(G4int value){seedCmd = value;}
 		inline void SetTotalNoEvents(G4int value){TotalNoEvents = value;}

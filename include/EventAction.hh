@@ -11,10 +11,10 @@ class EventAction : public G4UserEventAction
 {
   	public:
     		EventAction();
-    		virtual ~EventAction();
+    		~EventAction();
 
-    		virtual void  BeginOfEventAction(const G4Event* );
-    		virtual void  EndOfEventAction(const G4Event* );
+    		void  BeginOfEventAction(const G4Event* );
+    		void  EndOfEventAction(const G4Event* );
 };
 
 #endif

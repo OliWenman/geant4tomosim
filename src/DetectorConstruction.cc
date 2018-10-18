@@ -130,8 +130,8 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 
 	//Sets the materials of the voxels
 	param -> SetMaterials(theMaterials);
-	size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
-	param -> SetMaterialIndices( materialIDs );
+	//size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
+	//param -> SetMaterialIndices( materialIDs );
 
 	//Create the phantom container for the detectors
 	G4Box* container_solid = new G4Box("PhantomContainer",nDetectorsX*HalfDetectorSizeX,nDetectorsY*HalfDetectorSizeY,nDetectorsZ*HalfDetectorSizeZ);
@@ -211,7 +211,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 		}
 		else
 		{
-    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
+    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency(), input -> GetEnergyDataOption());
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
 	}
