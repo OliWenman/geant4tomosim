@@ -19,6 +19,7 @@ Input::Input(Data* DataObject): data(DataObject)
 
 Input::~Input()
 {
+	G4cout << G4endl <<"Input class has been deleted";
 	delete inputMessenger;
 }
 

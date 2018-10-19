@@ -35,7 +35,6 @@ InputMessenger::InputMessenger(Input *InputObject, Data* DataObject):input(Input
 	NoImages_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
 
 	NoPhotons_Cmd = new G4UIcmdWithAString("/data/NumberOfPhotons", this);
-	//NoPhotons_Cmd -> SetDefaultValue(1000);
 	NoPhotons_Cmd -> SetGuidance("Pick the number of photons you would to have per image ");
 
 	seedCmd = new G4UIcmdWithAnInteger("/data/Seed", this);
@@ -58,7 +57,7 @@ InputMessenger::~InputMessenger()
 	delete seedCmd;
 	delete EnergyDataCmd;
 
-	G4cout << G4endl << "DataMessenger has been deleted " << G4endl << G4endl;
+	G4cout << G4endl << "InputMessenger has been deleted " << G4endl << G4endl;
 }
 
 void InputMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -87,7 +86,6 @@ void InputMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if( command == NoPhotons_Cmd )
 	{
-		//data -> SetNoPhotons(NoPhotons_Cmd -> GetNewIntValue(newValue));	
 		G4cout << "Input -> SetNoPhotons command detected = "<< newValue <<G4endl;
 		input -> SetNoPhotons(newValue);
 	}

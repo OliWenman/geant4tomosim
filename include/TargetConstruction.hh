@@ -22,21 +22,23 @@ class TargetConstruction
 		TargetConstruction();
 		~TargetConstruction();
 
+		//Base class method
 		void Construct(G4LogicalVolume *logicWorld);
 
+		//Own class methods
 		void Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicWorld);
 		G4Material* FindMaterial(G4String MaterialName);
 		G4double RotateObject();
 		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
 		void Visualization(G4LogicalVolume*, G4Colour);
  
-		inline void SetNumberOfObjects(G4int value){NumberOfObjects_Cmd = value;}
-		inline void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
-		inline void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
+		void SetNumberOfObjects(G4int value){NumberOfObjects_Cmd = value;}
+		void SetTargetMaterial(G4String value){TargetMaterial_Cmd = value;}
+		void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 
-		inline void SetCurrentImage(G4int value){CurrentImage = value;}
-		inline void SetNoImages(G4int value){NoImages = value;}
-		inline void SetVisualization(G4bool value){VisualizationValue = value;}
+		void SetCurrentImage(G4int value){CurrentImage = value;}
+		void SetNoImages(G4int value){NoImages = value;}
+		void SetVisualization(G4bool value){VisualizationValue = value;}
 
 		G4int GetNumberOfObjects(){return NumberOfObjects_Cmd;}
 		G4String GetTargetMaterial(){return TargetMaterial_Cmd;}

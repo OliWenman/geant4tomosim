@@ -25,8 +25,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     		DetectorConstruction(Data* data, Input* input);
     		~DetectorConstruction();
 
+		//Base class method
     		G4VPhysicalVolume* Construct();
-		//virtual void ConstructSDandField();
+		
+		//Own class functions
 		void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
 		G4Material* FindMaterial(G4String material);
 		void AttachSensitiveDetector(G4LogicalVolume* volume);

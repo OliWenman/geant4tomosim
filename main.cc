@@ -244,6 +244,7 @@ int main(int argc,char** argv)
 	G4cout << G4endl << "Deleting runManager ";
   	delete runManager;
 	delete data;
+	delete input;
 
    	return 0;
 }

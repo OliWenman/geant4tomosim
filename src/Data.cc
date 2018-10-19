@@ -26,7 +26,7 @@ Data::~Data()
 	//delete dataMessenger;
 }
 
-void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
+void Data::SetUpHitData(int Nrow, int Ncolumn)
 {
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
@@ -46,33 +46,28 @@ void Data::SetUpHitData(G4int Nrow, G4int Ncolumn)
 void Data::SetUpEnergyData()
 {
 	//Creates a 2D vector for the energy data	
-	std::vector<std::vector<G4int> > iEnergyMatrix(rows * columns, std::vector<G4int>(NoBins_Cmd,0));
+	std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(NoBins_Cmd,0));
 	SetEnergyData(iEnergyMatrix);
-}
-
-G4int Data::BinNumber(G4int DetectorNumber, G4double edep)
-{
-	//Calculates the size of each bin
-	//floor function calculates which bin the energy should be placed into
-	return floor(edep/(MaxE/NoBins_Cmd));
 }
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
-	G4int Bin = BinNumber(DetectorNumber, edep);
+	//Calculates which bin the energy should be placed into, floor function rounds down to the nearest interger
+	int nBin = floor(edep/(MaxE/NoBins_Cmd));
+
 	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
-	if (Bin == NoBins_Cmd)
-		{++EnergyMatrix[DetectorNumber][Bin-1];}
+	if (nBin == NoBins_Cmd)
+		{&++EnergyMatrix[DetectorNumber][nBin-1];}
 	else
 		{//+1 to the energy bin
-		 ++EnergyMatrix[DetectorNumber][Bin];}
+		 &++EnergyMatrix[DetectorNumber][nBin];}
 }
 
 void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)
 {
+	//Function to create a number of spaces within the data stream
 	if (nSpaces > 0)
-	{
-		for (int i = 0; i < nSpaces ; ++i)
+	{	for (int i = 0; i < nSpaces ; ++i)
 			{outdata << " " ;}
 	}
 }
@@ -81,15 +76,13 @@ void Data::WriteToTextFile()
 {
 	//Creation of the data stream
 	std::ofstream outdata; 
-   
-	G4int CImage = GetCurrentImage();
 
 	G4String FilePath = "./Data_Output/Text/";
 
 	G4cout << G4endl << "Saving the hit data... ";
 		
 	//File name is dependent of the image number
-	std::string ImageNumberString = std::to_string(CImage+1);
+	std::string ImageNumberString = std::to_string(CurrentImage+1);
 
 	//Create the File name string
 	G4String HitFileName = "Image" + ImageNumberString + ".txt";
@@ -110,7 +103,6 @@ void Data::WriteToTextFile()
 	for (G4int Element = 0; Element < columns*rows; Element++)
 	{
 		outdata << std::setfill(' ') << std::setw(NDigits) << HitDataArray[Element];
-
 		if (Remainder(Element, columns) >= columns-1)
 			{outdata << std::endl;}
 	}
@@ -138,7 +130,7 @@ void Data::WriteToTextFile()
       			exit(1);
    		}
 		
-		
+		//String variables
 		G4String DetectorString = "Detector No: ";
 		G4String EnergyString =   "Energy(keV): ";
 
@@ -154,51 +146,47 @@ void Data::WriteToTextFile()
 		//Finds the energy of the last column and its string length
 		int NDigitsEnergyColumnL = std::to_string(MaxEnergy).length();
 
+		//Compares the first and last energy column for the largest string length
 		int NDigitsEnergyColumn;
-
 		if(NDigitsEnergyColumnF > NDigitsEnergyColumnL)
 			{NDigitsEnergyColumn = NDigitsEnergyColumnF;}
 		else
 			{NDigitsEnergyColumn = NDigitsEnergyColumnL;}
 
+		//Left Spacing size
 		int LeftSpacing = NDigitsDetectors + 2;
 
+		//Compares the string size of the number of hits in the bin and the energy to determine the spacing
 		int Spacing;
-
 		if(NDigitsBinHits > NDigitsEnergyColumn)
-		{
-			Spacing = NDigitsBinHits + 1;
-		}
+			{Spacing = NDigitsBinHits + 1;}
 		else
-		{
-			Spacing = NDigitsEnergyColumn + 1;
-		}
+			{Spacing = NDigitsEnergyColumn + 1;}
 
+		//Outputs the energy string and makes spaces 
 		outdata << EnergyString << " "; MakeSpaces(LeftSpacing, outdata);
 
+		//prints the energy along the top row
 		for( int nEnergy = 0; nEnergy < NoBins_Cmd ; nEnergy++)
-		{
-			outdata << std::setfill(' ') << std::setw(Spacing - 1) << ( MaxEnergy/NoBins_Cmd) * (nEnergy+1) << " ";
-		} 
+			{outdata << std::setfill(' ') << std::setw(Spacing - 1) << ( MaxEnergy/NoBins_Cmd) * (nEnergy+1) << " ";} 
 
+		//Goes to a new line
 		outdata << std::endl;
 
+		//prints the hits of the energy aligned with the energy bin
 		for(G4int NDetector = 0 ; NDetector < columns*rows; NDetector++)  
     		{	
 			outdata << DetectorString << std::setfill(' ') << std::setw(LeftSpacing) << NDetector;
-
 			for(G4int EnergyBin = 0 ; EnergyBin < NoBins_Cmd; EnergyBin++)  
-    			{	
-				outdata << std::setfill(' ') << std::setw(Spacing) << EnergyMatrix[NDetector][EnergyBin];
-			}
+    				{outdata << std::setfill(' ') << std::setw(Spacing) << EnergyMatrix[NDetector][EnergyBin];}
 			outdata << std::endl;
 		}
 
-
-
+		//Lets the user know that the data was saved successfully
 		outdata.close();
 		G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
 
+		//Resets the energy data to zero for the next image
 		for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
 	}
 	

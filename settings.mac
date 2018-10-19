@@ -9,7 +9,7 @@
 #Data Settings
 #/data/Seed 0
 /data/Energy true
-/data/bins 3			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
+/data/bins 7			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
 /data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
