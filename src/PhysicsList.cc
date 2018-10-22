@@ -6,6 +6,7 @@
 //#include "G4PhysListFactory.hh"
 #include "G4VPhysicsConstructor.hh"
 #include "G4StepLimiter.hh"
+#include "G4UserSpecialCuts.hh"
 
 #include "G4ParticleDefinition.hh"
 #include "G4ProcessManager.hh"
@@ -53,7 +54,7 @@ PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(In
   	//EM physics
   	emPhysicsList = new G4EmStandardPhysics();
 
-	G4double Cutvalue = 0.15*mm;
+	G4double Cutvalue = 100*mm;
 	
 }
 
@@ -69,7 +70,6 @@ void PhysicsList::ConstructParticle()
 {
 	G4Gamma::GammaDefinition();
 	G4Electron::ElectronDefinition();
-  	G4Positron::PositronDefinition();
 	G4GenericIon::GenericIonDefinition();
 
 	emPhysicsList->ConstructParticle();
@@ -95,9 +95,9 @@ void PhysicsList::ConstructEM(G4String Physics)
 	
   	while( (*particleIterator)() )
 	{
-  	  	G4ParticleDefinition* particle = particleIterator->value();
- 	   	G4String particleName = particle->GetParticleName();
-		G4ProcessManager* pmanager = particle->GetProcessManager(); 
+  	  	//G4ParticleDefinition* particle = particleIterator->value();
+ 	   	G4String particleName = particleIterator->value()->GetParticleName();
+		G4ProcessManager* pmanager = particleIterator->value()->GetProcessManager(); 
      
 		if (Physics == LMPhotoElectricEffect)
 		{
@@ -228,11 +228,7 @@ void PhysicsList::AddPhysicsList(G4String& name)
 }
 
 void PhysicsList::SetCuts(G4double Cutvalue)
-{
-	SetCutValue(Cutvalue, "gamma");
-  	SetCutValue(Cutvalue, "e-");
-  	SetCutValue(Cutvalue, "e+");
-}
+	{SetCutValue(Cutvalue, "gamma");}
 
 void PhysicsList::Print(G4String name)
 {

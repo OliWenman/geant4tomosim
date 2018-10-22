@@ -45,14 +45,16 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 
 	//Finds the detector number that has been hit
-	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+	//G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+
+	//G4cout << G4endl << "nDetector = " << nDetector;
 	
 	//Saves the hit into the data
-	data -> SaveHitData(nDetector);
+	//data -> SaveHitData(nDetector);
 	
 	//Saves the data only if the energy command is true
-	if (EnergyDataOption  == true)
-		{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
+	//if (EnergyDataOption  == true)
+	//	{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
 
 	//Kill the track
 	aStep->GetTrack()->SetTrackStatus(fStopAndKill);

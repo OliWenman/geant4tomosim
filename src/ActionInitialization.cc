@@ -29,7 +29,7 @@ void ActionInitialization::Build() const
 	SetUserAction(new StackingAction());
   	//SetUserAction(new EventAction());
 	SetUserAction(new PrimaryGeneratorAction(DC, input, data));
-	//SetUserAction(new TrackingAction());
+	SetUserAction(new TrackingAction());
 
 }  
 

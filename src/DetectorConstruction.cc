@@ -19,6 +19,7 @@
 #include "G4PVPlacement.hh"
 #include "G4PVParameterised.hh"
 #include "G4PhantomParameterisation.hh"
+#include "G4VNestedParameterisation.hh"
 #include "G4PVReplica.hh"
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
@@ -51,14 +52,17 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+	//Tell this class which image the run is on
 	CurrentImage = input -> GetCurrentImage();
 
+	//Tell the TargetConstruction class the needed variables only once
 	if (CurrentImage == 0)
 	{
 		TC -> SetNoImages(input->GetNoImages());
-		TC -> SetVisualization(GetVisualization());
+		TC -> SetVisualization(Visualization_Cmd);
 	}
 
+	//Checks to see if the detectors are outside the world geometry and displays a warning message
 	if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
 	{
 		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
@@ -76,13 +80,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	}
 
 	//WORLD
+	//Create an instance of the world geometry
 	G4Box* solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
 
+	//Create an instance of the logical volume and find the material
 	G4Material* WorldMaterial = FindMaterial("G4_AIR");
 	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, WorldMaterial, "World");
 
-	//Create the world physical volume. The world is the only
-	//physical volume with no mother volume.
+	//Create the world physical volume. The world is the only physical volume with no mother volume.
 	G4VPhysicalVolume* physWorld = new G4PVPlacement(0,            //no rotation
 							 G4ThreeVector(),       //at (0,0,0)
 							 logicWorld,            //its logical volume
@@ -92,14 +97,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							 0,                     //copy number
 							 true);		//overlaps checking                     
 
-	// Visualization attributes
+	//Visualization attributes
 	Visualization(logicWorld, G4Colour::White());
 
+	//Construct the target geometry
 	TC->SetCurrentImage(CurrentImage);
 	TC->Construct(logicWorld);
 
+	//Create the detectors
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
+	//Return the world 
 	return physWorld;
 
 	G4cout << G4endl << "The world has been created succesfully ";  
@@ -107,8 +115,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int nDetectorsY, G4int nDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
 {
-	//Get the needed variablles
-	G4double WorldSizeX = GetWorldSize().x();
+	//Setup the needed variables
+	G4double WorldSizeX = WorldSize_Cmd.x();
 
 	G4double DetectorPosX = -WorldSizeX;
 	G4int nDetectorsX = 1;
@@ -116,7 +124,9 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 	G4double HalfDetectorSizeY = HalfDetectorSize.y();
 	G4double HalfDetectorSizeZ = HalfDetectorSize.z();
 
+	//Create a pointer for the PhantomParameterisation
 	G4PhantomParameterisation* param = new G4PhantomParameterisation();
+	//G4VNestedParameterisation* param = new G4VNestedParameterisation();
 
 	//Voxel dimensions in the three dimensions
 	param->SetVoxelDimensions(HalfDetectorSizeX, HalfDetectorSizeY, HalfDetectorSizeZ);
@@ -127,18 +137,24 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
 	theMaterials.push_back(FindMaterial(Material));
+	//size_t fMateIDs = theMaterials[0];
+
+	//param->SetMaterialIndices( fMateIDs );
+    	param->SetNoVoxel(nDetectorsX, nDetectorsY, nDetectorsZ);
+	param-> SetVoxelDimensions(HalfDetectorSizeX,HalfDetectorSizeY,HalfDetectorSizeZ);
 
 	//Sets the materials of the voxels
 	param -> SetMaterials(theMaterials);
 	//size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
 	//param -> SetMaterialIndices( materialIDs );
 
-	//Create the phantom container for the detectors
+	//Create the phantom container for the detectors to go into
 	G4Box* container_solid = new G4Box("PhantomContainer",nDetectorsX*HalfDetectorSizeX,nDetectorsY*HalfDetectorSizeY,nDetectorsZ*HalfDetectorSizeZ);
 
-	G4LogicalVolume* container_logic = new G4LogicalVolume(container_solid,
-           						       FindMaterial(Material),        // material is not relevant here...
-           						       "PhantomContainer");
+	//Creates the logical volume for the phantom container	
+	G4LogicalVolume* container_logic = new G4LogicalVolume(container_solid, FindMaterial(Material), "PhantomContainer");
+
+	//Create a physical volume for the phantom container
 	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
             						      G4ThreeVector(DetectorPosX,0,0),                   // translation
            						      container_logic,            // logical volume
@@ -147,36 +163,37 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
             						      false,                 // No op. bool.
            						      0,			//copy number
 							      false);                    //overlap checking
-	param->BuildContainerSolid(container_phys);
+
+	//Build the phantom container and set the visualization attributes
+	param -> BuildContainerSolid(container_phys);
 	Visualization(container_logic, G4Colour::Red());
 
-	// Assure that the voxels are completely filling the container volume
-	param->CheckVoxelsFillContainer( container_solid->GetXHalfLength(),
-                                         container_solid->GetYHalfLength(),
-                                         container_solid->GetZHalfLength() );
+	//Assure that the voxels are completely filling the container volume
+	param -> CheckVoxelsFillContainer(container_solid->GetXHalfLength(),
+                                          container_solid->GetYHalfLength(),
+                                          container_solid->GetZHalfLength() );
 
-	// The parameterised volume which uses this parameterisation is placed
-	// in the container logical volume
-
+	//Create the dimensiosn of the phantom boxes to go inside the container
 	G4Box* PhantomBoxes_solid = new G4Box("PhantomBox",HalfDetectorSizeX,HalfDetectorSizeY,HalfDetectorSizeZ);
 	
+	//The parameterised volume which uses this parameterisation is placed in the container logical volume
 	G4LogicalVolume* PhantomBoxes_logic = new G4LogicalVolume(PhantomBoxes_solid,
            						          FindMaterial(Material),        // material is not relevant here...
            						          "PhantomBox");
 
+	//
 	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
                        						     PhantomBoxes_logic,           // logical volume
                         					     container_logic,              // mother volume
-           							     kXAxis,                  // optimisation hint
+           							     kUndefined,                  // optimisation hint
                        						     nDetectorsX*nDetectorsY*nDetectorsZ, // number of voxels
                        						     param);                  // parameterisation
 
-	// Indicate that this physical volume is having a regular structure
-	//
-	//param->SetNoVoxel(nVoxelX, nVoxelY, nVoxelZ );
-	PhantomBoxes_phys->SetRegularStructureId(1);
-
+	//Make the detectors sensitive to hits
 	AttachSensitiveDetector(PhantomBoxes_logic);
+
+	//Gives warning messages when set to 1?
+	PhantomBoxes_phys->SetRegularStructureId(1);
 
 	//Visualization attributes
 	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
@@ -193,8 +210,9 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 
 void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
 {
+	// Avoid unnecessary work
   	if (!volume) 
-		{return;}                  // Avoid unnecessary work
+		{return;}                  
 
   	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
@@ -202,19 +220,24 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
   	if (!theSD) 
 	{
+		//If the sensitive detector hasn't already been created, create one
       		G4cout << "Creating the Sensitive Detector"  << G4endl;
 	
 		if (GetVisualization() == true)
 		{
+			//Create a visual detector
 			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
 			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
 		}
 		else
 		{
+			//Create a detector optimised for perfomance
     			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency(), input -> GetEnergyDataOption());
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
 	}
+	
+	//Add the correct sensitive detector to the logical volume
 	if (GetVisualization() == true)
 		{volume -> SetSensitiveDetector(VTrackerSD);}
 	else
@@ -223,6 +246,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
+	//Set a visualization setting only if the setting is turned on
 	if (GetVisualization() == true)
 	{
 		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	//Cyan

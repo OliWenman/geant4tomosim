@@ -15,16 +15,10 @@
 //using namespace H5;
 
 Data::Data()
-{
-	G4cout << G4endl << "Data class has been created "<< G4endl;
-	//dataMessenger = new DataMessenger(this);
-}
+	{G4cout << G4endl << "Data class has been created "<< G4endl;}
 
 Data::~Data()
-{
-	G4cout << G4endl << "Data class has been deleted ";
-	//delete dataMessenger;
-}
+	{G4cout << G4endl << "Data class has been deleted ";}
 
 void Data::SetUpHitData(int Nrow, int Ncolumn)
 {
@@ -131,8 +125,10 @@ void Data::WriteToTextFile()
    		}
 		
 		//String variables
-		G4String DetectorString = "Detector No: ";
+		G4String DetectorString = "Detector:";
 		G4String EnergyString =   "Energy(keV): ";
+
+		int DetectorLength = DetectorString.length();
 
 		//Finds how many detectors there are and its string length
 		int NDigitsDetectors = std::to_string(columns*rows).length();
@@ -154,7 +150,11 @@ void Data::WriteToTextFile()
 			{NDigitsEnergyColumn = NDigitsEnergyColumnL;}
 
 		//Left Spacing size
-		int LeftSpacing = NDigitsDetectors + 2;
+		int LeftSpacing; 
+		if (NDigitsDetectors > DetectorLength)
+			{LeftSpacing = NDigitsDetectors;}
+		else 
+			{LeftSpacing = DetectorLength;}
 
 		//Compares the string size of the number of hits in the bin and the energy to determine the spacing
 		int Spacing;
@@ -163,20 +163,23 @@ void Data::WriteToTextFile()
 		else
 			{Spacing = NDigitsEnergyColumn + 1;}
 
-		//Outputs the energy string and makes spaces 
-		outdata << EnergyString << " "; MakeSpaces(LeftSpacing, outdata);
+		//Outputs spaces that are equal to the leftspacing and then the energy title
+		MakeSpaces(LeftSpacing, outdata); outdata << EnergyString << G4endl; 
 
-		//prints the energy along the top row
+		//Outputs the detector title and then (if needed) creates spaces to the right of it
+		outdata << DetectorString; MakeSpaces(NDigitsDetectors - DetectorLength, outdata);
+
+		//Prints the energy along the top row
 		for( int nEnergy = 0; nEnergy < NoBins_Cmd ; nEnergy++)
 			{outdata << std::setfill(' ') << std::setw(Spacing - 1) << ( MaxEnergy/NoBins_Cmd) * (nEnergy+1) << " ";} 
 
-		//Goes to a new line
+		//New line
 		outdata << std::endl;
 
 		//prints the hits of the energy aligned with the energy bin
 		for(G4int NDetector = 0 ; NDetector < columns*rows; NDetector++)  
     		{	
-			outdata << DetectorString << std::setfill(' ') << std::setw(LeftSpacing) << NDetector;
+			outdata << std::setfill(' ') << std::setw(LeftSpacing - 1) << NDetector;
 			for(G4int EnergyBin = 0 ; EnergyBin < NoBins_Cmd; EnergyBin++)  
     				{outdata << std::setfill(' ') << std::setw(Spacing) << EnergyMatrix[NDetector][EnergyBin];}
 			outdata << std::endl;

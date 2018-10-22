@@ -8,6 +8,7 @@
 class G4VPhysicsConstructor;
 class PhysicsListMessenger;
 class Input;
+class G4StepLimiter;
 
 class PhysicsList: public G4VModularPhysicsList
 {
@@ -26,10 +27,9 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
 		G4String GetPhysicsUsed(){return PhysicsUsed;}
 
-		G4String LivermoreGamma = "LivermoreGamma";
-		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";
-
 	private:
+		//G4StepLimiter* fStepLimit;
+
 		Input* input;
 
   		G4EmConfigurator em_config;
@@ -38,6 +38,9 @@ class PhysicsList: public G4VModularPhysicsList
   		G4double cutForElectron;
   		G4double cutForPositron;
 		G4String PhysicsUsed;
+
+		G4String LivermoreGamma = "LivermoreGamma";
+		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";
 
   		G4VPhysicsConstructor* emPhysicsList;
 

@@ -177,6 +177,7 @@ int main(int argc,char** argv)
 	//Find the total number of particles and convert to a number
 	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
 	G4cout << G4endl << "Number of photons per image is " << TotalParticles;
+	G4cout << G4endl << "Number of detectors is " << DC -> GetNoDetectorsY() << " x " << DC->GetNoDetectorsZ();
 	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC->GetNoDetectorsZ()) << G4endl; 
 
 	//Start the simulation timer

@@ -15,7 +15,7 @@ void TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
  {
    //if(aTrack->GetParentID()!=0)
    //{
-	   fpTrackingManager->SetStoreTrajectory(false); 
+	   //fpTrackingManager->SetStoreTrajectory(false); 
    //}
 }
 

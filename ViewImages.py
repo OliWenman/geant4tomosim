@@ -7,7 +7,7 @@ import os
 from matplotlib import pyplot as plt
 plt.ion() # turn on interactive mode, non-blocking `show`
 
-Filepath = '/home/xol73553/Desktop/Geant4/builds/Custom/X-Ray_Build/Github/Data_Output/Text/HitData/'
+Filepath = './Data_Output/Text/HitData/'
 onlyfiles = next(os.walk(Filepath))[2] #counts how many files there are
 
 for Number in range(1,len(onlyfiles)+1):

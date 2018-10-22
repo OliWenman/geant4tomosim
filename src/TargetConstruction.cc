@@ -76,7 +76,8 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 	RotateObjectAngle->rotateX(90.*deg);
 	RotateObjectAngle->rotateY(0.*deg);
 	RotateObjectAngle->rotateZ(DeltaAngle);
-
+	//RotateObjectAngle->rotateZ(45*deg);
+	
 	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, TargetPosition, OffSetRadius_Cmd, DeltaAngle);
 
 	//Create the target physical volume
