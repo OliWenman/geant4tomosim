@@ -14,6 +14,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
+class G4UIcmdWithABool;
 
 class PhysicsListMessenger: public G4UImessenger 
 { 
@@ -28,7 +29,11 @@ class PhysicsListMessenger: public G4UImessenger
 
 		G4UIdirectory* physicsDirectory;
 		
-		G4UIcmdWithAString* PhysicsListCmd;
+		G4UIcmdWithAString* PhysicsPackageCmd;
+		G4UIcmdWithABool* PhotoElectricCmd;
+		G4UIcmdWithABool* ComptonScatteringCmd;
+		G4UIcmdWithABool* RayleighScatteringCmd;
+		G4UIcmdWithABool* FluorescenceCmd;
 };
 
 #endif 

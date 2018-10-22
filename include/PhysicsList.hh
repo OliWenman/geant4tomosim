@@ -17,15 +17,21 @@ class PhysicsList: public G4VModularPhysicsList
   		PhysicsList(Input* input);
   		~PhysicsList();
 
+		void SetPhotoElectric(G4bool value){PhotoElectricCmd = value;}
+		void SetComptonScattering(G4bool value){ComptonScatteringCmd = value;}
+		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value;}
+		void SetFluorescence(G4bool value){FluorescenceCmd = value;}
+		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
+
 		void Print(G4String name);
-		void ConstructEM(G4String Physics);
+		void ConstructEM();
   		void ConstructParticle();
   		void AddPhysicsList(G4String& name);
   		void ConstructProcess();
 		void SetCuts(G4double aValue);
 	
-		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
-		G4String GetPhysicsUsed(){return PhysicsUsed;}
+		//void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
+		//G4String GetPhysicsUsed(){return PhysicsUsed;}
 
 	private:
 		//G4StepLimiter* fStepLimit;
@@ -37,7 +43,12 @@ class PhysicsList: public G4VModularPhysicsList
   		G4double cutForGamma;
   		G4double cutForElectron;
   		G4double cutForPositron;
-		G4String PhysicsUsed;
+		G4String PhysicsPackageCmd;
+
+		G4bool PhotoElectricCmd;
+		G4bool ComptonScatteringCmd;
+		G4bool RayleighScatteringCmd;
+		G4bool FluorescenceCmd;
 
 		G4String LivermoreGamma = "LivermoreGamma";
 		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";

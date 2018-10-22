@@ -17,17 +17,8 @@
 
 //Physic lists (contained inside the Geant4 distribution)
 #include "G4EmStandardPhysics.hh"
-#include "G4EmStandardPhysics_option1.hh"
-#include "G4EmStandardPhysics_option2.hh"
-#include "G4EmStandardPhysics_option3.hh"
-#include "G4EmStandardPhysics_option4.hh"
 
 #include "G4EmLivermorePhysics.hh"
-#include "G4EmLivermorePolarizedPhysics.hh"
-
-#include "G4EmLowEPPhysics.hh"
-
-#include "G4EmPenelopePhysics.hh"
 
 #include "G4Gamma.hh"
 #include "G4ComptonScattering.hh"
@@ -51,92 +42,109 @@ PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(In
 {
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
-  	//EM physics
-  	emPhysicsList = new G4EmStandardPhysics();
-
 	G4double Cutvalue = 100*mm;
-	
 }
 
 PhysicsList::~PhysicsList()
 {
   	delete PhysicsMessenger;
-	delete emPhysicsList;
-  	
 	G4cout << G4endl << "PhysicsList has been deleted";
 }
-
 void PhysicsList::ConstructParticle()
 {
 	G4Gamma::GammaDefinition();
 	G4Electron::ElectronDefinition();
+	G4Positron::PositronDefinition();
 	G4GenericIon::GenericIonDefinition();
-
-	emPhysicsList->ConstructParticle();
 }
 
 void PhysicsList::ConstructProcess()
 {
-  	//Transportation
-  	AddTransportation();
-
-  	//Electromagnetic physics list
-	if (GetPhysicsUsed() == LMPhotoElectricEffect || GetPhysicsUsed() == LivermoreGamma) 
-		{ConstructEM(GetPhysicsUsed());}
-	else
-		{emPhysicsList->ConstructProcess();}
-
+	AddTransportation();
+	ConstructEM();
 }
-
-void PhysicsList::ConstructEM(G4String Physics)
+void PhysicsList::ConstructEM()
 {
-	auto particleIterator = GetParticleIterator();
+  	auto particleIterator = GetParticleIterator();
   	particleIterator->reset();
 	
   	while( (*particleIterator)() )
 	{
-  	  	//G4ParticleDefinition* particle = particleIterator->value();
- 	   	G4String particleName = particleIterator->value()->GetParticleName();
-		G4ProcessManager* pmanager = particleIterator->value()->GetProcessManager(); 
+  	  	G4ParticleDefinition* particle = particleIterator->value();
+    		G4ProcessManager* pmanager = particle->GetProcessManager();
+    		G4String particleName = particle->GetParticleName();
      
-		if (Physics == LMPhotoElectricEffect)
+		if(particleName == "gamma")
 		{
-			//Adds only the photoelectric effect
-			G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-			thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
-			//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
-			pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
+			if(PhysicsPackageCmd == "LivermorePhysics")
+			{
+				G4cout << G4endl << "LIVERMORE PHYSICS: ";
+
+				if (PhotoElectricCmd == true)
+				{
+					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
+					thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
+					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
+					G4cout << G4endl << " -PhotoElectric Effect" << G4endl;
+				}
+				if (ComptonScatteringCmd == true)
+				{
+					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
+					theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
+					pmanager->AddDiscreteProcess(theComptonScattering); 
+					G4cout << G4endl << "- Compton Scattering" << G4endl;
+				}
+				if (RayleighScatteringCmd == true)
+				{
+					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
+					theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
+					pmanager->AddDiscreteProcess(theRayleighScattering); 
+					G4cout << G4endl << "- Rayleigh Scattering" << G4endl;
+				}
+			}
+			else if(PhysicsPackageCmd == "StandardPhysics")
+			{
+				G4cout << G4endl << "STANDARD PHYSICS: ";
+
+				if (PhotoElectricCmd == true)
+				{
+					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
+					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
+					G4cout << G4endl << "- PhotoElectricEffect" << G4endl;
+				}
+				if (ComptonScatteringCmd == true)
+				{
+					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
+					pmanager->AddDiscreteProcess(theComptonScattering); 
+					G4cout << G4endl << "- ComptonScattering" << G4endl;
+				}
+				if (RayleighScatteringCmd == true)
+				{
+					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
+					pmanager->AddDiscreteProcess(theRayleighScattering); 
+					G4cout << G4endl << "- RayleighScattering" << G4endl;
+				}
+
+			}
+			else
+			{
+				G4cout << G4endl << "================================================================================"
+	       	       		       << G4endl << "            ERROR - INVALID PHYSICS INPUT: " << PhysicsPackageCmd << G4endl
+		                       << G4endl << "            Refer to the README for list of available Physics inputs "
+	                               << G4endl << "================================================================================" << G4endl;
+				exit(-1);
+			}
+			if (FluorescenceCmd == true)
+			{
+				G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+  				de->SetFluo(true);
+  				de->SetAuger(false);   
+  				de->SetPIXE(false);  
+  				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+				G4cout << G4endl << "- Fluorescence" << G4endl;
+			}
+
 		}
-		else if (Physics == LivermoreGamma)
-		{
-			//Adds Livermore compton scattering, photoelectric effect, rayleigh scattering, ionization and fluoresence.
-			if (particleName == "gamma")
-			{
-				G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-				theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
-				//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
-				pmanager->AddDiscreteProcess(theComptonScattering); 
-
-				G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
-				theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
-				//thePhotoElectricEffect->SetHighEnergy(1.*GeV);
-				pmanager->AddDiscreteProcess(theRayleighScattering); 
-
-			}
-			else if (particleName == "e-")
-			{
-      				G4eIonisation* eIoni = new G4eIonisation();
-				eIoni ->SetEmModel(new G4LivermoreIonisationModel());
-      				//eIoni->SetStepFunction(0.1, 100*um);      
-      				pmanager->AddDiscreteProcess(eIoni); 
-
-			}
-			G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
-  			de->SetFluo(true);
-  			de->SetAuger(false);   
-  			de->SetPIXE(false);  
-  			G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-  		}
 	}
 }
 
@@ -149,74 +157,11 @@ void PhysicsList::AddPhysicsList(G4String& name)
 		Print(EM+name);
 		input -> SetPhysicsUsed(EM+name);
 	}
-	else if (name == "StandardPhysics_option1") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmStandardPhysics_option1();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
-	else if (name == "StandardPhysics_option2") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmStandardPhysics_option2();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
-  	else if (name == "StandardPhysics_option3") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmStandardPhysics_option3();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
-	else if (name == "StandardPhysics_option4") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmStandardPhysics_option4();
-		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
 	else if (name == "LivermorePhysics") 
 	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmLivermorePhysics();
     		Print(EM+name);
 		input -> SetPhysicsUsed(EM+name);
  	} 
-	else if (name == "LivermorePolarizedPhysics") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmLivermorePolarizedPhysics();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
-	else if (name == "LowEPPhysics") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmLowEPPhysics();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
- 	} 
-	else if (name == "PenelopePhysics") 
-	{
-    		delete emPhysicsList;
-    		emPhysicsList = new G4EmPenelopePhysics();
-    		Print(EM+name);
-		input -> SetPhysicsUsed(EM+name);
-	}
-	else if (name == LMPhotoElectricEffect) 
-	{
-    		emPhysicsList = 0;
-    		Print(name);
-		input -> SetPhysicsUsed(name);
-	}
-	else if (name == LivermoreGamma) 
-	{
-    		emPhysicsList = 0;
-    		Print(name);
-		input -> SetPhysicsUsed(name);
-	}
 	else 
 	{	
 		emPhysicsList = 0;
@@ -238,7 +183,4 @@ void PhysicsList::Print(G4String name)
 	       << G4endl << "================================================================================" << G4endl;
 
 }
-
-//--------------------------------------------------------------------------
-
 

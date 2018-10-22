@@ -1,7 +1,11 @@
 #Settings for the simulation
 
-/physics/addPhysics/EM LivermoreGamma	#(Choose the Physics Package you want to include, refer to the README for details)
-		   
+/physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
+/physics/EM/PhotoElectricEffect false
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
+	   
 #Seed settings 
 /run/seed 0		#(For the seed, 0 is random, input own number for your own seed)
 /run/print false			#(If you want to print hit image information at the end of each run NOT RECOMMENDED FOR ACTUAL SIMULATIONS, more of a debugging tool to check it's working.)

@@ -24,6 +24,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, 
   	ParticleGun = new G4ParticleGun(nofParticles);
 	
 	SetDefaultKinematic();
+
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
