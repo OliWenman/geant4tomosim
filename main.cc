@@ -5,6 +5,8 @@
 #include "Data.hh"
 #include "Input.hh"
 #include "globals.hh"
+#include "SteppingAction.hh"
+//#include "MyExceptionHandler.hh"
 
 #include "G4Timer.hh"
 #include <ctime>
@@ -25,13 +27,11 @@
 //GenerateSeed(data);
 
 //Not sure if to keep or to use RunAction class to do it. Currently using RunAction
-/*void GenerateSeed(Data* data)
+void GenerateSeed(Data* data)
 {
 	G4int seedCmd = data -> GetSeedOption();	
 	if (seedCmd != 0)	//Keeps the seed
-	{		
-		CLHEP::HepRandom::setTheSeed(seedCmd);
-	}
+		{CLHEP::HepRandom::setTheSeed(seedCmd);}
 	else if (seedCmd == 0)	//Random seed
 	{
 		//set random seed with system time
@@ -39,8 +39,8 @@
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 	}
 	if (data -> GetCurrentImage() == 0)
-		{data -> SetSeedOption(seedCmd);}
-}*/
+		{input -> SetSeedOption(seedCmd);}
+}
 
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {

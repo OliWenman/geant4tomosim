@@ -18,10 +18,6 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	DetectorEfficiency = DetEfficiency;
 	EnergyDataOption = EOption;
 
-	//Setup the data	
-	//DetectorEfficiency_Cmd = DetectorEfficiency;
-	//EnergyOption_Cmd = data -> GetEnergyDataOption();
-
 	//Setup data for energy if the setting is turned on
 	data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
 	if (EnergyDataOption == true)
@@ -45,19 +41,18 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	}
 
 	//Finds the detector number that has been hit
-	//G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();	
 
-	//G4cout << G4endl << "nDetector = " << nDetector;
-	
 	//Saves the hit into the data
-	//data -> SaveHitData(nDetector);
+	data -> SaveHitData(nDetector);
 	
 	//Saves the data only if the energy command is true
-	//if (EnergyDataOption  == true)
-	//	{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
+	if (EnergyDataOption  == true)
+		{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
 
 	//Kill the track
-	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+	//aStep->GetTrack()->SetTrackStatus(fStopAndKill);
+	//aStep->UpdateTrack();
 
   	return true;
 }

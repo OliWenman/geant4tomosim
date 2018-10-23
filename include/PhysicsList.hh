@@ -29,9 +29,6 @@ class PhysicsList: public G4VModularPhysicsList
   		void AddPhysicsList(G4String& name);
   		void ConstructProcess();
 		void SetCuts(G4double aValue);
-	
-		//void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
-		//G4String GetPhysicsUsed(){return PhysicsUsed;}
 
 	private:
 		//G4StepLimiter* fStepLimit;

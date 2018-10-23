@@ -24,7 +24,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, 
   	ParticleGun = new G4ParticleGun(nofParticles);
 	
 	SetDefaultKinematic();
-
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -41,7 +40,7 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
 	ParticleGun -> SetParticleDefinition(gamma);
-  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(-1.,0.,0.));	
+  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));	
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -52,7 +51,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 	//Set the ParticleGun conditions
 	ParticleGun -> SetParticleEnergy(energyCmd);
-  	ParticleGun-> SetParticlePosition(G4ThreeVector(DC -> GetWorldSize().x(), y0, z0));
+  	ParticleGun-> SetParticlePosition(G4ThreeVector(-DC -> GetWorldSize().x(), y0, z0));
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);

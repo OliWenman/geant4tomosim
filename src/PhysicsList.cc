@@ -42,7 +42,7 @@ PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(In
 {
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
-	G4double Cutvalue = 100*mm;
+	G4double Cutvalue = 1*mm;
 }
 
 PhysicsList::~PhysicsList()
@@ -85,21 +85,21 @@ void PhysicsList::ConstructEM()
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					G4cout << G4endl << " -PhotoElectric Effect" << G4endl;
+					G4cout << G4endl << " -PhotoElectric Effect";
 				}
 				if (ComptonScatteringCmd == true)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					G4cout << G4endl << "- Compton Scattering" << G4endl;
+					G4cout << G4endl << "- Compton Scattering";
 				}
 				if (RayleighScatteringCmd == true)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					G4cout << G4endl << "- Rayleigh Scattering" << G4endl;
+					G4cout << G4endl << "- Rayleigh Scattering";
 				}
 			}
 			else if(PhysicsPackageCmd == "StandardPhysics")
@@ -110,19 +110,19 @@ void PhysicsList::ConstructEM()
 				{
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					G4cout << G4endl << "- PhotoElectricEffect" << G4endl;
+					G4cout << G4endl << "- PhotoElectricEffect";
 				}
 				if (ComptonScatteringCmd == true)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					G4cout << G4endl << "- ComptonScattering" << G4endl;
+					G4cout << G4endl << "- ComptonScattering";
 				}
 				if (RayleighScatteringCmd == true)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					G4cout << G4endl << "- RayleighScattering" << G4endl;
+					G4cout << G4endl << "- RayleighScattering";
 				}
 
 			}
@@ -141,11 +141,13 @@ void PhysicsList::ConstructEM()
   				de->SetAuger(false);   
   				de->SetPIXE(false);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-				G4cout << G4endl << "- Fluorescence" << G4endl;
+				G4cout << G4endl << "- Fluorescence";
 			}
 
 		}
 	}
+
+	G4cout << G4endl;
 }
 
 

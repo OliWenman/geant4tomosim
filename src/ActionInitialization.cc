@@ -9,6 +9,7 @@
 #include "EventAction.hh"
 #include "StackingAction.hh"
 #include "TrackingAction.hh"
+#include "SteppingAction.hh"
 
 					     
 ActionInitialization::ActionInitialization(Input* InputObject, DetectorConstruction* DC_Object, Data* DataObject):G4VUserActionInitialization() ,input(InputObject), DC(DC_Object), data(DataObject)
@@ -29,8 +30,6 @@ void ActionInitialization::Build() const
 	SetUserAction(new StackingAction());
   	//SetUserAction(new EventAction());
 	SetUserAction(new PrimaryGeneratorAction(DC, input, data));
-	SetUserAction(new TrackingAction());
-
 }  
 
 
