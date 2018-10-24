@@ -142,8 +142,8 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 	param -> SetMaterials(theMaterials);
 
 	//Sets the materials of the voxels
-	size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
-	param -> SetMaterialIndices( materialIDs );
+	//size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
+	//param -> SetMaterialIndices( materialIDs );
 
 	//Create the phantom container for the detectors to go into
 	G4Box* container_solid = new G4Box("PhantomContainer",

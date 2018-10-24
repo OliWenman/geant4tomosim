@@ -39,6 +39,8 @@ class RunAction : public G4UserRunAction
 		G4int seedCmd;
 		G4int TotalNoEvents;
 		G4bool PrintCmd;
+
+		G4int loop;
 };
 
 

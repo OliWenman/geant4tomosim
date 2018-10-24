@@ -83,6 +83,7 @@ target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES} ${HDF5_LIBRARIES} ${H
 set(TEST_SCRIPTS  
     MyVis.mac
     settings.mac
+    Geometry.mac
     README.txt
     ViewImages.py
     SpeedTest.cc)

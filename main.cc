@@ -27,9 +27,9 @@
 //GenerateSeed(data);
 
 //Not sure if to keep or to use RunAction class to do it. Currently using RunAction
-void GenerateSeed(Data* data)
+void GenerateSeed(Input* input)
 {
-	G4int seedCmd = data -> GetSeedOption();	
+	G4int seedCmd = input -> GetSeedOption();	
 	if (seedCmd != 0)	//Keeps the seed
 		{CLHEP::HepRandom::setTheSeed(seedCmd);}
 	else if (seedCmd == 0)	//Random seed
@@ -38,7 +38,7 @@ void GenerateSeed(Data* data)
 		seedCmd = time(NULL);
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 	}
-	if (data -> GetCurrentImage() == 0)
+	if (input -> GetCurrentImage() == 0)
 		{input -> SetSeedOption(seedCmd);}
 }
 
@@ -153,6 +153,7 @@ int main(int argc,char** argv)
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
     	//interactive mode
+	UImanager -> ApplyCommand("/control/execute Geometry.mac");
 	UImanager -> ApplyCommand("/control/execute settings.mac");
 	
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer

@@ -48,15 +48,31 @@ class TargetConstruction
 		G4int GetNoImages(){return NoImages;}
 		G4bool GetVisualization(){return VisualizationValue;}
 
+		inline void SaveCubeDimensionsArray(std::vector<G4ThreeVector> value){CubeDimensions = value;}
+		inline void SetCubeDimensions(G4int n, G4ThreeVector value){CubeDimensions.push_back (value);}
+		G4ThreeVector GetCubeDimensions(G4int n){return CubeDimensions[n];}
+
 		inline void SavePositionsArray(std::vector<G4ThreeVector> value){Positions = value;}
+		inline void AddVectorPosition(G4int n, G4ThreeVector value){Positions.push_back (value);}
 		inline void SetVectorPosition(G4int n, G4ThreeVector value){Positions[n] = value;}
 		G4ThreeVector GetVectorPosition(G4int n){return Positions[n];}
+
+		inline void SaveRotationsArray(std::vector<G4ThreeVector> value){Rotations = value;}
+		inline void SetVectorRotation(G4int n, G4ThreeVector value){Rotations.push_back (value);}
+		G4ThreeVector GetVectorRotation(G4int n){return Rotations[n];}
+
+		inline void SaveMaterialArray(std::vector<G4String> value){Materials = value;}
+		inline void SetMaterial(G4int n, G4String value){Materials.push_back (value);}
+		G4String GetMaterial(G4int n){return Materials[n];}
 
 	private:
 		TargetConstructionMessenger *TCMessenger;		
 
 		//Target variables
-		std::vector<G4ThreeVector> Positions;		
+		std::vector<G4ThreeVector> CubeDimensions;
+		std::vector<G4ThreeVector> Positions;	
+		std::vector<G4ThreeVector> Rotations;
+		std::vector<G4String> Materials;	
 
 		G4int NumberOfObjects_Cmd;
 		G4String TargetMaterial_Cmd;

@@ -42,23 +42,18 @@ TargetConstruction::~TargetConstruction()
 
 void TargetConstruction::Construct(G4LogicalVolume* World)
 {
-	if (GetCurrentImage() == 0)
+	G4cout << G4endl << Positions.size() << G4endl;
+	for(G4int Object = 0; Object < Positions.size(); Object++)
 	{
-		std::vector<G4ThreeVector> iPositions(GetNumberOfObjects());
-		SavePositionsArray(iPositions);
-	}
-	
-	//G4ThreeVector ObjectSize0 = G4ThreeVector(0.3*mm, 0.3*mm, 0.3*mm);
-	G4ThreeVector ObjectSize0 = G4ThreeVector(0.3*mm, 0.3*mm, 0.3*mm);
-	G4ThreeVector ObjectPosition0 = G4ThreeVector(0.0*mm, 0.0*mm, 0.0*mm);
+		G4ThreeVector ObjectSize = GetCubeDimensions(Object);
+		G4cout << G4endl << "ObjectSize" << Object << " = " << ObjectSize << G4endl;
+		G4ThreeVector ObjectPosition = GetVectorPosition(Object);
+		G4cout << G4endl << "ObjectPosition" << Object << " = " << ObjectPosition << G4endl;
+		G4String ObjectMaterial = GetMaterial(Object);
+		G4cout << G4endl << "ObjectMaterial" << Object << " = " << ObjectMaterial << G4endl;
 
-	//G4ThreeVector ObjectSize1 = G4ThreeVector(0.3*mm, 0.6*mm, 0.4*mm);
-	//G4ThreeVector ObjectPosition1 = G4ThreeVector(0.2*mm, 0.5*mm, 0.0*mm);	
-
-	G4String ObjectMaterial = GetTargetMaterial();
-
-	Box(0, ObjectSize0, ObjectPosition0, ObjectMaterial, World);
-	//Box(1, ObjectSize1, ObjectPosition1, ObjectMaterial, World);
+		Box(Object, ObjectSize, ObjectPosition, ObjectMaterial, World);
+	} 
 }
 
 void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox)
@@ -69,13 +64,14 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 
 	//Fill the target with its material
 	G4Material* BoxMaterial = FindMaterial(Material);
-	G4LogicalVolume* logicBox = new G4LogicalVolume(Box, BoxMaterial, "logicBox");
+	G4LogicalVolume* logicBox = new G4LogicalVolume(Box, BoxMaterial, "logicBox"+ std::to_string(ObjectNumber));
 	
+	G4ThreeVector StartingRotation = GetVectorRotation(ObjectNumber);
 	G4double DeltaAngle = RotateObject();
 	G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
-	RotateObjectAngle->rotateX(90.*deg);
-	RotateObjectAngle->rotateY(0.*deg);
-	RotateObjectAngle->rotateZ(DeltaAngle);
+	RotateObjectAngle->rotateX(90.*deg + StartingRotation.x());
+	RotateObjectAngle->rotateY(0.*deg + StartingRotation.y());
+	RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
 	//RotateObjectAngle->rotateZ(45*deg);
 	
 	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, TargetPosition, OffSetRadius_Cmd, DeltaAngle);
@@ -84,7 +80,7 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 	G4VPhysicalVolume* physBox = new G4PVPlacement(RotateObjectAngle,            
 							     NewTargetPosition,    
 							     logicBox,           //its logical volume
-							     "Box",               //its name
+							     "Box"+std::to_string(ObjectNumber),               //its name
 							     MotherBox,                     //its mother  volume
 							     false,                 //no boolean operation
 							     ObjectNumber,                     //copy number
@@ -129,8 +125,14 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 	{
 		if (GetNoImages() > 1 && Radius != 0)
 		{	
-			G4double NewX = (CurrentPosition.x()+Radius)*cos(Angle);
-			G4double NewZ = (CurrentPosition.z()+Radius)*sin(Angle);
+			//G4double NewX = (CurrentPosition.x()+Radius)*cos(Angle);
+			//G4double NewZ = (CurrentPosition.z()+Radius)*sin(Angle);
+
+			G4double NewX = CurrentPosition.x()+(Radius*cos(Angle));
+			G4double NewZ = CurrentPosition.z()+(Radius*sin(Angle));
+
+			//G4double NewX = GetVectorPosition(0).x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());
+			//G4double NewZ = GetVectorPosition(0).z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
 
 			SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,intialY,NewZ));
 
@@ -145,7 +147,7 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 		G4double NewX = GetVectorPosition(0).x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());
 		G4double NewZ = GetVectorPosition(0).z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
  
-		SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,intialY,NewZ));
+		//SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,intialY,NewZ));
 
 		return G4ThreeVector(NewX, intialY ,NewZ);
 	}
