@@ -34,12 +34,12 @@ class TargetConstructionMessenger: public G4UImessenger
 
 		//TARGET VARIABLES
 		G4UIcmdWithAnInteger *NumberOfObjects_Cmd;
+		G4UIcmdWithAString *TypeOfObjects_Cmd;
 		G4UIcmdWith3VectorAndUnit *CubeDimensions_Cmd;
 		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
 		G4UIcmdWith3VectorAndUnit *TargetRotation_Cmd;
 		G4UIcmdWithAString *TargetMaterial_Cmd;
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
-
-		G4int Count;
+		G4UIcmdWith3VectorAndUnit *Centre_Cmd;		
 };
 #endif

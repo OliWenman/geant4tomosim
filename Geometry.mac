@@ -1,13 +1,18 @@
 #Target Settings
 /Target/NumberOfObjects 2
+/Target/OffSet 0.0 mm			#(Set the off set radius of the target when it rotates)
+/Target/centre 0.0 0.0 0.0 mm
 
+/Target/Object Cube
 /Target/Cube/Dimensions 0.2 0.2 0.5 mm
-/Target/position 0 0 0 cm		#(Set the position of the target)
-/Target/rotation 0 0 0 deg
+/Target/position 0.0 0.0 0.0 cm		#(Set the position of the target)
+/Target/rotation 0.0 0.0 0.0 deg
 /Target/material G4_Al			#(Set the material of the target)
-/Target/OffSet 0.2 mm			#(Set the off set radius of the target when it rotates)
 
-#/Target/Cube/Dimensions 0.2 0.2 0.2 mm
-#/Target/position 0.2 0.2 0 mm		#(Set the position of the target)
-#/Target/rotation 0 0 0 deg
-#/Target/material G4_Pb			#(Set the material of the target)
+/Target/Object Cube
+/Target/Cube/Dimensions 0.2 0.2 0.2 mm
+/Target/position 0.2 0.2 0.0 mm		#(Set the position of the target)
+/Target/rotation 0.0 0.0 0.0 deg
+/Target/material G4_Pb			#(Set the material of the target)
+
+/Target/Object Sphere

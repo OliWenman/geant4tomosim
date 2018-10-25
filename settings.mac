@@ -2,9 +2,9 @@
 
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true	
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 	   
 #1540219641 seed that shows warning
 #1540220780
@@ -25,8 +25,8 @@
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
-/gun/setBeamWidth 0.5 mm #000013 mm		#(Set the beam width)
-/gun/setBeamHeight 0.5 mm			#(Set the beam height)
+/gun/setBeamWidth 2.5 mm #000013 mm		#(Set the beam width)
+/gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
 #World Settings
 #8 <= for x gives no warnings??
