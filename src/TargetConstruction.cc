@@ -317,7 +317,7 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 
 void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-	if (GetVisualization() == true)
+	if (VisualizationValue == true)
 	{
 		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
   		LV -> SetVisAttributes(ObjectColour);
