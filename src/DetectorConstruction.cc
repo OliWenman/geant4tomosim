@@ -19,8 +19,8 @@
 #include "G4PVPlacement.hh"
 #include "G4PVParameterised.hh"
 #include "G4PhantomParameterisation.hh"
-#include "G4VNestedParameterisation.hh"
-#include "G4PVReplica.hh"
+//#include "G4VNestedParameterisation.hh"
+//#include "G4PVReplica.hh"
 #include "G4LogicalVolume.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
@@ -35,14 +35,15 @@
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
 
-#include "G4GeometryTolerance.hh"
-
 DetectorConstruction::DetectorConstruction(Data* DataObject, Input* InputObject):G4VUserDetectorConstruction(), data(DataObject), input(InputObject)
-{ 	G4cout << G4endl << "DetectorConstruction has been created ";
+{ 	
+	G4cout << G4endl << "DetectorConstruction has been created ";
 
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this, input);	
 	TC = new TargetConstruction();
+
+	nImage = 0;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -54,11 +55,8 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	//Tell this class which image the run is on
-	CurrentImage = input -> GetCurrentImage();
-
 	//Tell the TargetConstruction class the needed variables only once
-	if (CurrentImage == 0)
+	if (nImage == 0)
 	{
 		TC -> SetNoImages(input->GetNoImages());
 		TC -> SetVisualization(Visualization_Cmd);
@@ -103,13 +101,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	Visualization(logicWorld, G4Colour::White());
 
 	//Construct the target geometry
-	TC->SetCurrentImage(CurrentImage);
 	TC->Construct(logicWorld);
 
 	//Create the detectors
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
 	G4cout << G4endl << "The world has been created succesfully ";  
+
+	++nImage;
 
 	//Return the world 
 	return physWorld;

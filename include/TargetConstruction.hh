@@ -26,28 +26,23 @@ class TargetConstruction
 		void Construct(G4LogicalVolume *logicWorld);
 
 		//Own class methods
-		void Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* logicWorld);
-		void Cylinder();
-		void Sphere(G4int ObjectNumber, G4double Radius, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox);
-
+		void Box(G4int ObjectNumber, G4LogicalVolume* logicWorld);
+		void Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox);
+		void Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox);
 
 		G4Material* FindMaterial(G4String MaterialName);
 		G4double RotateObject();
 		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
 		void Visualization(G4LogicalVolume*, G4Colour);
  
-		void SetNumberOfObjects(G4int value){NumberOfObjects_Cmd = value;}
 		void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 		void SetCentrePosition(G4ThreeVector value){Centre_Cmd = value;}
 
-		void SetCurrentImage(G4int value){CurrentImage = value;}
 		void SetNoImages(G4int value){NoImages = value;}
 		void SetVisualization(G4bool value){VisualizationValue = value;}
 
-		G4int GetNumberOfObjects(){return NumberOfObjects_Cmd;}
 		G4double GetOffSetRadius(){return OffSetRadius_Cmd;}
 
-		G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages;}
 		G4bool GetVisualization(){return VisualizationValue;}
 
@@ -56,10 +51,7 @@ class TargetConstruction
 		inline void SetTypeOfObjects(G4int n, G4String value){TypeOfObjects[n] = value;}
 		G4String GetTypeOfObjects(G4int n){return TypeOfObjects[n];}
 
-		inline void SaveCubeDimensionsArray(std::vector<G4ThreeVector> value){CubeDimensions = value;}
-		inline void AddCubeDimensionsArray(G4ThreeVector value){CubeDimensions.push_back (value);}
-		inline void SetCubeDimensions(G4int n, G4ThreeVector value){CubeDimensions[n] = value;}
-		G4ThreeVector GetCubeDimensions(G4int n){return CubeDimensions[n];}
+		inline void AddDimensions(std::vector<G4double> value){Dimensions.push_back (value);}
 
 		inline void SavePositionsArray(std::vector<G4ThreeVector> value){Positions = value;}
 		inline void AddVectorPosition(G4ThreeVector value){Positions.push_back (value);}
@@ -81,18 +73,20 @@ class TargetConstruction
 
 		//Target variables
 		std::vector<G4String> TypeOfObjects;
-		std::vector<G4ThreeVector> CubeDimensions;
+
+		std::vector<std::vector<G4double> > Dimensions;
+
 		std::vector<G4ThreeVector> Positions;	
 		std::vector<G4ThreeVector> Rotations;
 		std::vector<G4String> Materials;	
 
-		G4int NumberOfObjects_Cmd;
 		G4double OffSetRadius_Cmd;
 		G4ThreeVector Centre_Cmd;
+
 		std::vector<G4ThreeVector> StartingPositions;
 
 		//Data manipulation varaibles
-		G4int CurrentImage;
+		G4int nImage;
 		G4int NoImages;
 
 		G4bool VisualizationValue;

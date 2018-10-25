@@ -12,6 +12,7 @@
 #include "G4Tubs.hh"
 #include "G4Box.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4Sphere.hh"
 #include "G4Orb.hh"
 
 #include "G4PVPlacement.hh"
@@ -30,9 +31,11 @@
 #include "G4Colour.hh"
 
 TargetConstruction::TargetConstruction()
-{	G4cout << G4endl << "TargetConstruction has been created" << G4endl;
+{	
+	G4cout << G4endl << "TargetConstruction has been created" << G4endl;
 	
 	TCMessenger = new TargetConstructionMessenger(this);
+	nImage = 0;
 }
 
 TargetConstruction::~TargetConstruction()
@@ -43,25 +46,22 @@ TargetConstruction::~TargetConstruction()
 
 void TargetConstruction::Construct(G4LogicalVolume* World)
 {
-	if (CurrentImage == 0)
+	if (nImage == 0)
 		{StartingPositions = Positions;}
+
 	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
 	{
 		if(TypeOfObjects[nObject] == "Cube")
-		{
-			G4ThreeVector ObjectSize = GetCubeDimensions(nObject);
-			G4ThreeVector ObjectPosition = GetVectorPosition(nObject);
-			G4String ObjectMaterial = GetMaterial(nObject);
+			{Box(nObject, World);}
 
-			Box(nObject, ObjectSize, ObjectPosition, ObjectMaterial, World);
-		}
 		else if(TypeOfObjects[nObject] == "Sphere")
-		{
-			double radius = 0.3*mm;
+			{Sphere(nObject, World);}
 
-			Sphere(nObject, radius, G4ThreeVector(-1*mm,0*mm,0*mm), "G4_Al", World);
-		}
+		else if(TypeOfObjects[nObject] == "Cylinder")
+			{Cylinder(nObject, World);} 
 	} 
+
+	++nImage;
 
 	//Sphere(G4int ObjectNumber, G4double Radius, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox)
 
@@ -124,16 +124,22 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 	G4cout << G4endl << "The target has been created succesfully " << G4endl;  	
 }
 
-void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox)
+void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 {
 	//SetVectorPosition(ObjectNumber, TargetPosition);
+
+	G4ThreeVector TargetSize = G4ThreeVector(Dimensions[ObjectNumber][0], 
+						 Dimensions[ObjectNumber][1],
+						 Dimensions[ObjectNumber][2]);
+
+	
 
 	G4String StringNumber = std::to_string(ObjectNumber);
 
 	G4Box* Box = new G4Box("Box" + StringNumber, TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
 
 	//Fill the target with its material
-	G4Material* BoxMaterial = FindMaterial(Material);
+	G4Material* BoxMaterial = FindMaterial(Materials[ObjectNumber]);
 	G4LogicalVolume* logicBox = new G4LogicalVolume(Box, BoxMaterial, "logicBox" + StringNumber);
 	
 	G4ThreeVector StartingRotation = GetVectorRotation(ObjectNumber);
@@ -145,7 +151,7 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 	RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
 	//RotateObjectAngle->rotateZ(45*deg);
 	
-	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, TargetPosition, OffSetRadius_Cmd, DeltaAngle);
+	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
 
 	//Create the target physical volume
 	G4VPhysicalVolume* physBox = new G4PVPlacement(RotateObjectAngle,            
@@ -161,18 +167,74 @@ void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector TargetSize, G4Thr
 	Visualization(logicBox, G4Colour::White());
 }
 
-void TargetConstruction::Cylinder()
-{
-
-}
-
-void TargetConstruction::Sphere(G4int ObjectNumber, G4double Radius, G4ThreeVector TargetPosition, G4String Material, G4LogicalVolume* MotherBox)
+void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 {
 	G4String StringNumber = std::to_string(ObjectNumber);
 
-	G4Orb* Sphere = new G4Orb("Sphere" + StringNumber, Radius);
+	//Target geometry
+	G4double innerRadius = Dimensions[ObjectNumber][0];
+	G4double outerRadius = Dimensions[ObjectNumber][1];
+	G4double hz = Dimensions[ObjectNumber][2];
+	G4double startAngle = Dimensions[ObjectNumber][3];
+	G4double spanningAngle = Dimensions[ObjectNumber][4];
+		
+	//TARGET
+   	G4Tubs* TargetTube = new G4Tubs("Cylinder" + StringNumber ,
+				 	innerRadius,
+                  		 	outerRadius,
+                  		 	hz,
+                  		 	startAngle,
+                  		 	spanningAngle);
 
-	G4LogicalVolume* logicSphere = new G4LogicalVolume(Sphere, FindMaterial(Material), "logicSphere" + StringNumber);
+	//Fill the target with its material
+	G4Material* TargetMaterial = FindMaterial("G4_AIR");
+	G4LogicalVolume* logicTarget = new G4LogicalVolume(TargetTube, TargetMaterial, "logicCylinder" + StringNumber);
+
+	G4ThreeVector StartingRotation = GetVectorRotation(ObjectNumber);
+	G4double DeltaAngle = RotateObject();
+
+	G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+	RotateObjectAngle->rotateX(90.*deg + StartingRotation.x());
+	RotateObjectAngle->rotateY(0.*deg + StartingRotation.y());
+	RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
+	
+	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
+
+	//Create the target physical volume
+	G4VPhysicalVolume* physTarget= new G4PVPlacement(RotateObjectAngle,            //no rotation
+							 NewTargetPosition,       
+							 logicTarget,           //its logical volume
+							 "phyCyliner" + StringNumber,               //its name
+							 MotherBox,                     //its mother  volume
+							 false,                 //no boolean operation
+							 0,                     //copy number
+							 false);		//overlaps checking 
+     
+	//Visualization attributes
+  	G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
+  	Visualization(logicTarget, G4Colour::White());  
+}
+
+void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+{
+	G4String StringNumber = std::to_string(ObjectNumber);
+
+	G4double innerRadius = Dimensions[ObjectNumber][0];
+	G4double outerRadius = Dimensions[ObjectNumber][1];
+	G4double startingPhi = Dimensions[ObjectNumber][2];
+	G4double endPhi = Dimensions[ObjectNumber][3];
+	G4double startingTheta = Dimensions[ObjectNumber][4];
+	G4double endTheta = Dimensions[ObjectNumber][5]; 
+
+	G4Sphere* Sphere = new G4Sphere("Sphere" + StringNumber, 
+				     	innerRadius,
+				     	outerRadius,
+				     	startingPhi,
+				     	endPhi,
+				     	startingTheta,
+				     	endTheta);
+
+	G4LogicalVolume* logicSphere = new G4LogicalVolume(Sphere, FindMaterial(Materials[ObjectNumber]), "logicSphere" + StringNumber);
 
 	G4ThreeVector StartingRotation = GetVectorRotation(ObjectNumber);
 	G4double DeltaAngle = RotateObject();
@@ -182,7 +244,7 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4double Radius, G4ThreeVect
 	RotateObjectAngle->rotateY(0.*deg + StartingRotation.y());
 	RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
 
-	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, TargetPosition, OffSetRadius_Cmd, DeltaAngle);
+	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
 
 	//Create the target physical volume
 	G4VPhysicalVolume* physSphere = new G4PVPlacement(RotateObjectAngle,            
@@ -215,7 +277,7 @@ G4double TargetConstruction::RotateObject()
 		G4GeometryManager::GetInstance()->CloseGeometry();
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
 
-		return deltaTheta*GetCurrentImage();
+		return deltaTheta*nImage;
 	}
 	else 
 		{return 0.*deg;}

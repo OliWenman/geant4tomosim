@@ -1,18 +1,43 @@
-#Target Settings
-/Target/NumberOfObjects 2
-/Target/OffSet 0.0 mm			#(Set the off set radius of the target when it rotates)
-/Target/centre 0.0 0.0 0.0 mm
+#GEOMETRY SETTINGS FOR THE TARGET
+#Create an object using Target/ObjectName/Dimensions
 
-/Target/Object Cube
+#Avaliable objects are:
+#-Cube, takes 4 areguments (length of x, y, z and units).
+#-Sphere, takes 8 arguments (length of inner radius, outer radius and unit used. Inner phi, outer phi, inner theta, outer theta and unit used(rad or deg)).
+#-Cylinder, takes 7 arguments (length of inner radius, outer radius, height, unit used. Inner phi, outer phi, unit used(rad or deg)).
+
+#Once you have entered the dimensions, assign its position, rotation and material.
+#Example:
+#/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 360 deg 
+#/Target/Position -0.8 -0.9 0.0 mm
+#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Material/Database G4_Pb
+
+#You can also speficy if you would like the rotation to be offset with a radius and the centre of the offset using:
+#/Target/OffSet/Radius 0.0 mm			
+#/Target/OffSet/Centre 0.0 0.0 0.0 mm
+
+#--------------------------------------------------------------------------------------
+
+/Target/OffSet/Radius 0.0 mm			
+/Target/OffSet/Centre 0.0 0.0 0.0 mm
+
 /Target/Cube/Dimensions 0.2 0.2 0.5 mm
-/Target/position 0.0 0.0 0.0 cm		#(Set the position of the target)
-/Target/rotation 0.0 0.0 0.0 deg
-/Target/material G4_Al			#(Set the material of the target)
+/Target/Position 0.0 0.0 0.0 cm		
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Al			
 
-/Target/Object Cube
 /Target/Cube/Dimensions 0.2 0.2 0.2 mm
-/Target/position 0.2 0.2 0.0 mm		#(Set the position of the target)
-/Target/rotation 0.0 0.0 0.0 deg
-/Target/material G4_Pb			#(Set the material of the target)
+/Target/Position 0.2 0.2 0.0 mm		
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Pb			
 
-/Target/Object Sphere
+/Target/Sphere/Dimensions 0.1 0.5 mm 0 360 0 360 deg 
+/Target/Position -0.3 0.1 0.0 mm
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Pb
+
+/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 360 deg 
+/Target/Position -0.8 -0.9 0.0 mm
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Pb

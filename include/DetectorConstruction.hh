@@ -85,6 +85,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4bool DetectorEfficiency_Cmd;
 
 		//Data manipulation varaibles
+		G4int nImage;
 		G4int CurrentImage;
 		G4int NoImages;
 };
