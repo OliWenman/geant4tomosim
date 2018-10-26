@@ -28,6 +28,7 @@ class TargetConstruction
 		//Own class methods
 		//Functions for creating different shaped objects
 		void Box(G4int ObjectNumber, G4LogicalVolume* logicWorld);
+		void HollowBox(G4int ObjectNumber, G4LogicalVolume* logicWorld);
 		void Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox);
 		void Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox);
 

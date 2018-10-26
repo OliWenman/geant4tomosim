@@ -54,6 +54,9 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 		if(TypeOfObjects[nObject] == "Cube")
 			{Box(nObject, World);}
 
+		else if(TypeOfObjects[nObject] == "HollowCube")
+			{HollowBox(nObject, World);}
+
 		else if(TypeOfObjects[nObject] == "Sphere")
 			{Sphere(nObject, World);}
 
@@ -132,8 +135,6 @@ void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 						 Dimensions[ObjectNumber][1],
 						 Dimensions[ObjectNumber][2]);
 
-	
-
 	G4String StringNumber = std::to_string(ObjectNumber);
 
 	G4Box* Box = new G4Box("Box" + StringNumber, TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
@@ -165,6 +166,58 @@ void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 
 	//Visualization attributes
 	Visualization(logicBox, G4Colour::White());
+}
+
+void TargetConstruction::HollowBox(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+{
+	G4String StringNumber = std::to_string(ObjectNumber);
+
+	G4ThreeVector outerBoxDimensions = G4ThreeVector(Dimensions[ObjectNumber][0], 
+					       		 Dimensions[ObjectNumber][1],
+					       		 Dimensions[ObjectNumber][2]);
+
+	G4ThreeVector innerBoxDimensions = G4ThreeVector(Dimensions[ObjectNumber][3], 
+					       		 Dimensions[ObjectNumber][4],
+					       		 Dimensions[ObjectNumber][5]);
+
+	G4Box *outerBox = new G4Box("Outer Box" + StringNumber, 
+				    outerBoxDimensions.x(), 
+				    outerBoxDimensions.y(), 
+				    outerBoxDimensions.z());
+
+	G4Box *innerBox = new G4Box("Inner Box" + StringNumber,
+				    outerBoxDimensions.x()-innerBoxDimensions.x(),
+				    outerBoxDimensions.y()-innerBoxDimensions.y(),
+				    outerBoxDimensions.z()-innerBoxDimensions.z());
+
+	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("Hollow Box" + StringNumber, outerBox, innerBox);
+
+	//Fill the target with its material
+	G4Material* BoxMaterial = FindMaterial(Materials[ObjectNumber]);
+	G4LogicalVolume* logicHollowBox = new G4LogicalVolume(HollowBox, BoxMaterial, "logic_HollowBox" + StringNumber);
+	
+	G4ThreeVector StartingRotation = GetVectorRotation(ObjectNumber);
+	G4double DeltaAngle = RotateObject();
+
+	G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+	RotateObjectAngle->rotateX(90.*deg + StartingRotation.x());
+	RotateObjectAngle->rotateY(0.*deg + StartingRotation.y());
+	RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
+
+	G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
+
+	//Create the target physical volume
+	G4VPhysicalVolume* physHollowBox = new G4PVPlacement(RotateObjectAngle,            
+							     NewTargetPosition,    
+							     logicHollowBox,           //its logical volume
+							     "phyHollowBox" + StringNumber,               //its name
+							     MotherBox,                     //its mother  volume
+							     false,                 //no boolean operation
+							     0,                     //copy number
+							     false);		//overlaps checking      
+	//Visualization attributes
+  	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
+  	logicHollowBox -> SetVisAttributes(HollowBoxColour);
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox)

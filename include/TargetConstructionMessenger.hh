@@ -22,19 +22,19 @@ class TargetConstructionMessenger: public G4UImessenger
 		TargetConstructionMessenger(TargetConstruction* TC);
 		~TargetConstructionMessenger(void);
 
-		//Methods
+		//Base class method
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:		
-		//Pointer to the DetectorConstruction class
+		//Pointer to the TargetConstruction class
 		TargetConstruction *TC;
 
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *TargetDirectory;
 
-		//TARGET VARIABLES
-
+		//Pointers to different variables
 		G4UIcmdWith3VectorAndUnit *CubeDimensions_Cmd;
+		G4UIcmdWithAString *HollowCubeDimensions_Cmd;
 		G4UIcmdWithAString *SphereDimensions_Cmd;
 		G4UIcmdWithAString *CylinderDimensions_Cmd;
 
