@@ -106,8 +106,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Create the detectors
 	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
-	G4cout << G4endl << "The world has been created succesfully ";  
-
 	++nImage;
 
 	//Return the world 

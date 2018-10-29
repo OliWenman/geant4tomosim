@@ -30,7 +30,7 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	CylinderDimensions_Cmd = new G4UIcmdWithAString("/Target/Cylinder/Dimensions", this);
 	CylinderDimensions_Cmd -> SetGuidance("Set the dimensions of a cylinder that you would like, Inner radius, Outer radius, Length, Delta Phi angle and ending Phi angle");
 
-	//Command to set the dimensions of a sphere
+	//Command to set the dimensions of a hollow cube
 	HollowCubeDimensions_Cmd = new G4UIcmdWithAString("/Target/HollowCube/Dimensions", this);
 	HollowCubeDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, outer x, y, z , unit, inner x, y, z unit");
 
@@ -60,6 +60,16 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	TargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
 	TargetMaterial_Cmd -> SetDefaultValue("G4_Al");
 
+	//Command to set any boolean operaions for the object
+	BooleanOp_Cmd = new G4UIcmdWithABool("/Target/VolumeExclusion", this);
+	BooleanOp_Cmd -> SetGuidance("Set the boolean operation for the physical volume of the object");
+	BooleanOp_Cmd -> SetDefaultValue(false);
+
+	//Command to check for overlaps in the geometry
+	OverlapCheck_Cmd = new G4UIcmdWithABool("/Target/CheckAllOverlaps", this);
+	OverlapCheck_Cmd -> SetGuidance("Choose if you would like the volumes to check for overlaps");
+	OverlapCheck_Cmd -> SetDefaultValue(false);
+
 	//Command to set the off set radius of an object when it rotates between projections
 	OffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet/Radius", this);
 	OffSetRadius_Cmd -> SetGuidance("Set the off set of the poisition of the target with a radius");
@@ -85,7 +95,10 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 
 	delete TargetPosition_Cmd;
 	delete TargetRotation_Cmd;
+
 	delete TargetMaterial_Cmd;
+	delete BooleanOp_Cmd;
+	delete OverlapCheck_Cmd;
 
 	delete OffSetRadius_Cmd;
 	delete Centre_Cmd;
@@ -314,6 +327,16 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	{
 		TC -> AddMaterial(newValue);	
 		G4cout << "TargetConstruction -> AddTargetMaterial command detected "<< G4endl;
+	}
+	else if(command == BooleanOp_Cmd )
+	{
+		TC -> AddBooleanOp(newValue);	
+		G4cout << "TargetConstruction -> AddBooleanOp command detected "<< G4endl;
+	}
+	else if(command == OverlapCheck_Cmd)
+	{
+		TC -> SetOverlapCheck(OverlapCheck_Cmd -> GetNewBoolValue(newValue));
+		G4cout << "TargetConstruction -> SetOverlapCheck command detected " << G4endl;
 	}
 	else if(command == OffSetRadius_Cmd )
 	{

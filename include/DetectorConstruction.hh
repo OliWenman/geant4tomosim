@@ -80,6 +80,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Detector variables
 		G4int NoDetectorsY_Cmd;
 		G4int NoDetectorsZ_Cmd;
+
 		G4ThreeVector DetectorSize_Cmd;
 		G4String DetectorMaterial_Cmd;
 		G4bool DetectorEfficiency_Cmd;

@@ -64,6 +64,7 @@ class Input
 
 		void SetVisualization(G4bool value){Visualization_Cmd = value;}
 		void SetPhysicsUsed(G4String value){PhysicsUsed = value;}
+		void SetPhysicProcesses(std::vector<G4String> value){PhysicProcesses = value;}
 		void SetSeedOption(G4int value){seedCmd = value;}
 		void SetSimulationTime(G4double value){SimulationTime = value;}
 
@@ -93,6 +94,7 @@ class Input
 		G4int CurrentImage;
 
 		G4String PhysicsUsed;
+		std::vector<G4String> PhysicProcesses;
 		G4bool TextFileCmd;
 		G4bool HDF5FileCmd;
 		G4double SimulationTime;

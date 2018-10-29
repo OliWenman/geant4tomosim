@@ -48,6 +48,14 @@ void Input::WriteToTextFile()
 
 	outdata << "Conditioons used in this simulation: " << std::endl;
 	outdata << "- Physics package: " << PhysicsUsed << std::endl;
+	outdata << "- Physics processes: "; for (int n = 0 ; n < PhysicProcesses.size() ; n++) 
+					    {	  outdata << PhysicProcesses[n]; 
+						  if(n == PhysicProcesses.size() - 1)
+						  {	  outdata << ". ";} 
+						  else 
+						  {outdata << ", ";} 
+					    }
+	outdata << std::endl;
 	outdata << "- Seed: " << seedCmd << std::endl << std::endl;
 
 	outdata << "- Intial energy of the monochromatic beam: " << G4BestUnit(MaxE,"Energy") << std::endl;

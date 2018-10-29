@@ -156,13 +156,13 @@ void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 
 	//Create the target physical volume
 	G4VPhysicalVolume* physBox = new G4PVPlacement(RotateObjectAngle,            
-							     NewTargetPosition,    
-							     logicBox,           //its logical volume
-							     "phyBox" + StringNumber,               //its name
-							     MotherBox,                     //its mother  volume
-							     false,                 //no boolean operation
-							     ObjectNumber,                     //copy number
-							     false);		//overlaps checking      
+						       NewTargetPosition,    
+						       logicBox,           //its logical volume
+						       "phyBox" + StringNumber,               //its name
+						       MotherBox,                     //its mother  volume
+						       false,                 //no boolean operation
+						       ObjectNumber,                     //copy number
+						       OverlapCheck_Cmd);		//overlaps checking      
 
 	//Visualization attributes
 	Visualization(logicBox, G4Colour::White());
@@ -214,7 +214,7 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4LogicalVolume* MotherBo
 							     MotherBox,                     //its mother  volume
 							     false,                 //no boolean operation
 							     0,                     //copy number
-							     false);		//overlaps checking      
+							     OverlapCheck_Cmd);		//overlaps checking      
 	//Visualization attributes
   	G4VisAttributes* HollowBoxColour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
   	logicHollowBox -> SetVisAttributes(HollowBoxColour);
@@ -261,7 +261,7 @@ void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox
 							 MotherBox,                     //its mother  volume
 							 false,                 //no boolean operation
 							 0,                     //copy number
-							 false);		//overlaps checking 
+							 OverlapCheck_Cmd);		//overlaps checking 
      
 	//Visualization attributes
   	G4VisAttributes* Target_Colour = new G4VisAttributes(G4Colour(1.0, 1.0, 1.0));	//White
@@ -307,7 +307,7 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 							  MotherBox,                     //its mother  volume
 							  false,                 //no boolean operation
 							  ObjectNumber,                     //copy number
-							  false);		//overlaps checking      
+							  OverlapCheck_Cmd);		//overlaps checking      
 
 	//Visualization attributes
 	Visualization(logicSphere, G4Colour::White());

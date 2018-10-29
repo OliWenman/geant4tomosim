@@ -2,13 +2,43 @@
 //INFORMATION ON HOW TO USE THIS SIMULATION //
 //////////////////////////////////////////////
 
-
 INTRODUCTION
 This code is used to simulate X-Ray data for tomography.
 
 Use the "settings.mac" file to tailor the simulation to your needs. If you want visualization of the geometry of your setup, make the "data/Visualization " command to true. This will output a HepARep to be viewed in a HepARep viewer.
 Do not use this visualizer with millions of objects or particles as it will take a long time to do the simulation and also crash the viewer. Recommend no more than 1,000 particles, only use it to see if simulation setup is correct.
 If you want to get the exact same results each time, you can input your own seed or find what the random seed was by looking in the "SimulationSettings.txt". The seed is random if the input is 0.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+GEOMETRY SETTINGS FOR THE TARGET
+
+Too add objects into the geometry setup, go into the Geometry.mac file 
+Create an object using Target/ObjectName/Dimensions
+
+Avaliable objects are:
+-Cube, takes 4 areguments: length of x, y, z and units.
+-HollowCube, takes 7 arguments: length of outer box for x, y and z, length of inner box for x, y and z and the unit used.
+-Sphere, takes 8 arguments: length of inner radius, outer radius and unit used. Inner phi, outer phi, inner theta, outer theta and unit used(rad or deg).
+-Cylinder, takes 7 arguments: length of inner radius, outer radius, height, unit used. Inner phi, outer phi, unit used(rad or deg).
+
+Once you have entered the dimensions, assign its position, rotation and material. You must assign an object each one of these attributes, otherwise you will get an error.
+A list of avaliable materials from the database can be found here: 
+http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Appendix/materialNames.html?highlight=materials
+
+Example:
+/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 360 deg 
+/Target/Position -0.8 -0.9 0.0 mm
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Pb
+
+You can also speficy if you would like the rotation to be offset with a radius and the centre of the offset using:
+/Target/OffSet/Radius 0.0 mm			
+/Target/OffSet/Centre 0.0 0.0 0.0 mm
+
+The first object you create will become the "master volume", meaning all other volumes created after will rotate around it
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+PHYSICS OPTIONS
 
 Below is a list of avaliable physics packages that are optimised for different needs. In "settings.mac", the command /physics/addPhysics PhysicsSetting , where PhysicsSetting is the name of the physics package, allows you to 
 change the simulation to adopt the physic package you need. Simply change the command to the title of any of the below options. For example, "/physics/addPhysics LivermorePhysics". 

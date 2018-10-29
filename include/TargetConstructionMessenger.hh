@@ -15,6 +15,7 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWith3VectorAndUnit;
+class G4UIcmdWithABool;
 
 class TargetConstructionMessenger: public G4UImessenger 
 { 
@@ -41,6 +42,8 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
 		G4UIcmdWith3VectorAndUnit *TargetRotation_Cmd;
 		G4UIcmdWithAString *TargetMaterial_Cmd;
+		G4UIcmdWithABool *BooleanOp_Cmd;
+		G4UIcmdWithABool *OverlapCheck_Cmd;
 
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 		G4UIcmdWith3VectorAndUnit *Centre_Cmd;		

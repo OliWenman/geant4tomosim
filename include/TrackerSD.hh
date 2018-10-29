@@ -15,7 +15,8 @@ class Data;
 //Tracker sensitive detector class.
 //The hits are accounted in hits in ProcessHits() function which is called
 //by Geant4 kernel at each step. A hit is created with each step with non zero 
-//energy deposit.
+//energy deposit if the detectors are realistic, otherwise they record a hit when a photon enters
+//its volume for 100% efficiency.
 
 class TrackerSD : public G4VSensitiveDetector
 {
@@ -23,16 +24,15 @@ class TrackerSD : public G4VSensitiveDetector
 		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, const G4bool DetectorEfficiency, const G4bool EnergyDataOption);
     		~TrackerSD();
   
-    		//Methods
+    		//Base Methods
     		//virtual void   Initialize(G4HCofThisEvent* hitCollection);
     		G4bool ProcessHits(G4Step* step, G4TouchableHistory* );
 		void EndOfEvent(G4HCofThisEvent* hitCollection);
 
-		G4bool Visualization_Cmd;
-
   	private:
 		bool DetectorEfficiency;
 		bool EnergyDataOption;
+		G4bool Visualization_Cmd;
 
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;

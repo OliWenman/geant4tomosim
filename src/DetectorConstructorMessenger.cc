@@ -12,6 +12,9 @@
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+#include "G4TwoVector.hh"
+#include "G4Tokenizer.hh"
+
 //DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector):ConstructDet(Detector)
 DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector, Input* InputObject): G4UImessenger(), ConstructDet(Detector), input(InputObject)
 {	

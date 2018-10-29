@@ -65,6 +65,12 @@ class TargetConstruction
 		inline void SetMaterial(G4int n, G4String value){Materials[n] = value;} 
 		G4String GetMaterial(G4int n){return Materials[n];}
 
+		//Functions to do with an array of boolean operations for the object being used
+		inline void SaveBooleanOpArray(std::vector<bool> value){BooleanOp = value;}
+		inline void AddBooleanOp(bool value){BooleanOp.push_back (value);}
+		inline void SetBooleanOp(G4int n, bool value){BooleanOp[n] = value;} 
+		bool GetBooleanOp(G4int n){return BooleanOp[n];}
+
 		//Functions to do with setting the offset of rotation
 		void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 		G4double GetOffSetRadius(){return OffSetRadius_Cmd;}
@@ -73,12 +79,14 @@ class TargetConstruction
 		//Get and set the total number of images being used
 		void SetNoImages(G4int value){NoImages = value;}
 		G4int GetNoImages(){return NoImages;}
+
+		void SetOverlapCheck(G4bool value){OverlapCheck_Cmd = value;}
+		G4bool GetOverlapCheck(){return OverlapCheck_Cmd;}
 		
 		//Get and set the visualization settings
 		void SetVisualization(G4bool value){VisualizationValue = value;}
 
 	private:
-		
 		//Pointer to its messenger class
 		TargetConstructionMessenger *TCMessenger;		
 
@@ -93,7 +101,10 @@ class TargetConstruction
 		std::vector<G4ThreeVector> Rotations;
 
 		//Vector of the string of the different types of material used in the objects
-		std::vector<G4String> Materials;	
+		std::vector<G4String> Materials;
+
+		//Vector of the boolean operations for the different objects
+		std::vector<bool> BooleanOp;	
 
 		//Vector of the starting positions of the objects
 		std::vector<G4ThreeVector> StartingPositions;
@@ -104,6 +115,7 @@ class TargetConstruction
 		G4int nImage;
 		G4int NoImages;
 		G4bool VisualizationValue;
+		G4bool OverlapCheck_Cmd;
 };
 
 #endif	

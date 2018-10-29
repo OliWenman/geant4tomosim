@@ -23,10 +23,8 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetFluorescence(G4bool value){FluorescenceCmd = value;}
 		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
 
-		void Print(G4String name);
 		void ConstructEM();
   		void ConstructParticle();
-  		void AddPhysicsList(G4String& name);
   		void ConstructProcess();
 		void SetCuts(G4double aValue);
 
@@ -34,8 +32,6 @@ class PhysicsList: public G4VModularPhysicsList
 		//G4StepLimiter* fStepLimit;
 
 		Input* input;
-
-  		G4EmConfigurator em_config;
 
   		G4double cutForGamma;
   		G4double cutForElectron;
@@ -47,10 +43,8 @@ class PhysicsList: public G4VModularPhysicsList
 		G4bool RayleighScatteringCmd;
 		G4bool FluorescenceCmd;
 
-		G4String LivermoreGamma = "LivermoreGamma";
-		G4String LMPhotoElectricEffect = "LMPhotoElectricEffect";
-
-  		G4VPhysicsConstructor* emPhysicsList;
+		//G4EmConfigurator em_config;
+  		//G4VPhysicsConstructor* emPhysicsList;
 
   		PhysicsListMessenger* PhysicsMessenger;
 };

@@ -1,54 +1,29 @@
-#GEOMETRY SETTINGS FOR THE TARGET
-#Create an object using Target/ObjectName/Dimensions
-
-#Avaliable objects are:
-#-Cube, takes 4 areguments: length of x, y, z and units).
-#-HollowCube, takes 7 arguments: length of outer box for x, y and z, length of inner box for x, y and z and the unit used.
-#-Sphere, takes 8 arguments: length of inner radius, outer radius and unit used. Inner phi, outer phi, inner theta, outer theta and unit used(rad or deg).
-#-Cylinder, takes 7 arguments: length of inner radius, outer radius, height, unit used. Inner phi, outer phi, unit used(rad or deg).
-
-#Once you have entered the dimensions, assign its position, rotation and material. 
-A list of avaliable materials from the database can be found here: 
-http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Appendix/materialNames.html?highlight=materials
-
-#Example:
-#/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 360 deg 
-#/Target/Position -0.8 -0.9 0.0 mm
-#/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Pb
-
-#You can also speficy if you would like the rotation to be offset with a radius and the centre of the offset using:
-#/Target/OffSet/Radius 0.0 mm			
-#/Target/OffSet/Centre 0.0 0.0 0.0 mm
-
-#The first object you create will become the "master volume", meaning all other volumes created after will rotate around it
-
-#--------------------------------------------------------------------------------------
+/Target/CheckAllOverlaps false
 
 /Target/OffSet/Radius 0.0 mm			
 /Target/OffSet/Centre 0.0 0.0 0.0 mm
 
-/Target/Cube/Dimensions 0.2 0.2 0.5 mm
+/Target/Cube/Dimensions 0.5 0.5 0.5 mm
 /Target/Position 0.0 0.0 0.0 cm		
 /Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Al			
+/Target/Material/Database G4_Al		
 
-/Target/Cube/Dimensions 0.2 0.2 0.2 mm
-/Target/Position 0.2 0.2 0.0 mm		
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Pb			
+#/Target/Cube/Dimensions 0.5 0.5 0.5 mm
+#/Target/Position 0.2 0.2 0.2 mm		
+#/Target/Rotation 0.2 0.2 0.0 deg
+#/Target/Material/Database G4_Al				
 
-/Target/Sphere/Dimensions 0.1 0.5 mm 0 360 0 360 deg 
-/Target/Position -0.3 0.1 0.0 mm
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Pb
+#/Target/Sphere/Dimensions 0.45 0.5 mm 0 180 0 180 deg 
+#/Target/Position -0.3 0.1 0.0 mm
+#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Material/Database G4_Pb
 
-/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 360 deg 
-/Target/Position -0.8 -0.9 0.0 mm
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Pb
+#/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 180 deg 
+#/Target/Position -0.8 -0.9 0.0 mm
+#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Material/Database G4_Pb	
 
-/Target/HollowCube/Dimensions 0.2 0.2 0.2 0.1 0.1 0.15 mm 
-/Target/Position -1.0 -0.5 -0.5 mm
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Pb
+#/Target/HollowCube/Dimensions 0.2 0.2 0.2 0.1 0.1 0.15 mm 
+#/Target/Position -1.0 -0.5 -0.5 mm
+#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Material/Database G4_Pb	
