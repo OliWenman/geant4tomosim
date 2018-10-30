@@ -37,7 +37,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if (DetectorEfficiency == false)
 	{
   		//if no energy deposit, there's no hit for realisitic detectors
-  		if (aStep->GetTotalEnergyDeposit()== 0) return false;
+  		if (aStep->GetTotalEnergyDeposit() == 0) return false;
 	}
 
 	//Finds the detector number that has been hit

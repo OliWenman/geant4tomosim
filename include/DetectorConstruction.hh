@@ -44,11 +44,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
 		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
 
-		void SetCurrentImage(G4int value){CurrentImage = value;}
 		void SetNoImages(G4int value){NoImages = value;}
 
 		//Get methods
-		G4ThreeVector GetWorldSize(){return WorldSize_Cmd;}
+		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
 
 		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}
@@ -57,7 +56,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
-		G4int GetCurrentImage(){return CurrentImage;}
+		//G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages;}
 
   	protected:
@@ -66,13 +65,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
 		Input* input;
-
 		TrackerSD* aTrackerSD;
 		VisTrackerSD* VTrackerSD;
-
 		TargetConstruction* TC;
 
-		//DATA
 		//World variables
 		G4ThreeVector WorldSize_Cmd;
 		G4bool Visualization_Cmd;
@@ -80,14 +76,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Detector variables
 		G4int NoDetectorsY_Cmd;
 		G4int NoDetectorsZ_Cmd;
-
 		G4ThreeVector DetectorSize_Cmd;
 		G4String DetectorMaterial_Cmd;
 		G4bool DetectorEfficiency_Cmd;
 
-		//Data manipulation varaibles
+		//Image variables
 		G4int nImage;
-		G4int CurrentImage;
 		G4int NoImages;
 };
 

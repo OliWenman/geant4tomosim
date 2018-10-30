@@ -17,6 +17,8 @@
 TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Target): G4UImessenger(), TC(Target)
 {	
 	G4cout << G4endl << "TargetConstructionMessenger has been created" << G4endl;
+	
+	ObjectCounter = 0;
 
 	//Directory
 	TargetDirectory = new G4UIdirectory("/Target/");
@@ -40,6 +42,9 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	CubeDimensions_Cmd -> SetUnitCandidates("mm cm m ");
 	CubeDimensions_Cmd -> SetDefaultUnit("mm");
 	CubeDimensions_Cmd -> SetDefaultValue(G4ThreeVector(0.3*mm, 0.3*mm, 0.0*mm));
+
+	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
+	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape and give it a new name");
 	
 	//Command to set the position of an object
 	TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/Position", this);
@@ -69,6 +74,10 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	OverlapCheck_Cmd = new G4UIcmdWithABool("/Target/CheckAllOverlaps", this);
 	OverlapCheck_Cmd -> SetGuidance("Choose if you would like the volumes to check for overlaps");
 	OverlapCheck_Cmd -> SetDefaultValue(false);
+
+	//Command to set the full roation angle for when the target rotates
+	FullRotationAngle_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/TotalRotationAngle", this);
+	FullRotationAngle_Cmd -> SetGuidance("Set the full rotation angle for the target");
 
 	//Command to set the off set radius of an object when it rotates between projections
 	OffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet/Radius", this);
@@ -100,6 +109,7 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete BooleanOp_Cmd;
 	delete OverlapCheck_Cmd;
 
+	delete FullRotationAngle_Cmd;
 	delete OffSetRadius_Cmd;
 	delete Centre_Cmd;
 
@@ -173,7 +183,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Sphere");
+		TC -> AddTypeOfObjects("Sphere" + std::to_string(ObjectCounter));
+		++ObjectCounter;
 	}
 	else if(command == CylinderDimensions_Cmd)
 	{
@@ -238,7 +249,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cylinder");
+		TC -> AddTypeOfObjects("Cylinder" + std::to_string(ObjectCounter));
+		++ObjectCounter;
 	}
 	else if(command == HollowCubeDimensions_Cmd)
 	{
@@ -297,8 +309,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {outerX, outerY, outerZ, innerX, innerY, innerZ};
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("HollowCube");
-
+		TC -> AddTypeOfObjects("HollowCube" + std::to_string(ObjectCounter));
+		++ObjectCounter;
 	}
 	else if(command == CubeDimensions_Cmd)
 	{
@@ -308,8 +320,9 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		//Turn the variables into an array and append to the dimensions vector
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cube");	
+		TC -> AddTypeOfObjects("Cube" + std::to_string(ObjectCounter));	
 		G4cout << "TargetConstruction -> AddCubeDimensions command detected "<< G4endl;
+		++ObjectCounter;
 	}
 	else if(command == TargetPosition_Cmd)
 	{
@@ -337,6 +350,12 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	{
 		TC -> SetOverlapCheck(OverlapCheck_Cmd -> GetNewBoolValue(newValue));
 		G4cout << "TargetConstruction -> SetOverlapCheck command detected " << G4endl;
+	}
+	else if(command == FullRotationAngle_Cmd)
+	{
+		FullRotationAngle_Cmd -> GetNewUnitValue(newValue);
+		TC -> SetFullRotationAngle(FullRotationAngle_Cmd -> GetNewDoubleValue(newValue));
+		G4cout << "TargetConstruction -> FullRotationAngle_Cmd command detected " << G4endl;
 	}
 	else if(command == OffSetRadius_Cmd )
 	{

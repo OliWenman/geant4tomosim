@@ -28,7 +28,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, 
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-	//Free up memory
   	delete ParticleGun;
 	delete gunMessenger;
 	G4cout << G4endl << "PrimaryGeneratorAction has been deleted ";
@@ -45,13 +44,15 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+	const double WorldX = -DC -> GetWorldSize().x();
+
 	//Allow the particles to be fired randomly within the beam width
 	G4double y0 = BeamWidthY_Cmd * (G4UniformRand()-0.5);
   	G4double z0 = BeamHeightZ_Cmd * (G4UniformRand()-0.5);
 
 	//Set the ParticleGun conditions
 	ParticleGun -> SetParticleEnergy(energyCmd);
-  	ParticleGun-> SetParticlePosition(G4ThreeVector(-DC -> GetWorldSize().x(), y0, z0));
+  	ParticleGun-> SetParticlePosition(G4ThreeVector(WorldX, y0, z0));
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);

@@ -34,18 +34,27 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIdirectory *TargetDirectory;
 
 		//Pointers to different variables
+		//Different shapes
 		G4UIcmdWith3VectorAndUnit *CubeDimensions_Cmd;
 		G4UIcmdWithAString *HollowCubeDimensions_Cmd;
 		G4UIcmdWithAString *SphereDimensions_Cmd;
 		G4UIcmdWithAString *CylinderDimensions_Cmd;
 
+		G4UIcmdWithAString *SubtractionSolid_Cmd;
+
+		//Object attributes
 		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
 		G4UIcmdWith3VectorAndUnit *TargetRotation_Cmd;
 		G4UIcmdWithAString *TargetMaterial_Cmd;
 		G4UIcmdWithABool *BooleanOp_Cmd;
 		G4UIcmdWithABool *OverlapCheck_Cmd;
 
+		//Image settings
+		G4UIcmdWithADoubleAndUnit *FullRotationAngle_Cmd;
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
-		G4UIcmdWith3VectorAndUnit *Centre_Cmd;		
+		G4UIcmdWith3VectorAndUnit *Centre_Cmd;	
+
+		int ObjectCounter;
+			
 };
 #endif

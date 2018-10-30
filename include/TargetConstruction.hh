@@ -31,6 +31,10 @@ class TargetConstruction
 		void HollowBox(G4int ObjectNumber, G4LogicalVolume* logicWorld);
 		void Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox);
 		void Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox);
+		void SubtractSolid(G4int ObjectNumber, G4LogicalVolume* MotherBox);
+
+		void AddLogicalVolume(G4String SolidName, G4String Material);
+		void AddPhysicalVolume(G4String LogicalName);
 
 		//Functions used through out class
 		G4Material* FindMaterial(G4String MaterialName);
@@ -72,8 +76,11 @@ class TargetConstruction
 		bool GetBooleanOp(G4int n){return BooleanOp[n];}
 
 		//Functions to do with setting the offset of rotation
+		void SetFullRotationAngle(G4double value){FullRotationAngle_Cmd = value;}
+
 		void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 		G4double GetOffSetRadius(){return OffSetRadius_Cmd;}
+
 		void SetCentrePosition(G4ThreeVector value){Centre_Cmd = value;}
 
 		//Get and set the total number of images being used
@@ -110,6 +117,7 @@ class TargetConstruction
 		std::vector<G4ThreeVector> StartingPositions;
 
 		//Data variables
+		G4double FullRotationAngle_Cmd;
 		G4double OffSetRadius_Cmd;
 		G4ThreeVector Centre_Cmd;
 		G4int nImage;

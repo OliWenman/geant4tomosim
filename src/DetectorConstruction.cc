@@ -154,6 +154,13 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 							       "PhantomContainer");
 
 	//Create a physical volume for the phantom container
+
+	//Updates the rotation of the object
+	//G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+	//RotateObjectAngle->rotateX(90*deg);
+	//RotateObjectAngle->rotateY(0);
+	//RotateObjectAngle->rotateZ(0);
+
 	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
             						      G4ThreeVector(DetectorPosX,0,0),                   // translation
            						      container_logic,            // logical volume

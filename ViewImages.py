@@ -2,6 +2,7 @@
 #from matplotlib import cm
 #from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
+from scipy.ndimage import rotate
 import numpy as np
 import os
 from matplotlib import pyplot as plt
@@ -15,6 +16,7 @@ for Number in range(1,len(onlyfiles)+1):
 	Image = 'Image' + str(Number) + '.txt'
 	LoadImage = Filepath + Image
 	matrix = np.loadtxt(LoadImage, dtype=int)
+	RotatedMatrix = rotate(matrix, 90)
 
 	fig = plt.figure()
 	plt.imshow(matrix, cmap="Greys")

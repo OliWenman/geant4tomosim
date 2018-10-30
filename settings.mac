@@ -5,10 +5,6 @@
 /physics/EM/ComptonScattering true	
 /physics/EM/RayleighScattering true
 /physics/EM/Fluorescence true
-	   
-#1540219641 seed that shows warning
-#1540220780
-#1540221532
 
 #Seed settings 
 /run/seed 0		#(For the seed, 0 is random, input own number for your own seed)
@@ -21,7 +17,7 @@
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
 /data/NumberOfImages 1		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 5000	#(Choose the number of photons to be fired at the target)
+/data/NumberOfPhotons 500000000	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
@@ -36,7 +32,7 @@
 /detector/size 1 0.9765625 0.9722 um			#(Set the detector dimensions)
 /detector/numberY 2560			#(Set the number of detectors along the Y direction)
 /detector/numberZ 2160    			#(Set the number of detectors along the z direction)
-#/detector/size 0.1 0.1 0.1 mm	
+#/detector/size 0.01 0.01 0.01 mm	
 #/detector/numberY 25
 #/detector/numberZ 21
 /detector/material G4_Galactic	#(Set the material of the detectors)

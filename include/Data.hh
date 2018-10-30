@@ -37,27 +37,19 @@ class Data
 		//std::vector<int> GetHitData(){ return HitDataMatrix;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
-		G4int GetNumberRows(){return rows;}
-		G4int GetNumberColumns(){return columns;}
-
-		G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages_Cmd;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4bool GetEnergyDataOption(){return EnergyDataCmd;}
 		G4double GetMaxEnergy(){return MaxE;}
 
-		G4bool GetTextFileCmd(){return TextFileCmd;}
-		G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
-
 		//Set Methods
-		//void SetHitData(std::vector<int> UpdatedData){HitDataMatrix = UpdatedData;}
+		//void SetHitData(std::vector<int> UpdatedData){HitDataArray = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
 
-		void SetCurrentImage(G4int value){CurrentImage = value;}
 		void SetNoImages(G4int value){NoImages_Cmd = value;}
 		
 		void SetNoBins(G4int value){NoBins_Cmd = value;}
@@ -71,7 +63,7 @@ class Data
 		DataMessenger* dataMessenger;
 
 		//Data members
-		//std::vector<int> HitDataMatrix;
+		//std::vector<int> HitDataArray;
 		std::vector<std::vector<G4int> > EnergyMatrix;
 
 		int* HitDataArray;
@@ -79,7 +71,7 @@ class Data
 		G4int rows;
 		G4int columns;	
 
-		G4int CurrentImage;
+		G4int nImage;
 
 		G4bool TextFileCmd;
 		G4bool HDF5FileCmd;

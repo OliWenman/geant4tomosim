@@ -19,22 +19,22 @@ void EventAction::EndOfEventAction(const G4Event* event)
   	G4int n_trajectories = 0;
   	
 	if (trajectoryContainer) 
-		n_trajectories = trajectoryContainer->entries();*/
+		n_trajectories = trajectoryContainer->entries();
 
   	// periodic printing
 
-	/*if ( verboseLevel > 0 ) 
+	if ( verboseLevel > 0 ) 
 	{ 
   		G4int eventID = event->GetEventID();
     		G4cout << G4endl <<"Event: " << eventID  << G4endl ;
-	}*/
+	}
 
 	//G4Step* aStep;
 	//G4StepPoint* preStepPoint = aStep -> GetPreStepPoint();
 	//G4TouchableHistory* theTouchable = (G4TouchableHistory*)(preStepPoint -> GetTouchable());
 	//G4int copyNo = theTouchable -> GetVolume() -> GetCopyNo();
 
-    	/*if ( trajectoryContainer ) 
+    	if ( trajectoryContainer ) 
 	{
       		G4cout << G4endl
 		       << "==============================================================="

@@ -1,4 +1,5 @@
 /Target/CheckAllOverlaps false
+/Target/TotalRotationAngle 180 deg
 
 /Target/OffSet/Radius 0.0 mm			
 /Target/OffSet/Centre 0.0 0.0 0.0 mm
@@ -13,17 +14,17 @@
 #/Target/Rotation 0.2 0.2 0.0 deg
 #/Target/Material/Database G4_Al				
 
-#/Target/Sphere/Dimensions 0.45 0.5 mm 0 180 0 180 deg 
-#/Target/Position -0.3 0.1 0.0 mm
+#/Target/Sphere/Dimensions 0.0 0.3 mm 0 360 0 360 deg 
+#/Target/Position -0.0 0.1 0.0 mm
 #/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Pb
+#/Target/Material/Database G4_Al
 
 #/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 180 deg 
-#/Target/Position -0.8 -0.9 0.0 mm
+#/Target/Position -0.0 -0.9 0.0 mm
 #/Target/Rotation 0.0 0.0 0.0 deg
 #/Target/Material/Database G4_Pb	
 
-#/Target/HollowCube/Dimensions 0.2 0.2 0.2 0.1 0.1 0.15 mm 
-#/Target/Position -1.0 -0.5 -0.5 mm
+#/Target/HollowCube/Dimensions 0.2 0.2 0.2 0.05 0.05 0.05 mm 
+#/Target/Position -0.0 -0.2 -0.0 mm
 #/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Pb	
+#/Target/Material/Database G4_Si	

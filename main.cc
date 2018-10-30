@@ -64,14 +64,8 @@ void CompletionTime(double LoopTimer, int Image, int NoImages)
 
 void SaveDataToFile(G4int Image, Data* data)
 {
-	//Write data to file if command is turned on
-	if (data -> GetTextFileCmd() == true)
-		{data -> WriteToTextFile();}
-	else if(data -> GetHDF5FileCmd() == true)
-		{data -> WriteToHDF5();}
-	else 
-		{G4cout << G4endl << "The data from the simulation was not saved!" << G4endl;}
-
+	data -> WriteToTextFile();
+	data -> WriteToHDF5();
 }
 
 //Function to correctly input the correct number of particles if it is over the limit 
@@ -177,9 +171,10 @@ int main(int argc,char** argv)
 
 	//Find the total number of particles and convert to a number
 	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
+	G4cout << G4endl << "Number of projections being processed is " << TotalImages;
 	G4cout << G4endl << "Number of photons per image is " << TotalParticles;
-	G4cout << G4endl << "Number of detectors is " << DC -> GetNoDetectorsY() << " x " << DC->GetNoDetectorsZ();
-	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC->GetNoDetectorsZ()) << G4endl; 
+	G4cout << G4endl << "Number of detectors is " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ();
+	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl; 
 
 	//Start the simulation timer
 	G4Timer FullTime;
@@ -190,10 +185,6 @@ int main(int argc,char** argv)
 		//Start internal looptimer to update the estimated time for completion
 		G4Timer LoopTimer;
 		LoopTimer.Start();
-
-		//Let other clases know what the current image is 
-		data -> SetCurrentImage(Image);
-		input ->SetCurrentImage(Image);
 		
 		G4cout << G4endl << "================================================================================"
 		       << G4endl << "                           PROCESSING IMAGE " <<  Image+1

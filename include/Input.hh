@@ -23,30 +23,30 @@ class Input
 		void WriteToTextFile();
 
 		//Get Methods
-		inline int GetNumberRows(){return rows;}
-		inline int GetNumberColumns(){return columns;}
-		G4String GetDetectorMaterial(){return DetectorMaterial;}
-		G4ThreeVector GetDetectorDimensions(){return DetectorDimensions;}
-		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
+		//inline int GetNumberRows(){return rows;}
+		//inline int GetNumberColumns(){return columns;}
+		//G4String GetDetectorMaterial(){return DetectorMaterial;}
+		//G4ThreeVector GetDetectorDimensions(){return DetectorDimensions;}
+		//G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
-		G4int GetNoBins(){return NoBins_Cmd;}
+		//G4int GetNoBins(){return NoBins_Cmd;}
 		G4bool GetEnergyDataOption(){return EnergyDataCmd;}
-		G4double GetMaxEnergy(){return MaxE;}
-		G4double GetBeamWidth(){return BeamWidth;}
-		G4double GetBeamHeight(){return BeamHeight;}
-		G4double GetBeamLength(){return BeamLength;}
+		//G4double GetMaxEnergy(){return MaxE;}
+		//G4double GetBeamWidth(){return BeamWidth;}
+		//G4double GetBeamHeight(){return BeamHeight;}
+		//G4double GetBeamLength(){return BeamLength;}
 
-		G4bool GetVisualization(){return Visualization_Cmd;}
-		G4String GetPhysicsUsed(){return PhysicsUsed;}
+		//G4bool GetVisualization(){return Visualization_Cmd;}
+		//G4String GetPhysicsUsed(){return PhysicsUsed;}
 		G4int GetSeedOption(){return seedCmd;}
-		G4double GetSimulationTime(){return SimulationTime;}
+		//G4double GetSimulationTime(){return SimulationTime;}
 
 		inline G4int GetCurrentImage(){return CurrentImage;}
 		G4int GetNoImages(){return NoImages_Cmd;}
 		G4String GetNoPhotons(){return NoPhotons_Cmd;}
 
-		G4bool GetTextFileCmd(){return TextFileCmd;}
-		G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
+		//G4bool GetTextFileCmd(){return TextFileCmd;}
+		//G4bool GetHDF5FileCmd(){return HDF5FileCmd;}
 
 		//Set Methods
 		void SetNumberRows(int value){rows = value;}

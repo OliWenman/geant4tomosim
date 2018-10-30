@@ -147,7 +147,6 @@ void PhysicsList::ConstructEM()
 					G4cout << G4endl << "- Rayleigh scattering";
 					PhysicProcesses.push_back ("Rayleigh scattering");
 				}
-
 			}
 			else
 			{
