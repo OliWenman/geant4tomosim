@@ -37,6 +37,8 @@ TargetConstruction::TargetConstruction()
 	
 	TCMessenger = new TargetConstructionMessenger(this);
 	nImage = 0;
+	MasterVolume = 0;
+	MasterCheck = false;
 	SubtractSolidCounter = 0;
 }
 
@@ -48,46 +50,50 @@ TargetConstruction::~TargetConstruction()
 
 void TargetConstruction::Construct(G4LogicalVolume* World)
 {
+	//Set the Starting positions (only once)
 	if (nImage == 0)
 		{StartingPositions = Positions;}
 
+	//Loop through the number of objects there are to be created
 	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
 	{
 		G4String StringNumber = std::to_string(nObject);
-		if(TypeOfObjects[nObject] == "Cube")
-		{	Box(nObject, World);
-			AddLogicalVolume(nObject,"Cube"+StringNumber, Materials[nObject]);
-			AddPhysicalVolume(nObject,"Cube"+StringNumber, World);
-		}
-		else if(TypeOfObjects[nObject] == "HollowCube")
-		{	HollowBox(nObject, World);
-			AddLogicalVolume(nObject,"HollowCube"+StringNumber, Materials[nObject]);
-			AddPhysicalVolume(nObject,"HollowCube"+StringNumber, World);
+
+		//Create the dimensions of the object and assign its logic volume (if it has one) only once depending on the shape it is
+		if (nImage == 0)
+		{
+			if(TypeOfObjects[nObject] == "Cube")
+				{Box(nObject);}
+
+			else if(TypeOfObjects[nObject] == "HollowCube")
+				{HollowBox(nObject);}
+
+			else if(TypeOfObjects[nObject] == "Sphere")
+				{Sphere(nObject);}
+
+			else if(TypeOfObjects[nObject] == "Cylinder")
+				{Cylinder(nObject);} 
+
+			else if(TypeOfObjects[nObject] == "SubtractSolid")
+				{SubtractSolid(nObject);}
+			else
+				{G4cout << G4endl << "Wrong TypesOfObjects" << G4endl; exit(-1);}
+
+			//Add its logical volume to that object
+			AddLogicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, Materials[nObject]);
 		}
 
-		else if(TypeOfObjects[nObject] == "Sphere")
-		{	Sphere(nObject, World);
-			AddLogicalVolume(nObject,"Sphere"+StringNumber, Materials[nObject]);
-			AddPhysicalVolume(nObject,"Sphere"+StringNumber, World);
-		}
-		else if(TypeOfObjects[nObject] == "Cylinder")
-		{	Cylinder(nObject, World);
-			AddLogicalVolume(nObject,"Cylinder"+StringNumber, Materials[nObject]);
-			AddPhysicalVolume(nObject,"Cylinder"+StringNumber, World);
-		} 
-		else if(TypeOfObjects[nObject] == "SubtractSolid")
-		{	SubtractSolid(nObject, World);
-			AddLogicalVolume(nObject,"SubtractSolid"+StringNumber, Materials[nObject]);
-			AddPhysicalVolume(nObject,"SubtractSolid"+StringNumber, World);
-		}
+		//Place the object in the world volume for each image
+		AddPhysicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, World);
 	} 
 
+	//Update the image counter
 	++nImage;
 
 	G4cout << G4endl << "The target has been created succesfully " << G4endl;  	
 }
 
-void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+void TargetConstruction::Box(G4int ObjectNumber)
 {
 	//Convert the ObjectNumber to a string
 	G4String StringNumber = std::to_string(ObjectNumber);
@@ -99,9 +105,11 @@ void TargetConstruction::Box(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 
 	//Create a G4VSolid of the box
 	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x()/2., TargetSize.y()/2., TargetSize.z()/2.);
+
+	G4cout << G4endl << "Created solid: Cube"+StringNumber << G4endl;
 }
 
-void TargetConstruction::HollowBox(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+void TargetConstruction::HollowBox(G4int ObjectNumber)
 {
 	//Convert the ObjectNumber to a string
 	G4String StringNumber = std::to_string(ObjectNumber);
@@ -131,9 +139,11 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4LogicalVolume* MotherBo
 	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
 							       outerBox, 
 							       innerBox);
+
+	G4cout << G4endl << "Created solid: HollowCube"+StringNumber << G4endl;
 }
 
-void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+void TargetConstruction::Cylinder(G4int ObjectNumber)
 {
 	//Convert the ObjectNumber to a string
 	G4String StringNumber = std::to_string(ObjectNumber);
@@ -152,9 +162,11 @@ void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox
                   		 	hz,
                   		 	startAngle,
                   		 	spanningAngle);
+
+	G4cout << G4endl << "Created solid: Cylinder"+StringNumber << G4endl;
 }
 
-void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+void TargetConstruction::Sphere(G4int ObjectNumber)
 {
 	//Convert the ObjectNumber to a string
 	G4String StringNumber = std::to_string(ObjectNumber);
@@ -175,12 +187,14 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 				     	endPhi,
 				     	startingTheta,
 				     	endTheta);
+
+	G4cout << G4endl << "Created solid: Sphere"+StringNumber << G4endl;
 }
 
-void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4LogicalVolume* MotherBox)
+void TargetConstruction::SubtractSolid(G4int ObjectNumber)
 {
 	//From the string, be able to take the needed paramenters out as seperate variables
-	G4Tokenizer next(SubtractObject[SubtractObject.size()-1]);
+	G4Tokenizer next(SubtractObject[SubtractSolidCounter]);
 
 	//Names of the two objects being used
 	G4String OuterObject = next();
@@ -219,6 +233,9 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4LogicalVolume* Moth
 							      InnerSolid, 
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
+
+	G4cout << G4endl << "Created solid: SubtractSolid"+std::to_string(ObjectNumber) << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName() << G4endl;
+	++SubtractSolidCounter;
 }
 
 void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName, G4String Material)
@@ -229,6 +246,8 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		//Finds the right G4VSolid
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
+
+		G4cout << G4endl << "Created logic volume: " << Solid -> GetName() << G4endl;
 	}
 }
 
@@ -237,6 +256,12 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 	//If its logic volume value is true, add its physical volume
 	if (LogicVolumeArray[ObjectNumber] == true)
 	{
+		if (MasterCheck == false)
+		{
+			MasterVolume = ObjectNumber;
+			MasterCheck = true;
+		}
+
 		//Finds the right logic volume
 		G4LogicalVolume* Object = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+Name, true);
 
@@ -279,16 +304,13 @@ G4Material* TargetConstruction::FindMaterial(G4String MaterialName)
 	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
 }
 
-G4double TargetConstruction::RotateObject()
-	{return (FullRotationAngle_Cmd/NoImages)*nImage;}
-
 G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVector CurrentPosition, G4double Radius, G4double Angle)
 {
-	G4ThreeVector Start = StartingPositions[0];
+	G4ThreeVector Start = StartingPositions[MasterVolume];
 	G4double intialY = Start.y();
 
 	//If the object number is 0 (master), it rotates around centre with radius
-	if (ObjectNumber == 0)
+	if (ObjectNumber == MasterVolume)
 	{
 		if (NoImages > 1 && Radius != 0)
 		{
@@ -305,10 +327,8 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 	//If object number is greater than 0, it will rotate around the master volume(0)
 	else 
 	{
-		G4double NewX = Positions[0].x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());
-		G4double NewZ = Positions[0].z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
- 
-		//SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,intialY,NewZ));
+		G4double NewX = Positions[MasterVolume].x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());
+		G4double NewZ = Positions[MasterVolume].z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
 
 		return G4ThreeVector(NewX, StartingPositions[ObjectNumber].y() ,NewZ);
 	}

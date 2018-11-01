@@ -35,3 +35,10 @@
 /Target/Position 0.0 0.0 0.0 mm		
 /Target/Rotation 0.0 0.0 0.0 deg
 /Target/Material/Database G4_Al
+
+/Target/Cube/Dimensions 0.2 0.7 0.2 mm
+/Target/Cylinder/Dimensions 0.2 0.25 0.7 mm 0 360 deg 
+/Target/SubtractSolid Cylinder4 Cube3 0.0 0.0 0.0 mm 0.0 0.0 0.0 deg	
+/Target/Position 0.0 1.0 0.0 mm		
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Al

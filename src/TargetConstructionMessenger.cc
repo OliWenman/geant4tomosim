@@ -112,6 +112,7 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete SphereDimensions_Cmd;
 	delete CylinderDimensions_Cmd;
 	delete HollowCubeDimensions_Cmd;
+	delete SubtractionSolid_Cmd;
 
 	delete TargetPosition_Cmd;
 	delete TargetRotation_Cmd;
@@ -125,6 +126,19 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete Centre_Cmd;
 
 	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
+}
+
+void TargetConstructionMessenger::AppendVectors(G4String ObjectName, std::vector<double> Array)
+{
+	//Append to all needed vectors to make them the same length. Fill as empty until filled with a variable
+	TC -> AddDimensions(Array);
+	TC -> AddTypeOfObjects(ObjectName);
+	TC -> AddLogicVolumeArray(false);
+	TC -> AddMaterial("EMPTY");
+	TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+	TC -> AddVectorPosition(G4ThreeVector(0,0,0));
+
+	++ObjectCounter;
 }
 
 void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -159,14 +173,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
 		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
-		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Sphere");// + std::to_string(ObjectCounter));	
-		TC -> AddLogicVolumeArray(false);
-		TC -> AddMaterial("NULL");
-		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
-		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
-
-		++ObjectCounter;
+		AppendVectors("Sphere", Array);
 	}
 	else if(command == CylinderDimensions_Cmd)
 	{
@@ -197,14 +204,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
 		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
-		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cylinder");// + std::to_string(ObjectCounter));	
-		TC -> AddLogicVolumeArray(false);
-		TC -> AddMaterial("NULL");
-		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
-		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
-
-		++ObjectCounter;
+		AppendVectors("Cylinder", Array);
 	}
 	else if(command == HollowCubeDimensions_Cmd)
 	{
@@ -212,13 +212,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4Tokenizer next(newValue);
 		
 		//Define each variable with in the string for length
-		G4double outerX = std::stod(next())/2;
-		G4double outerY = std::stod(next())/2;
-		G4double outerZ = std::stod(next())/2;
+		G4double outerX = std::stod(next());
+		G4double outerY = std::stod(next());
+		G4double outerZ = std::stod(next());
 
-		G4double innerX = std::stod(next())/2;
-		G4double innerY = std::stod(next())/2;
-		G4double innerZ = std::stod(next())/2;
+		G4double innerX = std::stod(next());
+		G4double innerY = std::stod(next());
+		G4double innerZ = std::stod(next());
 
 		G4String Unit = next();
 
@@ -235,14 +235,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		std::vector<G4double> Array = {outerX, outerY, outerZ, innerX, innerY, innerZ};
 		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
-		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("HollowCube");	
-		TC -> AddLogicVolumeArray(false);
-		TC -> AddMaterial("NULL");
-		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
-		TC -> AddVectorPosition(G4ThreeVector(0,0,0));		
-
-		++ObjectCounter;
+		AppendVectors("HollowCube", Array);
 	}
 	else if(command == CubeDimensions_Cmd)
 	{
@@ -251,28 +244,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		std::vector<G4double> Array = {Dimensions.x(), Dimensions.y(), Dimensions.z()};
 
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
-		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cube");
-		TC -> AddLogicVolumeArray(false);
-		TC -> AddMaterial("NULL");
-		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
-		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
-
-		G4cout << "TargetConstruction -> AddCubeDimensions command detected "<< G4endl;
-
-		++ObjectCounter;
+		AppendVectors("Cube", Array);
 	}
 	else if(command == SubtractionSolid_Cmd)
 	{
 		TC -> AddSubtractObject(newValue);
-		std::vector<G4double> Array; TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("SubtractSolid");
-		TC -> AddLogicVolumeArray(false);
-		TC -> AddMaterial("NULL");
-		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
-		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
-
-		++ObjectCounter;
+		std::vector<G4double> Array; 
+		AppendVectors("SubtractSolid", Array);
 	}
 	else if(command == TargetPosition_Cmd)
 	{

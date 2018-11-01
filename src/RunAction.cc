@@ -49,13 +49,13 @@ void RunAction::EndOfRunAction(const G4Run* aRun)
 	if(limit - TotalParticles  > 0)
 	{	
 		//Outputs how much of the simulation is complete
-		G4cout << G4endl << Progress << "%\ is complete " << G4endl;
+		G4cout << G4endl << Progress << "%\ complete " << G4endl;
 	}
 	else
 	{	
 		//Equation to work out how much of the simulation is complete if it has to do another run for the remaining number of photons
 		Progress = Progress * (TotalParticles - limit*(NumberOfLoops - loop+1)/TotalParticles);
-		G4cout << G4endl << Progress << "%\ is complete " << G4endl;
+		G4cout << G4endl << Progress << "%\ complete " << G4endl;
 
 		//If less then 100% complete, output preparing to do another run of the same image
 		if (Progress < 100)

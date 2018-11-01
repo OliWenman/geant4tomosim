@@ -27,7 +27,10 @@ class TargetConstructionMessenger: public G4UImessenger
 		//Base class method
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 
+		//Own methods
 		double GetUnit(G4String Unit){return mapOfUnits[Unit];}
+
+		void AppendVectors(G4String ObjectName, std::vector<double> Array);
 		
 	private:		
 		//Pointer to the TargetConstruction class

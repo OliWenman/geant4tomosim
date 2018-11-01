@@ -29,18 +29,18 @@ class TargetConstruction
 
 		//Own class methods
 		//Functions for creating different shaped objects
-		void Box(G4int ObjectNumber, G4LogicalVolume* logicWorld);
-		void HollowBox(G4int ObjectNumber, G4LogicalVolume* logicWorld);
-		void Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox);
-		void Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox);
-		void SubtractSolid(G4int ObjectNumber, G4LogicalVolume* MotherBox);
+		void Box(G4int ObjectNumber);
+		void HollowBox(G4int ObjectNumber);
+		void Cylinder(G4int ObjectNumber);
+		void Sphere(G4int ObjectNumber);
+		void SubtractSolid(G4int ObjectNumber);
 
 		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);
 		void AddPhysicalVolume(int, G4String Name, G4LogicalVolume* MotherBox);
 
 		//Functions used through out class
 		G4Material* FindMaterial(G4String MaterialName);
-		G4double RotateObject();
+		G4double RotateObject(){return (FullRotationAngle_Cmd/NoImages)*nImage;}
 		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
 		void Visualization(G4LogicalVolume*, G4Colour);
 
@@ -123,6 +123,9 @@ class TargetConstruction
 		G4double FullRotationAngle_Cmd;
 		G4double OffSetRadius_Cmd;
 		G4ThreeVector Centre_Cmd;
+
+		G4int MasterVolume;
+		G4bool MasterCheck;
 
 		G4int nImage;
 		G4int NoImages;
