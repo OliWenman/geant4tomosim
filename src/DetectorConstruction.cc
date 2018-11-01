@@ -207,7 +207,7 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
 	//Visualization attributes
 	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
 	
-	G4cout << "The detectors have been created succesfully " << G4endl;
+	G4cout << G4endl <<"The detectors have been created succesfully " << G4endl;
 }
 
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
@@ -230,7 +230,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
   	if (!theSD) 
 	{
 		//If the sensitive detector hasn't already been created, create one
-      		G4cout << "Creating the Sensitive Detector"  << G4endl;
+      		G4cout << G4endl << "Creating the Sensitive Detector";
 	
 		if (GetVisualization() == true)
 		{
