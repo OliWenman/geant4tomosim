@@ -97,6 +97,9 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	mapOfUnits.insert(std::make_pair("mm",mm));
 	mapOfUnits.insert(std::make_pair("um",um));
 	mapOfUnits.insert(std::make_pair("nm",nm));
+
+	mapOfUnits.insert(std::make_pair("rad",rad));
+	mapOfUnits.insert(std::make_pair("deg",deg));
 }
 
 TargetConstructionMessenger::~TargetConstructionMessenger()
@@ -122,11 +125,6 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
 }
 
-G4double SetUnit(G4double Number, G4String Unit)
-{
-	
-}
-
 void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
 	if(command == SphereDimensions_Cmd)
@@ -139,28 +137,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double outerRadius = std::stod(next());
 		G4String RadiusUnit = next();
 
-		//Assign them the correct unit
-		if( RadiusUnit == "mm")
-		{
-			innerRadius = innerRadius*mm;
-			outerRadius = outerRadius*mm;
-		}
-		else if( RadiusUnit == "cm")
-		{
-			innerRadius = innerRadius*cm;
-			outerRadius = outerRadius*cm;
-		}
-		else if ( RadiusUnit == "m")
-		{
-			innerRadius = innerRadius*m;
-			outerRadius = outerRadius*m;
-		}
-		else 
-		{
-			G4cout << G4endl << "***** INVALID INPUT </Target/Cube/Dimensions>*****" <<
-			G4endl << "***** Batch is interrupted!! *****" << G4endl;
-			exit(1);
-		}
+		innerRadius = innerRadius*mapOfUnits[RadiusUnit];
+		outerRadius = outerRadius*mapOfUnits[RadiusUnit];
 
 		//Define each variable with in the string for angle
 		G4double StartingPhi = std::stod(next());
@@ -169,27 +147,10 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double EndTheta = std::stod(next());	
 		G4String AngleUnit = next();
 
-		//Assigen them the correct unit
-		if( AngleUnit == "deg")
-		{
-			StartingPhi = StartingPhi*deg;
-			EndPhi = EndPhi*deg;
-			StartingTheta = StartingTheta*deg;
-			EndTheta = EndTheta*deg;	
-		}
-		else if( AngleUnit == "rad")
-		{
-			StartingPhi = StartingPhi*rad;
-			EndPhi = EndPhi*rad;
-			StartingTheta = StartingTheta*rad;
-			EndTheta = EndTheta*rad;	
-		}
-		else
-		{
-			G4cout << G4endl << "***** INVALID INPUT </Target/Cube/Dimensions> *****" <<
-			G4endl << "***** Batch is interrupted!! *****" << G4endl;
-			exit(1);
-		}
+		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
+		EndPhi = EndPhi*mapOfUnits[AngleUnit];
+		StartingTheta = StartingTheta*mapOfUnits[AngleUnit];
+		EndTheta = EndTheta*mapOfUnits[AngleUnit];
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
@@ -212,58 +173,21 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Define each variable with in the string for length
 		G4double innerRadius = std::stod(next());
 		G4double outerRadius = std::stod(next());
-		G4double length = std::stod(next())/2;
+		G4double length = std::stod(next());
 		G4String RadiusUnit = next();
 
-		//Assign them the correct unit
-		if( RadiusUnit == "mm")
-		{
-			innerRadius = innerRadius*mm;
-			outerRadius = outerRadius*mm;
-			length = length*mm;
-		}
-		else if( RadiusUnit == "cm")
-		{
-			innerRadius = innerRadius*cm;
-			outerRadius = outerRadius*cm;
-			length = length*cm;
-		}
-		else if ( RadiusUnit == "m")
-		{
-			innerRadius = innerRadius*m;
-			outerRadius = outerRadius*m;
-			length = length*m;
-		}
-		else 
-		{
-			G4cout << G4endl << "***** INVALID INPUT </Target/Cylinder/Dimensions>*****" <<
-			G4endl << "***** Batch is interrupted!! *****" << G4endl;
-			exit(1);
-		}
-
+		innerRadius = innerRadius*mapOfUnits[RadiusUnit];
+		outerRadius = outerRadius*mapOfUnits[RadiusUnit];
+		length = length*mapOfUnits[RadiusUnit];
+		
 		//Define each variable with in the string for angle
 		G4double StartingPhi = std::stod(next());
 		G4double EndPhi = std::stod(next());
 		G4String AngleUnit = next();
 
-		//Assigen them the correct unit
-		if( AngleUnit == "deg")
-		{
-			StartingPhi = StartingPhi*deg;
-			EndPhi = EndPhi*deg;
-		}
-		else if( AngleUnit == "rad")
-		{
-			StartingPhi = StartingPhi*rad;
-			EndPhi = EndPhi*rad;
-		}
-		else
-		{
-			G4cout << G4endl << "***** INVALID INPUT </Target/Cylinder/Dimensions> *****" <<
-			G4endl << "***** Batch is interrupted!! *****" << G4endl;
-			exit(1);
-		}
-
+		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
+		EndPhi = EndPhi*mapOfUnits[AngleUnit];
+		
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
 		
@@ -294,49 +218,20 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4String Unit = next();
 
 		//Assign them the correct unit
-		if( Unit == "mm")
-		{
-			outerX = outerX*mm;
-			outerY = outerY*mm;
-			outerZ = outerZ*mm;
+		outerX = outerX*mapOfUnits[Unit];
+		outerY = outerY*mapOfUnits[Unit];
+		outerZ = outerZ*mapOfUnits[Unit];
 
-			innerX = innerX*mm;
-			innerY = innerY*mm;
-			innerZ = innerZ*mm;
-		}
-		else if( Unit == "cm")
-		{
-			outerX = outerX*cm;
-			outerY = outerY*cm;
-			outerZ = outerZ*cm;
-
-			innerX = innerX*cm;
-			innerY = innerY*cm;
-			innerZ = innerZ*cm;
-		}
-		else if ( Unit == "m")
-		{
-			outerX = outerX*m;
-			outerY = outerY*m;
-			outerZ = outerZ*m;
-
-			innerX = innerX*m;
-			innerY = innerY*m;
-			innerZ = innerZ*m;
-		}
-		else 
-		{
-			G4cout << G4endl << "***** INVALID INPUT </Target/HollowCube/Dimensions>*****" <<
-			G4endl << "***** Batch is interrupted!! *****" << G4endl;
-			exit(1);
-		}
+		innerX = innerX*mapOfUnits[Unit];
+		innerY = innerY*mapOfUnits[Unit];
+		innerZ = innerZ*mapOfUnits[Unit];
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {outerX, outerY, outerZ, innerX, innerY, innerZ};
 		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("HollowCube");// + std::to_string(ObjectCounter));	
+		TC -> AddTypeOfObjects("HollowCube");	
 		TC -> AddLogicVolumeArray(false);
 		TC -> AddMaterial("NULL");
 		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
@@ -352,7 +247,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cube");// + std::to_string(ObjectCounter));	
+		TC -> AddTypeOfObjects("Cube");
 		TC -> AddLogicVolumeArray(false);
 		TC -> AddMaterial("NULL");
 		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
@@ -372,8 +267,10 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//int ObjInt1 = std::stoi(Object1.substr(Object1.find_first_of("0123456789")));
 		//int ObjInt2 = std::stoi(Object2.substr(Object2.find_first_of("0123456789")));
 
-		TC -> AddSubtractObject(newValue);
+		std::vector<G4double> Array;
 
+		TC -> AddSubtractObject(newValue);
+		TC -> AddDimensions(Array);
 		TC -> AddTypeOfObjects("SubtractSolid");
 		TC -> AddLogicVolumeArray(false);
 		TC -> AddMaterial("NULL");

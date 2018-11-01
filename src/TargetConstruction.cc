@@ -177,19 +177,38 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 
 void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 {
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	G4Tokenizer next(SubtractObject[SubtractObject.size()-1]);
 
 	G4String Object1 = next();
 	G4String Object2 = next();
 
-	//G4ThreeVector InnerPosition = G4ThreeVector(next(),next(),next());
+	G4double x = std::stod(next());
+	G4double y = std::stod(next());
+	G4double z = std::stod(next());
+	G4String LengthUnit = next();
+
+	x = x * TCMessenger -> GetUnit(LengthUnit);
+	y = y * TCMessenger -> GetUnit(LengthUnit);
+	z = z * TCMessenger -> GetUnit(LengthUnit);
+
+	G4double Rotx = std::stod(next());
+	G4double Roty = std::stod(next());
+	G4double Rotz = std::stod(next());
+	G4String AngleUnit = next();
+
+	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
+	RotateInnerObject -> rotateX(Rotx * TCMessenger -> GetUnit(AngleUnit));
+	RotateInnerObject -> rotateY(Rotz * TCMessenger -> GetUnit(AngleUnit));
+	RotateInnerObject -> rotateZ(Roty * TCMessenger -> GetUnit(AngleUnit));	
 
 	G4VSolid* Solid1 = G4SolidStore::GetInstance() -> GetSolid(Object1, true); 
 	G4VSolid* Solid2 = G4SolidStore::GetInstance() -> GetSolid(Object2, true); 
 
-	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + StringNumber, Solid1, Solid2, 0, G4ThreeVector(0,0,0));
+	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + std::to_string(ObjectNumber), 
+							      Solid1, 
+							      Solid2, 
+							      RotateInnerObject, 
+							      G4ThreeVector(x, y, z));
 }
 
 void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName, G4String Material)

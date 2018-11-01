@@ -26,7 +26,8 @@ class TargetConstructionMessenger: public G4UImessenger
 
 		//Base class method
 		void SetNewValue(G4UIcommand* command, G4String newValue);
-		G4double SetUnit(G4double Number, G4String Unit);
+
+		double GetUnit(G4String Unit){return mapOfUnits[Unit];}
 		
 	private:		
 		//Pointer to the TargetConstruction class
