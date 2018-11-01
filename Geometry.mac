@@ -4,27 +4,35 @@
 /Target/OffSet/Radius 0.0 mm			
 /Target/OffSet/Centre 0.0 0.0 0.0 mm
 
-/Target/Cube/Dimensions 0.5 0.5 0.5 mm
-/Target/Position 0.0 0.0 0.0 cm		
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Al		
+#/Target/Cube/Dimensions 0.5 0.3 0.5 mm
+#/Target/Position 0.0 0.0 0.0 mm		
+#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Material/Database G4_Al		
 
 #/Target/Cube/Dimensions 0.5 0.5 0.5 mm
 #/Target/Position 0.2 0.2 0.2 mm		
 #/Target/Rotation 0.2 0.2 0.0 deg
 #/Target/Material/Database G4_Al				
 
-#/Target/Sphere/Dimensions 0.0 0.3 mm 0 360 0 360 deg 
-#/Target/Position -0.0 0.1 0.0 mm
+#/Target/Sphere/Dimensions 0.25 0.3 mm 0 180 0 180 deg 
+#/Target/Position -0.0 0.15 0.0 mm
 #/Target/Rotation 0.0 0.0 0.0 deg
 #/Target/Material/Database G4_Al
 
 #/Target/Cylinder/Dimensions 0.1 0.15 0.4 mm 0 180 deg 
-#/Target/Position -0.0 -0.9 0.0 mm
-#/Target/Rotation 0.0 0.0 0.0 deg
+#/Target/Position -0.0 -0.15 0.0 mm
+#/Target/Rotation 0.0 0.0 180 deg
 #/Target/Material/Database G4_Pb	
 
 #/Target/HollowCube/Dimensions 0.2 0.2 0.2 0.05 0.05 0.05 mm 
 #/Target/Position -0.0 -0.2 -0.0 mm
 #/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Si	
+#/Target/Material/Database G4_Si
+
+
+/Target/Sphere/Dimensions 0.0 0.35 mm 0 360 0 360 deg 
+/Target/Cube/Dimensions 0.3 0.6 0.3 mm
+/Target/SubtractSolid Sphere0 Cube1 	
+/Target/Position 0.0 0.0 0.0 mm		
+/Target/Rotation 0.0 0.0 0.0 deg
+/Target/Material/Database G4_Al

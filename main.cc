@@ -6,7 +6,6 @@
 #include "Input.hh"
 #include "globals.hh"
 #include "SteppingAction.hh"
-//#include "MyExceptionHandler.hh"
 
 #include "G4Timer.hh"
 #include <ctime>
@@ -195,6 +194,7 @@ int main(int argc,char** argv)
 		
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager() -> ReinitializeGeometry();
+		
 		
 		SaveDataToFile(Image, data);
 

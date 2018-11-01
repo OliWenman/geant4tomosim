@@ -44,7 +44,7 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	CubeDimensions_Cmd -> SetDefaultValue(G4ThreeVector(0.3*mm, 0.3*mm, 0.0*mm));
 
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
-	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape and give it a new name");
+	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape");
 	
 	//Command to set the position of an object
 	TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/Position", this);
@@ -91,6 +91,12 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	Centre_Cmd -> SetUnitCandidates("um mm cm m ");
 	Centre_Cmd -> SetDefaultUnit("m");
 	Centre_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));
+
+	mapOfUnits.insert(std::make_pair("m",m));
+	mapOfUnits.insert(std::make_pair("cm",cm));
+	mapOfUnits.insert(std::make_pair("mm",mm));
+	mapOfUnits.insert(std::make_pair("um",um));
+	mapOfUnits.insert(std::make_pair("nm",nm));
 }
 
 TargetConstructionMessenger::~TargetConstructionMessenger()
@@ -114,6 +120,11 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete Centre_Cmd;
 
 	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
+}
+
+G4double SetUnit(G4double Number, G4String Unit)
+{
+	
 }
 
 void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -182,8 +193,15 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
+		
+		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Sphere" + std::to_string(ObjectCounter));
+		TC -> AddTypeOfObjects("Sphere");// + std::to_string(ObjectCounter));	
+		TC -> AddLogicVolumeArray(false);
+		TC -> AddMaterial("NULL");
+		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
+
 		++ObjectCounter;
 	}
 	else if(command == CylinderDimensions_Cmd)
@@ -248,8 +266,15 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
+		
+		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cylinder" + std::to_string(ObjectCounter));
+		TC -> AddTypeOfObjects("Cylinder");// + std::to_string(ObjectCounter));	
+		TC -> AddLogicVolumeArray(false);
+		TC -> AddMaterial("NULL");
+		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
+
 		++ObjectCounter;
 	}
 	else if(command == HollowCubeDimensions_Cmd)
@@ -308,8 +333,15 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {outerX, outerY, outerZ, innerX, innerY, innerZ};
+		
+		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("HollowCube" + std::to_string(ObjectCounter));
+		TC -> AddTypeOfObjects("HollowCube");// + std::to_string(ObjectCounter));	
+		TC -> AddLogicVolumeArray(false);
+		TC -> AddMaterial("NULL");
+		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+		TC -> AddVectorPosition(G4ThreeVector(0,0,0));		
+
 		++ObjectCounter;
 	}
 	else if(command == CubeDimensions_Cmd)
@@ -318,27 +350,54 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4ThreeVector Dimensions = CubeDimensions_Cmd -> GetNew3VectorValue(newValue);
 		std::vector<G4double> Array = {Dimensions.x(), Dimensions.y(), Dimensions.z()};
 
-		//Turn the variables into an array and append to the dimensions vector
+		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		TC -> AddDimensions(Array);
-		TC -> AddTypeOfObjects("Cube" + std::to_string(ObjectCounter));	
+		TC -> AddTypeOfObjects("Cube");// + std::to_string(ObjectCounter));	
+		TC -> AddLogicVolumeArray(false);
+		TC -> AddMaterial("NULL");
+		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
+
 		G4cout << "TargetConstruction -> AddCubeDimensions command detected "<< G4endl;
+
+		++ObjectCounter;
+	}
+	else if(command == SubtractionSolid_Cmd)
+	{
+		//G4Tokenizer next(newValue);
+		
+		//std::string Object1 = next();
+		//std::string Object2 = next();
+
+		//int ObjInt1 = std::stoi(Object1.substr(Object1.find_first_of("0123456789")));
+		//int ObjInt2 = std::stoi(Object2.substr(Object2.find_first_of("0123456789")));
+
+		TC -> AddSubtractObject(newValue);
+
+		TC -> AddTypeOfObjects("SubtractSolid");
+		TC -> AddLogicVolumeArray(false);
+		TC -> AddMaterial("NULL");
+		TC -> AddVectorRotation(G4ThreeVector(0,0,0));
+		TC -> AddVectorPosition(G4ThreeVector(0,0,0));
+
 		++ObjectCounter;
 	}
 	else if(command == TargetPosition_Cmd)
 	{
 		G4ThreeVector Position = TargetPosition_Cmd -> GetNew3VectorValue(newValue);
-		TC -> AddVectorPosition(Position);	
+		TC -> SetVectorPosition(ObjectCounter -1, Position);	
 		G4cout << "TargetConstruction -> AddTargetPosition command detected "<< G4endl;
 	}
 	else if(command == TargetRotation_Cmd)
 	{
 		G4ThreeVector Rotation = TargetRotation_Cmd -> GetNew3VectorValue(newValue);
-		TC -> AddVectorRotation(Rotation);	
+		TC -> SetVectorRotation(ObjectCounter -1, Rotation);	
 		G4cout << "TargetConstruction -> AddTargetRotation command detected "<< G4endl;
 	}
 	else if(command == TargetMaterial_Cmd )
 	{
-		TC -> AddMaterial(newValue);	
+		TC -> SetMaterial(ObjectCounter -1, newValue);
+		TC -> SetLogicVolumeArray(ObjectCounter - 1, true);
 		G4cout << "TargetConstruction -> AddTargetMaterial command detected "<< G4endl;
 	}
 	else if(command == BooleanOp_Cmd )

@@ -3,6 +3,7 @@
 
 #include "G4UImessenger.hh"
 #include "globals.hh"
+#include <map>
 
 class TargetConstruction;
 
@@ -25,6 +26,7 @@ class TargetConstructionMessenger: public G4UImessenger
 
 		//Base class method
 		void SetNewValue(G4UIcommand* command, G4String newValue);
+		G4double SetUnit(G4double Number, G4String Unit);
 		
 	private:		
 		//Pointer to the TargetConstruction class
@@ -55,6 +57,7 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWith3VectorAndUnit *Centre_Cmd;	
 
 		int ObjectCounter;
-			
+
+		std::map<std::string, double> mapOfUnits;		
 };
 #endif
