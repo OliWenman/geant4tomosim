@@ -82,6 +82,7 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	//Command to set the off set radius of an object when it rotates between projections
 	OffSetRadius_Cmd = new G4UIcmdWithADoubleAndUnit("/Target/OffSet/Radius", this);
 	OffSetRadius_Cmd -> SetGuidance("Set the off set of the poisition of the target with a radius");
+	OffSetRadius_Cmd -> SetUnitCategory("Length");
 	OffSetRadius_Cmd -> SetDefaultUnit("cm");
 	OffSetRadius_Cmd -> SetDefaultValue(0.5*cm);
 
@@ -92,6 +93,7 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	Centre_Cmd -> SetDefaultUnit("m");
 	Centre_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));
 
+	//Create a dictionary for units
 	mapOfUnits.insert(std::make_pair("m",m));
 	mapOfUnits.insert(std::make_pair("cm",cm));
 	mapOfUnits.insert(std::make_pair("mm",mm));
@@ -147,6 +149,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double EndTheta = std::stod(next());	
 		G4String AngleUnit = next();
 
+		//Multiply the values by the correct unit
 		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
 		EndPhi = EndPhi*mapOfUnits[AngleUnit];
 		StartingTheta = StartingTheta*mapOfUnits[AngleUnit];
@@ -176,6 +179,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double length = std::stod(next());
 		G4String RadiusUnit = next();
 
+		//Multiply the values by the correct unit
 		innerRadius = innerRadius*mapOfUnits[RadiusUnit];
 		outerRadius = outerRadius*mapOfUnits[RadiusUnit];
 		length = length*mapOfUnits[RadiusUnit];
@@ -185,6 +189,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double EndPhi = std::stod(next());
 		G4String AngleUnit = next();
 
+		//Multiply the values by the correct unit
 		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
 		EndPhi = EndPhi*mapOfUnits[AngleUnit];
 		
@@ -217,7 +222,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 
 		G4String Unit = next();
 
-		//Assign them the correct unit
+		//Multiply the values by the correct unit
 		outerX = outerX*mapOfUnits[Unit];
 		outerY = outerY*mapOfUnits[Unit];
 		outerZ = outerZ*mapOfUnits[Unit];
@@ -259,18 +264,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	}
 	else if(command == SubtractionSolid_Cmd)
 	{
-		//G4Tokenizer next(newValue);
-		
-		//std::string Object1 = next();
-		//std::string Object2 = next();
-
-		//int ObjInt1 = std::stoi(Object1.substr(Object1.find_first_of("0123456789")));
-		//int ObjInt2 = std::stoi(Object2.substr(Object2.find_first_of("0123456789")));
-
-		std::vector<G4double> Array;
-
 		TC -> AddSubtractObject(newValue);
-		TC -> AddDimensions(Array);
+		std::vector<G4double> Array; TC -> AddDimensions(Array);
 		TC -> AddTypeOfObjects("SubtractSolid");
 		TC -> AddLogicVolumeArray(false);
 		TC -> AddMaterial("NULL");

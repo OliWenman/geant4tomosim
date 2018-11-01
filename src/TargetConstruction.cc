@@ -128,7 +128,9 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4LogicalVolume* MotherBo
 				    outerBoxDimensions.z()-innerBoxDimensions.z());
 
 	//Subtract them from each other to get a hollow cube
-	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, outerBox, innerBox);
+	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
+							       outerBox, 
+							       innerBox);
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber, G4LogicalVolume* MotherBox)
@@ -177,36 +179,44 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 
 void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4LogicalVolume* MotherBox)
 {
+	//From the string, be able to take the needed paramenters out as seperate variables
 	G4Tokenizer next(SubtractObject[SubtractObject.size()-1]);
 
-	G4String Object1 = next();
-	G4String Object2 = next();
+	//Names of the two objects being used
+	G4String OuterObject = next();
+	G4String InnerObject= next();
 
+	//Find the positions of the inner object inside the string 
 	G4double x = std::stod(next());
 	G4double y = std::stod(next());
 	G4double z = std::stod(next());
 	G4String LengthUnit = next();
 
+	//Get the correct unit for the length using the dictionary created in the TCMessenger
 	x = x * TCMessenger -> GetUnit(LengthUnit);
 	y = y * TCMessenger -> GetUnit(LengthUnit);
 	z = z * TCMessenger -> GetUnit(LengthUnit);
 
+	//Find the rotation of the inner object insde the string
 	G4double Rotx = std::stod(next());
 	G4double Roty = std::stod(next());
 	G4double Rotz = std::stod(next());
 	G4String AngleUnit = next();
 
+	//Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
 	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
 	RotateInnerObject -> rotateX(Rotx * TCMessenger -> GetUnit(AngleUnit));
 	RotateInnerObject -> rotateY(Rotz * TCMessenger -> GetUnit(AngleUnit));
 	RotateInnerObject -> rotateZ(Roty * TCMessenger -> GetUnit(AngleUnit));	
 
-	G4VSolid* Solid1 = G4SolidStore::GetInstance() -> GetSolid(Object1, true); 
-	G4VSolid* Solid2 = G4SolidStore::GetInstance() -> GetSolid(Object2, true); 
+	//Find the correct solids with the name of the objects inputted
+	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(OuterObject, true); 
+	G4VSolid* InnerSolid = G4SolidStore::GetInstance() -> GetSolid(InnerObject, true); 
 
+	//Create the new solid from 
 	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + std::to_string(ObjectNumber), 
-							      Solid1, 
-							      Solid2, 
+							      OuterSolid, 
+							      InnerSolid, 
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
 }
