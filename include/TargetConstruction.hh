@@ -2,7 +2,6 @@
 #define TargetConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "G4UImessenger.hh"
 #include <vector>
 
 //My own classes 
@@ -33,6 +32,9 @@ class TargetConstruction
 		void HollowBox(G4int ObjectNumber);
 		void Cylinder(G4int ObjectNumber);
 		void Sphere(G4int ObjectNumber);
+		void Trapezoid(G4int ObjectNumber);
+		void Ellipsoid(G4int ObjectNumber);
+
 		void SubtractSolid(G4int ObjectNumber);
 
 		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);

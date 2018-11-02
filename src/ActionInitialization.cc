@@ -8,9 +8,6 @@
 #include "RunAction.hh"
 #include "EventAction.hh"
 #include "StackingAction.hh"
-#include "TrackingAction.hh"
-#include "SteppingAction.hh"
-
 					     
 ActionInitialization::ActionInitialization(Input* InputObject, DetectorConstruction* DC_Object, Data* DataObject):G4VUserActionInitialization() ,input(InputObject), DC(DC_Object), data(DataObject)
 { 

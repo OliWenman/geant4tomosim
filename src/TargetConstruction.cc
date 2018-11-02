@@ -9,6 +9,8 @@
 #include "G4Box.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4Sphere.hh"
+#include "G4Trd.hh"
+#include "G4Ellipsoid.hh"
 #include "G4SolidStore.hh"
 
 //Logical volume
@@ -80,6 +82,13 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 
 			else if(TypeOfObjects[nObject] == "SubtractSolid")
 				{SubtractSolid(nObject);}
+
+			else if(TypeOfObjects[nObject] == "Trapezoid") 
+				{Trapezoid(nObject);}
+
+			else if(TypeOfObjects[nObject] == "Ellipsoid")
+				{Ellipsoid(nObject);}
+
 			else
 				{G4cout << G4endl << "ERROR: Wrong TypesOfObjects String " << G4endl; exit(-1);}
 
@@ -195,6 +204,46 @@ void TargetConstruction::Sphere(G4int ObjectNumber)
 	G4cout << G4endl << "Created solid: Sphere"+StringNumber;
 }
 
+void TargetConstruction::Trapezoid(G4int ObjectNumber)
+{
+	//Convert the ObjectNumber to a string
+	G4String StringNumber = std::to_string(ObjectNumber);
+
+	G4double dx1 = Dimensions[ObjectNumber][0];
+        G4double dx2 = Dimensions[ObjectNumber][1];
+        G4double dy1 = Dimensions[ObjectNumber][2];
+        G4double dy2 = Dimensions[ObjectNumber][3];
+        G4double dz  = Dimensions[ObjectNumber][4];
+
+	G4Trd* Trapezoid = new G4Trd("Trapezoid" + StringNumber,
+				     dx1,
+          			     dx2,
+            			     dy1,
+            			     dy2,
+            			     dz);
+
+	G4cout << G4endl << "Created solid: Trapezoid"+StringNumber;
+}
+
+void TargetConstruction::Ellipsoid(G4int ObjectNumber)
+{
+	//Convert the ObjectNumber to a string
+	G4String StringNumber = std::to_string(ObjectNumber);
+
+	G4double pxSemiAxis = Dimensions[ObjectNumber][0];
+        G4double pySemiAxis = Dimensions[ObjectNumber][1];
+        G4double pzSemiAxis = Dimensions[ObjectNumber][2];
+        G4double pzBottomCut = Dimensions[ObjectNumber][3];
+        G4double pzTopCut = Dimensions[ObjectNumber][4];
+
+	G4Ellipsoid* Ellipsoid = new G4Ellipsoid("Ellipsoid"+StringNumber,
+                    				 pxSemiAxis,
+                    				 pySemiAxis,
+                    				 pzSemiAxis,
+                    				 pzBottomCut,
+                    				 pzTopCut);
+}
+
 void TargetConstruction::SubtractSolid(G4int ObjectNumber)
 {
 	//From the string, be able to take the needed paramenters out as seperate variables
@@ -254,7 +303,7 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
 
-		G4cout << G4endl << "Created logic volume: " << Solid -> GetName();
+		G4cout << G4endl << "Created logic volume: LV" << Solid -> GetName();
 	}
 }
 
@@ -302,6 +351,9 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 
 		//Let the runManager know the geometry has changed between runs
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
+
+		if(nImage == 0)
+			{G4cout << G4endl << "Created physical volume: phy" << Name;} 
 	}
 }
 
@@ -313,10 +365,7 @@ G4Material* TargetConstruction::FindMaterial(G4String MaterialName)
 
 G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVector CurrentPosition, G4double Radius, G4double Angle)
 {
-	G4ThreeVector Start = StartingPositions[MasterVolume];
-	G4double intialY = Start.y();
-
-	//If the object number is 0 (master), it rotates around centre with radius
+	//If the object number is the master, it rotates around centre with radius
 	if (ObjectNumber == MasterVolume)
 	{
 		if (TotalImages > 1 && Radius != 0)
@@ -324,14 +373,14 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 			G4double NewX = Centre_Cmd.x() + cos(Angle)*Radius;
 			G4double NewZ = Centre_Cmd.z() + sin(Angle)*Radius;
 
-			SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,Centre_Cmd.y()+intialY,NewZ));
+			SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,Centre_Cmd.y()+StartingPositions[ObjectNumber].y(),NewZ));
 
-			return G4ThreeVector(NewX, Centre_Cmd.y()+intialY ,NewZ);
+			return G4ThreeVector(NewX, Centre_Cmd.y()+StartingPositions[ObjectNumber].y() ,NewZ);
 		}
 		else 
 			{return Positions[ObjectNumber];}
 	}
-	//If object number is greater than 0, it will rotate around the master volume(0)
+	//If object number is greater than 0, it will rotate around the master volume
 	else 
 	{
 		G4double NewX = Positions[MasterVolume].x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());

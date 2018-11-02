@@ -39,13 +39,13 @@ class TargetConstructionMessenger: public G4UImessenger
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *TargetDirectory;
 
-		//Pointers to different variables
 		//Different shapes
 		G4UIcmdWith3VectorAndUnit *CubeDimensions_Cmd;
 		G4UIcmdWithAString *HollowCubeDimensions_Cmd;
 		G4UIcmdWithAString *SphereDimensions_Cmd;
 		G4UIcmdWithAString *CylinderDimensions_Cmd;
-
+		G4UIcmdWithAString *TrapezoidDimensions_Cmd;
+		G4UIcmdWithAString *EllipsoidDimensions_Cmd;
 		G4UIcmdWithAString *SubtractionSolid_Cmd;
 
 		//Object attributes
@@ -60,8 +60,10 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 		G4UIcmdWith3VectorAndUnit *Centre_Cmd;	
 
+		//Count the number of objects placed
 		int ObjectCounter;
 
+		//Dictionary for units
 		std::map<std::string, double> mapOfUnits;		
 };
 #endif

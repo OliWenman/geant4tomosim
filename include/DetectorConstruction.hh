@@ -2,7 +2,7 @@
 #define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "G4UImessenger.hh"
+#include "G4ThreeVector.hh"
 
 //My own classes
 class DetectorConstructionMessenger;

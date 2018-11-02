@@ -43,6 +43,12 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	CubeDimensions_Cmd -> SetDefaultUnit("mm");
 	CubeDimensions_Cmd -> SetDefaultValue(G4ThreeVector(0.3*mm, 0.3*mm, 0.0*mm));
 
+	TrapezoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Trapezoid/Dimensions", this);
+	TrapezoidDimensions_Cmd -> SetGuidance("Set the dimensions of a trapezoid you would like, dx1, dx2, dy1, dy2 and dz");
+
+	EllipsoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Ellipsoid/Dimensions", this);
+	EllipsoidDimensions_Cmd -> SetGuidance("Set the dimensions of a ellipsoid you would like, pxSemiAxis, pySemiAxis, pzSemiAxis, pzBottomCut and pzTopCut");
+
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
 	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape");
 	
@@ -113,6 +119,8 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete CylinderDimensions_Cmd;
 	delete HollowCubeDimensions_Cmd;
 	delete SubtractionSolid_Cmd;
+	delete TrapezoidDimensions_Cmd;
+	delete EllipsoidDimensions_Cmd;
 
 	delete TargetPosition_Cmd;
 	delete TargetRotation_Cmd;
@@ -246,6 +254,49 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		AppendVectors("Cube", Array);
 	}
+	else if(command == TrapezoidDimensions_Cmd)
+	{
+		G4Tokenizer next(newValue);
+		
+		G4double dx1 = std::stod(next());
+		G4double dx2 = std::stod(next());
+		G4double dy1 = std::stod(next());
+		G4double dy2 = std::stod(next());
+		G4double dz  = std::stod(next());
+		G4String Unit = next();
+
+		dx1 = dx1*mapOfUnits[Unit];
+		dx2 = dx2*mapOfUnits[Unit];
+		dy1 = dy1*mapOfUnits[Unit];
+		dy2 = dy2*mapOfUnits[Unit];
+		dz  = dz*mapOfUnits[Unit];
+		
+		std::vector<G4double> Array = {dx1, dx2, dy1, dy2, dz};
+
+		AppendVectors("Trapezoid", Array);	
+	}
+	else if(command ==  EllipsoidDimensions_Cmd)
+	{
+		G4Tokenizer next(newValue);
+
+		G4double pxSemiAxis = std::stod(next());
+                G4double pySemiAxis = std::stod(next());
+                G4double pzSemiAxis = std::stod(next());
+                G4double pzBottomCut = std::stod(next());
+                G4double pzTopCut = std::stod(next());
+		G4String Unit = next();
+
+		pxSemiAxis = pxSemiAxis * mapOfUnits[Unit];
+		pySemiAxis = pySemiAxis * mapOfUnits[Unit];
+		pzSemiAxis = pzSemiAxis * mapOfUnits[Unit];
+		pzBottomCut = pzBottomCut * mapOfUnits[Unit];
+		pzTopCut = pzTopCut * mapOfUnits[Unit];
+
+		std::vector<G4double> Array = {pxSemiAxis, pySemiAxis, pzSemiAxis, pzBottomCut, pzTopCut};
+	
+		AppendVectors("Ellipsoid", Array); 
+	}
+
 	else if(command == SubtractionSolid_Cmd)
 	{
 		TC -> AddSubtractObject(newValue);

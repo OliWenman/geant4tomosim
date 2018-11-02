@@ -2,9 +2,9 @@
 
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true	
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 
 #Seed settings 
 /run/seed 0		#(For the seed, 0 is random, input own number for your own seed)
@@ -17,7 +17,7 @@
 /data/TextFile true		#(Choose if you would like the data to be saved into a textfile)
 /data/HDF5File true
 /data/NumberOfImages 5		#(Choose the number of images you would like to have for the simulation. Rotates target by dTheta between each run. dTheta = 180*deg/NumberOfImages)
-/data/NumberOfPhotons 50	#(Choose the number of photons to be fired at the target)
+/data/NumberOfPhotons 10	#(Choose the number of photons to be fired at the target)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)
