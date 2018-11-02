@@ -152,15 +152,15 @@ int main(int argc,char** argv)
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		visManager -> Initialize();
-		UImanager -> ApplyCommand("/control/execute MyVis.mac");
-		
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
 		       << G4endl 
 		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
 	               << G4endl 
-		       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
+		       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl << G4endl;
+
+		visManager -> Initialize();
+		UImanager -> ApplyCommand("/control/execute MyVis.mac");
 	}
 	else 
 		{visManager = 0;}

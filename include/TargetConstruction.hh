@@ -2,21 +2,21 @@
 #define TargetConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
-#include "G4UserLimits.hh"
 #include "G4UImessenger.hh"
 #include <vector>
-#include "G4SystemOfUnits.hh"
-#include "G4Colour.hh"
-#include "G4Tokenizer.hh"
 
-class GVSolid;
-class G4VPhysicalVolume;
-class G4LogicalVolume;
+//My own classes 
 class TargetConstructionMessenger;
 class Data;
-class TrackerSD;
+
+//Solids, logic volume and physical volume for the geometry
+class GVSolid;
+class G4LogicalVolume;
+class G4VPhysicalVolume;
+
+//Materials and colour classes
 class G4Material;
+class G4Colour;
 
 class TargetConstruction
 {
@@ -40,7 +40,7 @@ class TargetConstruction
 
 		//Functions used through out class
 		G4Material* FindMaterial(G4String MaterialName);
-		G4double RotateObject(){return (FullRotationAngle_Cmd/NoImages)*nImage;}
+		G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
 		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
 		void Visualization(G4LogicalVolume*, G4Colour);
 
@@ -82,8 +82,8 @@ class TargetConstruction
 		void SetCentrePosition(G4ThreeVector value){Centre_Cmd = value;}
 
 		//Get and set the total number of images being used
-		void SetNoImages(G4int value){NoImages = value;}
-		G4int GetNoImages(){return NoImages;}
+		void SetTotalImages(G4int value){TotalImages = value;}
+		G4int GetTotalImages(){return TotalImages;}
 
 		void SetOverlapCheck(G4bool value){OverlapCheck_Cmd = value;}
 		G4bool GetOverlapCheck(){return OverlapCheck_Cmd;}
@@ -98,43 +98,33 @@ class TargetConstruction
 		//Vector of the different types of objects
 		std::vector<G4String> TypeOfObjects;
 
-		//Vector if object has logic volume or not
-		std::vector<bool> LogicVolumeArray;
-
-		//2D vector of the dimensions of the different objects
+		//Properties to do with the solid
 		std::vector<std::vector<G4double> > Dimensions;
+		std::vector<G4String> SubtractObject;
+		G4int SubtractSolidCounter;
 
-		//Vectors of G4ThreeVectors for position and rotation of the objects
+		//Properties to do with the logic volume
+		std::vector<bool> LogicVolumeArray;
+		std::vector<G4String> Materials;
+		G4bool VisualizationValue;
+
+		//Properties to do with the physical volume
+		std::vector<G4ThreeVector> StartingPositions;
 		std::vector<G4ThreeVector> Positions;	
 		std::vector<G4ThreeVector> Rotations;
-
-		//Vector of the string of the different types of material used in the objects
-		std::vector<G4String> Materials;
-
-		//Vector of the boolean operations for the different objects
 		std::vector<bool> BooleanOp;	
+		G4bool OverlapCheck_Cmd;
+		G4int MasterVolume;
+		G4bool MasterCheck;
 
-		//Vector of the starting positions of the objects
-		std::vector<G4ThreeVector> StartingPositions;
-
-		std::vector<G4String> SubtractObject;
-
-		//Data variables
+		//Commands to do with the rotation of the object between images
 		G4double FullRotationAngle_Cmd;
 		G4double OffSetRadius_Cmd;
 		G4ThreeVector Centre_Cmd;
 
-		G4int MasterVolume;
-		G4bool MasterCheck;
-
+		//Image counter and total number of images
 		G4int nImage;
-		G4int NoImages;
-
-		G4bool VisualizationValue;
-
-		G4bool OverlapCheck_Cmd;
-		
-		G4int SubtractSolidCounter;
+		G4int TotalImages;
 };
 
 #endif	

@@ -1,35 +1,39 @@
+//Own classes
 #include "Data.hh"
 #include "TargetConstruction.hh"
 #include "TargetConstructionMessenger.hh"
 
-#include <math.h>	//Needed for sin and cos
-#include <algorithm>    // std::replace
-
-#include "G4NistManager.hh"
-#include "G4SDManager.hh"
-#include "G4RunManager.hh"
-
+//Different shapes for solids
 #include "G4VSolid.hh"
 #include "G4Tubs.hh"
 #include "G4Box.hh"
 #include "G4SubtractionSolid.hh"
 #include "G4Sphere.hh"
-#include "G4Orb.hh"
-
-#include "G4PVPlacement.hh"
-#include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserLimits.hh"
-#include "G4RunManager.hh"
-#include "G4RotationMatrix.hh"
-#include "G4GeometryManager.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 
+//Logical volume
+#include "G4LogicalVolume.hh"
+#include "G4LogicalVolumeStore.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+
+//Physical volume
+#include "G4PVPlacement.hh"
+#include "G4RotationMatrix.hh"
+#include "G4PhysicalVolumeStore.hh"
+
+//Material database
+#include "G4NistManager.hh"
+
+//Units
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+
+//Update the geometery
+#include "G4RunManager.hh"
+
+//Seperate out variables from strings
+#include "G4Tokenizer.hh"
 
 TargetConstruction::TargetConstruction()
 {	
@@ -37,9 +41,9 @@ TargetConstruction::TargetConstruction()
 	
 	TCMessenger = new TargetConstructionMessenger(this);
 	nImage = 0;
+	SubtractSolidCounter = 0;
 	MasterVolume = 0;
 	MasterCheck = false;
-	SubtractSolidCounter = 0;
 }
 
 TargetConstruction::~TargetConstruction()
@@ -285,13 +289,13 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 
 		//Create the target physical volume
 		G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
-							 	 NewTargetPosition,    
-							  	 Object,           //its logical volume
-							  	 "phy"+Name,               //its name
-							  	 MotherBox,                     //its mother  volume
-							 	 false,                 //no boolean operation
-							 	 ObjectNumber,                     //copy number
-							 	 OverlapCheck_Cmd);		//overlaps checking      
+							 	  NewTargetPosition,    
+							  	  Object,           //its logical volume
+							  	  "phy"+Name,               //its name
+							  	  MotherBox,                     //its mother  volume
+							 	  false,                 //no boolean operation
+							 	  ObjectNumber,                     //copy number
+							 	  OverlapCheck_Cmd);		//overlaps checking      
 
 		//Visualization attributes
 		Visualization(Object, G4Colour::White());
@@ -315,7 +319,7 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 	//If the object number is 0 (master), it rotates around centre with radius
 	if (ObjectNumber == MasterVolume)
 	{
-		if (NoImages > 1 && Radius != 0)
+		if (TotalImages > 1 && Radius != 0)
 		{
 			G4double NewX = Centre_Cmd.x() + cos(Angle)*Radius;
 			G4double NewZ = Centre_Cmd.z() + sin(Angle)*Radius;

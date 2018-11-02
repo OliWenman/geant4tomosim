@@ -1,3 +1,4 @@
+//Own classes
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionMessenger.hh"
 #include "TrackerSD.hh"
@@ -6,34 +7,31 @@
 #include "Input.hh"
 #include "TargetConstruction.hh"
 
-#include <math.h>	//Needed for sin and cos
-
+//Material database
 #include "G4NistManager.hh"
+
+//SensitiveDetector manager
 #include "G4SDManager.hh"
-#include "G4RunManager.hh"
 
-#include "G4Tubs.hh"
+//Solid shapes
 #include "G4Box.hh"
-#include "G4SubtractionSolid.hh"
 
-#include "G4PVPlacement.hh"
-#include "G4PVParameterised.hh"
-#include "G4PhantomParameterisation.hh"
-//#include "G4VNestedParameterisation.hh"
-//#include "G4PVReplica.hh"
+//Logic volume
 #include "G4LogicalVolume.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4UnitsTable.hh"
-#include "G4UserLimits.hh"
-#include "G4RunManager.hh"
-#include "G4RotationMatrix.hh"
-#include "G4GeometryManager.hh"
-#include "G4PhysicalVolumeStore.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4SolidStore.hh"
-
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+
+//Physical volume
+#include "G4PVPlacement.hh"
+#include "G4RotationMatrix.hh"
+
+//Efficient geometry for the millions of detectors
+#include "G4PVParameterised.hh"
+#include "G4PhantomParameterisation.hh"
+
+//Geant4 units
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 
 DetectorConstruction::DetectorConstruction(Data* DataObject, Input* InputObject):G4VUserDetectorConstruction(), data(DataObject), input(InputObject)
 { 	
@@ -55,37 +53,41 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
-	//Tell the TargetConstruction class the needed variables only once
+	//Setup needed paramenters and variables only on the first image
 	if (nImage == 0)
 	{
-		TC -> SetNoImages(input->GetNoImages());
+		TC -> SetTotalImages(input->GetNoImages());
 		TC -> SetVisualization(Visualization_Cmd);
-	}
 
-	//Checks to see if the detectors are outside the world geometry and displays a warning message
-	if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
-	{
-		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
-		       << G4endl << "         WARNING: Detectors are outside world volume in Y direction. "
-		       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.y()*2, "Length")
-	               << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
-	}
+		//Checks to see if the detectors are outside the world geometry and displays a warning message
+		if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
+		{
+			G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
+			       << G4endl << "         WARNING: Detectors are outside world volume in Y direction. "
+		  	       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.y()*2, "Length")
+	              	       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
+		}
 
-	if (WorldSize_Cmd.z() < DetectorSize_Cmd.z()* GetNoDetectorsZ())
-	{	
-		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
-		       << G4endl << "         WARNING: Detectors are outside world volume in Z direction. "
-		       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.z()*2, "Length")
-	               << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
-	}
+		if (WorldSize_Cmd.z() < DetectorSize_Cmd.z()* GetNoDetectorsZ())
+		{	
+			G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
+		       	       << G4endl << "         WARNING: Detectors are outside world volume in Z direction. "
+		       	       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.z()*2, "Length")
+	                       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
+		}
 
-	//WORLD
-	//Create an instance of the world geometry
-	G4Box* solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
+		//Create an instance of the world geometry
+		solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
+
+		//Creates the dimensions for the detector
+		param = new G4PhantomParameterisation();
+		SolidDetectors();	
+	}
 
 	//Create an instance of the logical volume and find the material
-	G4Material* WorldMaterial = FindMaterial("G4_AIR");
-	G4LogicalVolume* logicWorld = new G4LogicalVolume(solidWorld, WorldMaterial, "World");
+	logicWorld = new G4LogicalVolume(solidWorld, FindMaterial("G4_AIR"), "World");
+	//Visualization attributes
+	Visualization(logicWorld, G4Colour::White());
 
 	//Create the world physical volume. The world is the only physical volume with no mother volume.
 	G4VPhysicalVolume* physWorld = new G4PVPlacement(0,            //no rotation
@@ -97,15 +99,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							 0,                     //copy number
 							 true);		//overlaps checking                     
 
-	//Visualization attributes
-	Visualization(logicWorld, G4Colour::White());
-
 	//Construct the target geometry
 	TC->Construct(logicWorld);
 
 	//Create the detectors
-	SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
+	//SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
 
+	//Creates the logic and physical volumes for the detectors
+	LVDetectors();
+	PVDetectors(logicWorld);
+	
 	++nImage;
 
 	//Return the world 
@@ -115,51 +118,72 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int nDetectorsY, G4int nDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
 {
-	//Create a pointer for the PhantomParameterisation
-	G4PhantomParameterisation* param = new G4PhantomParameterisation();
+	/*//Solid volume
 
-	//Setup the needed variables
-	G4double WorldSizeX = WorldSize_Cmd.x();
+	G4int NoDetectorsX = 1;
 
-	G4double DetectorPosX = WorldSizeX;
-	G4int nDetectorsX = 1;
-	G4double HalfDetectorSizeX = HalfDetectorSize.x();
-	G4double HalfDetectorSizeY = HalfDetectorSize.y();
-	G4double HalfDetectorSizeZ = HalfDetectorSize.z();
+	G4double HalfDetectorSizeX = DetectorSize_Cmd.x()/2;
+	G4double HalfDetectorSizeY = DetectorSize_Cmd.y()/2;
+	G4double HalfDetectorSizeZ = DetectorSize_Cmd.z()/2;
+
+	//Create the phantom container for the detectors to go into
+	G4Box* SolidContainer = new G4Box("PhantomContainer",
+					   NoDetectorsX*HalfDetectorSizeX,
+					   NoDetectorsY_Cmd*HalfDetectorSizeY, 
+					   NoDetectorsZ_Cmd*HalfDetectorSizeZ);
+
+	//Create the dimensiosn of the phantom boxes to go inside the container
+	G4Box* SolidPhantomBoxes = new G4Box("PhantomBox",
+					      HalfDetectorSizeX,
+					      HalfDetectorSizeY,
+					      HalfDetectorSizeZ);
+
+	param = new G4PhantomParameterisation();
 
 	//Voxel dimensions in the three dimensions
 	param->SetVoxelDimensions(HalfDetectorSizeX, HalfDetectorSizeY, HalfDetectorSizeZ);
 
 	//Number of voxels in the three dimensions
-	param->SetNoVoxel( nDetectorsX, nDetectorsY, nDetectorsZ );
+	param->SetNoVoxel(NoDetectorsX, NoDetectorsY_Cmd, NoDetectorsZ_Cmd);
+
+	//Assure that the voxels are completely filling the container volume
+	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
+                                        SolidContainer->GetYHalfLength(),
+                                        SolidContainer->GetZHalfLength());
+
+//----------------------------------------------------------------------
+
+	//Logic volume
+
+	G4Material* DetMaterial = FindMaterial(DetectorMaterial_Cmd);
+
+	//Creates the logical volume for the phantom container	
+	G4LogicalVolume* container_logic = new G4LogicalVolume(SolidContainer, 
+							       DetMaterial, 
+							       "LVPhantomContainer");
+
+	//The parameterised volume which uses this parameterisation is placed in the container logical volume
+	G4LogicalVolume* PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
+           						          DetMaterial,        // material is not relevant here...
+           						          "LVPhantomBox");
 
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
-	theMaterials.push_back(FindMaterial(Material));
+	theMaterials.push_back(DetMaterial);
 	param -> SetMaterials(theMaterials);
 
-	//Sets the materials of the voxels
-	//size_t* materialIDs = new size_t[nDetectorsX*nDetectorsY*nDetectorsZ];
-	//param -> SetMaterialIndices( materialIDs );
+	//Make the detectors sensitive to hits
+	AttachSensitiveDetector(PhantomBoxes_logic);
 
-	//Create the phantom container for the detectors to go into
-	G4Box* container_solid = new G4Box("PhantomContainer",
-					   nDetectorsX*HalfDetectorSizeX,
-					   nDetectorsY*HalfDetectorSizeY, 
-					   nDetectorsZ*HalfDetectorSizeZ);
+	Visualization(container_logic, G4Colour::Red());
+	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
 
-	//Creates the logical volume for the phantom container	
-	G4LogicalVolume* container_logic = new G4LogicalVolume(container_solid, 
-							       FindMaterial(Material), 
-							       "PhantomContainer");
+//------------------------------------------------------------------------
 
-	//Create a physical volume for the phantom container
+	//Physical volume
 
-	//Updates the rotation of the object
-	//G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
-	//RotateObjectAngle->rotateX(90*deg);
-	//RotateObjectAngle->rotateY(0);
-	//RotateObjectAngle->rotateZ(0);
+	G4double DetectorPosX = WorldSize_Cmd.x();
+	G4int NumberOfVoxels = NoDetectorsX * NoDetectorsY_Cmd * NoDetectorsZ_Cmd;
 
 	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
             						      G4ThreeVector(DetectorPosX,0,0),                   // translation
@@ -167,47 +191,107 @@ void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int 
             						      "PhantomContainer",    // name
             						      logicMotherBox,           // mother volume
             						      false,                 // No op. bool.
-           						      1,			//copy number
+           						      0,			//copy number
 							      false);                    //overlap checking
 
-	//Build the phantom container and set the visualization attributes
+	//Build the phantom container
 	param -> BuildContainerSolid(container_phys);
-	Visualization(container_logic, G4Colour::Red());
 
-	//Assure that the voxels are completely filling the container volume
-	param -> CheckVoxelsFillContainer(container_solid->GetXHalfLength(),
-                                          container_solid->GetYHalfLength(),
-                                          container_solid->GetZHalfLength() );
+	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
+                       						     PhantomBoxes_logic,           // logical volume
+                        					     container_logic,              // mother volume
+           							     kUndefined,                  // optimisation hint
+                       						     NumberOfVoxels, 		// number of voxels
+                       						     param);                  // parameterisation
+
+	PhantomBoxes_phys->SetRegularStructureId(1);*/
+}
+
+void DetectorConstruction::SolidDetectors()
+{
+	G4int NoDetectorsX = 1;
+
+	G4double HalfDetectorSizeX = DetectorSize_Cmd.x();
+	G4double HalfDetectorSizeY = DetectorSize_Cmd.y();
+	G4double HalfDetectorSizeZ = DetectorSize_Cmd.z();
+
+	//Create the phantom container for the detectors to go into
+	SolidContainer = new G4Box("PhantomContainer",
+			           NoDetectorsX*HalfDetectorSizeX,
+			           NoDetectorsY_Cmd*HalfDetectorSizeY, 
+			           NoDetectorsZ_Cmd*HalfDetectorSizeZ);
 
 	//Create the dimensiosn of the phantom boxes to go inside the container
-	G4Box* PhantomBoxes_solid = new G4Box("PhantomBox",
-					      HalfDetectorSizeX,
-					      HalfDetectorSizeY,
-					      HalfDetectorSizeZ);
+	SolidPhantomBoxes = new G4Box("PhantomBox",
+				      HalfDetectorSizeX,
+				      HalfDetectorSizeY,
+				      HalfDetectorSizeZ);
+
+	//Voxel dimensions in the three dimensions
+	param->SetVoxelDimensions(HalfDetectorSizeX, HalfDetectorSizeY, HalfDetectorSizeZ);
+
+	//Number of voxels in the three dimensions
+	param->SetNoVoxel(NoDetectorsX, NoDetectorsY_Cmd, NoDetectorsZ_Cmd);
+
+	//Assure that the voxels are completely filling the container volume
+	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
+                                        SolidContainer->GetYHalfLength(),
+                                        SolidContainer->GetZHalfLength());
+}
+
+void DetectorConstruction::LVDetectors()
+{
+	G4Material* DetMaterial = FindMaterial(DetectorMaterial_Cmd);
+
+	//Creates the logical volume for the phantom container	
+	container_logic = new G4LogicalVolume(SolidContainer, 
+							       DetMaterial, 
+							       "LVPhantomContainer");
 
 	//The parameterised volume which uses this parameterisation is placed in the container logical volume
-	G4LogicalVolume* PhantomBoxes_logic = new G4LogicalVolume(PhantomBoxes_solid,
-           						          FindMaterial(Material),        // material is not relevant here...
-           						          "PhantomBox");
+	PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
+           				         DetMaterial,        // material is not relevant here...
+           				         "LVPhantomBox");
+
+	//Vector of materials of the voxels
+	std::vector < G4Material* > theMaterials;
+	theMaterials.push_back(DetMaterial);
+	param -> SetMaterials(theMaterials);
+
+	//Make the detectors sensitive to hits
+	AttachSensitiveDetector(PhantomBoxes_logic);
+
+	Visualization(container_logic, G4Colour::Red());
+	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
+}
+
+void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
+{
+	G4double DetectorPosX = WorldSize_Cmd.x();
+	G4int NumberOfVoxels = NoDetectorsY_Cmd * NoDetectorsZ_Cmd;
+
+	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
+            						      G4ThreeVector(DetectorPosX,0,0),                   // translation
+           						      container_logic,            // logical volume
+            						      "PhantomContainer",    // name
+            						      logicMotherBox,           // mother volume
+            						      false,                 // No op. bool.
+           						      0,			//copy number
+							      false);                    //overlap checking
+
+	//Build the phantom container
+	param -> BuildContainerSolid(container_phys);
 
 	//
 	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
                        						     PhantomBoxes_logic,           // logical volume
                         					     container_logic,              // mother volume
            							     kUndefined,                  // optimisation hint
-                       						     nDetectorsX*nDetectorsY*nDetectorsZ, // number of voxels
+                       						     NumberOfVoxels, 		// number of voxels
                        						     param);                  // parameterisation
 
 	//Gives warning messages when set to 1?
 	PhantomBoxes_phys->SetRegularStructureId(1);
-
-	//Make the detectors sensitive to hits
-	AttachSensitiveDetector(PhantomBoxes_logic);
-
-	//Visualization attributes
-	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
-	
-	G4cout << G4endl <<"The detectors have been created succesfully " << G4endl;
 }
 
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)

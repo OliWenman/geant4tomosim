@@ -2,23 +2,29 @@
 #define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
-#include "globals.hh"
-#include "G4UserLimits.hh"
 #include "G4UImessenger.hh"
-#include "G4Colour.hh"
 
-class G4VPhysicalVolume;
-class G4LogicalVolume;
+//My own classes
 class DetectorConstructionMessenger;
 class Data;
 class Input;
 class TrackerSD;
 class VisTrackerSD;
-class G4Material;
 class TargetConstruction;
 
-//Detector construction class to define materials and geometry.
+//Solids, logic volume and physical volume for the geometry
+class G4Box;
+class G4LogicalVolume;
+class G4VPhysicalVolume;
 
+//For efficient geometry containing millions of solids
+class G4PhantomParameterisation;
+
+//Materials and colour classes
+class G4Material;
+class G4Colour;
+
+//Detector construction class to define materials and geometry.
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
@@ -30,6 +36,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		
 		//Own class functions
 		void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
+
+		void SolidDetectors();
+		void LVDetectors();
+		void PVDetectors(G4LogicalVolume* logicMotherBox);
+
 		G4Material* FindMaterial(G4String material);
 		void AttachSensitiveDetector(G4LogicalVolume* volume);
 		void Visualization(G4LogicalVolume*, G4Colour);
@@ -44,8 +55,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
 		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
 
-		void SetNoImages(G4int value){NoImages = value;}
-
 		//Get methods
 		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
@@ -56,18 +65,25 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
-		//G4int GetCurrentImage(){return CurrentImage;}
-		G4int GetNoImages(){return NoImages;}
-
   	protected:
-		//Pointers to classes
-		G4UserLimits* fStepLimit;            
+		//Pointers to my own classes 
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
 		Input* input;
 		TrackerSD* aTrackerSD;
 		VisTrackerSD* VTrackerSD;
 		TargetConstruction* TC;
+
+		//Pointers to the solid and logic of the world
+		G4Box* solidWorld;
+		G4LogicalVolume* logicWorld;
+
+		//Pointers to detector geometry (solid and logic)
+		G4PhantomParameterisation* param;
+		G4Box* SolidContainer;
+		G4Box* SolidPhantomBoxes;
+		G4LogicalVolume* container_logic;
+		G4LogicalVolume* PhantomBoxes_logic;
 
 		//World variables
 		G4ThreeVector WorldSize_Cmd;
@@ -82,7 +98,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Image variables
 		G4int nImage;
-		G4int NoImages;
 };
 
 #endif
