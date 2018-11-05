@@ -5,7 +5,6 @@
 #include "Data.hh"
 #include "Input.hh"
 #include "globals.hh"
-#include "SteppingAction.hh"
 
 #include "G4Timer.hh"
 #include <ctime>
@@ -26,7 +25,7 @@
 //GenerateSeed(data);
 
 //Not sure if to keep or to use RunAction class to do it. Currently using RunAction
-void GenerateSeed(Input* input)
+/*void GenerateSeed(Input* input)
 {
 	G4int seedCmd = input -> GetSeedOption();	
 	if (seedCmd != 0)	//Keeps the seed
@@ -39,7 +38,7 @@ void GenerateSeed(Input* input)
 	}
 	if (input -> GetCurrentImage() == 0)
 		{input -> SetSeedOption(seedCmd);}
-}
+}*/
 
 void CompletionTime(double LoopTimer, int Image, int NoImages)
 {
@@ -67,7 +66,7 @@ void SaveDataToFile(G4int Image, Data* data)
 	data -> WriteToHDF5();
 }
 
-//Function to correctly input the correct number of particles if it is over the limit 
+//Function to correctly input the correct number of particles if it is over the Geant4 limit 
 void BeamOn(G4RunManager* runManager, unsigned long long int nParticles)
 {
 	//Max limit for an integer (for Geant4 BeamOn), must be unsigned long long int as well to compare it if input is above limit.
@@ -101,13 +100,6 @@ void BeamOn(G4RunManager* runManager, unsigned long long int nParticles)
 
 int main(int argc,char** argv)
 {
-  	/* Create a new file using default properties. */
-   	//hid_t file_id = H5Fcreate("ff", H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-
-   	/* Terminate access to the file. */
-   	//herr_t status = H5Fclose(file_id);
-
-
 	//Prints the time and date of the local time that the simulation started
 	time_t now = time(0);
 	// Convert now to tm struct for local timezone
@@ -215,7 +207,8 @@ int main(int argc,char** argv)
 
 	//ui -> SessionStart();   
 
-	//Save the times for speed tests
+	//Small bit of code to save time of simulation to a file
+	/*//Save the times for speed tests
 	std::ofstream outdata; 
 	G4String filepath = "./Data_Output/Text/SpeedTests/";
 	G4String txt = ".txt";
@@ -227,7 +220,7 @@ int main(int argc,char** argv)
 	else
 		{std::cout << std::endl << "File opened" << std::endl;}
 	outdata << FullTime.GetRealElapsed() << std::endl;
-	outdata.close();
+	outdata.close();*/
 
 	//Delete the remaining pointers
 	G4cout << G4endl << "Deleting ui";

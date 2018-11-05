@@ -43,12 +43,15 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	CubeDimensions_Cmd -> SetDefaultUnit("mm");
 	CubeDimensions_Cmd -> SetDefaultValue(G4ThreeVector(0.3*mm, 0.3*mm, 0.0*mm));
 
+	//Command to set the dimensions of a trapezoid
 	TrapezoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Trapezoid/Dimensions", this);
 	TrapezoidDimensions_Cmd -> SetGuidance("Set the dimensions of a trapezoid you would like, dx1, dx2, dy1, dy2 and dz");
 
+	//Command to set the dimensions of a ellipsoid
 	EllipsoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Ellipsoid/Dimensions", this);
 	EllipsoidDimensions_Cmd -> SetGuidance("Set the dimensions of a ellipsoid you would like, pxSemiAxis, pySemiAxis, pzSemiAxis, pzBottomCut and pzTopCut");
 
+	//Command to set the dimensions of subtraction solid
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
 	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape");
 	
