@@ -114,7 +114,7 @@ void Data::WriteToTextFile()
 			double MaxEnergy = GetMaxEnergy()*1000;
 
 			//Filename
-			G4String EnergyFileName = "EnergyDataFile" + ImageNumberString + ".txt";
+			G4String EnergyFileName = "EnergyData" + ImageNumberString + ".txt";
 
 			//Opens the data stream
 			outdata.open(FilePath+"EnergyData/"+EnergyFileName);

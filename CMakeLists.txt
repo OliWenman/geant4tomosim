@@ -63,8 +63,7 @@ include_directories(${HDF5_INCLUDE_DIRS})
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-#file(MAKE_DIRECTORY ${directory} Data_Output)
-#file(COPY Data_Output DESTINATION ./)
+file(COPY Data_Output DESTINATION ./)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
