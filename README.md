@@ -1,5 +1,5 @@
 # geant4tomosim
-Simulation of data for tomography using GEANT4. Have only tested on Linux machines.
+Simulation of data for tomography using GEANT4.
 
 # Required
 - Geant4/10.04
