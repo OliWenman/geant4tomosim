@@ -63,7 +63,8 @@ include_directories(${HDF5_INCLUDE_DIRS})
 #
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-file(COPY Data_Output DESTINATION ./)
+#file(MAKE_DIRECTORY ${directory} Data_Output)
+#file(COPY Data_Output DESTINATION ./)
 
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
@@ -98,6 +99,7 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
+add_custom_target(Data_Output ALL COMMAND ${CMAKE_COMMAND} -E make_directory ${directory})
 add_custom_target(X-Ray_build DEPENDS X-Ray_Simulation)
 
 #----------------------------------------------------------------------------
