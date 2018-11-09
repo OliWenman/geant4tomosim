@@ -35,6 +35,7 @@ class Data
 
 		//Get Methods
 		//std::vector<int> GetHitData(){ return HitDataMatrix;}
+		int* GetHitData(){return HitDataArray;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		G4int GetNoImages(){return NoImages_Cmd;}
