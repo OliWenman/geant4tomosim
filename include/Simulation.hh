@@ -14,20 +14,21 @@ class Simulation
 {
 	public:
 		Simulation();
-		~Simulation();
+		~Simulation(); 
 
 		//Functions to be called
 		void Initialize();
 		void Visualisation();
 		void RunSimulation();
 		void KillSimulation();
+		void ResetSimulation();
 
 	private:
 		//It's own private functions to be called by the public functions
+		void Setup();
 		void SaveDataToFile(Data*);
 		void BeamOn(G4RunManager* , unsigned long long int nParticles);
 		void CompletionTime(double LoopTimer, int Image, int NoImages);
-		void Setup();
 		
 		//Pointers to different classes
 		G4RunManager* runManager;
@@ -39,7 +40,8 @@ class Simulation
 		PhysicsList* PL;
 
 		bool Reset;
-		bool Ready; 
+		bool Ready;
+
 };
 
 #endif

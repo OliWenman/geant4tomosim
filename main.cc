@@ -6,8 +6,8 @@ int main()
 
 	Sim.Initialize();
 	Sim.RunSimulation();
-	Sim.KillSimulation();
-  	
+	Sim.KillSimulation();	
+
    	return 0;
 }
 

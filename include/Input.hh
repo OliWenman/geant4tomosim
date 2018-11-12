@@ -1,6 +1,7 @@
 #ifndef Input_h
 #define Input_h 1
 
+#include "Simulation.hh"
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
 #include "G4UserLimits.hh"
@@ -13,7 +14,7 @@
 class InputMessenger;
 class Data;
 
-class Input
+class Input 
 {
 	public:
 		Input(Data* data);

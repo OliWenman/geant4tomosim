@@ -14,6 +14,21 @@
 #include "G4UIExecutive.hh"
 #include "G4Timer.hh"
 
+Simulation::Simulation()
+{	
+	Reset = false;
+	Ready = false;
+
+	G4cout << G4endl << "Welcome to the tomography data simulation!" << G4endl; 
+
+	Setup();
+}
+
+Simulation::~Simulation()
+{
+	G4cout << G4endl << "Goodbye." << G4endl;
+}
+
 void Simulation::Setup()
 {
 	//Create an instance of the classes
@@ -38,19 +53,12 @@ void Simulation::Setup()
 	visManager = 0;
 }
 
-Simulation::Simulation()
-{	
-	Reset = false;
-	Ready = false;
-
-	G4cout << G4endl << "Welcome to the tomography data simulation!" << G4endl; 
-
-	Setup();
-}
-
-Simulation::~Simulation()
+void Simulation::ResetSimulation()
 {
-	G4cout << G4endl << "Goodbye." << G4endl;
+	if (Reset == true)
+		{Setup();}
+	else
+		{G4cout << G4endl << "Simulation doesn't need to be reset! ";}
 }
 
 void Simulation::Initialize()
@@ -82,7 +90,7 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		//visManager = new G4VisManager;
+		G4VisManager* visManager = new G4VisExecutive();
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
@@ -100,8 +108,6 @@ void Simulation::RunSimulation()
 {
 	if (Ready == true)
 	{
-		G4cout << G4endl << "RUNNING SIMULATION" << G4endl;
-
 		//Start the simulation timer
 		G4Timer FullTime;
 		FullTime.Start();
@@ -110,9 +116,10 @@ void Simulation::RunSimulation()
 		time_t now = time(0);
 		// Convert now to tm struct for local timezone
 		tm* localtm = localtime(&now);
-		G4cout << G4endl << "This simulation started on: " << asctime(localtm) << G4endl;
+		G4cout << G4endl << asctime(localtm) << G4endl;
 
-		G4cout << G4endl << "BEAM ON" << G4endl; 
+		G4cout << G4endl << "Starting simulation " << G4endl;
+		G4cout << "Beam on... " << G4endl; 
 
 		//Find the total number of images
 		G4int TotalImages = input -> GetNoImages();
@@ -155,7 +162,7 @@ void Simulation::RunSimulation()
 	}
 	else if (Reset == true || Ready == false)
 	{
-		G4cout << G4endl << "SIMULATION IS NOT READY! Check the macro files and initialise the simulation first!" << G4endl;
+		G4cout << G4endl << "SIMULATION IS NOT READY! Check the macro files and Initialise the simulation first!" << G4endl;
 	}
 }
 

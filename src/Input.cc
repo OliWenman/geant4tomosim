@@ -1,3 +1,4 @@
+
 #include "Input.hh"
 #include "InputMessenger.hh"
 #include "Data.hh"
@@ -11,7 +12,7 @@
 #include "G4ThreeVector.hh"
 #include <string> 
 
-Input::Input(Data* DataObject): data(DataObject)
+Input::Input(Data* DataObject) : data(DataObject)
 {
 	inputMessenger = new InputMessenger(this, data);
 	data -> SetMaxEnergy(MaxE);
