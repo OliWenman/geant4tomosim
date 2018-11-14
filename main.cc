@@ -1,4 +1,8 @@
 #include "Simulation.hh"
+#include <iostream>
+
+void Ref(int &n)
+{	++n;}
 
 int main()
 {
