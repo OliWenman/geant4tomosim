@@ -16,12 +16,10 @@
 
 Data::Data()
 {	
-	G4cout << G4endl << "Data class has been created "<< G4endl;
 	nImage = 0;	
 }
 
-Data::~Data()
-	{G4cout << G4endl << "Data class has been deleted ";}
+Data::~Data(){}
 
 void Data::SetUpHitData(int Nrow, int Ncolumn)
 {
@@ -72,9 +70,7 @@ void Data::WriteToTextFile()
 		//Creation of the data stream
 		std::ofstream outdata; 
 
-		G4String FilePath = "./Data_Output/Text/";
-
-		G4cout << G4endl << "Saving the hit data... ";
+		G4String FilePath = "./../Data_Output/Text/";
 		
 		//File name is dependent of the image number
 		std::string ImageNumberString = std::to_string(nImage+1);
@@ -90,6 +86,8 @@ void Data::WriteToTextFile()
 		{ 	std::cerr << "Error: " << HitFileName << " file could not be opened" << std::endl;
       			exit(1);
    		}
+
+		G4cout << G4endl << "Saving the hit data... ";
 
 		//Finds how many digits the detector numbers need to be to keep aligned
 		G4int NDigits = std::to_string(HitDataArray[0]).length() + 2 ;

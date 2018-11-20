@@ -40,8 +40,6 @@
 
 PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(InputObject)
 {
-	G4cout << G4endl << "PhysicsList has been created";	
-
 	//Creates the messenger class
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
@@ -52,7 +50,6 @@ PhysicsList::PhysicsList(Input* InputObject) : G4VModularPhysicsList(), input(In
 PhysicsList::~PhysicsList()
 {
   	delete PhysicsMessenger;
-	G4cout << G4endl << "PhysicsList has been deleted";
 }
 void PhysicsList::ConstructParticle()
 {

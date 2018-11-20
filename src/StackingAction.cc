@@ -11,13 +11,11 @@
 
 StackingAction::StackingAction(): G4UserStackingAction(), fParticle(0) 
 {
-	G4cout << G4endl << "StackingAction has been created" << G4endl;
-
   	fKillSecondary  = true;
   	fParticle = 0; 
 }
 
-StackingAction::~StackingAction(){G4cout << G4endl << "StackingAction has been deleted ";}
+StackingAction::~StackingAction(){ }
 
 G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrack)
 {

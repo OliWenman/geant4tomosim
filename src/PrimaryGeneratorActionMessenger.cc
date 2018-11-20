@@ -12,8 +12,6 @@
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun, Input *InputObject, Data* DataObject):Action(Gun),input(InputObject), data(DataObject)
 {	
-	G4cout << G4endl << "PrimaryGeneratorActionMessenger has been created " << G4endl;
-
 	gunDirectory = new G4UIdirectory("/gun/");
 	gunDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
 
@@ -42,8 +40,6 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 
 	delete BeamWidthY_Cmd;
 	delete BeamHeightZ_Cmd;
-
-	G4cout << G4endl << "PrimaryGeneratorActionMessenger has been deleted ";
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -52,7 +48,6 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		Action -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
-		G4cout << "PrimaryGeneratorAction -> SetParticleEnergy command detected  " << G4endl;
 		input -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 		data -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 	}
@@ -60,14 +55,12 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		BeamWidthY_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamWidthY(BeamWidthY_Cmd -> GetNewDoubleValue(newValue)); 
-		G4cout << "PrimaryGeneratorAction -> SetBeamWidthY command detected " << G4endl;
 		input -> SetBeamWidth(BeamWidthY_Cmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamHeightZ_Cmd )
   	{ 
 		BeamHeightZ_Cmd -> GetNewUnitValue(newValue);
 		Action -> SetBeamHeightZ(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue)); 
-		G4cout << "PrimaryGeneratorAction -> SetBeamHeightZ command detected " << G4endl;
 		input -> SetBeamHeight(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue));
 	}
 }

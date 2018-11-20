@@ -10,11 +10,9 @@
 #include "StackingAction.hh"
 					     
 ActionInitialization::ActionInitialization(Input* InputObject, DetectorConstruction* DC_Object, Data* DataObject):G4VUserActionInitialization() ,input(InputObject), DC(DC_Object), data(DataObject)
-{ 
-	G4cout << G4endl << "ActionInitialization has been created " << G4endl;
-}
+{ }
 
-ActionInitialization::~ActionInitialization(){ G4cout << G4endl << "ActionIntialization has been deleted "; }
+ActionInitialization::~ActionInitialization(){ }
 
 void ActionInitialization::BuildForMaster() const
 {

@@ -13,8 +13,6 @@
 VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, G4bool DetectorEfficiency) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
-	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
-
 	//Setup the data only at the begining of simulation so it doesn't waste time doing work it has already done	
 	DetectorEfficiency_Cmd = DetectorEfficiency;
 	EnergyOption_Cmd = data ->GetEnergyDataOption();
@@ -26,7 +24,7 @@ VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionN
 	collectionName.insert(hitsCollectionName);
 }
 
-VisTrackerSD::~VisTrackerSD() {G4cout << G4endl << "TrackerSD has been deleted ";}
+VisTrackerSD::~VisTrackerSD() {}
 
 void VisTrackerSD::Initialize(G4HCofThisEvent* hce)
 {	

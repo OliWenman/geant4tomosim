@@ -16,8 +16,6 @@
 
 TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Target): G4UImessenger(), TC(Target)
 {	
-	G4cout << G4endl << "TargetConstructionMessenger has been created" << G4endl;
-	
 	ObjectCounter = 0;
 
 	//Directory
@@ -135,8 +133,6 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete FullRotationAngle_Cmd;
 	delete OffSetRadius_Cmd;
 	delete Centre_Cmd;
-
-	G4cout << G4endl << "TargetConstructionMessenger has been deleted ";
 }
 
 void TargetConstructionMessenger::AppendVectors(G4String ObjectName, std::vector<double> Array)
@@ -310,46 +306,38 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	{
 		G4ThreeVector Position = TargetPosition_Cmd -> GetNew3VectorValue(newValue);
 		TC -> SetVectorPosition(ObjectCounter -1, Position);	
-		G4cout << "TargetConstruction -> AddTargetPosition command detected "<< G4endl;
 	}
 	else if(command == TargetRotation_Cmd)
 	{
 		G4ThreeVector Rotation = TargetRotation_Cmd -> GetNew3VectorValue(newValue);
 		TC -> SetVectorRotation(ObjectCounter -1, Rotation);	
-		G4cout << "TargetConstruction -> AddTargetRotation command detected "<< G4endl;
 	}
 	else if(command == TargetMaterial_Cmd )
 	{
 		TC -> SetMaterial(ObjectCounter -1, newValue);
 		TC -> SetLogicVolumeArray(ObjectCounter - 1, true);
-		G4cout << "TargetConstruction -> AddTargetMaterial command detected "<< G4endl;
 	}
 	else if(command == BooleanOp_Cmd )
 	{
 		TC -> AddBooleanOp(newValue);	
-		G4cout << "TargetConstruction -> AddBooleanOp command detected "<< G4endl;
 	}
 	else if(command == OverlapCheck_Cmd)
 	{
 		TC -> SetOverlapCheck(OverlapCheck_Cmd -> GetNewBoolValue(newValue));
-		G4cout << "TargetConstruction -> SetOverlapCheck command detected " << G4endl;
 	}
 	else if(command == FullRotationAngle_Cmd)
 	{
 		FullRotationAngle_Cmd -> GetNewUnitValue(newValue);
 		TC -> SetFullRotationAngle(FullRotationAngle_Cmd -> GetNewDoubleValue(newValue));
-		G4cout << "TargetConstruction -> FullRotationAngle_Cmd command detected " << G4endl;
 	}
 	else if(command == OffSetRadius_Cmd )
 	{
 		OffSetRadius_Cmd -> GetNewUnitValue(newValue);
 		TC -> SetOffSetRadius(OffSetRadius_Cmd -> GetNewDoubleValue(newValue));	
-		G4cout << "TargetConstruction -> OffSetRadius_Cmd command detected "<< G4endl;
 	}
 	else if(command == Centre_Cmd)
 	{
 		G4ThreeVector Centre = Centre_Cmd -> GetNew3VectorValue(newValue);
 		TC -> SetCentrePosition(Centre);	
-		G4cout << "TargetConstruction -> SetRadius command detected "<< G4endl;
 	}
 }

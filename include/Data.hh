@@ -24,7 +24,7 @@ class Data
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
 		void SetUpHitData(int Nrow, int Ncolumn);
-		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
+		inline void SaveHitData(G4int &DetectorNumber){++HitDataArray[DetectorNumber];}
 
 		void SetUpEnergyData();
 		void SaveEnergyData(G4int DetectorNumber, G4double edep);

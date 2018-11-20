@@ -8,7 +8,7 @@
 
 EventAction::EventAction():G4UserEventAction(){}
 
-EventAction::~EventAction(){G4cout << G4endl << "EventAction has been deleted ";}
+EventAction::~EventAction(){}
 
 void EventAction::BeginOfEventAction(const G4Event*){}
 

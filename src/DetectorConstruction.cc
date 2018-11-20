@@ -35,8 +35,6 @@
 
 DetectorConstruction::DetectorConstruction(Data* DataObject, Input* InputObject):G4VUserDetectorConstruction(), data(DataObject), input(InputObject)
 { 	
-	G4cout << G4endl << "DetectorConstruction has been created ";
-
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this, input);	
 	TC = new TargetConstruction();
@@ -48,7 +46,8 @@ DetectorConstruction::~DetectorConstruction()
 {	
 	delete detectorMessenger; 
 	delete TC;
-	G4cout << G4endl << "DetectorConstruction has been deleted ";
+	delete aTrackerSD;
+	delete VTrackerSD;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

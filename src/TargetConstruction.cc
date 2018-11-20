@@ -39,8 +39,6 @@
 
 TargetConstruction::TargetConstruction()
 {	
-	G4cout << G4endl << "TargetConstruction has been created" << G4endl;
-	
 	TCMessenger = new TargetConstructionMessenger(this);
 	nImage = 0;
 	SubtractSolidCounter = 0;
@@ -50,7 +48,6 @@ TargetConstruction::TargetConstruction()
 
 TargetConstruction::~TargetConstruction()
 {
-	G4cout << G4endl << "TargetConstruction has been deleted";
 	delete TCMessenger;
 }
 

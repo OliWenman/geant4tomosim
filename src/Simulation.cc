@@ -7,6 +7,7 @@
 #include "Input.hh"
 
 #include <fstream>
+#include <iostream>
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
@@ -19,18 +20,27 @@ Simulation::Simulation()
 	Reset = false;
 	Ready = false;
 
-	G4cout << G4endl << "Welcome to the tomography data simulation!" << G4endl; 
+	G4cout << "\nWelcome to the tomography data simulation!\n"; 
 
 	Setup();
 }
 
 Simulation::~Simulation()
 {
-	G4cout << G4endl << "Goodbye." << G4endl;
+	G4cout << "\nGoodbye.\n";
+
+	//delete runManager;
+	delete UImanager;
+	delete visManager;
+
+	delete data;
+	delete input;
 }
 
 void Simulation::Setup()
-{
+{ 
+	G4cout << "Setting up simulation for you... \n";
+
 	//Create an instance of the classes
 	runManager = new G4RunManager();
 	data = new Data();
@@ -58,7 +68,7 @@ void Simulation::ResetSimulation()
 	if (Reset == true)
 		{Setup();}
 	else
-		{G4cout << G4endl << "Simulation doesn't need to be reset! ";}
+		{G4cout << "\nSimulation doesn't need to be reset!\n ";}
 }
 
 void Simulation::Initialize()
@@ -66,21 +76,23 @@ void Simulation::Initialize()
 	if (Reset == true)
 		{Setup();}
 
+	G4String PathToFiles = "./../scripts/";
+
 	//Apply the commands from the macro files to fill the values
-	UImanager -> ApplyCommand("/control/execute Geometry.mac");
-	UImanager -> ApplyCommand("/control/execute settings.mac");
+	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
+	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "settings.mac");
 
 	//Find the total number of images
 	G4int TotalImages = input -> GetNoImages();
 
 	//Find the total number of particles and convert to a number
 	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
-	G4cout << G4endl << "Number of projections being processed is " << TotalImages;
-	G4cout << G4endl << "Number of photons per image is " << TotalParticles;
-	G4cout << G4endl << "Number of detectors is " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ();
-	G4cout << G4endl << "Number of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl; 
+	G4cout << "\nNumber of projections being processed is " << TotalImages;
+	G4cout << "\nNumber of photons per image is " << TotalParticles;
+	G4cout << "\nNumber of detectors is " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ();
+	G4cout << "\nNumber of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << "\n"; 
 
-	G4cout << G4endl << "Simulation Ready!" << G4endl;
+	G4cout << "\nSimulation Ready!\n";
 
 	Ready = true;
 }
@@ -93,11 +105,9 @@ void Simulation::Visualisation()
 		G4VisManager* visManager = new G4VisExecutive();
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
-		G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
-		       << G4endl 
-		       << G4endl << "     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time."
-	               << G4endl 
-		       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl << G4endl;
+		G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
+		       << "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
+		       << "\n////////////////////////////////////////////////////////////////////////////////\n";
 
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute MyVis.mac");
@@ -112,14 +122,15 @@ void Simulation::RunSimulation()
 		G4Timer FullTime;
 		FullTime.Start();
 
+		G4cout << "Starting simulation \n";
+
 		//Prints the time and date of the local time that the simulation started
 		time_t now = time(0);
 		// Convert now to tm struct for local timezone
 		tm* localtm = localtime(&now);
-		G4cout << G4endl << asctime(localtm) << G4endl;
+		G4cout << "\n" << asctime(localtm) << "\n";
 
-		G4cout << G4endl << "Starting simulation " << G4endl;
-		G4cout << "Beam on... " << G4endl; 
+		G4cout << "Beam on... \n"; 
 
 		//Find the total number of images
 		G4int TotalImages = input -> GetNoImages();
@@ -133,9 +144,9 @@ void Simulation::RunSimulation()
 			G4Timer LoopTimer;
 			LoopTimer.Start();
 		
-			G4cout << G4endl << "================================================================================"
-		       	       << G4endl << "                           PROCESSING IMAGE " <<  Image+1
-	               	       << G4endl << "================================================================================" << G4endl;
+			G4cout << "\n================================================================================"
+		       	       << "\n                           PROCESSING IMAGE " <<  Image+1
+	               	       << "\n================================================================================\n";
 		
 			//Beam on to start the simulation
 			BeamOn(runManager, TotalParticles);
@@ -155,20 +166,23 @@ void Simulation::RunSimulation()
 		input -> SetSimulationTime(FullTime.GetRealElapsed());
 		input -> WriteToTextFile();
 
-		G4cout << G4endl << "================================================================================"
-	               << G4endl << "                        The simulation is finihsed! "
-	               << G4endl << "             Total simulation run time : "<< FullTime
-	               << G4endl << "================================================================================" << G4endl;
+		G4cout << "\n================================================================================"
+	               << "\n                        The simulation is finihsed! "
+	               << "\n             Total simulation run time : "<< FullTime
+	               << "\n================================================================================\n";
 	}
 	else if (Reset == true || Ready == false)
 	{
-		G4cout << G4endl << "SIMULATION IS NOT READY! Check the macro files and Initialise the simulation first!" << G4endl;
+		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and Initialise the simulation first! \n";
 	}
 }
 
 void Simulation::KillSimulation()
 {
 	delete runManager;
+	delete UImanager;
+	delete visManager;
+
 	delete data;
 	delete input;
 
@@ -224,11 +238,11 @@ void Simulation::CompletionTime(double LoopTimer, int Image, int NoImages)
 		if (ETSeconds > 60)
 		{
 			if(ETSeconds > 60*60)
-				{G4cout << G4endl << int(ETSeconds/(60*60)) << " hours left" << G4endl;}
+				{G4cout << int(ETSeconds/(60*60)) << " hours left \n";}
 			else
-				{G4cout << G4endl << int(ETSeconds/60) << " minutes left" << G4endl;}
+				{G4cout << int(ETSeconds/60) << " minutes left \n";}
 		}
 		else
-			{G4cout << G4endl << "Less than a minute left to go " << G4endl;}
+			{G4cout << "\nLess than a minute left to go... \n";}
 	}
 }

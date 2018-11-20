@@ -9,8 +9,6 @@
 
 PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObject)
 {
-	G4cout << G4endl << "PhysicsListMessenger has been created" << G4endl;	
-
   	physicsDirectory = new G4UIdirectory("/physics/");
   	physicsDirectory->SetGuidance("Commands to activate physics models and set cuts");
 
@@ -50,17 +48,13 @@ PhysicsListMessenger::~PhysicsListMessenger()
 	delete RayleighScatteringCmd;
 	delete FluorescenceCmd;
   	delete physicsDirectory;   
-	G4cout << G4endl << "PhysicsListMessenger has been deleted "; 
 }
 
 void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {       
   		if( command == PhysicsPackageCmd )
    		{ 
-			G4cout << G4endl << "PhysicsList -> AddPhysicsList command detected " << G4endl;
 			Physics ->SetPhysicsPackage(newValue);
-			//Physics -> SetPhysicsUsed(newValue);
-			//Physics -> AddPhysicsList(newValue);
 		}
 		else if (command == ComptonScatteringCmd)
 		{

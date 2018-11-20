@@ -14,8 +14,6 @@
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Input* InputObject, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), input(InputObject), data(DataObject)
 {
-	G4cout << G4endl << "PrimaryGeneratorAction has been created ";
-
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this, input, data);
 
@@ -30,7 +28,6 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
   	delete ParticleGun;
 	delete gunMessenger;
-	G4cout << G4endl << "PrimaryGeneratorAction has been deleted ";
 }
 
 void PrimaryGeneratorAction::SetDefaultKinematic()

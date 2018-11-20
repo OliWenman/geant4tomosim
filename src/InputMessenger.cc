@@ -13,8 +13,6 @@
 
 InputMessenger::InputMessenger(Input *InputObject, Data* DataObject):input(InputObject), data(DataObject)
 {	
-	G4cout << G4endl << "DataMessenger has been created " << G4endl;
-
 	InputDirectory = new G4UIdirectory("/data/");
 	InputDirectory -> SetGuidance("Commands to control Data class");
 
@@ -56,8 +54,6 @@ InputMessenger::~InputMessenger()
 	delete NoPhotons_Cmd;
 	delete seedCmd;
 	delete EnergyDataCmd;
-
-	G4cout << G4endl << "InputMessenger has been deleted " << G4endl << G4endl;
 }
 
 void InputMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -66,38 +62,31 @@ void InputMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
   	{ 
 		input -> SetTextFileCmd(TextFileCmd -> GetNewBoolValue(newValue));
 		data -> SetTextFileCmd(TextFileCmd -> GetNewBoolValue(newValue));
-		G4cout << "Input -> TextFile command detected  " << G4endl;
 	}	
 	else if( command == HDF5FileCmd )
   	{ 
 		input -> SetHDF5FileCmd(HDF5FileCmd -> GetNewBoolValue(newValue));
-		G4cout << "Input -> HDF5File command detected  " << G4endl;
 	}
 	else if( command == NoBins_Cmd )
 	{
 		input -> SetNoBins(NoBins_Cmd -> GetNewIntValue(newValue));
 		data ->	SetNoBins(NoBins_Cmd -> GetNewIntValue(newValue));
-		G4cout << "Input -> SetNoBins command detected "<< G4endl;
 	}
 	else if( command == NoImages_Cmd )
 	{
 		input -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
-		G4cout << "Input -> SetNoImages command detected " << G4endl;
 	}
 	else if( command == NoPhotons_Cmd )
 	{
-		G4cout << "Input -> SetNoPhotons command detected = "<< newValue <<G4endl;
 		input -> SetNoPhotons(newValue);
 	}
 	else if( command == seedCmd )
 	{
 		input -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));	
-		G4cout << "Input -> SetSeedOption command detected "<< G4endl;
 	}
 	else if (command == EnergyDataCmd)
 	{
 		input -> SetEnergyDataOption(EnergyDataCmd -> GetNewBoolValue(newValue));
 		data -> SetEnergyDataOption(EnergyDataCmd -> GetNewBoolValue(newValue));
-		G4cout << "Input -> SetEnergyDataOption command detected "<< G4endl;
 	}
 }

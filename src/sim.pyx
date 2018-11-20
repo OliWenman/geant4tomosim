@@ -19,7 +19,7 @@ cdef class PySim:
     def run(self):
         self.thisptr.RunSimulation()
         
-    def Kill(self):
+    def kill(self):
         self.thisptr.KillSimulation()
     
         

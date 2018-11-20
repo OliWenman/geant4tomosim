@@ -13,8 +13,6 @@
 TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency, const G4bool EOption) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
-	G4cout << G4endl << "TrackerSD has been created "<< G4endl;
-
 	DetectorEfficiency = DetEfficiency;
 	EnergyDataOption = EOption;
 
@@ -26,7 +24,7 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	//collectionName.insert(hitsCollectionName);
 }
 
-TrackerSD::~TrackerSD() {G4cout << G4endl << "TrackerSD has been deleted ";}
+TrackerSD::~TrackerSD() { }
 
 /*void TrackerSD::Initialize(G4HCofThisEvent* hce)
 {}*/

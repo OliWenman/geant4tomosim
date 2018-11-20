@@ -11,7 +11,6 @@
 
 RunAction::RunAction(Input* InputObject): G4UserRunAction(), input(InputObject)
 { 
-	G4cout << G4endl << "RunAction has been created ";
 	runMessenger = new RunActionMessenger(this);
 
 	//Create the engine for the simulation
@@ -22,7 +21,6 @@ RunAction::RunAction(Input* InputObject): G4UserRunAction(), input(InputObject)
 RunAction::~RunAction()
 {
 	delete runMessenger;
-	G4cout << G4endl << "RunAction has been deleted ";
 }
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)

@@ -10,8 +10,6 @@
 
 RunActionMessenger::RunActionMessenger(RunAction *run):G4UImessenger(), RAction(run)
 {	
-	G4cout << G4endl << "RunActionMessenger has been created " << G4endl;
-
 	runDirectory = new G4UIdirectory("/run/");
 	runDirectory -> SetGuidance("Commands to control RunAction class");
 
@@ -28,8 +26,6 @@ RunActionMessenger::~RunActionMessenger()
 {
 	delete seedCmd;
 	delete PrintCmd;
-
-	G4cout << G4endl << "RunActionMessenger has been deleted ";
 }
 
 void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -37,11 +33,9 @@ void RunActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	if (command == seedCmd )
 	{
 		RAction -> SetSeedOption(seedCmd -> GetNewIntValue(newValue));
-		G4cout << G4endl << "RunAction -> SetSeedOption command detected" << G4endl;
 	}
 	else if (command == PrintCmd)
 	{
 		RAction -> SetPrintOption(PrintCmd -> GetNewBoolValue(newValue));
-		G4cout << "RunAction -> SetPrintOption command detected" << G4endl;
 	}
 }

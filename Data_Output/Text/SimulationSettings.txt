@@ -1,0 +1,22 @@
+Simulation of X-ray data output log.
+
+Conditioons used in this simulation: 
+- Physics package: LivermorePhysics
+- Physics processes: Photoelectric effect. 
+- Seed: 1542734027
+
+- Intial energy of the monochromatic beam: 25 keV
+- Beam dimensions: 2.5 x 2.1 mm 
+- Distance beam travelled to the detectors: 2 cm 
+
+- Number of detectors: 2560 x 2160
+- Detector dimensions: 1 um x 976.563 nm x 972.2 nm 
+- Detectors used are 100% efficient
+
+- Number of photons used per image: 10000000
+- Number of photons per detector on average is (assuming total number of detectors are the same dimensions as the beam): 1
+- Number of images: 1
+- Energy data was not recorded
+
+- Time taken to complete: 25.57s
+
