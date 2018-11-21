@@ -17,9 +17,9 @@ VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionN
 	DetectorEfficiency_Cmd = DetectorEfficiency;
 	EnergyOption_Cmd = data ->GetEnergyDataOption();
 
-	data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
-	if (EnergyOption_Cmd == true)
-		{data -> SetUpEnergyData();}
+	//data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
+	//if (EnergyOption_Cmd == true)
+	//	{data -> SetUpEnergyData();}
 	
 	collectionName.insert(hitsCollectionName);
 }

@@ -35,8 +35,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     		G4VPhysicalVolume* Construct();
 		
 		//Own class functions
-		void SetUpDetectors(G4ThreeVector DetectorSize, G4int NoDetectorsY, G4int NoDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox);
-
 		void SolidDetectors();
 		void LVDetectors();
 		void PVDetectors(G4LogicalVolume* logicMotherBox);
@@ -64,6 +62,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4ThreeVector GetDetectorSize(){return DetectorSize_Cmd;}
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
+
+		void SetTotalAngle(double value);
 
   	protected:
 		//Pointers to my own classes 

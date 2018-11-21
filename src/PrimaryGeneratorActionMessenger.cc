@@ -20,16 +20,22 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
   	energyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
 	energyCmd -> SetDefaultUnit("keV");
 	energyCmd -> SetDefaultValue(15.);
+	energyCmd -> SetParameterName("E", true);
+	energyCmd -> SetRange("E > 0");
 
 	BeamWidthY_Cmd = new G4UIcmdWithADoubleAndUnit("/gun/setBeamWidth", this);
 	BeamWidthY_Cmd -> SetGuidance("Set the width you would like the beam to be. ");
 	BeamWidthY_Cmd -> SetDefaultUnit("m");
 	BeamWidthY_Cmd -> SetDefaultValue(0.5);
+	BeamWidthY_Cmd -> SetParameterName("Width", true);
+	BeamWidthY_Cmd -> SetRange("Width > 0");
 
 	BeamHeightZ_Cmd = new G4UIcmdWithADoubleAndUnit("/gun/setBeamHeight", this);
 	BeamHeightZ_Cmd -> SetGuidance("Set the height you would like the beam to be. ");
 	BeamHeightZ_Cmd -> SetDefaultUnit("m");
 	BeamHeightZ_Cmd -> SetDefaultValue(0.5);
+	BeamHeightZ_Cmd -> SetParameterName("Height", true);
+	BeamHeightZ_Cmd -> SetRange("Height > 0");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()

@@ -24,6 +24,9 @@ cdef class PySim:
 
     def lastImage(self):
         return np.reshape(self.thisptr.GetLastImage(), (-1, 250))
+
+    def PyRun(self, nImage, NumberOfImages, dTheta):
+        self.thisptr.PythonRun(nImage, NumberOfImages, dTheta)
 	
 
 	

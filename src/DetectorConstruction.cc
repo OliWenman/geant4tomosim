@@ -113,97 +113,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 }
 
-void DetectorConstruction::SetUpDetectors(G4ThreeVector HalfDetectorSize, G4int nDetectorsY, G4int nDetectorsZ, G4String Material, G4LogicalVolume* logicMotherBox)
-{
-	/*//Solid volume
-
-	G4int NoDetectorsX = 1;
-
-	G4double HalfDetectorSizeX = DetectorSize_Cmd.x()/2;
-	G4double HalfDetectorSizeY = DetectorSize_Cmd.y()/2;
-	G4double HalfDetectorSizeZ = DetectorSize_Cmd.z()/2;
-
-	//Create the phantom container for the detectors to go into
-	G4Box* SolidContainer = new G4Box("PhantomContainer",
-					   NoDetectorsX*HalfDetectorSizeX,
-					   NoDetectorsY_Cmd*HalfDetectorSizeY, 
-					   NoDetectorsZ_Cmd*HalfDetectorSizeZ);
-
-	//Create the dimensiosn of the phantom boxes to go inside the container
-	G4Box* SolidPhantomBoxes = new G4Box("PhantomBox",
-					      HalfDetectorSizeX,
-					      HalfDetectorSizeY,
-					      HalfDetectorSizeZ);
-
-	param = new G4PhantomParameterisation();
-
-	//Voxel dimensions in the three dimensions
-	param->SetVoxelDimensions(HalfDetectorSizeX, HalfDetectorSizeY, HalfDetectorSizeZ);
-
-	//Number of voxels in the three dimensions
-	param->SetNoVoxel(NoDetectorsX, NoDetectorsY_Cmd, NoDetectorsZ_Cmd);
-
-	//Assure that the voxels are completely filling the container volume
-	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
-                                        SolidContainer->GetYHalfLength(),
-                                        SolidContainer->GetZHalfLength());
-
-//----------------------------------------------------------------------
-
-	//Logic volume
-
-	G4Material* DetMaterial = FindMaterial(DetectorMaterial_Cmd);
-
-	//Creates the logical volume for the phantom container	
-	G4LogicalVolume* container_logic = new G4LogicalVolume(SolidContainer, 
-							       DetMaterial, 
-							       "LVPhantomContainer");
-
-	//The parameterised volume which uses this parameterisation is placed in the container logical volume
-	G4LogicalVolume* PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
-           						          DetMaterial,        // material is not relevant here...
-           						          "LVPhantomBox");
-
-	//Vector of materials of the voxels
-	std::vector < G4Material* > theMaterials;
-	theMaterials.push_back(DetMaterial);
-	param -> SetMaterials(theMaterials);
-
-	//Make the detectors sensitive to hits
-	AttachSensitiveDetector(PhantomBoxes_logic);
-
-	Visualization(container_logic, G4Colour::Red());
-	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
-
-//------------------------------------------------------------------------
-
-	//Physical volume
-
-	G4double DetectorPosX = WorldSize_Cmd.x();
-	G4int NumberOfVoxels = NoDetectorsX * NoDetectorsY_Cmd * NoDetectorsZ_Cmd;
-
-	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
-            						      G4ThreeVector(DetectorPosX,0,0),                   // translation
-           						      container_logic,            // logical volume
-            						      "PhantomContainer",    // name
-            						      logicMotherBox,           // mother volume
-            						      false,                 // No op. bool.
-           						      0,			//copy number
-							      false);                    //overlap checking
-
-	//Build the phantom container
-	param -> BuildContainerSolid(container_phys);
-
-	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
-                       						     PhantomBoxes_logic,           // logical volume
-                        					     container_logic,              // mother volume
-           							     kUndefined,                  // optimisation hint
-                       						     NumberOfVoxels, 		// number of voxels
-                       						     param);                  // parameterisation
-
-	PhantomBoxes_phys->SetRegularStructureId(1);*/
-}
-
 void DetectorConstruction::SolidDetectors()
 {
 	G4int NoDetectorsX = 1;
@@ -343,4 +252,6 @@ void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
   		LV -> SetVisAttributes(ObjectColour);
 	}
 }
+
+void DetectorConstruction::SetTotalAngle(double value){TC -> SetFullRotationAngle(value);}
 

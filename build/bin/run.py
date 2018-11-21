@@ -6,33 +6,26 @@ sys.path.insert(0, './../src')
 import sim
 import numpy as np
 from matplotlib import pyplot as plt
+import h5py
 
 Sim = sim.PySim()
 Sim.initialize();
+#Sim.initialize(nDetectorsY, nDetectorsZ, NumberOfImages, TotalAngle)
+#Sim.PyRun(PhotonsPerImage)
+NumberOfImages = 5
 
-imagestack = []
+h5file = h5py.File('./../Output/HDF5/test2.h5', 'a')
+dataset = h5file.create_dataset('data', shape=(210,250,NumberOfImages))
 
-for i in range(1):
-    Sim.run();
-    Image = Sim.lastImage();
-    imagestack.append(Image)
+TotalRotation = 180
 
-fig = plt.figure()
-plt.imshow(Image, cmap="viridis")
-plt.title('Last Projection')
+for nImage in range(NumberOfImages):
+	Sim.PyRun(nImage, NumberOfImages, TotalRotation)
+	Image = Sim.lastImage()
+	dataset[:, :, nImage] = Image[:, :]
 
-#Add a color bar which maps values to colors.
-plt.colorbar()
-
-plt.show()
-
-
-import h5py
-
-h5file = h5py.File('/dls/tmp/test.h5', 'w')
-dataset = h5file.create_dataset('data', data=np.dstack(imagestack)) # shape=(210,250,180)
-# dataset[:,:,34] = Image[:,:]
 h5file.close()
+
 
 
 

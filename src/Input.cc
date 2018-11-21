@@ -28,7 +28,7 @@ void Input::WriteToTextFile()
 	//Creation of the writing to data file stream
 	std::ofstream outdata; 
 
-	G4String FilePath = "./../Data_Output/Text/";
+	G4String FilePath = "./../Output/Text/";
 
 	G4cout << G4endl << "Saving the SimulationSettings... " << G4endl;
 	G4String SettingsName = "SimulationSettings.txt";

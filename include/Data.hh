@@ -25,10 +25,11 @@ class Data
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ);
 	
-		void SetUpHitData(int Nrow, int Ncolumn);
+		//void SetUpHitData(int Nrow, int Ncolumn);
+		//void SetUpEnergyData();
+
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 
-		void SetUpEnergyData();
 		void SaveEnergyData(G4int DetectorNumber, G4double edep);
 
 		void MakeSpaces(int nSpaces, std::ofstream &outdata);

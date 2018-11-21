@@ -144,7 +144,8 @@ void Simulation::RunSimulation()
 			G4Timer LoopTimer;
 			LoopTimer.Start();
 
-			//data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
+			//Creates the arrays for the data, wipes them after each image
+			data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
 		
 			G4cout << "\n================================================================================"
 		       	       << "\n                           PROCESSING IMAGE " <<  Image+1
@@ -172,6 +173,74 @@ void Simulation::RunSimulation()
 	               << "\n                        The simulation is finihsed! "
 	               << "\n             Total simulation run time : "<< FullTime
 	               << "\n================================================================================" << G4endl;
+	}
+	else if (Reset == true || Ready == false)
+	{
+		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
+	}
+}
+
+void Simulation::PythonRun(int Image, int NumberOfImages, double TotalAngle)
+{
+	if (Ready == true)
+	{
+		//Start the simulation timer
+		G4Timer FullTime;
+
+		if(Image == 0)
+		{
+			FullTime.Start();
+
+			G4cout << "Starting simulation \n";
+
+			//Prints the time and date of the local time that the simulation started
+			time_t now = time(0);
+			//Convert now to tm struct for local timezone
+			tm* localtm = localtime(&now);
+			G4cout << "\n" << asctime(localtm) << "\n";
+
+			DC -> SetTotalAngle(TotalAngle);
+		}
+
+		//Start internal looptimer to update the estimated time for completion
+		G4Timer LoopTimer;
+		LoopTimer.Start();
+
+		//Find the total number of particles and convert to a number
+		unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
+
+		//Creates the arrays for the data, wipes them after each image
+		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
+		
+		G4cout << "\n================================================================================"
+		       << "\n                           PROCESSING IMAGE " <<  Image+1
+	               << "\n================================================================================" << G4endl;
+		
+		//Beam on to start the simulation
+		BeamOn(TotalParticles);
+		
+		//Prepare for next run that geometry has changed
+		G4RunManager::GetRunManager() -> ReinitializeGeometry();
+		
+		SaveDataToFile();
+
+		//Stop loop timer and estimate the remaining time left
+		LoopTimer.Stop();
+		CompletionTime(LoopTimer.GetRealElapsed(), Image, NumberOfImages);
+
+		if (Image == NumberOfImages - 1)
+		{
+			//Stop the full simulation time and save to data class
+			FullTime.Stop();
+			input -> SetSimulationTime(FullTime.GetRealElapsed());
+			input -> WriteToTextFile();
+
+			G4cout << "\n================================================================================"
+	                       << "\n                        The simulation is finihsed! "
+	                       << "\n             Total simulation run time : "<< FullTime
+	                       << "\n================================================================================" << G4endl;
+
+		}
 	}
 	else if (Reset == true || Ready == false)
 	{

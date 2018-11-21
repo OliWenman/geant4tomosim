@@ -23,7 +23,7 @@ Data::~Data(){}
 
 void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
 {
-	if (nImage == 1)
+	if (nImage == 0)
 	{
 		//Saves the rows and columns inputted using the Set methods
 		SetNumberRows(nDetectorsY);
@@ -32,15 +32,27 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
 		//Creates a 1D vector for the hit data
 		std::vector<int> iHitDataMatrix(nDetectorsY*nDetectorsZ, 0);
 		SetHitData(iHitDataMatrix);
+		if (EnergyDataCmd == true)
+		{
+			//Creates a 2D vector for the energy data	
+			std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(NoBins_Cmd,0));
+			SetEnergyData(iEnergyMatrix);
+		}
 	}
 	else 
 	{
 		//Reset the data to zero ready for the next image
 		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
+
+		if (EnergyDataCmd == true)
+		{
+			//Resets the energy data to zero for the next image
+			for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
+		}
 	}
 }
 
-void Data::SetUpHitData(int Nrow, int Ncolumn)
+/*void Data::SetUpHitData(int Nrow, int Ncolumn)
 {
 	//Saves the rows and columns inputted using the Set methods
 	SetNumberRows(Nrow);
@@ -56,7 +68,7 @@ void Data::SetUpEnergyData()
 	//Creates a 2D vector for the energy data	
 	std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(NoBins_Cmd,0));
 	SetEnergyData(iEnergyMatrix);
-}
+}*/
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
@@ -87,7 +99,7 @@ void Data::WriteToTextFile()
 		//Creation of the data stream
 		std::ofstream outdata; 
 
-		G4String FilePath = "./../Data_Output/Text/";
+		G4String FilePath = "./../Output/Text/";
 		
 		//File name is dependent of the image number
 		std::string ImageNumberString = std::to_string(nImage+1);

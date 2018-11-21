@@ -22,6 +22,7 @@ class Simulation
 		void Initialize();
 		void Visualisation();
 		void RunSimulation();
+		void PythonRun(int Image, int NumberOfImages, double dTheta);
 		void KillSimulation();
 		void ResetSimulation();
 
@@ -45,6 +46,8 @@ class Simulation
 
 		bool Reset;
 		bool Ready;
+
+		
 
 };
 

@@ -17,9 +17,9 @@ TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G
 	EnergyDataOption = EOption;
 
 	//Setup data for energy if the setting is turned on
-	data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
-	if (EnergyDataOption == true)
-		{data -> SetUpEnergyData();}
+	//data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
+	//if (EnergyDataOption == true)
+	//	{data -> SetUpEnergyData();}
 	
 	//collectionName.insert(hitsCollectionName);
 }

@@ -26,11 +26,15 @@ InputMessenger::InputMessenger(Input *InputObject, Data* DataObject):input(Input
 
 	NoBins_Cmd = new G4UIcmdWithAnInteger("/data/bins", this);
 	NoBins_Cmd -> SetDefaultValue(5);
+	NoBins_Cmd -> SetParameterName("nBins", true);
 	NoBins_Cmd -> SetGuidance("Pick the number of bins you would like the energy to be sorted into.  ");
+	NoBins_Cmd -> SetRange("nBins > 0");
 
 	NoImages_Cmd = new G4UIcmdWithAnInteger("/data/NumberOfImages", this);
 	NoImages_Cmd -> SetDefaultValue(2);
 	NoImages_Cmd -> SetGuidance("Pick the number of images you would to have taken ");
+	NoImages_Cmd -> SetParameterName("nImages", true);
+	NoImages_Cmd -> SetRange("nImages > 0");
 
 	NoPhotons_Cmd = new G4UIcmdWithAString("/data/NumberOfPhotons", this);
 	NoPhotons_Cmd -> SetGuidance("Pick the number of photons you would to have per image ");
@@ -38,6 +42,8 @@ InputMessenger::InputMessenger(Input *InputObject, Data* DataObject):input(Input
 	seedCmd = new G4UIcmdWithAnInteger("/data/Seed", this);
 	seedCmd -> SetDefaultValue(0);
 	seedCmd -> SetGuidance("Enter a seed for the simulation. Input 0 for a random seed ");
+	seedCmd -> SetParameterName("seed", true);
+	seedCmd -> SetRange("seed > -1");
 	
 	EnergyDataCmd = new G4UIcmdWithABool("/data/Energy", this);
 	EnergyDataCmd -> SetGuidance("Choose if you would like energy data to be processed");

@@ -123,5 +123,5 @@ add_subdirectory( src )
 add_subdirectory( bin )
 
 #Copy the Data_Output folder to the build directory
-file(COPY Data_Output DESTINATION ./)
+file(COPY Output DESTINATION ./)
 file(COPY scripts DESTINATION ./)

@@ -7,7 +7,10 @@ cdef extern from "Simulation.hh":
       Simulation() except +
       
       void Initialize()
+
       void RunSimulation()
+      void PythonRun(int, int, double)
+
       void ResetSimulation()
       void KillSimulation()
       vector[int] GetLastImage()
