@@ -27,19 +27,20 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-	G4cout << "\nGoodbye.\n";
+	G4cout << "\nDeleting simulation... \n";
 
-	//delete runManager;
-	delete UImanager;
+	delete runManager;
 	delete visManager;
 
 	delete data;
 	delete input;
+
+	G4cout << "\nSimulation deleted! \n" << G4endl;
 }
 
 void Simulation::Setup()
 { 
-	G4cout << "Setting up simulation for you... \n";
+	G4cout << "Setting up... \n";
 
 	//Create an instance of the classes
 	runManager = new G4RunManager();
@@ -87,12 +88,13 @@ void Simulation::Initialize()
 
 	//Find the total number of particles and convert to a number
 	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
-	G4cout << "\nNumber of projections being processed is " << TotalImages;
-	G4cout << "\nNumber of photons per image is " << TotalParticles;
-	G4cout << "\nNumber of detectors is " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ();
-	G4cout << "\nNumber of particles per detector on average is " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << "\n"; 
 
-	G4cout << "\nSimulation Ready!\n";
+	G4cout << "\nNumber of projections being processed: " << TotalImages
+	       << "\nNumber of photons per image: " << TotalParticles
+	       << "\nNumber of detectors: " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ()
+	       << "\nNumber of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+
+	       << "\n\nSimulation Ready!" << G4endl;
 
 	Ready = true;
 }
@@ -102,7 +104,7 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		G4VisManager* visManager = new G4VisExecutive();
+		visManager = new G4VisExecutive();
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
@@ -126,11 +128,9 @@ void Simulation::RunSimulation()
 
 		//Prints the time and date of the local time that the simulation started
 		time_t now = time(0);
-		// Convert now to tm struct for local timezone
+		//Convert now to tm struct for local timezone
 		tm* localtm = localtime(&now);
 		G4cout << "\n" << asctime(localtm) << "\n";
-
-		G4cout << "Beam on... \n"; 
 
 		//Find the total number of images
 		G4int TotalImages = input -> GetNoImages();
@@ -143,22 +143,24 @@ void Simulation::RunSimulation()
 			//Start internal looptimer to update the estimated time for completion
 			G4Timer LoopTimer;
 			LoopTimer.Start();
+
+			//data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
 		
 			G4cout << "\n================================================================================"
 		       	       << "\n                           PROCESSING IMAGE " <<  Image+1
-	               	       << "\n================================================================================\n";
+	               	       << "\n================================================================================" << G4endl;
 		
 			//Beam on to start the simulation
-			BeamOn(runManager, TotalParticles);
+			BeamOn(TotalParticles);
 		
 			//Prepare for next run that geometry has changed
 			G4RunManager::GetRunManager() -> ReinitializeGeometry();
 		
-			SaveDataToFile(data);
+			SaveDataToFile();
 
 			//Stop loop timer and estimate the remaining time left
 			LoopTimer.Stop();
-			//CompletionTime(LoopTimer.GetRealElapsed(), Image, TotalImages);
+			CompletionTime(LoopTimer.GetRealElapsed(), Image, TotalImages);
 		}
 	
 		//Stop the full simulation time and save to data class
@@ -169,28 +171,33 @@ void Simulation::RunSimulation()
 		G4cout << "\n================================================================================"
 	               << "\n                        The simulation is finihsed! "
 	               << "\n             Total simulation run time : "<< FullTime
-	               << "\n================================================================================\n";
+	               << "\n================================================================================" << G4endl;
 	}
 	else if (Reset == true || Ready == false)
 	{
-		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and Initialise the simulation first! \n";
+		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
 	}
 }
 
 void Simulation::KillSimulation()
 {
-	delete runManager;
 	delete UImanager;
 	delete visManager;
 
 	delete data;
 	delete input;
 
+	delete runManager;
+
 	Reset = true;
 }
 
+std::vector<int> Simulation::GetLastImage()
+{
+	return data -> GetHitData();
+}
 //Private functions
-void Simulation::BeamOn(G4RunManager* runManager, unsigned long long int nParticles)
+void Simulation::BeamOn(unsigned long long int nParticles)
 {
 	//Max limit for an integer (for Geant4 BeamOn), must be unsigned long long int as well to compare it if input is above limit.
 	unsigned long long int limit = 2147483647;
@@ -206,6 +213,7 @@ void Simulation::BeamOn(G4RunManager* runManager, unsigned long long int nPartic
 			if (nParticles > limit)
 			{	//Beam on to start the simulation with the max number limit
 				runManager -> BeamOn(limit);
+
 				//Subtract from the true number of inputted particles until it is within the limit
 				nParticles = nParticles - limit;
 			}
@@ -221,7 +229,7 @@ void Simulation::BeamOn(G4RunManager* runManager, unsigned long long int nPartic
 	}
 }
 
-void Simulation::SaveDataToFile(Data* data)
+void Simulation::SaveDataToFile()
 {
 	data -> WriteToTextFile();
 	data -> WriteToHDF5();

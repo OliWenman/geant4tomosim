@@ -23,8 +23,10 @@ class Data
 		inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
+		void SetUpData(int nDetectorsY, int nDetectorsZ);
+	
 		void SetUpHitData(int Nrow, int Ncolumn);
-		inline void SaveHitData(G4int &DetectorNumber){++HitDataArray[DetectorNumber];}
+		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 
 		void SetUpEnergyData();
 		void SaveEnergyData(G4int DetectorNumber, G4double edep);
@@ -34,8 +36,7 @@ class Data
 		void WriteToHDF5();
 
 		//Get Methods
-		//std::vector<int> GetHitData(){ return HitDataMatrix;}
-		int* GetHitData(){return HitDataArray;}
+		std::vector<int> GetHitData(){return HitDataArray;}
 		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
 
 		G4int GetNoImages(){return NoImages_Cmd;}
@@ -45,7 +46,7 @@ class Data
 		G4double GetMaxEnergy(){return MaxE;}
 
 		//Set Methods
-		//void SetHitData(std::vector<int> UpdatedData){HitDataArray = UpdatedData;}
+		void SetHitData(std::vector<int> UpdatedData){HitDataArray = UpdatedData;}
 		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
@@ -64,10 +65,8 @@ class Data
 		DataMessenger* dataMessenger;
 
 		//Data members
-		//std::vector<int> HitDataArray;
+		std::vector<int> HitDataArray;
 		std::vector<std::vector<G4int> > EnergyMatrix;
-
-		int* HitDataArray;
 
 		G4int rows;
 		G4int columns;	

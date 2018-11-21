@@ -46,8 +46,6 @@ DetectorConstruction::~DetectorConstruction()
 {	
 	delete detectorMessenger; 
 	delete TC;
-	delete aTrackerSD;
-	delete VTrackerSD;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

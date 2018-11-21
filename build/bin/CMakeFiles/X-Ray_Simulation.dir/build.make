@@ -59,13 +59,13 @@ include bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 
 bin/run_static.c: ../bin/run.py
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Compiling Cython C source for run_static..."
-	cd /home/xol73553/git/geant4tomosim/build/bin && /scratch/sources/Anaconda2/bin/cython -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -I /scratch/sources/Anaconda2/include/python2.7 -2 --embed --output-file /home/xol73553/git/geant4tomosim/build/bin/run_static.c /home/xol73553/git/geant4tomosim/bin/run.py
+	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/prod/tools/RHEL6-x86_64/Cython/0-25-2-el6/prefix/bin/cython -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -I /usr/include/python2.6 -2 --embed --output-file /home/xol73553/git/geant4tomosim/build/bin/run_static.c /home/xol73553/git/geant4tomosim/bin/run.py
 
 bin/sim_static.cxx: ../src/sim.pyx
 bin/sim_static.cxx: ../include/sim.pxd
 bin/sim_static.cxx: ../include/Simulation.hh
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Compiling Cython CXX source for sim_static..."
-	cd /home/xol73553/git/geant4tomosim/build/bin && /scratch/sources/Anaconda2/bin/cython --cplus -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -I /scratch/sources/Anaconda2/include/python2.7 -2 --output-file /home/xol73553/git/geant4tomosim/build/bin/sim_static.cxx /home/xol73553/git/geant4tomosim/src/sim.pyx
+	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/prod/tools/RHEL6-x86_64/Cython/0-25-2-el6/prefix/bin/cython --cplus -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -I /usr/include/python2.6 -2 --output-file /home/xol73553/git/geant4tomosim/build/bin/sim_static.cxx /home/xol73553/git/geant4tomosim/src/sim.pyx
 
 bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o: bin/run_static.c
@@ -404,7 +404,7 @@ bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/TrackerHit.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/TrackerSD.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/VisTrackerSD.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/build.make
-bin/X-Ray_Simulation: /scratch/sources/Anaconda2/lib/libpython2.7.so
+bin/X-Ray_Simulation: /usr/lib64/libpython2.6.so
 bin/X-Ray_Simulation: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4Tree.so
 bin/X-Ray_Simulation: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4GMocren.so
 bin/X-Ray_Simulation: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4visHepRep.so

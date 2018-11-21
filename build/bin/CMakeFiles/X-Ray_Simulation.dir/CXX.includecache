@@ -65,6 +65,8 @@ globals.hh
 ../include/globals.hh
 
 ../include/Simulation.hh
+vector
+-
 
 ../include/StackingAction.hh
 G4UserStackingAction.hh

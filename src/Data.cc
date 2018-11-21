@@ -21,6 +21,25 @@ Data::Data()
 
 Data::~Data(){}
 
+void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
+{
+	if (nImage == 1)
+	{
+		//Saves the rows and columns inputted using the Set methods
+		SetNumberRows(nDetectorsY);
+		SetNumberColumns(nDetectorsZ);
+
+		//Creates a 1D vector for the hit data
+		std::vector<int> iHitDataMatrix(nDetectorsY*nDetectorsZ, 0);
+		SetHitData(iHitDataMatrix);
+	}
+	else 
+	{
+		//Reset the data to zero ready for the next image
+		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
+	}
+}
+
 void Data::SetUpHitData(int Nrow, int Ncolumn)
 {
 	//Saves the rows and columns inputted using the Set methods
@@ -28,10 +47,8 @@ void Data::SetUpHitData(int Nrow, int Ncolumn)
 	SetNumberColumns(Ncolumn);
 
 	//Creates a 1D vector for the hit data
-	//std::vector<int> iHitDataMatrix(Nrow*Ncolumn, 0);
-	//SetHitData(iHitDataMatrix);
-
-	HitDataArray = new int[Nrow*Ncolumn];
+	std::vector<int> iHitDataMatrix(Nrow*Ncolumn, 0);
+	SetHitData(iHitDataMatrix);
 }
 
 void Data::SetUpEnergyData()
@@ -97,12 +114,12 @@ void Data::WriteToTextFile()
 		{
 			outdata << std::setfill(' ') << std::setw(NDigits) << HitDataArray[Element];
 			if (Remainder(Element, columns) >= columns-1)
-				{outdata << std::endl;}
+				{outdata << "\n";}
 		}
 
 		//Let user know data has been saved successfully
 		outdata.close();
-		G4cout << G4endl << "The data has been successfully written to " << FilePath << HitFileName << G4endl << G4endl;
+		G4cout << "\nThe data has been successfully written to " << FilePath << HitFileName << "\n \n";
 
 //--------------------------------------------------------------------------------------
 		if (EnergyDataCmd == true)
@@ -189,12 +206,12 @@ void Data::WriteToTextFile()
 			G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
 
 			//Resets the energy data to zero for the next image
-			for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
+			//for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
 		}
 	}
 	
 	//Reset the data to zero ready for the next image
-	memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
+	//memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
 
 	++nImage;
 }

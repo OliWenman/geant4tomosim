@@ -204,7 +204,7 @@ CYTHON_CMAKE_EXAMPLE_BINARY_DIR:STATIC=/home/xol73553/git/geant4tomosim/build
 CYTHON_CMAKE_EXAMPLE_SOURCE_DIR:STATIC=/home/xol73553/git/geant4tomosim
 
 //Path to a program.
-CYTHON_EXECUTABLE:FILEPATH=/scratch/sources/Anaconda2/bin/cython
+CYTHON_EXECUTABLE:FILEPATH=/dls_sw/prod/tools/RHEL6-x86_64/Cython/0-25-2-el6/prefix/bin/cython
 
 //Extra flags to the cython compiler.
 CYTHON_FLAGS:STRING=
@@ -219,13 +219,13 @@ Geant4_DIR:PATH=/dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/Gean
 PYTHON_ENABLE_MODULE_sim:BOOL=ON
 
 //Path to a program.
-PYTHON_EXECUTABLE:FILEPATH=/scratch/sources/Anaconda2/bin/python
+PYTHON_EXECUTABLE:FILEPATH=/usr/bin/python
 
 //Path to a file.
-PYTHON_INCLUDE_DIR:PATH=/scratch/sources/Anaconda2/include/python2.7
+PYTHON_INCLUDE_DIR:PATH=/usr/include/python2.6
 
 //Path to a library.
-PYTHON_LIBRARY:FILEPATH=/scratch/sources/Anaconda2/lib/libpython2.7.so
+PYTHON_LIBRARY:FILEPATH=/usr/lib64/libpython2.6.so
 
 //Path to a library.
 PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
@@ -234,7 +234,7 @@ PYTHON_LIBRARY_DEBUG:FILEPATH=PYTHON_LIBRARY_DEBUG-NOTFOUND
 PYTHON_MODULE_sim_BUILD_SHARED:BOOL=ON
 
 //Dependencies for the target
-sim_LIB_DEPENDS:STATIC=general;/scratch/sources/Anaconda2/lib/libpython2.7.so;general;G4Tree;general;G4FR;general;G4GMocren;general;G4visHepRep;general;G4RayTracer;general;G4VRML;general;G4vis_management;general;G4modeling;general;G4interfaces;general;G4persistency;general;G4analysis;general;G4error_propagation;general;G4readout;general;G4physicslists;general;G4run;general;G4event;general;G4tracking;general;G4parmodels;general;G4processes;general;G4digits_hits;general;G4track;general;G4particles;general;G4geometry;general;G4materials;general;G4graphics_reps;general;G4intercoms;general;G4global;general;G4clhep;general;G4zlib;
+sim_LIB_DEPENDS:STATIC=general;/usr/lib64/libpython2.6.so;general;G4Tree;general;G4FR;general;G4GMocren;general;G4visHepRep;general;G4RayTracer;general;G4VRML;general;G4vis_management;general;G4modeling;general;G4interfaces;general;G4persistency;general;G4analysis;general;G4error_propagation;general;G4readout;general;G4physicslists;general;G4run;general;G4event;general;G4tracking;general;G4parmodels;general;G4processes;general;G4digits_hits;general;G4track;general;G4particles;general;G4geometry;general;G4materials;general;G4graphics_reps;general;G4intercoms;general;G4global;general;G4clhep;general;G4zlib;
 
 
 ########################
@@ -389,11 +389,11 @@ CYTHON_FLAGS-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CYTHON_NO_DOCSTRINGS
 CYTHON_NO_DOCSTRINGS-ADVANCED:INTERNAL=1
 //Details about finding Cython
-FIND_PACKAGE_MESSAGE_DETAILS_Cython:INTERNAL=[/scratch/sources/Anaconda2/bin/cython][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_Cython:INTERNAL=[/dls_sw/prod/tools/RHEL6-x86_64/Cython/0-25-2-el6/prefix/bin/cython][v()]
 //Details about finding PythonInterp
-FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/scratch/sources/Anaconda2/bin/python][v2.7.15()]
+FIND_PACKAGE_MESSAGE_DETAILS_PythonInterp:INTERNAL=[/usr/bin/python][v2.6.6()]
 //Details about finding PythonLibs
-FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/scratch/sources/Anaconda2/lib/libpython2.7.so][/scratch/sources/Anaconda2/include/python2.7][v2.7.15()]
+FIND_PACKAGE_MESSAGE_DETAILS_PythonLibs:INTERNAL=[/usr/lib64/libpython2.6.so][/usr/include/python2.6][v2.6.6()]
 //ADVANCED property for variable: PYTHON_ENABLE_MODULE_sim
 PYTHON_ENABLE_MODULE_sim-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PYTHON_EXECUTABLE

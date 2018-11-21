@@ -1,6 +1,8 @@
 #ifndef Simulation_h
 #define Simulation_h 1
 
+#include <vector>
+
 class Data;
 class Input;
 class DetectorConstruction;
@@ -23,11 +25,13 @@ class Simulation
 		void KillSimulation();
 		void ResetSimulation();
 
+		std::vector<int> GetLastImage();
+
 	private:
 		//It's own private functions to be called by the public functions
 		void Setup();
-		void SaveDataToFile(Data*);
-		void BeamOn(G4RunManager* , unsigned long long int nParticles);
+		void SaveDataToFile();
+		void BeamOn(unsigned long long int nParticles);
 		void CompletionTime(double LoopTimer, int Image, int NoImages);
 		
 		//Pointers to different classes

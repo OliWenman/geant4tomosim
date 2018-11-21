@@ -6,5 +6,5 @@ CXX_FLAGS = -W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-stri
 
 CXX_DEFINES = -DG4UI_USE -DG4VERBOSE -DG4VIS_USE -DG4_STORE_TRAJECTORY -Dsim_EXPORTS
 
-CXX_INCLUDES = -I/home/xol73553/git/geant4tomosim/include -I/scratch/sources/Anaconda2/include/python2.7 -isystem /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 
+CXX_INCLUDES = -I/home/xol73553/git/geant4tomosim/include -I/usr/include/python2.6 -isystem /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 
 

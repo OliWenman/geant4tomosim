@@ -21,7 +21,10 @@ cdef class PySim:
         
     def kill(self):
         self.thisptr.KillSimulation()
+
+    def lastImage(self):
+        return np.reshape(self.thisptr.GetLastImage(), (-1, 250))
+	
+
+	
     
-        
-   # def Pointer1DSim(self, Input):
-    #    self.thisptr.Pointer1DSim(Input)

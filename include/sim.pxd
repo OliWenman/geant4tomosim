@@ -10,3 +10,5 @@ cdef extern from "Simulation.hh":
       void RunSimulation()
       void ResetSimulation()
       void KillSimulation()
+      vector[int] GetLastImage()
+      

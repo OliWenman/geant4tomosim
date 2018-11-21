@@ -40,7 +40,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "../include"
-  "/scratch/sources/Anaconda2/include/python2.7"
+  "/usr/include/python2.6"
   "/dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4"
   )
 
