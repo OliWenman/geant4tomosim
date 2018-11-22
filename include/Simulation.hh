@@ -18,14 +18,17 @@ class Simulation
 		Simulation();
 		~Simulation(); 
 
-		//Functions to be called
-		void Initialize();
-		void Visualisation();
-		void RunSimulation();
-		void PythonRun(int Image, int NumberOfImages, double dTheta);
-		void KillSimulation();
-		void ResetSimulation();
+		//Methods
+		//To be called from Python
+		void pyInitialise(int nDetectorsY, int nDetectorsZ);
+		void pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta);
 
+		//To be called from C++		
+		void Initialize();
+		void RunSimulation();
+		void Visualisation();
+
+		//Python or C++
 		std::vector<int> GetLastImage();
 
 	private:
@@ -46,9 +49,6 @@ class Simulation
 
 		bool Reset;
 		bool Ready;
-
-		
-
 };
 
 #endif

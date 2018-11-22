@@ -61,7 +61,7 @@ src/sim.cxx: ../src/sim.pyx
 src/sim.cxx: ../include/sim.pxd
 src/sim.cxx: ../include/Simulation.hh
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Compiling Cython CXX source for sim..."
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/prod/tools/RHEL6-x86_64/Cython/0-25-2-el6/prefix/bin/cython --cplus -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -2 --output-file /home/xol73553/git/geant4tomosim/build/src/sim.cxx /home/xol73553/git/geant4tomosim/src/sim.pyx
+	cd /home/xol73553/git/geant4tomosim/build/src && /scratch/sources/Anaconda2/bin/cython --cplus -I /home/xol73553/git/geant4tomosim/include -I /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4 -2 --output-file /home/xol73553/git/geant4tomosim/build/src/sim.cxx /home/xol73553/git/geant4tomosim/src/sim.pyx
 
 src/CMakeFiles/sim.dir/sim.cxx.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/sim.cxx.o: src/sim.cxx
@@ -385,7 +385,7 @@ src/sim.so: src/CMakeFiles/sim.dir/TrackerHit.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/TrackerSD.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/VisTrackerSD.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/build.make
-src/sim.so: /usr/lib64/libpython2.6.so
+src/sim.so: /scratch/sources/Anaconda2/lib/libpython2.7.so
 src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4Tree.so
 src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4GMocren.so
 src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4visHepRep.so
