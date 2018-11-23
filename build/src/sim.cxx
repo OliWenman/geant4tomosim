@@ -1209,7 +1209,7 @@ static const char __pyx_k_create_dataset[] = "create_dataset";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_The_total_simulation_time_is[] = "The total simulation time is";
-static const char __pyx_k_build_Output_HDF5_Projection_h5[] = "./../build/Output/HDF5/Projection.h5";
+static const char __pyx_k_build_Output_HDF5_ProjectionTes[] = "./../build/Output/HDF5/ProjectionTest.h5";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static PyObject *__pyx_n_s_File;
 static PyObject *__pyx_n_s_NumberOfImages;
@@ -1217,7 +1217,7 @@ static PyObject *__pyx_kp_s_The_total_simulation_time_is;
 static PyObject *__pyx_n_s_TomographyData;
 static PyObject *__pyx_n_s_TotalParticles;
 static PyObject *__pyx_n_s_TypeError;
-static PyObject *__pyx_kp_s_build_Output_HDF5_Projection_h5;
+static PyObject *__pyx_kp_s_build_Output_HDF5_ProjectionTes;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_create_dataset;
@@ -1617,7 +1617,7 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
   /* "sim.pyx":39
  * 
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
+ *         h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')             # <<<<<<<<<<<<<<
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
  * 
  */
@@ -1634,7 +1634,7 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
 
   /* "sim.pyx":40
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
+ *         h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))             # <<<<<<<<<<<<<<
  * 
  *         iTime = time.time()
@@ -2813,7 +2813,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TomographyData, __pyx_k_TomographyData, sizeof(__pyx_k_TomographyData), 0, 0, 1, 1},
   {&__pyx_n_s_TotalParticles, __pyx_k_TotalParticles, sizeof(__pyx_k_TotalParticles), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
-  {&__pyx_kp_s_build_Output_HDF5_Projection_h5, __pyx_k_build_Output_HDF5_Projection_h5, sizeof(__pyx_k_build_Output_HDF5_Projection_h5), 0, 0, 1, 0},
+  {&__pyx_kp_s_build_Output_HDF5_ProjectionTes, __pyx_k_build_Output_HDF5_ProjectionTes, sizeof(__pyx_k_build_Output_HDF5_ProjectionTes), 0, 0, 1, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_create_dataset, __pyx_k_create_dataset, sizeof(__pyx_k_create_dataset), 0, 0, 1, 1},
@@ -2865,17 +2865,17 @@ static int __Pyx_InitCachedConstants(void) {
   /* "sim.pyx":39
  * 
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
+ *         h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')             # <<<<<<<<<<<<<<
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
  * 
  */
-  __pyx_tuple_ = PyTuple_Pack(2, __pyx_kp_s_build_Output_HDF5_Projection_h5, __pyx_n_s_w); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 39, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_kp_s_build_Output_HDF5_ProjectionTes, __pyx_n_s_w); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "sim.pyx":40
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
+ *         h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))             # <<<<<<<<<<<<<<
  * 
  *         iTime = time.time()

@@ -8,7 +8,6 @@ src/CMakeFiles/sim.dir/ActionInitialization.cc.o
  ../include/EventAction.hh
  ../include/Input.hh
  ../include/PrimaryGeneratorAction.hh
- ../include/RunAction.hh
  ../include/Simulation.hh
  ../include/StackingAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
@@ -43,7 +42,6 @@ src/CMakeFiles/sim.dir/ActionInitialization.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserEventAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserRunAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserStackingAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPrimaryGenerator.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserActionInitialization.hh
@@ -1346,300 +1344,12 @@ src/CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
  /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorActionMessenger.cc
-src/CMakeFiles/sim.dir/RunAction.cc.o
- ../include/Data.hh
- ../include/Input.hh
- ../include/RunAction.hh
- ../include/RunActionMessenger.hh
- ../include/Simulation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Normal3D.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Point3D.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Transform3D.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Transform3D.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Vector3D.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/DualRand.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/JamesRandom.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/MTwistEngine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/MixMaxRng.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBinomial.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBinomial.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBit.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBit.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBreitWigner.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandBreitWigner.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandChiSquare.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandChiSquare.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandExpZiggurat.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandExponential.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandExponential.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandFlat.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandFlat.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGamma.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGamma.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGauss.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGauss.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGaussQ.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGaussQ.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGaussZiggurat.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGeneral.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandGeneral.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandLandau.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandLandau.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandPoisson.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandPoisson.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandPoissonQ.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandPoissonQ.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandStudentT.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandStudentT.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/Random.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/Random.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandomEngine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RandomEngine.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/Randomize.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RanecuEngine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/Ranlux64Engine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RanluxEngine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/RanshiEngine.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/memory.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/thread_local.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/AxisAngle.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/AxisAngle.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/LorentzVector.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/LorentzVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/Rotation.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/Rotation.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationInterfaces.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationInterfaces.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationX.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationX.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationY.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationY.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationZ.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/RotationZ.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AffineTransform.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AffineTransform.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Allocator.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AllocatorPool.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AutoLock.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AuxiliaryNavServices.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AuxiliaryNavServices.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4BlockingList.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4BlockingList.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ClassificationOfNewTrack.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4DCofThisEvent.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4DataVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4DataVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4DynamicParticle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4DynamicParticle.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ElectronOccupancy.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Element.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ElementTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ElementVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Event.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4EventManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Exp.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4FastVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ForceCondition.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GPILSelection.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GRSSolid.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GRSSolid.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GRSVolume.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GRSVolume.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4GeomSplitter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4HCofThisEvent.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4IonisParamElm.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4IonisParamMat.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Isotope.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4IsotopeVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Log.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4LogicalVolume.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4LogicalVolume.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4LorentzVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Material.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4MaterialPropertiesIndex.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4MaterialPropertiesTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4MaterialPropertiesTable.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4MaterialPropertyVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4MaterialTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationHistory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationHistory.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationHistoryPool.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationLevel.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationLevel.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationLevelRep.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationLevelRep.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NavigationLogger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Navigator.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Navigator.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NormalNavigation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4NormalNavigation.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4OrderedTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PDefManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParameterisedNavigation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParameterisedNavigation.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleChange.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleChange.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleMomentum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleTable.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleTableIterator.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsModelCatalog.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsOrderedFreeVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsTable.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PhysicsVectorType.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryParticle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryTransformer.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryVertex.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ProcessManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ProcessManager.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ProcessType.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ProcessVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ProcessVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ReferenceCountedHandle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Region.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Region.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4RegularNavigation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ReplicaNavigation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ReplicaNavigation.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4RotationMatrix.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Run.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4RunManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4RunManagerKernel.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SandiaTable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartTrackStack.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelHeader.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelHeader.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelNode.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelNode.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelProxy.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SmartVoxelProxy.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4StackManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4StackedTrack.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Step.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Step.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4StepPoint.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4StepPoint.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4StepStatus.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SteppingControl.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SteppingManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Threading.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TouchableHandle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TouchableHistory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TouchableHistory.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TouchableHistoryHandle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Track.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Track.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackFastVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackStack.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackStatus.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackingManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrackingMessenger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4TrajectoryContainer.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Transform3D.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserRunAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserStackingAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserSteppingAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserTrackingAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VDigiCollection.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VHitsCollection.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPVParameterisation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VParticleChange.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VParticleChange.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPhysicalVolume.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPhysicalVolume.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VProcess.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VSolid.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VSolid.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VSteppingVerbose.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTrajectory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserEventInformation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserTrackInformation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VVolumeMaterialScanner.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VoxelNavigation.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VoxelNavigation.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/Randomize.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/evmandefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/evtdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/geomdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/geomwdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/pwdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/trajectoryControl.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/trkdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
- /home/xol73553/git/geant4tomosim/src/RunAction.cc
-src/CMakeFiles/sim.dir/RunActionMessenger.cc.o
- ../include/Data.hh
- ../include/RunAction.hh
- ../include/RunActionMessenger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithABool.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADouble.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADoubleAndUnit.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAString.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAnInteger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserRunAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
- /home/xol73553/git/geant4tomosim/src/RunActionMessenger.cc
 src/CMakeFiles/sim.dir/Simulation.cc.o
- ../include/ActionInitialization.hh
  ../include/Data.hh
  ../include/DetectorConstruction.hh
  ../include/Input.hh
  ../include/PhysicsList.hh
+ ../include/PrimaryGeneratorAction.hh
  ../include/Simulation.hh
  ../include/StackingAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
@@ -1799,6 +1509,7 @@ src/CMakeFiles/sim.dir/Simulation.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleChange.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.icc
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleGun.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleMomentum.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleTable.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleTable.icc
@@ -1919,6 +1630,7 @@ src/CMakeFiles/sim.dir/Simulation.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPhysicalVolume.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPhysicalVolume.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPhysicsConstructor.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPrimaryGenerator.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VProcess.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VRML1File.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VRML2File.hh
@@ -1935,10 +1647,10 @@ src/CMakeFiles/sim.dir/Simulation.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTree.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUIshell.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUPLSplitter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserActionInitialization.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserEventInformation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPhysicsList.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPrimaryGeneratorAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserTrackInformation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VViewer.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VViewer.icc

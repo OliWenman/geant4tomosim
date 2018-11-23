@@ -15,8 +15,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o"
   "CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o"
   "CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o"
-  "CMakeFiles/X-Ray_Simulation.dir/__/src/RunAction.cc.o"
-  "CMakeFiles/X-Ray_Simulation.dir/__/src/RunActionMessenger.cc.o"
   "CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o"
   "CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstruction.cc.o"
   "CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstructionMessenger.cc.o"

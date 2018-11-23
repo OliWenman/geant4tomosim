@@ -422,60 +422,6 @@ __/src/PrimaryGeneratorActionMessenger.cc.s:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.s
 .PHONY : __/src/PrimaryGeneratorActionMessenger.cc.s
 
-__/src/RunAction.o: __/src/RunAction.cc.o
-
-.PHONY : __/src/RunAction.o
-
-# target to build an object file
-__/src/RunAction.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunAction.cc.o
-.PHONY : __/src/RunAction.cc.o
-
-__/src/RunAction.i: __/src/RunAction.cc.i
-
-.PHONY : __/src/RunAction.i
-
-# target to preprocess a source file
-__/src/RunAction.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunAction.cc.i
-.PHONY : __/src/RunAction.cc.i
-
-__/src/RunAction.s: __/src/RunAction.cc.s
-
-.PHONY : __/src/RunAction.s
-
-# target to generate assembly for a file
-__/src/RunAction.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunAction.cc.s
-.PHONY : __/src/RunAction.cc.s
-
-__/src/RunActionMessenger.o: __/src/RunActionMessenger.cc.o
-
-.PHONY : __/src/RunActionMessenger.o
-
-# target to build an object file
-__/src/RunActionMessenger.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunActionMessenger.cc.o
-.PHONY : __/src/RunActionMessenger.cc.o
-
-__/src/RunActionMessenger.i: __/src/RunActionMessenger.cc.i
-
-.PHONY : __/src/RunActionMessenger.i
-
-# target to preprocess a source file
-__/src/RunActionMessenger.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunActionMessenger.cc.i
-.PHONY : __/src/RunActionMessenger.cc.i
-
-__/src/RunActionMessenger.s: __/src/RunActionMessenger.cc.s
-
-.PHONY : __/src/RunActionMessenger.s
-
-# target to generate assembly for a file
-__/src/RunActionMessenger.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/RunActionMessenger.cc.s
-.PHONY : __/src/RunActionMessenger.cc.s
-
 __/src/Simulation.o: __/src/Simulation.cc.o
 
 .PHONY : __/src/Simulation.o
@@ -761,12 +707,6 @@ help:
 	@echo "... __/src/PrimaryGeneratorActionMessenger.o"
 	@echo "... __/src/PrimaryGeneratorActionMessenger.i"
 	@echo "... __/src/PrimaryGeneratorActionMessenger.s"
-	@echo "... __/src/RunAction.o"
-	@echo "... __/src/RunAction.i"
-	@echo "... __/src/RunAction.s"
-	@echo "... __/src/RunActionMessenger.o"
-	@echo "... __/src/RunActionMessenger.i"
-	@echo "... __/src/RunActionMessenger.s"
 	@echo "... __/src/Simulation.o"
 	@echo "... __/src/Simulation.i"
 	@echo "... __/src/Simulation.s"

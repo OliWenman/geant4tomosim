@@ -36,7 +36,7 @@ cdef class PySim:
     def run(self, TotalParticles, NumberOfImages, dTheta):
 
         #Create a h5 file to view the data after the simulation is complete
-        h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
+        h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')
         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
         
         iTime = time.time()

@@ -3,15 +3,17 @@
 import sys
 sys.path.insert(0, './../build/src')
 
+from G4Units import *
 import sim
 import numpy as np
 
 nDetY = 250
 nDetZ = 210
+DetectorDimensions = [0.1, 0.1, 0.1]*mm
 
-TotalRotation = 180
+NumberOfImages = 10
+TotalRotation = 360#*deg
 nParticles = 10000000
-NumberOfImages = 1
 
 Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ)

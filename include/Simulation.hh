@@ -26,10 +26,10 @@ class Simulation
 		//To be called from C++		
 		void Initialize();
 		void RunSimulation();
-		void Visualisation();
 
 		//Python or C++
 		std::vector<int> GetLastImage();
+		void Visualisation();
 
 	private:
 		//It's own private functions to be called by the public functions

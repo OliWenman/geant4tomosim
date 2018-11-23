@@ -126,7 +126,7 @@ src/preinstall:
 src/CMakeFiles/sim.dir/all:
 	$(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/depend
 	$(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48 "Built target sim"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44 "Built target sim"
 .PHONY : src/CMakeFiles/sim.dir/all
 
 # Include target in all.
@@ -136,7 +136,7 @@ all: src/CMakeFiles/sim.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/sim.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 23
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 21
 	$(MAKE) -f CMakeFiles/Makefile2 src/CMakeFiles/sim.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/sim.dir/rule
@@ -181,7 +181,7 @@ bin/preinstall:
 bin/CMakeFiles/X-Ray_Simulation.dir/all:
 	$(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/depend
 	$(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 "Built target X-Ray_Simulation"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 "Built target X-Ray_Simulation"
 .PHONY : bin/CMakeFiles/X-Ray_Simulation.dir/all
 
 # Include target in all.
@@ -191,7 +191,7 @@ all: bin/CMakeFiles/X-Ray_Simulation.dir/all
 
 # Build rule for subdir invocation for target.
 bin/CMakeFiles/X-Ray_Simulation.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 25
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 23
 	$(MAKE) -f CMakeFiles/Makefile2 bin/CMakeFiles/X-Ray_Simulation.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/xol73553/git/geant4tomosim/build/CMakeFiles 0
 .PHONY : bin/CMakeFiles/X-Ray_Simulation.dir/rule

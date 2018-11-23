@@ -1,7 +1,7 @@
 #include "Simulation.hh"
 #include "DetectorConstruction.hh"
-#include "ActionInitialization.hh"
 #include "PhysicsList.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
 #include "Data.hh"
 #include "Input.hh"
@@ -50,12 +50,14 @@ void Simulation::Setup()
 	input = new Input(data);
 	DC = new DetectorConstruction(data, input); 
 	PL = new PhysicsList(input); 
+	
 	visManager = 0;
 
 	//Setup the Geant4 user and action intialization	
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
-  	runManager -> SetUserInitialization(new ActionInitialization(input, DC, data));
+	runManager -> SetUserAction(new StackingAction());
+	runManager -> SetUserAction(new PrimaryGeneratorAction(DC, input, data));
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();
@@ -98,11 +100,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	G4cout << "\nThe seed being used is " << seedCmd
                << "\n\nCommands successfully added\n";
 
-        Visualisation();
-
 	G4cout << "\nNumber of detectors: " << nDetectorsY << " x " << nDetectorsZ
 
 	       << "\n\nSimulation Ready!" << G4endl;
+
+	Visualisation();
 
 	Ready = true;	
 }
@@ -137,7 +139,7 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
 		
 		G4cout << "\n================================================================================"
-		       << "\n                           PROCESSING IMAGE " <<  Image+1
+		       << "\n                             IMAGE " <<  Image+1
 	               << "\n================================================================================\n" 
 
 		       << "\nProcessing... " << G4endl;
@@ -355,6 +357,6 @@ void Simulation::CompletionTime(double LoopTimer, int Image, int NoImages)
 				{G4cout << int(ETSeconds/60) << " minutes left \n";}
 		}
 		else
-			{G4cout << "\nLess than a minute left to go... \n";}
+			{G4cout << "Less than a minute left to go... \n";}
 	}
 }

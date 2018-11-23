@@ -232,35 +232,9 @@ src/CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.s"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorActionMessenger.cc -o CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.s
 
-src/CMakeFiles/sim.dir/RunAction.cc.o: src/CMakeFiles/sim.dir/flags.make
-src/CMakeFiles/sim.dir/RunAction.cc.o: ../src/RunAction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/sim.dir/RunAction.cc.o"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/RunAction.cc.o -c /home/xol73553/git/geant4tomosim/src/RunAction.cc
-
-src/CMakeFiles/sim.dir/RunAction.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sim.dir/RunAction.cc.i"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xol73553/git/geant4tomosim/src/RunAction.cc > CMakeFiles/sim.dir/RunAction.cc.i
-
-src/CMakeFiles/sim.dir/RunAction.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sim.dir/RunAction.cc.s"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/RunAction.cc -o CMakeFiles/sim.dir/RunAction.cc.s
-
-src/CMakeFiles/sim.dir/RunActionMessenger.cc.o: src/CMakeFiles/sim.dir/flags.make
-src/CMakeFiles/sim.dir/RunActionMessenger.cc.o: ../src/RunActionMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/CMakeFiles/sim.dir/RunActionMessenger.cc.o"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/RunActionMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/RunActionMessenger.cc
-
-src/CMakeFiles/sim.dir/RunActionMessenger.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sim.dir/RunActionMessenger.cc.i"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xol73553/git/geant4tomosim/src/RunActionMessenger.cc > CMakeFiles/sim.dir/RunActionMessenger.cc.i
-
-src/CMakeFiles/sim.dir/RunActionMessenger.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sim.dir/RunActionMessenger.cc.s"
-	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/RunActionMessenger.cc -o CMakeFiles/sim.dir/RunActionMessenger.cc.s
-
 src/CMakeFiles/sim.dir/StackingAction.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/StackingAction.cc.o: ../src/StackingAction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/CMakeFiles/sim.dir/StackingAction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object src/CMakeFiles/sim.dir/StackingAction.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/StackingAction.cc.o -c /home/xol73553/git/geant4tomosim/src/StackingAction.cc
 
 src/CMakeFiles/sim.dir/StackingAction.cc.i: cmake_force
@@ -273,7 +247,7 @@ src/CMakeFiles/sim.dir/StackingAction.cc.s: cmake_force
 
 src/CMakeFiles/sim.dir/TargetConstruction.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/TargetConstruction.cc.o: ../src/TargetConstruction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/CMakeFiles/sim.dir/TargetConstruction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object src/CMakeFiles/sim.dir/TargetConstruction.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/TargetConstruction.cc.o -c /home/xol73553/git/geant4tomosim/src/TargetConstruction.cc
 
 src/CMakeFiles/sim.dir/TargetConstruction.cc.i: cmake_force
@@ -286,7 +260,7 @@ src/CMakeFiles/sim.dir/TargetConstruction.cc.s: cmake_force
 
 src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o: ../src/TargetConstructionMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/TargetConstructionMessenger.cc
 
 src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.i: cmake_force
@@ -299,7 +273,7 @@ src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.s: cmake_force
 
 src/CMakeFiles/sim.dir/TrackerHit.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/TrackerHit.cc.o: ../src/TrackerHit.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object src/CMakeFiles/sim.dir/TrackerHit.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object src/CMakeFiles/sim.dir/TrackerHit.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/TrackerHit.cc.o -c /home/xol73553/git/geant4tomosim/src/TrackerHit.cc
 
 src/CMakeFiles/sim.dir/TrackerHit.cc.i: cmake_force
@@ -312,7 +286,7 @@ src/CMakeFiles/sim.dir/TrackerHit.cc.s: cmake_force
 
 src/CMakeFiles/sim.dir/TrackerSD.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/TrackerSD.cc.o: ../src/TrackerSD.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object src/CMakeFiles/sim.dir/TrackerSD.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object src/CMakeFiles/sim.dir/TrackerSD.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/TrackerSD.cc.o -c /home/xol73553/git/geant4tomosim/src/TrackerSD.cc
 
 src/CMakeFiles/sim.dir/TrackerSD.cc.i: cmake_force
@@ -325,7 +299,7 @@ src/CMakeFiles/sim.dir/TrackerSD.cc.s: cmake_force
 
 src/CMakeFiles/sim.dir/VisTrackerSD.cc.o: src/CMakeFiles/sim.dir/flags.make
 src/CMakeFiles/sim.dir/VisTrackerSD.cc.o: ../src/VisTrackerSD.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object src/CMakeFiles/sim.dir/VisTrackerSD.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object src/CMakeFiles/sim.dir/VisTrackerSD.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/src && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sim.dir/VisTrackerSD.cc.o -c /home/xol73553/git/geant4tomosim/src/VisTrackerSD.cc
 
 src/CMakeFiles/sim.dir/VisTrackerSD.cc.i: cmake_force
@@ -351,8 +325,6 @@ sim_OBJECTS = \
 "CMakeFiles/sim.dir/PhysicsListMessenger.cc.o" \
 "CMakeFiles/sim.dir/PrimaryGeneratorAction.cc.o" \
 "CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.o" \
-"CMakeFiles/sim.dir/RunAction.cc.o" \
-"CMakeFiles/sim.dir/RunActionMessenger.cc.o" \
 "CMakeFiles/sim.dir/StackingAction.cc.o" \
 "CMakeFiles/sim.dir/TargetConstruction.cc.o" \
 "CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o" \
@@ -376,8 +348,6 @@ src/sim.so: src/CMakeFiles/sim.dir/PhysicsList.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/PhysicsListMessenger.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/PrimaryGeneratorAction.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.o
-src/sim.so: src/CMakeFiles/sim.dir/RunAction.cc.o
-src/sim.so: src/CMakeFiles/sim.dir/RunActionMessenger.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/StackingAction.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/TargetConstruction.cc.o
 src/sim.so: src/CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o
@@ -417,7 +387,7 @@ src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4int
 src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4global.so
 src/sim.so: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/libG4clhep.so
 src/sim.so: src/CMakeFiles/sim.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Linking CXX shared module sim.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Linking CXX shared module sim.so"
 	cd /home/xol73553/git/geant4tomosim/build/src && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sim.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

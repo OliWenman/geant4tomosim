@@ -422,60 +422,6 @@ PrimaryGeneratorActionMessenger.cc.s:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.s
 .PHONY : PrimaryGeneratorActionMessenger.cc.s
 
-RunAction.o: RunAction.cc.o
-
-.PHONY : RunAction.o
-
-# target to build an object file
-RunAction.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunAction.cc.o
-.PHONY : RunAction.cc.o
-
-RunAction.i: RunAction.cc.i
-
-.PHONY : RunAction.i
-
-# target to preprocess a source file
-RunAction.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunAction.cc.i
-.PHONY : RunAction.cc.i
-
-RunAction.s: RunAction.cc.s
-
-.PHONY : RunAction.s
-
-# target to generate assembly for a file
-RunAction.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunAction.cc.s
-.PHONY : RunAction.cc.s
-
-RunActionMessenger.o: RunActionMessenger.cc.o
-
-.PHONY : RunActionMessenger.o
-
-# target to build an object file
-RunActionMessenger.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunActionMessenger.cc.o
-.PHONY : RunActionMessenger.cc.o
-
-RunActionMessenger.i: RunActionMessenger.cc.i
-
-.PHONY : RunActionMessenger.i
-
-# target to preprocess a source file
-RunActionMessenger.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunActionMessenger.cc.i
-.PHONY : RunActionMessenger.cc.i
-
-RunActionMessenger.s: RunActionMessenger.cc.s
-
-.PHONY : RunActionMessenger.s
-
-# target to generate assembly for a file
-RunActionMessenger.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/RunActionMessenger.cc.s
-.PHONY : RunActionMessenger.cc.s
-
 Simulation.o: Simulation.cc.o
 
 .PHONY : Simulation.o
@@ -734,12 +680,6 @@ help:
 	@echo "... PrimaryGeneratorActionMessenger.o"
 	@echo "... PrimaryGeneratorActionMessenger.i"
 	@echo "... PrimaryGeneratorActionMessenger.s"
-	@echo "... RunAction.o"
-	@echo "... RunAction.i"
-	@echo "... RunAction.s"
-	@echo "... RunActionMessenger.o"
-	@echo "... RunActionMessenger.i"
-	@echo "... RunActionMessenger.s"
 	@echo "... Simulation.o"
 	@echo "... Simulation.i"
 	@echo "... Simulation.s"

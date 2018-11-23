@@ -13,8 +13,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/sim.dir/PhysicsListMessenger.cc.o"
   "CMakeFiles/sim.dir/PrimaryGeneratorAction.cc.o"
   "CMakeFiles/sim.dir/PrimaryGeneratorActionMessenger.cc.o"
-  "CMakeFiles/sim.dir/RunAction.cc.o"
-  "CMakeFiles/sim.dir/RunActionMessenger.cc.o"
   "CMakeFiles/sim.dir/StackingAction.cc.o"
   "CMakeFiles/sim.dir/TargetConstruction.cc.o"
   "CMakeFiles/sim.dir/TargetConstructionMessenger.cc.o"

@@ -55,7 +55,7 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 {
 	//Set the Starting positions (only once)
 	if (nImage == 0)
-		{G4cout << G4endl << "THE GEOMETRY SETUP " << G4endl; StartingPositions = Positions;}
+		{G4cout << "\nTHE GEOMETRY SETUP\n "; StartingPositions = Positions;}
 
 	//Loop through the number of objects there are to be created
 	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
@@ -87,7 +87,7 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 				{Ellipsoid(nObject);}
 
 			else
-				{G4cout << G4endl << "ERROR: Wrong TypesOfObjects String " << G4endl; exit(-1);}
+				{G4cout << "\nERROR: Wrong TypesOfObjects String" << G4endl; exit(-1);}
 
 			//Add its logical volume to that object
 			AddLogicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, Materials[nObject]);
@@ -98,9 +98,7 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 	} 
 
 	//Update the image counter
-	++nImage;
-
-	G4cout << G4endl << "The target has been created succesfully " << G4endl;  	
+	++nImage;	
 }
 
 void TargetConstruction::Box(G4int ObjectNumber)
@@ -116,7 +114,7 @@ void TargetConstruction::Box(G4int ObjectNumber)
 	//Create a G4VSolid of the box
 	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x(), TargetSize.y(), TargetSize.z());
 
-	G4cout << G4endl << "Created solid: Cube"+StringNumber;
+	G4cout << "\nCreated solid: Cube"+StringNumber;
 }
 
 void TargetConstruction::HollowBox(G4int ObjectNumber)
@@ -150,7 +148,7 @@ void TargetConstruction::HollowBox(G4int ObjectNumber)
 							       outerBox, 
 							       innerBox);
 
-	G4cout << G4endl << "Created solid: HollowCube"+StringNumber;
+	G4cout << "\nCreated solid: HollowCube"+StringNumber;
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber)
@@ -173,7 +171,7 @@ void TargetConstruction::Cylinder(G4int ObjectNumber)
                   		 	startAngle,
                   		 	spanningAngle);
 
-	G4cout << G4endl << "Created solid: Cylinder"+StringNumber;
+	G4cout << "\nCreated solid: Cylinder"+StringNumber;
 }
 
 void TargetConstruction::Sphere(G4int ObjectNumber)
@@ -198,7 +196,7 @@ void TargetConstruction::Sphere(G4int ObjectNumber)
 				     	startingTheta,
 				     	endTheta);
 
-	G4cout << G4endl << "Created solid: Sphere"+StringNumber;
+	G4cout << "\nCreated solid: Sphere"+StringNumber;
 }
 
 void TargetConstruction::Trapezoid(G4int ObjectNumber)
@@ -219,7 +217,7 @@ void TargetConstruction::Trapezoid(G4int ObjectNumber)
             			     dy2,
             			     dz);
 
-	G4cout << G4endl << "Created solid: Trapezoid"+StringNumber;
+	G4cout << "\nCreated solid: Trapezoid"+StringNumber;
 }
 
 void TargetConstruction::Ellipsoid(G4int ObjectNumber)
@@ -239,6 +237,8 @@ void TargetConstruction::Ellipsoid(G4int ObjectNumber)
                     				 pzSemiAxis,
                     				 pzBottomCut,
                     				 pzTopCut);
+
+	G4cout << "\nCreated solid: Ellipsoid"+StringNumber;
 }
 
 void TargetConstruction::SubtractSolid(G4int ObjectNumber)
@@ -287,7 +287,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber)
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
 
-	G4cout << G4endl << "Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
+	G4cout << "\nCreated solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
 	++SubtractSolidCounter;
 }
 
@@ -300,7 +300,7 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
 
-		G4cout << G4endl << "Created logic volume: LV" << Solid -> GetName();
+		G4cout << "\nCreated logic volume: LV" << Solid -> GetName();
 	}
 }
 
@@ -350,7 +350,7 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
 
 		if(nImage == 0)
-			{G4cout << G4endl << "Created physical volume: phy" << Name;} 
+			{G4cout << "\nCreated physical volume: phy" << Name;} 
 	}
 }
 
