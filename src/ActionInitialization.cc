@@ -21,7 +21,7 @@ void ActionInitialization::BuildForMaster() const
 
 void ActionInitialization::Build() const
 {
-  	SetUserAction(new RunAction(input));	
+  	//SetUserAction(new RunAction(input));	
 	SetUserAction(new StackingAction());
   	//SetUserAction(new EventAction());
 	SetUserAction(new PrimaryGeneratorAction(DC, input, data));

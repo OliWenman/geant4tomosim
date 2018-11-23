@@ -792,8 +792,8 @@ static const char *__pyx_f[] = {
 /*--- Type declarations ---*/
 struct __pyx_obj_3sim_PySim;
 
-/* "sim.pyx":5
- * import h5py
+/* "sim.pyx":6
+ * import time
  * 
  * cdef class PySim:             # <<<<<<<<<<<<<<
  * 
@@ -804,6 +804,7 @@ struct __pyx_obj_3sim_PySim {
   Simulation *thisptr;
   int nDetectorsY;
   int nDetectorsZ;
+  double SimTime;
 };
 
 
@@ -1115,6 +1116,13 @@ static void __Pyx_CppExn2PyErr() {
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+/* Print.proto */
+static int __Pyx_Print(PyObject*, PyObject *, int);
+#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
+static PyObject* __pyx_print = 0;
+static PyObject* __pyx_print_kwargs = 0;
+#endif
+
 /* CIntFromPy.proto */
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
@@ -1161,24 +1169,33 @@ int __pyx_module_is_main_sim = 0;
 
 /* Implementation of 'sim' */
 static PyObject *__pyx_builtin_range;
+static PyObject *__pyx_builtin_round;
 static PyObject *__pyx_builtin_TypeError;
 static const char __pyx_k_w[] = "w";
 static const char __pyx_k_np[] = "np";
+static const char __pyx_k_end[] = "end";
 static const char __pyx_k_File[] = "File";
+static const char __pyx_k_file[] = "file";
 static const char __pyx_k_h5py[] = "h5py";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
+static const char __pyx_k_time[] = "time";
 static const char __pyx_k_close[] = "close";
+static const char __pyx_k_hours[] = "hours. ";
 static const char __pyx_k_nDetY[] = "nDetY";
 static const char __pyx_k_nDetZ[] = "nDetZ";
 static const char __pyx_k_numpy[] = "numpy";
+static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
+static const char __pyx_k_round[] = "round";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_dTheta[] = "dTheta";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_reduce[] = "__reduce__";
+static const char __pyx_k_minutes[] = "minutes. ";
 static const char __pyx_k_reshape[] = "reshape";
+static const char __pyx_k_seconds[] = "seconds. ";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
@@ -1191,38 +1208,48 @@ static const char __pyx_k_TotalParticles[] = "TotalParticles";
 static const char __pyx_k_create_dataset[] = "create_dataset";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_Output_HDF5_Projection_h5[] = "./../Output/HDF5/Projection.h5";
+static const char __pyx_k_The_total_simulation_time_is[] = "The total simulation time is";
+static const char __pyx_k_build_Output_HDF5_Projection_h5[] = "./../build/Output/HDF5/Projection.h5";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static PyObject *__pyx_n_s_File;
 static PyObject *__pyx_n_s_NumberOfImages;
-static PyObject *__pyx_kp_s_Output_HDF5_Projection_h5;
+static PyObject *__pyx_kp_s_The_total_simulation_time_is;
 static PyObject *__pyx_n_s_TomographyData;
 static PyObject *__pyx_n_s_TotalParticles;
 static PyObject *__pyx_n_s_TypeError;
+static PyObject *__pyx_kp_s_build_Output_HDF5_Projection_h5;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_create_dataset;
 static PyObject *__pyx_n_s_dTheta;
+static PyObject *__pyx_n_s_end;
+static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_n_s_h5py;
+static PyObject *__pyx_kp_s_hours;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_lastImage;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_kp_s_minutes;
 static PyObject *__pyx_n_s_nDetY;
 static PyObject *__pyx_n_s_nDetZ;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_numpy;
+static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
 static PyObject *__pyx_n_s_reshape;
+static PyObject *__pyx_n_s_round;
+static PyObject *__pyx_kp_s_seconds;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_test;
+static PyObject *__pyx_n_s_time;
 static PyObject *__pyx_n_s_w;
 static int __pyx_pf_3sim_5PySim___cinit__(struct __pyx_obj_3sim_PySim *__pyx_v_self); /* proto */
 static void __pyx_pf_3sim_5PySim_2__dealloc__(struct __pyx_obj_3sim_PySim *__pyx_v_self); /* proto */
@@ -1233,9 +1260,12 @@ static PyObject *__pyx_pf_3sim_5PySim_11nDetectorsY___get__(struct __pyx_obj_3si
 static int __pyx_pf_3sim_5PySim_11nDetectorsY_2__set__(struct __pyx_obj_3sim_PySim *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_3sim_5PySim_11nDetectorsZ___get__(struct __pyx_obj_3sim_PySim *__pyx_v_self); /* proto */
 static int __pyx_pf_3sim_5PySim_11nDetectorsZ_2__set__(struct __pyx_obj_3sim_PySim *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_3sim_5PySim_7SimTime___get__(struct __pyx_obj_3sim_PySim *__pyx_v_self); /* proto */
+static int __pyx_pf_3sim_5PySim_7SimTime_2__set__(struct __pyx_obj_3sim_PySim *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static PyObject *__pyx_pf_3sim_5PySim_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3sim_PySim *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3sim_5PySim_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3sim_PySim *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_3sim_PySim(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_int_3;
 static PyObject *__pyx_int_neg_1;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_slice__3;
@@ -1248,7 +1278,7 @@ static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
 /* Late includes */
 
-/* "sim.pyx":15
+/* "sim.pyx":18
  * 
  *     #Constructor, create an instance of the C++ class
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1278,7 +1308,7 @@ static int __pyx_pf_3sim_5PySim___cinit__(struct __pyx_obj_3sim_PySim *__pyx_v_s
   Simulation *__pyx_t_1;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "sim.pyx":16
+  /* "sim.pyx":19
  *     #Constructor, create an instance of the C++ class
  *     def __cinit__(self):
  *         self.thisptr = new Simulation()             # <<<<<<<<<<<<<<
@@ -1289,11 +1319,11 @@ static int __pyx_pf_3sim_5PySim___cinit__(struct __pyx_obj_3sim_PySim *__pyx_v_s
     __pyx_t_1 = new Simulation();
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 16, __pyx_L1_error)
+    __PYX_ERR(0, 19, __pyx_L1_error)
   }
   __pyx_v_self->thisptr = __pyx_t_1;
 
-  /* "sim.pyx":15
+  /* "sim.pyx":18
  * 
  *     #Constructor, create an instance of the C++ class
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
@@ -1312,7 +1342,7 @@ static int __pyx_pf_3sim_5PySim___cinit__(struct __pyx_obj_3sim_PySim *__pyx_v_s
   return __pyx_r;
 }
 
-/* "sim.pyx":19
+/* "sim.pyx":22
  * 
  *     #Delete the C++ class
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1335,7 +1365,7 @@ static void __pyx_pf_3sim_5PySim_2__dealloc__(struct __pyx_obj_3sim_PySim *__pyx
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "sim.pyx":20
+  /* "sim.pyx":23
  *     #Delete the C++ class
  *     def __dealloc__(self):
  *         del self.thisptr             # <<<<<<<<<<<<<<
@@ -1344,7 +1374,7 @@ static void __pyx_pf_3sim_5PySim_2__dealloc__(struct __pyx_obj_3sim_PySim *__pyx
  */
   delete __pyx_v_self->thisptr;
 
-  /* "sim.pyx":19
+  /* "sim.pyx":22
  * 
  *     #Delete the C++ class
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -1356,7 +1386,7 @@ static void __pyx_pf_3sim_5PySim_2__dealloc__(struct __pyx_obj_3sim_PySim *__pyx
   __Pyx_RefNannyFinishContext();
 }
 
-/* "sim.pyx":23
+/* "sim.pyx":26
  * 
  *     #Get needed information from textfiles settings.mac and Geometry.mac
  *     def initialise(self, nDetY, nDetZ):             # <<<<<<<<<<<<<<
@@ -1395,11 +1425,11 @@ static PyObject *__pyx_pw_3sim_5PySim_5initialise(PyObject *__pyx_v_self, PyObje
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_nDetZ)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("initialise", 1, 2, 2, 1); __PYX_ERR(0, 23, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("initialise", 1, 2, 2, 1); __PYX_ERR(0, 26, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "initialise") < 0)) __PYX_ERR(0, 23, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "initialise") < 0)) __PYX_ERR(0, 26, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1412,7 +1442,7 @@ static PyObject *__pyx_pw_3sim_5PySim_5initialise(PyObject *__pyx_v_self, PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("initialise", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 23, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("initialise", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 26, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sim.PySim.initialise", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1431,27 +1461,27 @@ static PyObject *__pyx_pf_3sim_5PySim_4initialise(struct __pyx_obj_3sim_PySim *_
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("initialise", 0);
 
-  /* "sim.pyx":26
+  /* "sim.pyx":29
  * 
  *         #Make the number of detectors availiable for the Python class
  *         self.nDetectorsY = nDetY             # <<<<<<<<<<<<<<
  *         self.nDetectorsZ = nDetZ
  * 
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_nDetY); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_nDetY); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 29, __pyx_L1_error)
   __pyx_v_self->nDetectorsY = __pyx_t_1;
 
-  /* "sim.pyx":27
+  /* "sim.pyx":30
  *         #Make the number of detectors availiable for the Python class
  *         self.nDetectorsY = nDetY
  *         self.nDetectorsZ = nDetZ             # <<<<<<<<<<<<<<
  * 
  *         #Call the C++ function
  */
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_nDetZ); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_nDetZ); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 30, __pyx_L1_error)
   __pyx_v_self->nDetectorsZ = __pyx_t_1;
 
-  /* "sim.pyx":30
+  /* "sim.pyx":33
  * 
  *         #Call the C++ function
  *         self.thisptr.pyInitialise(self.nDetectorsY, self.nDetectorsZ)             # <<<<<<<<<<<<<<
@@ -1460,7 +1490,7 @@ static PyObject *__pyx_pf_3sim_5PySim_4initialise(struct __pyx_obj_3sim_PySim *_
  */
   __pyx_v_self->thisptr->pyInitialise(__pyx_v_self->nDetectorsY, __pyx_v_self->nDetectorsZ);
 
-  /* "sim.pyx":23
+  /* "sim.pyx":26
  * 
  *     #Get needed information from textfiles settings.mac and Geometry.mac
  *     def initialise(self, nDetY, nDetZ):             # <<<<<<<<<<<<<<
@@ -1480,7 +1510,7 @@ static PyObject *__pyx_pf_3sim_5PySim_4initialise(struct __pyx_obj_3sim_PySim *_
   return __pyx_r;
 }
 
-/* "sim.pyx":33
+/* "sim.pyx":36
  * 
  *     #Start the simulation
  *     def run(self, TotalParticles, NumberOfImages, dTheta):             # <<<<<<<<<<<<<<
@@ -1522,17 +1552,17 @@ static PyObject *__pyx_pw_3sim_5PySim_7run(PyObject *__pyx_v_self, PyObject *__p
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_NumberOfImages)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, 1); __PYX_ERR(0, 33, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, 1); __PYX_ERR(0, 36, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dTheta)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, 2); __PYX_ERR(0, 33, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, 2); __PYX_ERR(0, 36, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run") < 0)) __PYX_ERR(0, 33, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "run") < 0)) __PYX_ERR(0, 36, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1547,7 +1577,7 @@ static PyObject *__pyx_pw_3sim_5PySim_7run(PyObject *__pyx_v_self, PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 33, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("run", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 36, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("sim.PySim.run", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1563,8 +1593,11 @@ static PyObject *__pyx_pw_3sim_5PySim_7run(PyObject *__pyx_v_self, PyObject *__p
 static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_self, PyObject *__pyx_v_TotalParticles, PyObject *__pyx_v_NumberOfImages, PyObject *__pyx_v_dTheta) {
   PyObject *__pyx_v_h5file = NULL;
   PyObject *__pyx_v_dataset = NULL;
+  PyObject *__pyx_v_iTime = NULL;
   PyObject *__pyx_v_nImage = NULL;
   PyObject *__pyx_v_Image = NULL;
+  PyObject *__pyx_v_eTime = NULL;
+  PyObject *__pyx_v_message = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1578,42 +1611,43 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
   int __pyx_t_9;
   int __pyx_t_10;
   double __pyx_t_11;
+  int __pyx_t_12;
   __Pyx_RefNannySetupContext("run", 0);
 
-  /* "sim.pyx":36
+  /* "sim.pyx":39
  * 
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
+ *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_h5py); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_h5py); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_File); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_File); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_h5file = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "sim.pyx":37
+  /* "sim.pyx":40
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../Output/HDF5/Projection.h5', 'w')
+ *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))             # <<<<<<<<<<<<<<
  * 
- *         #Run the simulation for the number of images that are required
+ *         iTime = time.time()
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_h5file, __pyx_n_s_create_dataset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_h5file, __pyx_n_s_create_dataset); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsZ); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsZ); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -1624,59 +1658,92 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
   PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_v_NumberOfImages);
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_shape, __pyx_t_5) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__2, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__2, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dataset = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "sim.pyx":40
+  /* "sim.pyx":42
+ *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
+ * 
+ *         iTime = time.time()             # <<<<<<<<<<<<<<
+ * 
+ *         #Run the simulation for the number of images that are required
+ */
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  if (__pyx_t_2) {
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_iTime = __pyx_t_5;
+  __pyx_t_5 = 0;
+
+  /* "sim.pyx":45
  * 
  *         #Run the simulation for the number of images that are required
  *         for nImage in range(NumberOfImages):             # <<<<<<<<<<<<<<
  *             self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta)
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_NumberOfImages); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_range, __pyx_v_NumberOfImages); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
-    __pyx_t_2 = __pyx_t_5; __Pyx_INCREF(__pyx_t_2); __pyx_t_6 = 0;
+    __pyx_t_1 = __pyx_t_5; __Pyx_INCREF(__pyx_t_1); __pyx_t_6 = 0;
     __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_7 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 40, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_7 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   for (;;) {
     if (likely(!__pyx_t_7)) {
-      if (likely(PyList_CheckExact(__pyx_t_2))) {
-        if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_2)) break;
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       } else {
-        if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 40, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       }
     } else {
-      __pyx_t_5 = __pyx_t_7(__pyx_t_2);
+      __pyx_t_5 = __pyx_t_7(__pyx_t_1);
       if (unlikely(!__pyx_t_5)) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 40, __pyx_L1_error)
+          else __PYX_ERR(0, 45, __pyx_L1_error)
         }
         break;
       }
@@ -1685,74 +1752,74 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
     __Pyx_XDECREF_SET(__pyx_v_nImage, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "sim.pyx":41
+    /* "sim.pyx":46
  *         #Run the simulation for the number of images that are required
  *         for nImage in range(NumberOfImages):
  *             self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta)             # <<<<<<<<<<<<<<
  * 
  *             #Get the image from the simulation before it gets wiped
  */
-    __pyx_t_8 = __Pyx_PyInt_As_unsigned_PY_LONG_LONG(__pyx_v_TotalParticles); if (unlikely((__pyx_t_8 == (unsigned PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
-    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_nImage); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
-    __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_NumberOfImages); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
-    __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_v_dTheta); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 41, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_As_unsigned_PY_LONG_LONG(__pyx_v_TotalParticles); if (unlikely((__pyx_t_8 == (unsigned PY_LONG_LONG)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_v_nImage); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_As_int(__pyx_v_NumberOfImages); if (unlikely((__pyx_t_10 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
+    __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_v_dTheta); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L1_error)
     __pyx_v_self->thisptr->pyRun(__pyx_t_8, __pyx_t_9, __pyx_t_10, __pyx_t_11);
 
-    /* "sim.pyx":44
+    /* "sim.pyx":49
  * 
  *             #Get the image from the simulation before it gets wiped
  *             Image = self.lastImage()             # <<<<<<<<<<<<<<
  * 
  *             #Append the 2D Data to a 3D data set
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lastImage); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_lastImage); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
       if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
         __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
+        __Pyx_DECREF_SET(__pyx_t_2, function);
       }
     }
     if (__pyx_t_4) {
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else {
-      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 44, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF_SET(__pyx_v_Image, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "sim.pyx":47
+    /* "sim.pyx":52
  * 
  *             #Append the 2D Data to a 3D data set
  *             dataset[:, :, nImage] = Image[:, :]             # <<<<<<<<<<<<<<
  * 
  *         #Close the file
  */
-    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_Image, __pyx_tuple__5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 47, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_v_Image, __pyx_tuple__5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_slice__6);
     __Pyx_GIVEREF(__pyx_slice__6);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_slice__6);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_slice__6);
     __Pyx_INCREF(__pyx_slice__7);
     __Pyx_GIVEREF(__pyx_slice__7);
-    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_slice__7);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_slice__7);
     __Pyx_INCREF(__pyx_v_nImage);
     __Pyx_GIVEREF(__pyx_v_nImage);
-    PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_v_nImage);
-    if (unlikely(PyObject_SetItem(__pyx_v_dataset, __pyx_t_1, __pyx_t_5) < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_nImage);
+    if (unlikely(PyObject_SetItem(__pyx_v_dataset, __pyx_t_2, __pyx_t_5) < 0)) __PYX_ERR(0, 52, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "sim.pyx":40
+    /* "sim.pyx":45
  * 
  *         #Run the simulation for the number of images that are required
  *         for nImage in range(NumberOfImages):             # <<<<<<<<<<<<<<
@@ -1760,38 +1827,239 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
  * 
  */
   }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "sim.pyx":50
+  /* "sim.pyx":55
  * 
  *         #Close the file
  *         h5file.close()             # <<<<<<<<<<<<<<
  * 
- *     #Return the image data from the simulation
+ *         #Ouput the time in the appropriate units
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_h5file, __pyx_n_s_close); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_h5file, __pyx_n_s_close); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = NULL;
+  __pyx_t_2 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_5);
-    if (likely(__pyx_t_1)) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_2)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-      __Pyx_INCREF(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_5, function);
     }
   }
-  if (__pyx_t_1) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (__pyx_t_2) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "sim.pyx":58
+ * 
+ *         #Ouput the time in the appropriate units
+ *         eTime = time.time()             # <<<<<<<<<<<<<<
+ *         self.SimTime = eTime -iTime
+ * 
+ */
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_5) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_eTime = __pyx_t_1;
+  __pyx_t_1 = 0;
 
-  /* "sim.pyx":33
+  /* "sim.pyx":59
+ *         #Ouput the time in the appropriate units
+ *         eTime = time.time()
+ *         self.SimTime = eTime -iTime             # <<<<<<<<<<<<<<
+ * 
+ *         message = "The total simulation time is"
+ */
+  __pyx_t_1 = PyNumber_Subtract(__pyx_v_eTime, __pyx_v_iTime); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_self->SimTime = __pyx_t_11;
+
+  /* "sim.pyx":61
+ *         self.SimTime = eTime -iTime
+ * 
+ *         message = "The total simulation time is"             # <<<<<<<<<<<<<<
+ *         if self.SimTime < 60:
+ *            print message, round(self.SimTime, 3), "seconds. "
+ */
+  __Pyx_INCREF(__pyx_kp_s_The_total_simulation_time_is);
+  __pyx_v_message = __pyx_kp_s_The_total_simulation_time_is;
+
+  /* "sim.pyx":62
+ * 
+ *         message = "The total simulation time is"
+ *         if self.SimTime < 60:             # <<<<<<<<<<<<<<
+ *            print message, round(self.SimTime, 3), "seconds. "
+ *         elif self.SimTime < 60*60:
+ */
+  __pyx_t_12 = ((__pyx_v_self->SimTime < 60.0) != 0);
+  if (__pyx_t_12) {
+
+    /* "sim.pyx":63
+ *         message = "The total simulation time is"
+ *         if self.SimTime < 60:
+ *            print message, round(self.SimTime, 3), "seconds. "             # <<<<<<<<<<<<<<
+ *         elif self.SimTime < 60*60:
+ *            print message, round(self.SimTime/60, 3), "minutes. "
+ */
+    __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->SimTime); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+    __Pyx_INCREF(__pyx_int_3);
+    __Pyx_GIVEREF(__pyx_int_3);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_3);
+    __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_round, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_v_message);
+    __Pyx_GIVEREF(__pyx_v_message);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_message);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
+    __Pyx_INCREF(__pyx_kp_s_seconds);
+    __Pyx_GIVEREF(__pyx_kp_s_seconds);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_kp_s_seconds);
+    __pyx_t_1 = 0;
+    if (__Pyx_Print(0, __pyx_t_2, 1) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "sim.pyx":62
+ * 
+ *         message = "The total simulation time is"
+ *         if self.SimTime < 60:             # <<<<<<<<<<<<<<
+ *            print message, round(self.SimTime, 3), "seconds. "
+ *         elif self.SimTime < 60*60:
+ */
+    goto __pyx_L5;
+  }
+
+  /* "sim.pyx":64
+ *         if self.SimTime < 60:
+ *            print message, round(self.SimTime, 3), "seconds. "
+ *         elif self.SimTime < 60*60:             # <<<<<<<<<<<<<<
+ *            print message, round(self.SimTime/60, 3), "minutes. "
+ *         else:
+ */
+  __pyx_t_12 = ((__pyx_v_self->SimTime < 3600.0) != 0);
+  if (__pyx_t_12) {
+
+    /* "sim.pyx":65
+ *            print message, round(self.SimTime, 3), "seconds. "
+ *         elif self.SimTime < 60*60:
+ *            print message, round(self.SimTime/60, 3), "minutes. "             # <<<<<<<<<<<<<<
+ *         else:
+ *            print message, round(self.SimTime/60*60, 3), "hours. "
+ */
+    __pyx_t_2 = PyFloat_FromDouble((__pyx_v_self->SimTime / 60.0)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+    __Pyx_INCREF(__pyx_int_3);
+    __Pyx_GIVEREF(__pyx_int_3);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_int_3);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_round, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_INCREF(__pyx_v_message);
+    __Pyx_GIVEREF(__pyx_v_message);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_message);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
+    __Pyx_INCREF(__pyx_kp_s_minutes);
+    __Pyx_GIVEREF(__pyx_kp_s_minutes);
+    PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_s_minutes);
+    __pyx_t_2 = 0;
+    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+    /* "sim.pyx":64
+ *         if self.SimTime < 60:
+ *            print message, round(self.SimTime, 3), "seconds. "
+ *         elif self.SimTime < 60*60:             # <<<<<<<<<<<<<<
+ *            print message, round(self.SimTime/60, 3), "minutes. "
+ *         else:
+ */
+    goto __pyx_L5;
+  }
+
+  /* "sim.pyx":67
+ *            print message, round(self.SimTime/60, 3), "minutes. "
+ *         else:
+ *            print message, round(self.SimTime/60*60, 3), "hours. "             # <<<<<<<<<<<<<<
+ * 
+ *     #Return the image data from the simulation
+ */
+  /*else*/ {
+    __pyx_t_1 = PyFloat_FromDouble(((__pyx_v_self->SimTime / 60.0) * 60.0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+    __Pyx_INCREF(__pyx_int_3);
+    __Pyx_GIVEREF(__pyx_int_3);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_int_3);
+    __pyx_t_1 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_round, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(__pyx_v_message);
+    __Pyx_GIVEREF(__pyx_v_message);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_message);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
+    __Pyx_INCREF(__pyx_kp_s_hours);
+    __Pyx_GIVEREF(__pyx_kp_s_hours);
+    PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_kp_s_hours);
+    __pyx_t_1 = 0;
+    if (__Pyx_Print(0, __pyx_t_2, 1) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  }
+  __pyx_L5:;
+
+  /* "sim.pyx":36
  * 
  *     #Start the simulation
  *     def run(self, TotalParticles, NumberOfImages, dTheta):             # <<<<<<<<<<<<<<
@@ -1813,14 +2081,17 @@ static PyObject *__pyx_pf_3sim_5PySim_6run(struct __pyx_obj_3sim_PySim *__pyx_v_
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_h5file);
   __Pyx_XDECREF(__pyx_v_dataset);
+  __Pyx_XDECREF(__pyx_v_iTime);
   __Pyx_XDECREF(__pyx_v_nImage);
   __Pyx_XDECREF(__pyx_v_Image);
+  __Pyx_XDECREF(__pyx_v_eTime);
+  __Pyx_XDECREF(__pyx_v_message);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "sim.pyx":53
+/* "sim.pyx":70
  * 
  *     #Return the image data from the simulation
  *     def lastImage(self):             # <<<<<<<<<<<<<<
@@ -1853,24 +2124,23 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("lastImage", 0);
 
-  /* "sim.pyx":54
+  /* "sim.pyx":71
  *     #Return the image data from the simulation
  *     def lastImage(self):
  *         return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))             # <<<<<<<<<<<<<<
  * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __pyx_convert_vector_to_py_int(__pyx_v_self->thisptr->GetLastImage()); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_int(__pyx_v_self->thisptr->GetLastImage()); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_int_neg_1);
   __Pyx_GIVEREF(__pyx_int_neg_1);
@@ -1893,7 +2163,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_2, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -1903,7 +2173,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_2, __pyx_t_5};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -1911,7 +2181,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -1922,7 +2192,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_5);
     __pyx_t_2 = 0;
     __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -1931,7 +2201,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "sim.pyx":53
+  /* "sim.pyx":70
  * 
  *     #Return the image data from the simulation
  *     def lastImage(self):             # <<<<<<<<<<<<<<
@@ -1955,7 +2225,7 @@ static PyObject *__pyx_pf_3sim_5PySim_8lastImage(struct __pyx_obj_3sim_PySim *__
   return __pyx_r;
 }
 
-/* "sim.pyx":11
+/* "sim.pyx":12
  * 
  *     #Makes the following available in Python-space:
  *     cdef public int nDetectorsY             # <<<<<<<<<<<<<<
@@ -1982,7 +2252,7 @@ static PyObject *__pyx_pf_3sim_5PySim_11nDetectorsY___get__(struct __pyx_obj_3si
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsY); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2017,7 +2287,7 @@ static int __pyx_pf_3sim_5PySim_11nDetectorsY_2__set__(struct __pyx_obj_3sim_PyS
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L1_error)
   __pyx_v_self->nDetectorsY = __pyx_t_1;
 
   /* function exit code */
@@ -2031,12 +2301,12 @@ static int __pyx_pf_3sim_5PySim_11nDetectorsY_2__set__(struct __pyx_obj_3sim_PyS
   return __pyx_r;
 }
 
-/* "sim.pyx":12
+/* "sim.pyx":13
  *     #Makes the following available in Python-space:
  *     cdef public int nDetectorsY
  *     cdef public int nDetectorsZ             # <<<<<<<<<<<<<<
  * 
- *     #Constructor, create an instance of the C++ class
+ *     cdef public double SimTime
  */
 
 /* Python wrapper */
@@ -2058,7 +2328,7 @@ static PyObject *__pyx_pf_3sim_5PySim_11nDetectorsZ___get__(struct __pyx_obj_3si
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsZ); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->nDetectorsZ); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2093,7 +2363,7 @@ static int __pyx_pf_3sim_5PySim_11nDetectorsZ_2__set__(struct __pyx_obj_3sim_PyS
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_value); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 13, __pyx_L1_error)
   __pyx_v_self->nDetectorsZ = __pyx_t_1;
 
   /* function exit code */
@@ -2101,6 +2371,82 @@ static int __pyx_pf_3sim_5PySim_11nDetectorsZ_2__set__(struct __pyx_obj_3sim_PyS
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_AddTraceback("sim.PySim.nDetectorsZ.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "sim.pyx":15
+ *     cdef public int nDetectorsZ
+ * 
+ *     cdef public double SimTime             # <<<<<<<<<<<<<<
+ * 
+ *     #Constructor, create an instance of the C++ class
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3sim_5PySim_7SimTime_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_3sim_5PySim_7SimTime_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_3sim_5PySim_7SimTime___get__(((struct __pyx_obj_3sim_PySim *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3sim_5PySim_7SimTime___get__(struct __pyx_obj_3sim_PySim *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->SimTime); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("sim.PySim.SimTime.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_3sim_5PySim_7SimTime_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_3sim_5PySim_7SimTime_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_3sim_5PySim_7SimTime_2__set__(((struct __pyx_obj_3sim_PySim *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3sim_5PySim_7SimTime_2__set__(struct __pyx_obj_3sim_PySim *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  double __pyx_t_1;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  __pyx_t_1 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_1 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_v_self->SimTime = __pyx_t_1;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("sim.PySim.SimTime.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -2336,6 +2682,20 @@ static int __pyx_setprop_3sim_5PySim_nDetectorsZ(PyObject *o, PyObject *v, CYTHO
   }
 }
 
+static PyObject *__pyx_getprop_3sim_5PySim_SimTime(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_3sim_5PySim_7SimTime_1__get__(o);
+}
+
+static int __pyx_setprop_3sim_5PySim_SimTime(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_3sim_5PySim_7SimTime_3__set__(o, v);
+  }
+  else {
+    PyErr_SetString(PyExc_NotImplementedError, "__del__");
+    return -1;
+  }
+}
+
 static PyMethodDef __pyx_methods_3sim_PySim[] = {
   {"initialise", (PyCFunction)__pyx_pw_3sim_5PySim_5initialise, METH_VARARGS|METH_KEYWORDS, 0},
   {"run", (PyCFunction)__pyx_pw_3sim_5PySim_7run, METH_VARARGS|METH_KEYWORDS, 0},
@@ -2348,6 +2708,7 @@ static PyMethodDef __pyx_methods_3sim_PySim[] = {
 static struct PyGetSetDef __pyx_getsets_3sim_PySim[] = {
   {(char *)"nDetectorsY", __pyx_getprop_3sim_5PySim_nDetectorsY, __pyx_setprop_3sim_5PySim_nDetectorsY, (char *)0, 0},
   {(char *)"nDetectorsZ", __pyx_getprop_3sim_5PySim_nDetectorsZ, __pyx_setprop_3sim_5PySim_nDetectorsZ, (char *)0, 0},
+  {(char *)"SimTime", __pyx_getprop_3sim_5PySim_SimTime, __pyx_setprop_3sim_5PySim_SimTime, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
@@ -2448,39 +2809,49 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_File, __pyx_k_File, sizeof(__pyx_k_File), 0, 0, 1, 1},
   {&__pyx_n_s_NumberOfImages, __pyx_k_NumberOfImages, sizeof(__pyx_k_NumberOfImages), 0, 0, 1, 1},
-  {&__pyx_kp_s_Output_HDF5_Projection_h5, __pyx_k_Output_HDF5_Projection_h5, sizeof(__pyx_k_Output_HDF5_Projection_h5), 0, 0, 1, 0},
+  {&__pyx_kp_s_The_total_simulation_time_is, __pyx_k_The_total_simulation_time_is, sizeof(__pyx_k_The_total_simulation_time_is), 0, 0, 1, 0},
   {&__pyx_n_s_TomographyData, __pyx_k_TomographyData, sizeof(__pyx_k_TomographyData), 0, 0, 1, 1},
   {&__pyx_n_s_TotalParticles, __pyx_k_TotalParticles, sizeof(__pyx_k_TotalParticles), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
+  {&__pyx_kp_s_build_Output_HDF5_Projection_h5, __pyx_k_build_Output_HDF5_Projection_h5, sizeof(__pyx_k_build_Output_HDF5_Projection_h5), 0, 0, 1, 0},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_create_dataset, __pyx_k_create_dataset, sizeof(__pyx_k_create_dataset), 0, 0, 1, 1},
   {&__pyx_n_s_dTheta, __pyx_k_dTheta, sizeof(__pyx_k_dTheta), 0, 0, 1, 1},
+  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
+  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_n_s_h5py, __pyx_k_h5py, sizeof(__pyx_k_h5py), 0, 0, 1, 1},
+  {&__pyx_kp_s_hours, __pyx_k_hours, sizeof(__pyx_k_hours), 0, 0, 1, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_lastImage, __pyx_k_lastImage, sizeof(__pyx_k_lastImage), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_kp_s_minutes, __pyx_k_minutes, sizeof(__pyx_k_minutes), 0, 0, 1, 0},
   {&__pyx_n_s_nDetY, __pyx_k_nDetY, sizeof(__pyx_k_nDetY), 0, 0, 1, 1},
   {&__pyx_n_s_nDetZ, __pyx_k_nDetZ, sizeof(__pyx_k_nDetZ), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
+  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
   {&__pyx_n_s_reshape, __pyx_k_reshape, sizeof(__pyx_k_reshape), 0, 0, 1, 1},
+  {&__pyx_n_s_round, __pyx_k_round, sizeof(__pyx_k_round), 0, 0, 1, 1},
+  {&__pyx_kp_s_seconds, __pyx_k_seconds, sizeof(__pyx_k_seconds), 0, 0, 1, 0},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+  {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
   {&__pyx_n_s_w, __pyx_k_w, sizeof(__pyx_k_w), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 45, __pyx_L1_error)
+  __pyx_builtin_round = __Pyx_GetBuiltinName(__pyx_n_s_round); if (!__pyx_builtin_round) __PYX_ERR(0, 63, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -2491,48 +2862,48 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "sim.pyx":36
+  /* "sim.pyx":39
  * 
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
+ *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')             # <<<<<<<<<<<<<<
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
  * 
  */
-  __pyx_tuple_ = PyTuple_Pack(2, __pyx_kp_s_Output_HDF5_Projection_h5, __pyx_n_s_w); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_kp_s_build_Output_HDF5_Projection_h5, __pyx_n_s_w); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "sim.pyx":37
+  /* "sim.pyx":40
  *         #Create a h5 file to view the data after the simulation is complete
- *         h5file = h5py.File('./../Output/HDF5/Projection.h5', 'w')
+ *         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
  *         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))             # <<<<<<<<<<<<<<
  * 
- *         #Run the simulation for the number of images that are required
+ *         iTime = time.time()
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_n_s_TomographyData); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_n_s_TomographyData); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "sim.pyx":47
+  /* "sim.pyx":52
  * 
  *             #Append the 2D Data to a 3D data set
  *             dataset[:, :, nImage] = Image[:, :]             # <<<<<<<<<<<<<<
  * 
  *         #Close the file
  */
-  __pyx_slice__3 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_slice__3 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
-  __pyx_slice__4 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__4)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_slice__4 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__4)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__4);
   __Pyx_GIVEREF(__pyx_slice__4);
-  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_slice__3, __pyx_slice__4); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_slice__3, __pyx_slice__4); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_slice__6 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__6)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_slice__6 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__6)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__6);
   __Pyx_GIVEREF(__pyx_slice__6);
-  __pyx_slice__7 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__7)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_slice__7 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__7)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__7);
   __Pyx_GIVEREF(__pyx_slice__7);
 
@@ -2563,6 +2934,7 @@ static int __Pyx_InitCachedConstants(void) {
 
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -2605,13 +2977,13 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_type_3sim_PySim.tp_print = 0;
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3sim_PySim.tp_dictoffset && __pyx_type_3sim_PySim.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3sim_PySim.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttrString(__pyx_m, "PySim", (PyObject *)&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "PySim", (PyObject *)&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3sim_PySim) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __pyx_ptype_3sim_PySim = &__pyx_type_3sim_PySim;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -2821,7 +3193,7 @@ if (!__Pyx_RefNanny) {
  * # creating a cython wrapper class
  * import numpy as np             # <<<<<<<<<<<<<<
  * import h5py
- * 
+ * import time
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2832,12 +3204,24 @@ if (!__Pyx_RefNanny) {
  * # creating a cython wrapper class
  * import numpy as np
  * import h5py             # <<<<<<<<<<<<<<
+ * import time
  * 
- * cdef class PySim:
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_h5py, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_h5py, __pyx_t_1) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "sim.pyx":4
+ * import numpy as np
+ * import h5py
+ * import time             # <<<<<<<<<<<<<<
+ * 
+ * cdef class PySim:
+ */
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_time, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "sim.pyx":1
@@ -4128,6 +4512,112 @@ bad:
                                      little, !is_unsigned);
     }
 }
+
+/* Print */
+      #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+static PyObject *__Pyx_GetStdout(void) {
+    PyObject *f = PySys_GetObject((char *)"stdout");
+    if (!f) {
+        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
+    }
+    return f;
+}
+static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
+    int i;
+    if (!f) {
+        if (!(f = __Pyx_GetStdout()))
+            return -1;
+    }
+    Py_INCREF(f);
+    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
+        PyObject* v;
+        if (PyFile_SoftSpace(f, 1)) {
+            if (PyFile_WriteString(" ", f) < 0)
+                goto error;
+        }
+        v = PyTuple_GET_ITEM(arg_tuple, i);
+        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
+            goto error;
+        if (PyString_Check(v)) {
+            char *s = PyString_AsString(v);
+            Py_ssize_t len = PyString_Size(v);
+            if (len > 0) {
+                switch (s[len-1]) {
+                    case ' ': break;
+                    case '\f': case '\r': case '\n': case '\t': case '\v':
+                        PyFile_SoftSpace(f, 0);
+                        break;
+                    default:  break;
+                }
+            }
+        }
+    }
+    if (newline) {
+        if (PyFile_WriteString("\n", f) < 0)
+            goto error;
+        PyFile_SoftSpace(f, 0);
+    }
+    Py_DECREF(f);
+    return 0;
+error:
+    Py_DECREF(f);
+    return -1;
+}
+#else
+static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
+    PyObject* kwargs = 0;
+    PyObject* result = 0;
+    PyObject* end_string;
+    if (unlikely(!__pyx_print)) {
+        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
+        if (!__pyx_print)
+            return -1;
+    }
+    if (stream) {
+        kwargs = PyDict_New();
+        if (unlikely(!kwargs))
+            return -1;
+        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
+            goto bad;
+        if (!newline) {
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                goto bad;
+            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                goto bad;
+            }
+            Py_DECREF(end_string);
+        }
+    } else if (!newline) {
+        if (unlikely(!__pyx_print_kwargs)) {
+            __pyx_print_kwargs = PyDict_New();
+            if (unlikely(!__pyx_print_kwargs))
+                return -1;
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                return -1;
+            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                return -1;
+            }
+            Py_DECREF(end_string);
+        }
+        kwargs = __pyx_print_kwargs;
+    }
+    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
+    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
+        Py_DECREF(kwargs);
+    if (!result)
+        return -1;
+    Py_DECREF(result);
+    return 0;
+bad:
+    if (kwargs != __pyx_print_kwargs)
+        Py_XDECREF(kwargs);
+    return -1;
+}
+#endif
 
 /* CIntFromPy */
       static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {

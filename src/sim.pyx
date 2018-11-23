@@ -1,6 +1,7 @@
 # creating a cython wrapper class
 import numpy as np
 import h5py
+import time
 
 cdef class PySim:
 
@@ -11,6 +12,8 @@ cdef class PySim:
     cdef public int nDetectorsY
     cdef public int nDetectorsZ
 
+    cdef public double SimTime
+  
     #Constructor, create an instance of the C++ class
     def __cinit__(self):
         self.thisptr = new Simulation()
@@ -36,6 +39,8 @@ cdef class PySim:
         h5file = h5py.File('./../build/Output/HDF5/Projection.h5', 'w')
         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
         
+        iTime = time.time()
+
         #Run the simulation for the number of images that are required
         for nImage in range(NumberOfImages):
             self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta)
@@ -49,12 +54,19 @@ cdef class PySim:
         #Close the file
         h5file.close()
 
+        #Ouput the time in the appropriate units
+        eTime = time.time()
+        self.SimTime = eTime -iTime
+
+        message = "The total simulation time is"
+        if self.SimTime < 60:
+           print message, round(self.SimTime, 3), "seconds. "
+        elif self.SimTime < 60*60:
+           print message, round(self.SimTime/60, 3), "minutes. "
+        else:
+           print message, round(self.SimTime/60*60, 3), "hours. "
+            
     #Return the image data from the simulation
     def lastImage(self):
         return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
 
-
-	
-
-	
-    

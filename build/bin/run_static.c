@@ -1018,7 +1018,7 @@ static PyObject *__pyx_n_s_sim;
 static PyObject *__pyx_n_s_sys;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_int_0;
-static PyObject *__pyx_int_3;
+static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_180;
 static PyObject *__pyx_int_210;
 static PyObject *__pyx_int_250;
@@ -1113,7 +1113,7 @@ static int __Pyx_InitCachedConstants(void) {
 static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_180 = PyInt_FromLong(180); if (unlikely(!__pyx_int_180)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_210 = PyInt_FromLong(210); if (unlikely(!__pyx_int_210)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_250 = PyInt_FromLong(250); if (unlikely(!__pyx_int_250)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1413,7 +1413,7 @@ if (!__Pyx_RefNanny) {
  * import sim
  * import numpy as np             # <<<<<<<<<<<<<<
  * 
- * TotalRotation = 180
+ * nDetY = 250
  */
   __pyx_t_2 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -1423,83 +1423,83 @@ if (!__Pyx_RefNanny) {
   /* "run.py":9
  * import numpy as np
  * 
- * TotalRotation = 180             # <<<<<<<<<<<<<<
- * nParticles = 10000000
- * NumberOfImages = 3
- */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TotalRotation, __pyx_int_180) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
-
-  /* "run.py":10
- * 
- * TotalRotation = 180
- * nParticles = 10000000             # <<<<<<<<<<<<<<
- * NumberOfImages = 3
- * nDetY = 250
- */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nParticles, __pyx_int_10000000) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
-
-  /* "run.py":11
- * TotalRotation = 180
- * nParticles = 10000000
- * NumberOfImages = 3             # <<<<<<<<<<<<<<
- * nDetY = 250
- * nDetZ = 210
- */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumberOfImages, __pyx_int_3) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
-
-  /* "run.py":12
- * nParticles = 10000000
- * NumberOfImages = 3
  * nDetY = 250             # <<<<<<<<<<<<<<
  * nDetZ = 210
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nDetY, __pyx_int_250) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nDetY, __pyx_int_250) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
 
-  /* "run.py":13
- * NumberOfImages = 3
+  /* "run.py":10
+ * 
  * nDetY = 250
  * nDetZ = 210             # <<<<<<<<<<<<<<
  * 
+ * TotalRotation = 180
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nDetZ, __pyx_int_210) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
+
+  /* "run.py":12
+ * nDetZ = 210
+ * 
+ * TotalRotation = 180             # <<<<<<<<<<<<<<
+ * nParticles = 10000000
+ * NumberOfImages = 1
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TotalRotation, __pyx_int_180) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+
+  /* "run.py":13
+ * 
+ * TotalRotation = 180
+ * nParticles = 10000000             # <<<<<<<<<<<<<<
+ * NumberOfImages = 1
+ * 
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nParticles, __pyx_int_10000000) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+
+  /* "run.py":14
+ * TotalRotation = 180
+ * nParticles = 10000000
+ * NumberOfImages = 1             # <<<<<<<<<<<<<<
+ * 
  * Sim = sim.PySim()
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nDetZ, __pyx_int_210) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumberOfImages, __pyx_int_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "run.py":15
- * nDetZ = 210
+  /* "run.py":16
+ * NumberOfImages = 1
  * 
  * Sim = sim.PySim()             # <<<<<<<<<<<<<<
  * Sim.initialise(nDetY, nDetZ)
  * Sim.run(nParticles, NumberOfImages, TotalRotation)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_PySim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_PySim); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Sim, __pyx_t_2) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Sim, __pyx_t_2) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "run.py":16
+  /* "run.py":17
  * 
  * Sim = sim.PySim()
  * Sim.initialise(nDetY, nDetZ)             # <<<<<<<<<<<<<<
  * Sim.run(nParticles, NumberOfImages, TotalRotation)
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_Sim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_initialise); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_initialise); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_nDetY); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_nDetY); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_nDetZ); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_nDetZ); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -1507,30 +1507,31 @@ if (!__Pyx_RefNanny) {
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "run.py":17
+  /* "run.py":18
  * Sim = sim.PySim()
  * Sim.initialise(nDetY, nDetZ)
  * Sim.run(nParticles, NumberOfImages, TotalRotation)             # <<<<<<<<<<<<<<
  * 
+ * 
  */
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_Sim); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_Sim); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_run); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_run); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_nParticles); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_nParticles); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumberOfImages); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumberOfImages); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_TotalRotation); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_TotalRotation); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -1541,7 +1542,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;

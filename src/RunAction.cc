@@ -25,14 +25,14 @@ RunAction::~RunAction()
 
 void RunAction::BeginOfRunAction(const G4Run* aRun)
 {	
-	GenerateSeed();
+	/*GenerateSeed();
 	G4cout << G4endl << "Starting Run " << G4endl;
-	G4cout << G4endl << "Processing... " << G4endl << G4endl;
+	G4cout << G4endl << "Processing... " << G4endl << G4endl;*/
 }
 
 void RunAction::EndOfRunAction(const G4Run* aRun)
 {	
-	G4cout << G4endl << "Run finished " << G4endl;
+	/*G4cout << G4endl << "Run finished " << G4endl;
 
 	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
 	unsigned long long int limit = 2147483647;
@@ -60,7 +60,7 @@ void RunAction::EndOfRunAction(const G4Run* aRun)
 			{G4cout << "Starting next run for the remaining number of photons " << G4endl;}
 	}
 
-	++loop;
+	++loop;*/
 }
 
 void RunAction::GenerateSeed()
