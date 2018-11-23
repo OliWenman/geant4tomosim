@@ -25,17 +25,13 @@ class TrackerSD : public G4VSensitiveDetector
     		~TrackerSD();
   
     		//Base Methods
-    		//virtual void   Initialize(G4HCofThisEvent* hitCollection);
     		G4bool ProcessHits(G4Step* step, G4TouchableHistory* );
-		void EndOfEvent(G4HCofThisEvent* hitCollection);
 
   	private:
 		bool DetectorEfficiency;
 		bool EnergyDataOption;
-		G4bool Visualization_Cmd;
 
 		//Pointers to different classes
-		TrackerHitsCollection* fHitsCollection;
 		Data* data;
 };
 

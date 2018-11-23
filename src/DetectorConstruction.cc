@@ -220,24 +220,26 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
   	if (!theSD) 
 	{
 		//If the sensitive detector hasn't already been created, create one
-      		G4cout << G4endl << "Creating the Sensitive Detector";
+      		G4cout << "\n\nAdding the detectors";
 	
 		if (GetVisualization() == true)
 		{
 			//Create a visual detector
-			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency());
+			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, input -> GetEnergyDataOption());
 			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
 		}
 		else
 		{
 			//Create a detector optimised for perfomance
-    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", GetNoDetectorsY(), GetNoDetectorsZ(), data, GetDetectorEfficiency(), input -> GetEnergyDataOption());
+    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, input -> GetEnergyDataOption());
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
+		
+		G4cout << "\nDetectors Added! \n";
 	}
 	
 	//Add the correct sensitive detector to the logical volume
-	if (GetVisualization() == true)
+	if (Visualization_Cmd == true)
 		{volume -> SetSensitiveDetector(VTrackerSD);}
 	else
 		{volume -> SetSensitiveDetector(aTrackerSD);}
@@ -246,12 +248,16 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
 	//Set a visualization setting only if the setting is turned on
-	if (GetVisualization() == true)
+	if (Visualization_Cmd == true)
 	{
 		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	//Cyan
   		LV -> SetVisAttributes(ObjectColour);
 	}
 }
 
-void DetectorConstruction::SetTotalAngle(double value){TC -> SetFullRotationAngle(value);}
+void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle)
+{
+	TC -> SetFullRotationAngle(TotalAngle);
+	TC -> SetTotalImages(NumberOfImages);
+}
 

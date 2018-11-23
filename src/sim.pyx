@@ -2,6 +2,7 @@
 import numpy as np
 import h5py
 import time
+import os
 
 cdef class PySim:
 
@@ -37,6 +38,10 @@ cdef class PySim:
 
         #Create a h5 file to view the data after the simulation is complete
         h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')
+
+        #print(os.path.dirname(os.path.abspath(__file__)))
+        #print(os.chdir(os.path.dirname(os.getcwd())))
+
         dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
         
         iTime = time.time()

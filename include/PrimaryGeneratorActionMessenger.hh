@@ -26,7 +26,7 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
-		PrimaryGeneratorAction* Action;
+		PrimaryGeneratorAction* PGAction;
 		Input* input;
 		Data* data;
 

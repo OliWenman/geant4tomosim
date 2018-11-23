@@ -12,8 +12,8 @@ nDetZ = 210
 DetectorDimensions = [0.1, 0.1, 0.1]*mm
 
 NumberOfImages = 10
-TotalRotation = 360#*deg
-nParticles = 10000000
+TotalRotation = 180*deg
+nParticles = 100000000
 
 Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ)

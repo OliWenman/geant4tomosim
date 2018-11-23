@@ -115,6 +115,9 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 	{
 		if(Image == 0)
 		{
+			//DC -> SetTotalAngle(TotalAngle);
+			DC -> RelayToTC(NumberOfImages, TotalAngle);
+
 			//Prints the time and date of the local time that the simulation started
 			time_t now = time(0);
 			//Convert now to tm struct for local timezone
@@ -128,7 +131,7 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 	                       << "\nNumber of photons per image: " << TotalParticles
 	                       << "\nNumber of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
 
-			DC -> SetTotalAngle(TotalAngle);		
+			
 		}
 
 		//Start internal looptimer to update the estimated time for completion
@@ -139,10 +142,10 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
 		
 		G4cout << "\n================================================================================"
-		       << "\n                             IMAGE " <<  Image+1
+		       << "\n                                 IMAGE " <<  Image+1
 	               << "\n================================================================================\n" 
 
-		       << "\nProcessing... " << G4endl;
+		       << "\nProcessing..." << G4endl;
 		
 		//Beam on to start the simulation
 		BeamOn(TotalParticles);
@@ -155,7 +158,7 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
 
-		G4cout << G4endl << "Run finished " << G4endl;
+		G4cout << "\nRun finished " << G4endl;
 
 		unsigned long long int limit = 2147483647;
 

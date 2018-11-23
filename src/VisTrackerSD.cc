@@ -10,16 +10,12 @@
 #include "G4UnitsTable.hh"
 #include "G4Track.hh"
 
-VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, G4bool DetectorEfficiency) 
+VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency, const G4bool EOption) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	//Setup the data only at the begining of simulation so it doesn't waste time doing work it has already done	
-	DetectorEfficiency_Cmd = DetectorEfficiency;
-	EnergyOption_Cmd = data ->GetEnergyDataOption();
-
-	//data -> SetUpHitData(NumDetectorsZ, NumDetectorsY);
-	//if (EnergyOption_Cmd == true)
-	//	{data -> SetUpEnergyData();}
+	DetectorEfficiency = DetEfficiency;
+	EnergyOption = EOption;	
 	
 	collectionName.insert(hitsCollectionName);
 }
@@ -37,42 +33,30 @@ void VisTrackerSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool VisTrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
-	if (DetectorEfficiency_Cmd == false)
+	if (DetectorEfficiency == false)
 	{
   		// energy deposit
-  		G4double edep = aStep->GetTotalEnergyDeposit();
-  		if (edep==0.) return false;
+  		if (aStep->GetTotalEnergyDeposit() == 0.) return false;
 	}
 	
+	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	G4double ParticleEnergy = aStep->GetPreStepPoint()->GetKineticEnergy();
 
 	//Create the TrackerHit class object to record hits
   	TrackerHit* newHit = new TrackerHit();
 
 	//Save all the information about the particle that hit the detector
-  	//newHit -> SetTrackID  (aStep->Gep->GetetTrack()->GetTrackID());
-	//newHit -> SetParticle( aStTrack()->GetDefinition() );
-  	newHit -> SetChamberNb(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber());
+  	newHit -> SetChamberNb(nDetector);
 	newHit -> SetEdep(ParticleEnergy);
-	
-	//Needed for visualization of hits, only need it if it's turned on
-	
 	newHit -> SetPos (aStep->GetPreStepPoint()->GetPosition());
 	
 	fHitsCollection -> insert( newHit );
 	
 	//Save the detector hits to the data class
-	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	data -> SaveHitData(nDetector);;
 
-	if (EnergyOption_Cmd  == true)
-		{data -> SaveEnergyData(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(), ParticleEnergy);}
-
-
-	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
-	//G4Track*track;
-	//track->SetTrackStatus(fStopAndKill);
-	//aStep -> UpdateTrack;
+	if (EnergyOption  == true)
+		{data -> SaveEnergyData(nDetector, ParticleEnergy);}
 
   	return true;
 }
@@ -92,8 +76,8 @@ void VisTrackerSD::EndOfEvent(G4HCofThisEvent*)
 			if (nofHits == 0)
 				{G4cout << " No hit ";}
 			else
-			{	
-				if (EnergyOption_Cmd == true)//If there's a hit, print it if the verbose setting is greater than 1
+			{	//If there's a hit, print it if the verbose setting is greater than 1
+				if (EnergyOption == true)
 					{for (G4int i = 0; i < nofHits; i++ ) 
 						{(*fHitsCollection)[i] -> PrintEnergy();}
 					}

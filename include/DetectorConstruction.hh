@@ -63,7 +63,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
-		void SetTotalAngle(double value);
+		void RelayToTC(int NumberOfImages, double TotalAngle);
 
   	protected:
 		//Pointers to my own classes 
