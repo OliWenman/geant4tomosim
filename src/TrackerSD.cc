@@ -38,6 +38,12 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	if (EnergyDataOption  == true)
 		{data -> SaveEnergyData(nDetector, aStep->GetPreStepPoint()->GetKineticEnergy());}
 
+	//if (aStep->GetPreStepPoint()->GetKineticEnergy() != 0.025)
+	//{
+	//	G4cout << nDetector <<": Energy of Photon = " << (aStep->GetPreStepPoint()->GetKineticEnergy())*1000 << " eV " <<G4endl;
+	//	G4cout << nDetector <<":     Delta Energy = " << (0.025 - aStep->GetPreStepPoint()->GetKineticEnergy())*1000 << " eV " <<G4endl;
+	//}
+
   	return true;
 }
  

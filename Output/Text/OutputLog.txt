@@ -1,0 +1,16 @@
+
+THE DETECTOR SETUP:
+
+- Number of detectors: 250 x 210 = 52500
+- Invidual detector dimensions: 5 5 5 um 
+- Detectors are assumed to be 100% effiicent 
+
+BEAM INFORMATION
+
+- Energy of the monochomatic beam is: 25 keV
+- Beam dimensions: 2.5 x 2.1 mm 
+
+THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
+
+LivermorePhysics:
+- Photoelectric effect

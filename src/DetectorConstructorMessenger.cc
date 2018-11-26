@@ -1,6 +1,5 @@
 #include "DetectorConstructionMessenger.hh"
 #include "DetectorConstruction.hh"
-#include "Input.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -15,7 +14,7 @@
 #include "G4TwoVector.hh"
 #include "G4Tokenizer.hh"
 
-DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector, Input* InputObject): G4UImessenger(), ConstructDet(Detector), input(InputObject)
+DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* Detector): G4UImessenger(), ConstructDet(Detector)
 {	
 	//WORLD
 	//Directory
@@ -93,7 +92,6 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		G4ThreeVector Dimensions = WorldSize_Cmd -> GetNew3VectorValue(newValue);
 		ConstructDet -> SetWorldSize(Dimensions/2);
-		input -> SetBeamLength(Dimensions.x());
 	}
 	else if( command == Visualization_Cmd )
 	{
@@ -103,27 +101,22 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
   	{ 		
 		G4int nDetectorsY = NoDetectorsY_Cmd -> GetNewIntValue(newValue);	
 		ConstructDet -> SetNoDetectorsY(nDetectorsY);
-		input -> SetNumberRows(nDetectorsY);	
 	}
 	else if ( command == NoDetectorsZ_Cmd )
 	{
 		G4int nDetectorsZ = NoDetectorsZ_Cmd -> GetNewIntValue(newValue);	
 		ConstructDet -> SetNoDetectorsZ(nDetectorsZ);
-		input -> SetNumberColumns(nDetectorsZ);
 	}
 	else if( command == DetectorSize_Cmd )
 	{
 		ConstructDet -> SetDetectorSize(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
-		input -> SetDetectorDimensions(DetectorSize_Cmd -> GetNew3VectorValue(newValue)/2);
 	}
 	else if( command == DetectorMaterial_Cmd )
 	{
 		ConstructDet -> SetDetectorMaterial(newValue);
-		input -> SetDetectorMaterial(newValue);
 	}
 	else if( command == DetectorEfficiency_Cmd )
 	{
 		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
-		input -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));
 	}
 }

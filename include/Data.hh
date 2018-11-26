@@ -38,7 +38,7 @@ class Data
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
-		std::vector<std::vector<G4int> > GetEnergyData(){return EnergyMatrix;}
+		std::vector<std::vector<int> > GetEnergyData(){return EnergyMatrix;}
 
 		G4int GetNoImages(){return NoImages_Cmd;}
 
@@ -48,7 +48,7 @@ class Data
 
 		//Set Methods
 		void SetHitData(std::vector<int> UpdatedData){HitDataArray = UpdatedData;}
-		void SetEnergyData(std::vector<std::vector<G4int> >  UpdatedData){EnergyMatrix = UpdatedData;}
+		void SetEnergyData(std::vector<std::vector<int> >  UpdatedData){EnergyMatrix = UpdatedData;}
 		
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
@@ -67,7 +67,7 @@ class Data
 
 		//Data members
 		std::vector<int> HitDataArray;
-		std::vector<std::vector<G4int> > EnergyMatrix;
+		std::vector<std::vector<int> > EnergyMatrix;
 
 		G4int rows;
 		G4int columns;	

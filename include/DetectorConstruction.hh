@@ -7,7 +7,6 @@
 //My own classes
 class DetectorConstructionMessenger;
 class Data;
-class Input;
 class TrackerSD;
 class VisTrackerSD;
 class TargetConstruction;
@@ -28,7 +27,7 @@ class G4Colour;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
-    		DetectorConstruction(Data* data, Input* input);
+    		DetectorConstruction(Data* data);
     		~DetectorConstruction();
 
 		//Base class method
@@ -64,12 +63,13 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
 		void RelayToTC(int NumberOfImages, double TotalAngle);
+	
+		void ReadOutInfo(G4String SaveFilePath);
 
   	protected:
 		//Pointers to my own classes 
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
-		Input* input;
 		TrackerSD* aTrackerSD;
 		VisTrackerSD* VTrackerSD;
 		TargetConstruction* TC;

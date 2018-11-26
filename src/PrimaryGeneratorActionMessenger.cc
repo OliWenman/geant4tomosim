@@ -1,6 +1,5 @@
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "PrimaryGeneratorAction.hh"
-#include "Input.hh"
 #include "Data.hh"
 
 #include "G4SystemOfUnits.hh"
@@ -10,7 +9,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
 
-PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun, Input *InputObject, Data* DataObject):PGAction(Gun),input(InputObject), data(DataObject)
+PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun, Data* DataObject): PGAction(Gun), data(DataObject)
 {	
 	gunDirectory = new G4UIdirectory("/gun/");
 	gunDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
@@ -50,20 +49,17 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		PGAction -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
-		input -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 		data -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamWidthY_Cmd )
   	{ 
 		BeamWidthY_Cmd -> GetNewUnitValue(newValue);
 		PGAction -> SetBeamWidthY(BeamWidthY_Cmd -> GetNewDoubleValue(newValue)); 
-		input -> SetBeamWidth(BeamWidthY_Cmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamHeightZ_Cmd )
   	{ 
 		BeamHeightZ_Cmd -> GetNewUnitValue(newValue);
 		PGAction -> SetBeamHeightZ(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue)); 
-		input -> SetBeamHeight(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue));
 	}
 }
 

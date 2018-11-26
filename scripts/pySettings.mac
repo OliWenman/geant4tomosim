@@ -8,9 +8,7 @@
 
 #Data Settings
 /data/Seed 0
-/data/Energy false
 /data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
-/data/TextFile false		#(Choose if you would like the data to be saved into a textfile)
 
 #Gun Settings
 /gun/setEnergy 25 keV		#(Set the initial energy of the monochromatic X-ray beam)

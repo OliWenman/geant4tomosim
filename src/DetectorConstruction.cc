@@ -4,7 +4,6 @@
 #include "TrackerSD.hh"
 #include "VisTrackerSD.hh"
 #include "Data.hh"
-#include "Input.hh"
 #include "TargetConstruction.hh"
 
 //Material database
@@ -33,10 +32,14 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
-DetectorConstruction::DetectorConstruction(Data* DataObject, Input* InputObject):G4VUserDetectorConstruction(), data(DataObject), input(InputObject)
+//Read/write to a file
+#include <iomanip>
+#include <fstream>
+
+DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 	
 	//Create a messenger for this class
-  	detectorMessenger = new DetectorConstructionMessenger(this, input);	
+  	detectorMessenger = new DetectorConstructionMessenger(this);	
 	TC = new TargetConstruction();
 
 	nImage = 0;
@@ -53,7 +56,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Setup needed paramenters and variables only on the first image
 	if (nImage == 0)
 	{
-		TC -> SetTotalImages(input->GetNoImages());
 		TC -> SetVisualization(Visualization_Cmd);
 
 		//Checks to see if the detectors are outside the world geometry and displays a warning message
@@ -96,12 +98,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							 0,                     //copy number
 							 true);		//overlaps checking                     
 
-	//Construct the target geometry
-	TC->Construct(logicWorld);
-
 	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
 	PVDetectors(logicWorld);
+
+	//Construct the target geometry
+	TC->Construct(logicWorld);
 	
 	++nImage;
 
@@ -140,19 +142,25 @@ void DetectorConstruction::SolidDetectors()
 	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
                                         SolidContainer->GetYHalfLength(),
                                         SolidContainer->GetZHalfLength());
-
-	G4cout << "\nNumber of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd;
-	G4cout << "\nDetector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length") << G4endl;
 }
 
 void DetectorConstruction::LVDetectors()
 {
-	G4Material* DetMaterial = FindMaterial(DetectorMaterial_Cmd);
+	//Pick the material for the detectors based on if the detectors are 100% efficient or not
+	G4Material* DetMaterial;
+	if (DetectorEfficiency_Cmd == false)
+	{	
+		DetMaterial = FindMaterial(DetectorMaterial_Cmd);
+	}
+	else if (DetectorEfficiency_Cmd == true)
+	{	
+		DetMaterial = FindMaterial("G4_Galactic");
+	}
 
 	//Creates the logical volume for the phantom container	
 	container_logic = new G4LogicalVolume(SolidContainer, 
-							       DetMaterial, 
-							       "LVPhantomContainer");
+					      DetMaterial, 
+					      "LVPhantomContainer");
 
 	//The parameterised volume which uses this parameterisation is placed in the container logical volume
 	PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
@@ -219,23 +227,25 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
   	if (!theSD) 
 	{
+		bool EnergyDataOption;
+		if (data -> GetNoBins() == 0)
+			{EnergyDataOption == false;}
+		else if (data -> GetNoBins() > 0)
+			{EnergyDataOption == true;}
+
 		//If the sensitive detector hasn't already been created, create one
-      		G4cout << "\n\nAdding the sensitive detectors...";
-	
 		if (GetVisualization() == true)
 		{
 			//Create a visual detector
-			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, input -> GetEnergyDataOption());
+			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, EnergyDataOption);
 			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
 		}
 		else
 		{
 			//Create a detector optimised for perfomance
-    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, input -> GetEnergyDataOption());
+    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, EnergyDataOption);
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
-		
-		G4cout << "\nSensitive detectors added! \n";
 	}
 	
 	//Add the correct sensitive detector to the logical volume
@@ -250,7 +260,7 @@ void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 	//Set a visualization setting only if the setting is turned on
 	if (Visualization_Cmd == true)
 	{
-		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	//Cyan
+		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
   		LV -> SetVisAttributes(ObjectColour);
 	}
 }
@@ -259,5 +269,50 @@ void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle)
 {
 	TC -> SetFullRotationAngle(TotalAngle);
 	TC -> SetTotalImages(NumberOfImages);
+}
+
+void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
+{
+	G4cout << "\nTHE DETECTOR SETUP:\n"
+	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
+	       << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
+
+	if (DetectorEfficiency_Cmd == false)
+	{	
+		G4cout << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
+	}
+	else
+	{	
+		G4cout << "\n- Detectors are assumed to be 100%\ effiicent " << G4endl;
+	}
+	
+	//Creation of the writing to data file stream
+	std::ofstream outdata; 
+
+	G4cout << "\nSaving the SimulationSettings... " << G4endl;
+	G4String SettingsName = "OutputLog.txt";
+
+	//Open the file within the path set
+	outdata.open(SaveFilePath+SettingsName); 
+   	
+	//Output error if can't open file
+	if( !outdata ) 
+	{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from DetectorConstruction.\n" << std::endl;
+      		exit(1);
+   	}
+
+	outdata << "\nTHE DETECTOR SETUP:\n"
+	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
+	        << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
+	if (DetectorEfficiency_Cmd == false)
+	{	
+		outdata << "\n- Detector material: " << DetectorMaterial_Cmd << "\n";
+	}
+	else
+	{	
+		outdata << "\n- Detectors are assumed to be 100%\ effiicent \n";
+	}
+
+	outdata.close();
 }
 

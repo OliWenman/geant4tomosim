@@ -67,59 +67,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o
  /scratch/sources/Anaconda2/include/python2.7/unicodeobject.h
  /scratch/sources/Anaconda2/include/python2.7/warnings.h
  /scratch/sources/Anaconda2/include/python2.7/weakrefobject.h
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o
- ../include/ActionInitialization.hh
- ../include/Data.hh
- ../include/DetectorConstruction.hh
- ../include/EventAction.hh
- ../include/Input.hh
- ../include/PrimaryGeneratorAction.hh
- ../include/Simulation.hh
- ../include/StackingAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Allocator.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AllocatorPool.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AutoLock.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ClassificationOfNewTrack.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PDefManager.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleGun.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleMomentum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryParticle.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryVertex.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Threading.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserEventAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserStackingAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPrimaryGenerator.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserActionInitialization.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPrimaryGeneratorAction.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/pwdefs.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
- /home/xol73553/git/geant4tomosim/src/ActionInitialization.cc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o
  ../include/Data.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
@@ -146,8 +93,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o
  ../include/Data.hh
  ../include/DetectorConstruction.hh
  ../include/DetectorConstructionMessenger.hh
- ../include/Input.hh
- ../include/Simulation.hh
  ../include/TargetConstruction.hh
  ../include/TrackerHit.hh
  ../include/TrackerSD.hh
@@ -325,8 +270,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o
  ../include/DetectorConstruction.hh
  ../include/DetectorConstructionMessenger.hh
- ../include/Input.hh
- ../include/Simulation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
@@ -353,8 +296,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
@@ -674,10 +615,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
  /home/xol73553/git/geant4tomosim/src/InputMessenger.cc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o
- ../include/Input.hh
  ../include/PhysicsList.hh
  ../include/PhysicsListMessenger.hh
- ../include/Simulation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Normal3D.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Point3D.h
@@ -1011,8 +950,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnknownParticle.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Upsilon.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserSpecialCuts.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VAtomDeexcitation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VContinuousDiscreteProcess.hh
@@ -1038,7 +975,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUPLSplitter.hh
- /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPhysicsList.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserTrackInformation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VVolumeMaterialScanner.hh
@@ -1257,10 +1193,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o
  ../include/Data.hh
  ../include/DetectorConstruction.hh
- ../include/Input.hh
  ../include/PrimaryGeneratorAction.hh
  ../include/PrimaryGeneratorActionMessenger.hh
- ../include/Simulation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/DualRand.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/JamesRandom.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/MTwistEngine.h
@@ -1341,6 +1275,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VDigiCollection.hh
@@ -1361,10 +1297,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o
  /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorAction.cc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o
  ../include/Data.hh
- ../include/Input.hh
  ../include/PrimaryGeneratorAction.hh
  ../include/PrimaryGeneratorActionMessenger.hh
- ../include/Simulation.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
@@ -1413,10 +1347,10 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o
  ../include/Data.hh
  ../include/DetectorConstruction.hh
- ../include/Input.hh
  ../include/PhysicsList.hh
  ../include/PrimaryGeneratorAction.hh
  ../include/Simulation.hh
+ ../include/SimulationMessenger.hh
  ../include/StackingAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Normal3D.h
@@ -1753,6 +1687,39 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/trkdefs.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
  /home/xol73553/git/geant4tomosim/src/Simulation.cc
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o
+ ../include/Data.hh
+ ../include/Simulation.hh
+ ../include/SimulationMessenger.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithABool.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADouble.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADoubleAndUnit.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAString.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAnInteger.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
+ /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
+ /home/xol73553/git/geant4tomosim/src/SimulationMessenger.cc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o
  ../include/StackingAction.hh
  /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h

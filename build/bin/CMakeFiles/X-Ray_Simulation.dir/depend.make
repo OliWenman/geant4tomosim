@@ -67,59 +67,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o: /scratch/sources/Anaconda2/i
 bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o: /scratch/sources/Anaconda2/include/python2.7/warnings.h
 bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o: /scratch/sources/Anaconda2/include/python2.7/weakrefobject.h
 
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/ActionInitialization.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/Data.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/DetectorConstruction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/EventAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/Input.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/PrimaryGeneratorAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/Simulation.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../include/StackingAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Allocator.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AllocatorPool.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4AutoLock.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ClassificationOfNewTrack.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PDefManager.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleDefinition.icc
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleGun.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ParticleMomentum.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryParticle.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4PrimaryVertex.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Threading.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserEventAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserStackingAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VPrimaryGenerator.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserActionInitialization.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPrimaryGeneratorAction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/pwdefs.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../src/ActionInitialization.cc
-
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: ../include/Data.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
@@ -145,8 +92,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: ../src/Data.cc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/Data.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/DetectorConstruction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/DetectorConstructionMessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/Input.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/Simulation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/TargetConstruction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/TrackerHit.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../include/TrackerSD.hh
@@ -324,8 +269,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../src/Det
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: ../include/DetectorConstruction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: ../include/DetectorConstructionMessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: ../include/Input.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: ../include/Simulation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
@@ -352,8 +295,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /d
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
@@ -673,10 +614,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o: /dls_sw/apps/Gea
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o: ../src/InputMessenger.cc
 
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: ../include/Input.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: ../include/PhysicsList.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: ../include/PhysicsListMessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: ../include/Simulation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Normal3D.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Point3D.h
@@ -1010,8 +949,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnknownParticle.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Upsilon.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserSpecialCuts.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VAtomDeexcitation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VContinuousDiscreteProcess.hh
@@ -1037,7 +974,6 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VTouchable.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUPLSplitter.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserPhysicsList.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserTrackInformation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VVolumeMaterialScanner.hh
@@ -1256,10 +1192,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o: ../src/Phy
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/Data.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/DetectorConstruction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/Input.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/PrimaryGeneratorAction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/PrimaryGeneratorActionMessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../include/Simulation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/DualRand.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/JamesRandom.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Random/MTwistEngine.h
@@ -1340,6 +1274,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UnitsTable.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VDigiCollection.hh
@@ -1360,10 +1296,8 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: /dls_sw/
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../src/PrimaryGeneratorAction.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../include/Data.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../include/Input.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../include/PrimaryGeneratorAction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../include/PrimaryGeneratorActionMessenger.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../include/Simulation.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/PhysicalConstants.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
@@ -1412,10 +1346,10 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o:
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/Data.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/DetectorConstruction.hh
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/Input.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/PhysicsList.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/PrimaryGeneratorAction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/Simulation.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/SimulationMessenger.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../include/StackingAction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/Normal3D.h
@@ -1752,6 +1686,39 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: /dls_sw/apps/Geant4/
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/trkdefs.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/windefs.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o: ../src/Simulation.cc
+
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: ../include/Data.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: ../include/Simulation.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: ../include/SimulationMessenger.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Units/SystemOfUnits.h
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Utility/defs.h
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.h
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Vector/ThreeVector.icc
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ApplicationState.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ExceptionSeverity.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4String.icc
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4SystemOfUnits.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ThreeVector.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4Types.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithABool.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADouble.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithADoubleAndUnit.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAString.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcmdWithAnInteger.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIcommand.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIdirectory.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UImessenger.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UIparameter.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UItokenNum.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4UserLimits.icc
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4VUserDetectorConstruction.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/G4ios.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/globals.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/templates.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/tls.hh
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: ../src/SimulationMessenger.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o: ../include/StackingAction.hh
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o: /dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/include/Geant4/CLHEP/Geometry/BasicVector3D.h

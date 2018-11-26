@@ -43,17 +43,26 @@ cdef class PySim:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
 
     #Start the simulation
-    def run(self, int TotalParticles, int NumberOfImages, dTheta):
+    def run(self, int TotalParticles, int NumberOfImages, dTheta, int bins = 0):
 
         if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
 
            #Create a h5 file to view the data after the simulation is complete
-           h5file = h5py.File('./../build/Output/HDF5/ProjectionTest.h5', 'w')
+           h5file = h5py.File('./../build/Output/HDF5/DetectorTest.h5', 'w')
 
-           #print(os.path.dirname(os.path.abspath(__file__)))
-           #print(os.chdir(os.path.dirname(os.getcwd())))
+           WorkingDirectory = os.path.dirname(os.getcwd())
+           BuildDirectory = "/build/Output/HDF5/"
+           FullPath = WorkingDirectory + BuildDirectory
+           print "The data will be saved in:", FullPath
 
-           dataset = h5file.create_dataset('TomographyData', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
+           if bins >= 1:
+              print("Energy data turned on")
+              nBins = 10
+              EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, nBins, NumberOfImages))
+           else:
+              print("Energy data won't be recorded. ")
+
+           dataset = h5file.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
         
            iTime = time.time()
 
@@ -61,10 +70,14 @@ cdef class PySim:
            for nImage in range(NumberOfImages):
 
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               Image = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta), (-1, self.nDetectorsY))  
+               Image = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta, bins), (-1, self.nDetectorsY))  
 
                #Append the 2D Data to a 3D data set
                dataset[:, :, nImage] = Image[:, :]
+
+               if bins >= 1:
+                  E = np.array(self.lastEnergyData())
+                  EnergyDataSet[:, :, nImage] = E[:, :]
 
            #Close the file
            h5file.close()
@@ -87,4 +100,7 @@ cdef class PySim:
     #Return the image data from the simulation
     def lastImage(self):
         return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
+
+    def lastEnergyData(self):
+        return self.thisptr.GetLastEnergyData()
 

@@ -7,7 +7,7 @@ cdef extern from "Simulation.hh":
       Simulation() except +
       
       void pyInitialise(int, int)
-      vector[int] pyRun(unsigned long long int, int, int, double)
+      vector[int] pyRun(unsigned long long int, int, int, double, int)
 
       vector[int] GetLastImage()
-      
+      vector[vector[int]] GetLastEnergyData()

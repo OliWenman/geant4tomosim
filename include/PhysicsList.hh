@@ -7,14 +7,12 @@
 
 class G4VPhysicsConstructor;
 class PhysicsListMessenger;
-class Input;
 class G4StepLimiter;
 
 class PhysicsList: public G4VModularPhysicsList
 {
 	public:
-
-  		PhysicsList(Input* input);
+  		PhysicsList();
   		~PhysicsList();
 
 		void SetPhotoElectric(G4bool value){PhotoElectricCmd = value;}
@@ -28,10 +26,10 @@ class PhysicsList: public G4VModularPhysicsList
   		void ConstructProcess();
 		void SetCuts(G4double aValue);
 
+		void ReadOutInfo(G4String SaveFilePath);
+
 	private:
 		//G4StepLimiter* fStepLimit;
-
-		Input* input;
 
   		G4double cutForGamma;
   		G4double cutForElectron;
@@ -42,6 +40,8 @@ class PhysicsList: public G4VModularPhysicsList
 		G4bool ComptonScatteringCmd;
 		G4bool RayleighScatteringCmd;
 		G4bool FluorescenceCmd;
+
+		std::vector<G4String> PhysicProcesses;
 
 		//G4EmConfigurator em_config;
   		//G4VPhysicsConstructor* emPhysicsList;

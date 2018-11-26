@@ -1,10 +1,10 @@
 #include "Simulation.hh"
+#include "SimulationMessenger.hh"
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
 #include "Data.hh"
-#include "Input.hh"
 
 #include <fstream>
 #include <iostream>
@@ -19,6 +19,8 @@
 
 Simulation::Simulation()
 {	
+	simMessenger = new SimulationMessenger(this);
+
 	Reset = false;
 	Ready = false;
 
@@ -31,11 +33,12 @@ Simulation::~Simulation()
 {
 	G4cout << "\nDeleting simulation... \n";
 
+	//delete simMessenger;
+
 	delete runManager;
 	delete visManager;
 
 	delete data;
-	delete input;
 
 	G4cout << "\nSimulation deleted! \n" << G4endl;
 }
@@ -47,9 +50,8 @@ void Simulation::Setup()
 	//Create an instance of the classes
 	runManager = new G4RunManager();
 	data = new Data();
-	input = new Input(data);
-	DC = new DetectorConstruction(data, input); 
-	PL = new PhysicsList(input); 
+	DC = new DetectorConstruction(data); 
+	PL = new PhysicsList(); 
 	
 	visManager = 0;
 
@@ -57,7 +59,9 @@ void Simulation::Setup()
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
 	runManager -> SetUserAction(new StackingAction());
-	runManager -> SetUserAction(new PrimaryGeneratorAction(DC, input, data));
+
+	PGA = new PrimaryGeneratorAction(DC, data);
+	runManager -> SetUserAction(PGA);
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();
@@ -83,7 +87,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	G4cout << "\nReading pySettings.mac...\n";
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "pySettings.mac");
 
-	int seedCmd = 0;
+	G4String SaveFilePath = "./../Output/Text/";
+
+	DC -> ReadOutInfo(SaveFilePath);
+	PGA -> ReadOutInfo(SaveFilePath);
+	PL -> ReadOutInfo(SaveFilePath);
 
 	//Keeps the seed
 	if (seedCmd != 0)	
@@ -98,7 +106,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	}
 
 	G4cout << "\nThe seed being used is " << seedCmd
-               << "\n\nCommands successfully added\n";
+               << "\n\nCommands successfully added\n"
 
 	       << "\n\nSimulation Ready!" << G4endl;
 
@@ -107,13 +115,14 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	Ready = true;	
 }
 
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle, int nBins)
 {
 	if (Ready == true)
 	{
 		if(Image == 0)
 		{
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
+			data -> SetNoBins(nBins);
 
 			//Prints the time and date of the local time that the simulation started
 			time_t now = time(0);
@@ -205,13 +214,13 @@ void Simulation::Visualisation()
 		       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
 
 		visManager -> Initialize();
-		UImanager -> ApplyCommand("/control/execute MyVis.mac");
+		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");
 	}
 }
 
 void Simulation::Initialize()
 {
-	G4String PathToFiles = "./../scripts/";
+	/*G4String PathToFiles = "./../scripts/";
 
 	//Apply the commands from the macro files to fill the values
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
@@ -231,12 +240,12 @@ void Simulation::Initialize()
 
 	       << "\n\nSimulation Ready!" << G4endl;
 
-	Ready = true;
+	Ready = true;*/
 }
 
 void Simulation::RunSimulation()
 {
-	if (Ready == true)
+	/*if (Ready == true)
 	{
 		//Start the simulation timer
 		G4Timer FullTime;
@@ -291,13 +300,19 @@ void Simulation::RunSimulation()
 	else if (Ready == false)
 	{
 		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
-	}
+	}*/
 }
 
 std::vector<int> Simulation::GetLastImage()
 {
 	return data -> GetHitData();
 }
+
+std::vector<std::vector<int> > Simulation::GetLastEnergyData()
+{
+	return data -> GetEnergyData();
+}
+
 //Private functions
 void Simulation::BeamOn(unsigned long long int nParticles)
 {

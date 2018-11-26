@@ -106,22 +106,9 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.s"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/Simulation.cc -o CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.s
 
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o: ../src/ActionInitialization.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o"
-	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o -c /home/xol73553/git/geant4tomosim/src/ActionInitialization.cc
-
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.i"
-	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xol73553/git/geant4tomosim/src/ActionInitialization.cc > CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.i
-
-bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.s"
-	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/ActionInitialization.cc -o CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.s
-
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o: ../src/Data.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o -c /home/xol73553/git/geant4tomosim/src/Data.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.i: cmake_force
@@ -134,7 +121,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.s: cmake_force
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o: ../src/DetectorConstruction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o -c /home/xol73553/git/geant4tomosim/src/DetectorConstruction.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.i: cmake_force
@@ -147,7 +134,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.s: cmake_forc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o: ../src/DetectorConstructorMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/DetectorConstructorMessenger.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.i: cmake_force
@@ -160,7 +147,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.s: cm
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.o: ../src/EventAction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.o -c /home/xol73553/git/geant4tomosim/src/EventAction.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.i: cmake_force
@@ -173,7 +160,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/EventAction.cc.s: cmake_force
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.o: ../src/Input.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.o -c /home/xol73553/git/geant4tomosim/src/Input.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.i: cmake_force
@@ -186,7 +173,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Input.cc.s: cmake_force
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o: ../src/InputMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/InputMessenger.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.i: cmake_force
@@ -199,7 +186,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/InputMessenger.cc.s: cmake_force
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o: ../src/PhysicsList.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.o -c /home/xol73553/git/geant4tomosim/src/PhysicsList.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.i: cmake_force
@@ -212,7 +199,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.s: cmake_force
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o: ../src/PhysicsListMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/PhysicsListMessenger.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.i: cmake_force
@@ -225,7 +212,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.s: cmake_forc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o: ../src/PrimaryGeneratorAction.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o -c /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorAction.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.i: cmake_force
@@ -238,7 +225,7 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.s: cmake_fo
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o: ../src/PrimaryGeneratorActionMessenger.cc
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorActionMessenger.cc
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.i: cmake_force
@@ -248,6 +235,19 @@ bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.i:
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.s"
 	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/PrimaryGeneratorActionMessenger.cc -o CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.s
+
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o: ../src/SimulationMessenger.cc
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/xol73553/git/geant4tomosim/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o"
+	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o -c /home/xol73553/git/geant4tomosim/src/SimulationMessenger.cc
+
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.i"
+	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/xol73553/git/geant4tomosim/src/SimulationMessenger.cc > CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.i
+
+bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.s"
+	cd /home/xol73553/git/geant4tomosim/build/bin && /dls_sw/apps/gcc/8.1.0/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/xol73553/git/geant4tomosim/src/SimulationMessenger.cc -o CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.s
 
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o: bin/CMakeFiles/X-Ray_Simulation.dir/flags.make
 bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o: ../src/StackingAction.cc
@@ -332,7 +332,6 @@ X__Ray_Simulation_OBJECTS = \
 "CMakeFiles/X-Ray_Simulation.dir/run_static.c.o" \
 "CMakeFiles/X-Ray_Simulation.dir/sim_static.cxx.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o" \
-"CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o" \
@@ -343,6 +342,7 @@ X__Ray_Simulation_OBJECTS = \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o" \
+"CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstruction.cc.o" \
 "CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstructionMessenger.cc.o" \
@@ -356,7 +356,6 @@ X__Ray_Simulation_EXTERNAL_OBJECTS =
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/run_static.c.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/sim_static.cxx.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.o
-bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Data.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstruction.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/DetectorConstructorMessenger.cc.o
@@ -367,6 +366,7 @@ bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsList.cc.
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PhysicsListMessenger.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorAction.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/PrimaryGeneratorActionMessenger.cc.o
+bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/StackingAction.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstruction.cc.o
 bin/X-Ray_Simulation: bin/CMakeFiles/X-Ray_Simulation.dir/__/src/TargetConstructionMessenger.cc.o

@@ -1,7 +1,6 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "DetectorConstruction.hh"
-#include "Input.hh"
 #include "Data.hh"
 
 #include "G4Event.hh"
@@ -9,21 +8,24 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 
 #include "Randomize.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Input* InputObject, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), input(InputObject), data(DataObject)
+//Read/write to a file
+#include <iomanip>
+#include <fstream>
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), data(DataObject)
 {
 	//Create a messenger for this class
-  	gunMessenger = new PrimaryGeneratorActionMessenger(this, input, data);
+  	gunMessenger = new PrimaryGeneratorActionMessenger(this, data);
 
 	//Set the number of particles for each event
 	G4int nofParticles = 1;
   	ParticleGun = new G4ParticleGun(nofParticles);
-	
-	SetDefaultKinematic();
 
-	
+	SetDefaultKinematic();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -56,3 +58,30 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
 } 
+
+void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
+{
+	G4cout << "\nBEAM INFORMATION\n"
+	       << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
+	       << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << G4endl;
+
+	//Creation of the writing to data file stream
+	std::fstream outdata; 
+
+	G4String SettingsName = "OutputLog.txt";
+
+	//Open the file within the path set
+	outdata.open(SaveFilePath+SettingsName, std::fstream::app); 
+   	
+	//Output error if can't open file
+	if( !outdata ) 
+	{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from PrimaryGeneratorAction.\n" << std::endl;
+      		exit(1);
+   	}
+
+	outdata << "\nBEAM INFORMATION\n"
+	        << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
+	        << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << "\n";
+
+	outdata.close();
+}

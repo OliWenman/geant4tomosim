@@ -125,33 +125,6 @@ sim/fast:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/build
 .PHONY : sim/fast
 
-ActionInitialization.o: ActionInitialization.cc.o
-
-.PHONY : ActionInitialization.o
-
-# target to build an object file
-ActionInitialization.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/ActionInitialization.cc.o
-.PHONY : ActionInitialization.cc.o
-
-ActionInitialization.i: ActionInitialization.cc.i
-
-.PHONY : ActionInitialization.i
-
-# target to preprocess a source file
-ActionInitialization.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/ActionInitialization.cc.i
-.PHONY : ActionInitialization.cc.i
-
-ActionInitialization.s: ActionInitialization.cc.s
-
-.PHONY : ActionInitialization.s
-
-# target to generate assembly for a file
-ActionInitialization.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/ActionInitialization.cc.s
-.PHONY : ActionInitialization.cc.s
-
 Data.o: Data.cc.o
 
 .PHONY : Data.o
@@ -449,6 +422,33 @@ Simulation.cc.s:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/Simulation.cc.s
 .PHONY : Simulation.cc.s
 
+SimulationMessenger.o: SimulationMessenger.cc.o
+
+.PHONY : SimulationMessenger.o
+
+# target to build an object file
+SimulationMessenger.cc.o:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/SimulationMessenger.cc.o
+.PHONY : SimulationMessenger.cc.o
+
+SimulationMessenger.i: SimulationMessenger.cc.i
+
+.PHONY : SimulationMessenger.i
+
+# target to preprocess a source file
+SimulationMessenger.cc.i:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/SimulationMessenger.cc.i
+.PHONY : SimulationMessenger.cc.i
+
+SimulationMessenger.s: SimulationMessenger.cc.s
+
+.PHONY : SimulationMessenger.s
+
+# target to generate assembly for a file
+SimulationMessenger.cc.s:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f src/CMakeFiles/sim.dir/build.make src/CMakeFiles/sim.dir/SimulationMessenger.cc.s
+.PHONY : SimulationMessenger.cc.s
+
 StackingAction.o: StackingAction.cc.o
 
 .PHONY : StackingAction.o
@@ -647,9 +647,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... sim"
 	@echo "... edit_cache"
-	@echo "... ActionInitialization.o"
-	@echo "... ActionInitialization.i"
-	@echo "... ActionInitialization.s"
 	@echo "... Data.o"
 	@echo "... Data.i"
 	@echo "... Data.s"
@@ -683,6 +680,9 @@ help:
 	@echo "... Simulation.o"
 	@echo "... Simulation.i"
 	@echo "... Simulation.s"
+	@echo "... SimulationMessenger.o"
+	@echo "... SimulationMessenger.i"
+	@echo "... SimulationMessenger.s"
 	@echo "... StackingAction.o"
 	@echo "... StackingAction.i"
 	@echo "... StackingAction.s"

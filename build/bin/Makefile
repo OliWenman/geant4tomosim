@@ -125,33 +125,6 @@ X-Ray_Simulation/fast:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/build
 .PHONY : X-Ray_Simulation/fast
 
-__/src/ActionInitialization.o: __/src/ActionInitialization.cc.o
-
-.PHONY : __/src/ActionInitialization.o
-
-# target to build an object file
-__/src/ActionInitialization.cc.o:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.o
-.PHONY : __/src/ActionInitialization.cc.o
-
-__/src/ActionInitialization.i: __/src/ActionInitialization.cc.i
-
-.PHONY : __/src/ActionInitialization.i
-
-# target to preprocess a source file
-__/src/ActionInitialization.cc.i:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.i
-.PHONY : __/src/ActionInitialization.cc.i
-
-__/src/ActionInitialization.s: __/src/ActionInitialization.cc.s
-
-.PHONY : __/src/ActionInitialization.s
-
-# target to generate assembly for a file
-__/src/ActionInitialization.cc.s:
-	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/ActionInitialization.cc.s
-.PHONY : __/src/ActionInitialization.cc.s
-
 __/src/Data.o: __/src/Data.cc.o
 
 .PHONY : __/src/Data.o
@@ -449,6 +422,33 @@ __/src/Simulation.cc.s:
 	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/Simulation.cc.s
 .PHONY : __/src/Simulation.cc.s
 
+__/src/SimulationMessenger.o: __/src/SimulationMessenger.cc.o
+
+.PHONY : __/src/SimulationMessenger.o
+
+# target to build an object file
+__/src/SimulationMessenger.cc.o:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.o
+.PHONY : __/src/SimulationMessenger.cc.o
+
+__/src/SimulationMessenger.i: __/src/SimulationMessenger.cc.i
+
+.PHONY : __/src/SimulationMessenger.i
+
+# target to preprocess a source file
+__/src/SimulationMessenger.cc.i:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.i
+.PHONY : __/src/SimulationMessenger.cc.i
+
+__/src/SimulationMessenger.s: __/src/SimulationMessenger.cc.s
+
+.PHONY : __/src/SimulationMessenger.s
+
+# target to generate assembly for a file
+__/src/SimulationMessenger.cc.s:
+	cd /home/xol73553/git/geant4tomosim/build && $(MAKE) -f bin/CMakeFiles/X-Ray_Simulation.dir/build.make bin/CMakeFiles/X-Ray_Simulation.dir/__/src/SimulationMessenger.cc.s
+.PHONY : __/src/SimulationMessenger.cc.s
+
 __/src/StackingAction.o: __/src/StackingAction.cc.o
 
 .PHONY : __/src/StackingAction.o
@@ -674,9 +674,6 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... X-Ray_Simulation"
 	@echo "... edit_cache"
-	@echo "... __/src/ActionInitialization.o"
-	@echo "... __/src/ActionInitialization.i"
-	@echo "... __/src/ActionInitialization.s"
 	@echo "... __/src/Data.o"
 	@echo "... __/src/Data.i"
 	@echo "... __/src/Data.s"
@@ -710,6 +707,9 @@ help:
 	@echo "... __/src/Simulation.o"
 	@echo "... __/src/Simulation.i"
 	@echo "... __/src/Simulation.s"
+	@echo "... __/src/SimulationMessenger.o"
+	@echo "... __/src/SimulationMessenger.i"
+	@echo "... __/src/SimulationMessenger.s"
 	@echo "... __/src/StackingAction.o"
 	@echo "... __/src/StackingAction.i"
 	@echo "... __/src/StackingAction.s"

@@ -5,7 +5,6 @@
 #include "globals.hh"
 
 class DetectorConstruction;
-class Input;
 
 class G4UImessenger;
 
@@ -22,7 +21,7 @@ class G4UIcmdWithABool;
 class DetectorConstructionMessenger: public G4UImessenger 
 { 
 	public:
-		DetectorConstructionMessenger(DetectorConstruction *ConstructDet, Input* input);
+		DetectorConstructionMessenger(DetectorConstruction *ConstructDet);
 		~DetectorConstructionMessenger(void);
 
 		//Methods
@@ -31,7 +30,6 @@ class DetectorConstructionMessenger: public G4UImessenger
 	private:		
 		//Pointer to the DetectorConstruction class
 		DetectorConstruction *ConstructDet;
-		Input* input;
 
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *WorldDirectory;

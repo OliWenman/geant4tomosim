@@ -41,6 +41,7 @@ TargetConstruction::TargetConstruction()
 {	
 	TCMessenger = new TargetConstructionMessenger(this);
 	nImage = 0;
+	TotalImages = 1;
 	SubtractSolidCounter = 0;
 	MasterVolume = 0;
 	MasterCheck = false;
