@@ -100,8 +100,6 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	G4cout << "\nThe seed being used is " << seedCmd
                << "\n\nCommands successfully added\n";
 
-	G4cout << "\nNumber of detectors: " << nDetectorsY << " x " << nDetectorsZ
-
 	       << "\n\nSimulation Ready!" << G4endl;
 
 	Visualisation();
@@ -109,13 +107,12 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	Ready = true;	
 }
 
-void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
 {
 	if (Ready == true)
 	{
 		if(Image == 0)
 		{
-			//DC -> SetTotalAngle(TotalAngle);
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
 
 			//Prints the time and date of the local time that the simulation started
@@ -130,8 +127,6 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 			       << "\nNumber of projections being processed: " << NumberOfImages
 	                       << "\nNumber of photons per image: " << TotalParticles
 	                       << "\nNumber of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
-
-			
 		}
 
 		//Start internal looptimer to update the estimated time for completion
@@ -152,18 +147,10 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 		
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager() -> ReinitializeGeometry();
-		
-		SaveDataToFile();
-
-		//Stop loop timer and estimate the remaining time left
-		LoopTimer.Stop();
 
 		G4cout << "\nRun finished " << G4endl;
 
 		unsigned long long int limit = 2147483647;
-
-		//Rounds up to the nearest number to do the correct number of loops
-		int NumberOfLoops = std::ceil(TotalParticles/limit);
 
 		//Print the progress of the simulation
 		int Progress = ((Image+1)*100)/NumberOfImages;
@@ -178,21 +165,26 @@ void Simulation::pyRun(unsigned long long int TotalParticles, int Image, int Num
 		{	
 			//Equation to work out how much of the simulation is complete if it has to do another run for the remaining number of photons
 			Progress = Progress * (TotalParticles - limit*(NumberOfImages - Image+1)/TotalParticles);
-			G4cout << G4endl << Progress << "%\ complete " << G4endl;
+			G4cout << "\n" << Progress << "%\ complete " << G4endl;
 
 			//If less then 100% complete, output preparing to do another run of the same image
 			if (Progress < 100)
 				{G4cout << "Starting next run for the remaining number of photons " << G4endl;}
 		}
 
-		CompletionTime(LoopTimer.GetRealElapsed(), Image, NumberOfImages);
+		//Stop loop timer and estimate the remaining time left
+		LoopTimer.Stop();
 
-		if (Image == NumberOfImages - 1)
+		CompletionTime(LoopTimer.GetRealElapsed(), Image + 1, NumberOfImages);
+
+		if (Image + 1 == NumberOfImages)
 		{
 			G4cout << "\n================================================================================"
 	                       << "\n                        The simulation is finihsed! "
 	                       << "\n================================================================================" << G4endl;
 		}
+	
+		return data -> GetHitData();
 	}
 	else if (Ready == false)
 	{
@@ -349,7 +341,7 @@ void Simulation::CompletionTime(double LoopTimer, int Image, int NoImages)
 	//Calculates the estimated time
 	G4double ETSeconds = (LoopTimer * NoImages) - (LoopTimer * Image);
 
-	if (NoImages > 1)
+	if (NoImages > 1 && Image < NoImages)
 	{
 		//Prints out the sustiable units for the estimated time 
 		if (ETSeconds > 60)

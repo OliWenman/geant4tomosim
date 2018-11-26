@@ -99,10 +99,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Construct the target geometry
 	TC->Construct(logicWorld);
 
-	//Create the detectors
-	//SetUpDetectors(DetectorSize_Cmd, NoDetectorsY_Cmd, NoDetectorsZ_Cmd, GetDetectorMaterial(), logicWorld);
-
-	//Creates the logic and physical volumes for the detectors
+	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
 	PVDetectors(logicWorld);
 	
@@ -143,6 +140,9 @@ void DetectorConstruction::SolidDetectors()
 	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
                                         SolidContainer->GetYHalfLength(),
                                         SolidContainer->GetZHalfLength());
+
+	G4cout << "\nNumber of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd;
+	G4cout << "\nDetector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length") << G4endl;
 }
 
 void DetectorConstruction::LVDetectors()
@@ -220,7 +220,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
   	if (!theSD) 
 	{
 		//If the sensitive detector hasn't already been created, create one
-      		G4cout << "\n\nAdding the detectors";
+      		G4cout << "\n\nAdding the sensitive detectors...";
 	
 		if (GetVisualization() == true)
 		{
@@ -235,7 +235,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
 		
-		G4cout << "\nDetectors Added! \n";
+		G4cout << "\nSensitive detectors added! \n";
 	}
 	
 	//Add the correct sensitive detector to the logical volume

@@ -1032,7 +1032,7 @@ static PyObject *__pyx_n_s_sys;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_float_0_1;
 static PyObject *__pyx_int_0;
-static PyObject *__pyx_int_3;
+static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_180;
 static PyObject *__pyx_int_210;
 static PyObject *__pyx_int_250;
@@ -1260,7 +1260,7 @@ static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_float_0_1 = PyFloat_FromDouble(0.1); if (unlikely(!__pyx_float_0_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_180 = PyInt_FromLong(180); if (unlikely(!__pyx_int_180)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_210 = PyInt_FromLong(210); if (unlikely(!__pyx_int_210)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_250 = PyInt_FromLong(250); if (unlikely(!__pyx_int_250)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1608,7 +1608,7 @@ if (!__Pyx_RefNanny) {
  * nDetZ = 210
  * DetectorDimensions = [0.1, 0.1, 0.1]*mm             # <<<<<<<<<<<<<<
  * 
- * NumberOfImages = 3
+ * NumberOfImages = 1
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_mm); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -1635,15 +1635,15 @@ if (!__Pyx_RefNanny) {
   /* "run.py":14
  * DetectorDimensions = [0.1, 0.1, 0.1]*mm
  * 
- * NumberOfImages = 3             # <<<<<<<<<<<<<<
+ * NumberOfImages = 1             # <<<<<<<<<<<<<<
  * TotalRotation = 180*deg
  * nParticles = 10000000
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumberOfImages, __pyx_int_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumberOfImages, __pyx_int_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
 
   /* "run.py":15
  * 
- * NumberOfImages = 3
+ * NumberOfImages = 1
  * TotalRotation = 180*deg             # <<<<<<<<<<<<<<
  * nParticles = 10000000
  * 
@@ -1657,7 +1657,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "run.py":16
- * NumberOfImages = 3
+ * NumberOfImages = 1
  * TotalRotation = 180*deg
  * nParticles = 10000000             # <<<<<<<<<<<<<<
  * 

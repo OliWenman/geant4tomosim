@@ -11,7 +11,7 @@ nDetY = 250
 nDetZ = 210
 DetectorDimensions = [0.1, 0.1, 0.1]*mm
 
-NumberOfImages = 3
+NumberOfImages = 1
 TotalRotation = 180*deg
 nParticles = 10000000
 
