@@ -1,3 +1,4 @@
+//Own classes
 #include "Simulation.hh"
 #include "SimulationMessenger.hh"
 #include "DetectorConstruction.hh"
@@ -6,16 +7,23 @@
 #include "StackingAction.hh"
 #include "Data.hh"
 
-#include <fstream>
-#include <iostream>
-#include "Randomize.hh"
-#include "time.h"
-
+//Geant4 managers for running the simulation
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
-#include "G4UIExecutive.hh"
+
+//Used for timing simulation and getting a random seed
 #include "G4Timer.hh"
+#include "time.h"
+#include "Randomize.hh"
+
+//Geant4 units
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+
+//Read/write to a file
+#include <fstream>
+#include <iomanip>
 
 Simulation::Simulation()
 {	
@@ -33,7 +41,7 @@ Simulation::~Simulation()
 {
 	G4cout << "\nDeleting simulation... \n";
 
-	//delete simMessenger;
+	delete simMessenger;
 
 	delete runManager;
 	delete visManager;
@@ -52,16 +60,15 @@ void Simulation::Setup()
 	data = new Data();
 	DC = new DetectorConstruction(data); 
 	PL = new PhysicsList(); 
-	
 	visManager = 0;
 
 	//Setup the Geant4 user and action intialization	
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
-	runManager -> SetUserAction(new StackingAction());
 
-	PGA = new PrimaryGeneratorAction(DC, data);
+	PGA = new PrimaryGeneratorAction(data);
 	runManager -> SetUserAction(PGA);
+	runManager -> SetUserAction(new StackingAction());
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();
@@ -93,22 +100,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 	PGA -> ReadOutInfo(SaveFilePath);
 	PL -> ReadOutInfo(SaveFilePath);
 
-	//Keeps the seed
-	if (seedCmd != 0)	
-		{CLHEP::HepRandom::setTheSeed(seedCmd);}
+	PGA -> SetWorldLength(DC -> GetWorldSize().x());
 
-	//Random seed
-	else if (seedCmd == 0)	
-	{
-		//set random seed with system time
-		seedCmd = time(NULL);
-		CLHEP::HepRandom::setTheSeed(seedCmd);
-	}
+        G4cout << "\nCommands successfully added\n"
 
-	G4cout << "\nThe seed being used is " << seedCmd
-               << "\n\nCommands successfully added\n"
-
-	       << "\n\nSimulation Ready!" << G4endl;
+	       << "\nSimulation Ready!" << G4endl;
 
 	Visualisation();
 
@@ -121,6 +117,18 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 	{
 		if(Image == 0)
 		{
+			//Keeps the seed
+			if (seedCmd != 0)	
+				{CLHEP::HepRandom::setTheSeed(seedCmd);}
+
+			//Random seed
+			else if (seedCmd == 0)	
+			{
+				//set random seed with system time
+				seedCmd = time(NULL);
+				CLHEP::HepRandom::setTheSeed(seedCmd);
+			}
+
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
 			data -> SetNoBins(nBins);
 
@@ -133,9 +141,38 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 			       << asctime(localtm)
 
-			       << "\nNumber of projections being processed: " << NumberOfImages
-	                       << "\nNumber of photons per image: " << TotalParticles
-	                       << "\nNumber of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
+			       << "\nMETA DATA: \n"
+
+			       << "\n- The seed used: " << seedCmd
+			       << "\n- Number of projections being processed: " << NumberOfImages
+	                       << "\n- Number of photons per image: " << TotalParticles
+	                       << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+			       << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << G4endl;
+
+			//Creation of the writing to data file stream
+			std::fstream outdata; 
+
+			G4String SaveFilePath = "./../Output/Text/";
+			G4String SettingsName = "OutputLog.txt";
+
+			//Open the file within the path set
+			outdata.open(SaveFilePath+SettingsName, std::fstream::app); 
+   	
+			//Output error if can't open file
+			if( !outdata ) 
+			{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from Simulation::pyRun\n" << std::endl;
+      				exit(1);
+   			}
+
+			outdata << "\nMETA DATA: \n" 
+
+				<< "\n- The seed used: " << seedCmd
+				<< "\n- Number of projections being processed: " << NumberOfImages
+	                        << "\n- Number of photons per image: " << TotalParticles
+	                        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+				<< "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << " \n";
+
+			outdata.close();
 		}
 
 		//Start internal looptimer to update the estimated time for completion
@@ -344,11 +381,6 @@ void Simulation::BeamOn(unsigned long long int nParticles)
 	{	//If the inputted number of particles is within the limit, fire that number of particles
 		runManager -> BeamOn(nParticles);
 	}
-}
-
-void Simulation::SaveDataToFile()
-{
-	data -> WriteToTextFile();
 }
 
 void Simulation::CompletionTime(double LoopTimer, int Image, int NoImages)

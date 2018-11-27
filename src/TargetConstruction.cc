@@ -115,7 +115,7 @@ void TargetConstruction::Box(G4int ObjectNumber)
 	//Create a G4VSolid of the box
 	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x(), TargetSize.y(), TargetSize.z());
 
-	G4cout << "\nCreated solid: Cube"+StringNumber;
+	G4cout << "\n- Created solid: Cube"+StringNumber;
 }
 
 void TargetConstruction::HollowBox(G4int ObjectNumber)
@@ -149,7 +149,7 @@ void TargetConstruction::HollowBox(G4int ObjectNumber)
 							       outerBox, 
 							       innerBox);
 
-	G4cout << "\nCreated solid: HollowCube"+StringNumber;
+	G4cout << "\n- Created solid: HollowCube"+StringNumber;
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber)
@@ -172,7 +172,7 @@ void TargetConstruction::Cylinder(G4int ObjectNumber)
                   		 	startAngle,
                   		 	spanningAngle);
 
-	G4cout << "\nCreated solid: Cylinder"+StringNumber;
+	G4cout << "\n- Created solid: Cylinder"+StringNumber;
 }
 
 void TargetConstruction::Sphere(G4int ObjectNumber)
@@ -197,7 +197,7 @@ void TargetConstruction::Sphere(G4int ObjectNumber)
 				     	startingTheta,
 				     	endTheta);
 
-	G4cout << "\nCreated solid: Sphere"+StringNumber;
+	G4cout << "\n- Created solid: Sphere"+StringNumber;
 }
 
 void TargetConstruction::Trapezoid(G4int ObjectNumber)
@@ -218,7 +218,7 @@ void TargetConstruction::Trapezoid(G4int ObjectNumber)
             			     dy2,
             			     dz);
 
-	G4cout << "\nCreated solid: Trapezoid"+StringNumber;
+	G4cout << "\n- Created solid: Trapezoid"+StringNumber;
 }
 
 void TargetConstruction::Ellipsoid(G4int ObjectNumber)
@@ -239,7 +239,7 @@ void TargetConstruction::Ellipsoid(G4int ObjectNumber)
                     				 pzBottomCut,
                     				 pzTopCut);
 
-	G4cout << "\nCreated solid: Ellipsoid"+StringNumber;
+	G4cout << "\n- Created solid: Ellipsoid"+StringNumber;
 }
 
 void TargetConstruction::SubtractSolid(G4int ObjectNumber)
@@ -288,7 +288,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber)
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
 
-	G4cout << "\nCreated solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
+	G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
 	++SubtractSolidCounter;
 }
 
@@ -301,7 +301,7 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
 
-		G4cout << "\nCreated logic volume: LV" << Solid -> GetName();
+		G4cout << "\n- Created logic volume: LV" << Solid -> GetName() << " \n";
 	}
 }
 
@@ -351,7 +351,7 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
 
 		if(nImage == 0)
-			{G4cout << "\nCreated physical volume: phy" << Name;} 
+			{G4cout << "- Created physical volume: phy" << Name;} 
 	}
 }
 

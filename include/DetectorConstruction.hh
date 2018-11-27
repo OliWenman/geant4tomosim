@@ -87,6 +87,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//World variables
 		G4ThreeVector WorldSize_Cmd;
+		G4String WorldMaterial;
 		G4bool Visualization_Cmd;
 
 		//Detector variables

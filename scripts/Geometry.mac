@@ -1,4 +1,4 @@
-/Target/CheckAllOverlaps true
+/Target/CheckAllOverlaps false
 /Target/TotalRotationAngle 180 deg
 
 /Target/OffSet/Radius 0.0 mm			

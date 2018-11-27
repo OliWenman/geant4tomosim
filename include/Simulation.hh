@@ -39,7 +39,6 @@ class Simulation
 	private:
 		//It's own private functions to be called by the public functions
 		void Setup();
-		void SaveDataToFile();
 		void BeamOn(unsigned long long int nParticles);
 		void CompletionTime(double LoopTimer, int Image, int NoImages);
 		

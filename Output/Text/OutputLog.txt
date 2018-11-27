@@ -1,11 +1,16 @@
 
+WORLD SETUP: 
+
+- World dimensions: 1 0.1275 0.105 cm 
+- World Material: G4_AIR
+
 THE DETECTOR SETUP:
 
 - Number of detectors: 250 x 210 = 52500
 - Invidual detector dimensions: 5 5 5 um 
 - Detectors are assumed to be 100% effiicent 
 
-BEAM INFORMATION
+BEAM INFORMATION: 
 
 - Energy of the monochomatic beam is: 25 keV
 - Beam dimensions: 2.5 x 2.1 mm 
@@ -14,3 +19,11 @@ THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
 
 LivermorePhysics:
 - Photoelectric effect
+
+META DATA: 
+
+- The seed used: 1543318244
+- Number of projections being processed: 1
+- Number of photons per image: 10000000
+- Number of particles per detector on average: 190
+- Full rotation angle: 3.14159 rad  

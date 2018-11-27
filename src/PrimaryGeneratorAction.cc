@@ -1,6 +1,5 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
-#include "DetectorConstruction.hh"
 #include "Data.hh"
 
 #include "G4Event.hh"
@@ -16,7 +15,7 @@
 #include <iomanip>
 #include <fstream>
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* DC_Object, Data* DataObject):G4VUserPrimaryGeneratorAction(), DC(DC_Object), data(DataObject)
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject)
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this, data);
@@ -45,15 +44,13 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	const double WorldX = -DC -> GetWorldSize().x();
-
 	//Allow the particles to be fired randomly within the beam width
 	G4double y0 = BeamWidthY_Cmd * (G4UniformRand()-0.5);
   	G4double z0 = BeamHeightZ_Cmd * (G4UniformRand()-0.5);
 
 	//Set the ParticleGun conditions
 	ParticleGun -> SetParticleEnergy(energyCmd);
-  	ParticleGun-> SetParticlePosition(G4ThreeVector(WorldX, y0, z0));
+	ParticleGun -> SetParticlePosition(G4ThreeVector(-WorldLength, y0, z0));
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
@@ -61,7 +58,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 {
-	G4cout << "\nBEAM INFORMATION\n"
+	G4cout << "\nBEAM INFORMATION: \n"
 	       << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
 	       << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << G4endl;
 
@@ -79,7 +76,7 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
       		exit(1);
    	}
 
-	outdata << "\nBEAM INFORMATION\n"
+	outdata << "\nBEAM INFORMATION: \n"
 	        << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
 	        << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << "\n";
 

@@ -43,6 +43,7 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 	TC = new TargetConstruction();
 
 	nImage = 0;
+	WorldMaterial = "G4_AIR";
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -84,7 +85,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	}
 
 	//Create an instance of the logical volume and find the material
-	logicWorld = new G4LogicalVolume(solidWorld, FindMaterial("G4_AIR"), "World");
+	logicWorld = new G4LogicalVolume(solidWorld, FindMaterial(WorldMaterial), "World");
 	//Visualization attributes
 	Visualization(logicWorld, G4Colour::White());
 
@@ -273,10 +274,13 @@ void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle)
 
 void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 {
-	G4cout << "\nTHE DETECTOR SETUP:\n"
+	G4cout << "\nWORLD SETUP: \n"
+	       << "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
+	       << "\n- World Material: " << WorldMaterial << "\n"
+
+	       << "\nTHE DETECTOR SETUP: \n"
 	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	       << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
-
 	if (DetectorEfficiency_Cmd == false)
 	{	
 		G4cout << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
@@ -289,7 +293,6 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	//Creation of the writing to data file stream
 	std::ofstream outdata; 
 
-	G4cout << "\nSaving the SimulationSettings... " << G4endl;
 	G4String SettingsName = "OutputLog.txt";
 
 	//Open the file within the path set
@@ -301,7 +304,11 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
       		exit(1);
    	}
 
-	outdata << "\nTHE DETECTOR SETUP:\n"
+	outdata << "\nWORLD SETUP: \n"
+	        << "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
+	        << "\n- World Material: " << WorldMaterial << "\n"
+
+	        << "\nTHE DETECTOR SETUP:\n"
 	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	        << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
 	if (DetectorEfficiency_Cmd == false)
