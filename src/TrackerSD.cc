@@ -3,18 +3,13 @@
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
-#include "G4SDManager.hh"
-
-#include "G4Event.hh"
-#include "G4RunManager.hh"
-#include "G4UnitsTable.hh"
-#include "G4Track.hh"
 
 TrackerSD::TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency) 
           : G4VSensitiveDetector(name), data(DataObject)
 {
+	//Set the values in it's own class so it doesn't have to constantly get them
 	DetectorEfficiency = DetEfficiency;
-	const int nBins = data -> GetNoBins();
+	nBins = data -> GetNoBins();
 }
 
 TrackerSD::~TrackerSD() { }

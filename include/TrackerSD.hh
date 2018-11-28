@@ -2,11 +2,7 @@
 #define TrackerSD_h 1
 
 #include "G4VSensitiveDetector.hh"
-#include "G4UImessenger.hh"
 #include "TrackerHit.hh"
-//#include "Data.hh"
-
-#include <vector>
 
 class G4Step;
 class G4HCofThisEvent;

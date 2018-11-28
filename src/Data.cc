@@ -1,11 +1,6 @@
 #include "Data.hh"
 #include <iomanip>
 #include <fstream>
-#include "G4UnitsTable.hh"
-#include <vector>
-#include <array>
-#include "G4ThreeVector.hh"
-#include <string> 
 
 Data::Data(){}
 
@@ -130,7 +125,7 @@ void Data::WriteToTextFile(int nImage)
 		G4cout << "\nThe data has been successfully written to " << FilePath << HitFileName << "\n \n";
 
 //--------------------------------------------------------------------------------------
-		if (EnergyDataCmd == true)
+		if (NoBins_Cmd > 0)
 		{
 			G4cout << "Saving the energy data... " << G4endl;
 		

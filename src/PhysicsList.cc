@@ -151,7 +151,6 @@ void PhysicsList::ConstructEM()
   				de->SetAuger(false);   
   				de->SetPIXE(false);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-				G4cout << G4endl << "- Fluorescence";
 				PhysicProcesses.push_back ("Fluorescence");
 			}
 		}

@@ -1,13 +1,20 @@
+//Own classes
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 
+//Used to create an event to fire the particles
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
+
+//Used to define particles
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
+
+//Geant4 Units
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 
+//Randomize position of the beam
 #include "Randomize.hh"
 
 //Read/write to a file

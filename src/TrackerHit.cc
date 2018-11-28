@@ -16,20 +16,20 @@ TrackerHit::~TrackerHit(){}
 
 TrackerHit::TrackerHit(const TrackerHit& right):G4VHit()
 {
-  	//fTrackID   = right.fTrackID;
+  	fTrackID   = right.fTrackID;
   	fChamberNb = right.fChamberNb;
   	fEdep      = right.fEdep;
   	fPos       = right.fPos;
-	//fParticle  = right.fParticle;
+	fParticle  = right.fParticle;
 }
 
 const TrackerHit& TrackerHit::operator = (const TrackerHit& right)
 {
-  	//fTrackID   = right.fTrackID;
+  	fTrackID   = right.fTrackID;
   	fChamberNb = right.fChamberNb;
   	fEdep      = right.fEdep;
   	fPos       = right.fPos;
-	//fParticle  = right.fParticle;
+	fParticle  = right.fParticle;
 
   	return *this;
 }

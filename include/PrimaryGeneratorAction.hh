@@ -4,7 +4,6 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
-#include "G4UImessenger.hh"
 
 class G4Event;
 class G4ParticleDefination;
@@ -52,6 +51,5 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double BeamHeightZ_Cmd;
 		G4double WorldLength;
 };
-
 
 #endif

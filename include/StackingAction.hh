@@ -20,7 +20,6 @@ class StackingAction : public G4UserStackingAction
 	private:
   		G4bool fKillSecondary;
  		const G4ParticleDefinition* fParticle;
-
 };
 
 #endif

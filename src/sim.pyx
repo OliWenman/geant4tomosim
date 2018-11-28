@@ -45,8 +45,6 @@ cdef class PySim:
     #Start the simulation
     def run(self, int TotalParticles, int NumberOfImages, dTheta, int bins = 0):
 
-        print "Py: The number of bins = ", bins 
-
         if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
 
            #Create a h5 file to view the data after the simulation is complete

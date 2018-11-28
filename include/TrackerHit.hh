@@ -50,9 +50,9 @@ class TrackerHit : public G4VHit
 		G4bool GetDraw() const {return DrawOption;}
 
   	private:
-      		G4int         fTrackID;
-      		G4int         fChamberNb;
-      		G4double      fEdep;
+      		G4int fTrackID;
+      		G4int fChamberNb;
+      		G4double fEdep;
       		G4ThreeVector fPos;
 		G4ParticleDefinition* fParticle;
 

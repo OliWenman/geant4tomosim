@@ -3,11 +3,6 @@
 #include "G4Track.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4StepPoint.hh"
-#include "G4VPhysicalVolume.hh"
-#include "G4Step.hh"
-#include "G4TransportationManager.hh"
 
 StackingAction::StackingAction(): G4UserStackingAction(), fParticle(0) 
 {
@@ -23,18 +18,12 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
 
   	const G4ParticleDefinition* particle = aTrack->GetDefinition();
 
-  	//stack or delete secondaries
+  	//Stack or delete secondaries
   	if(aTrack->GetTrackID() > 1) 
 	{  
     		if (fKillSecondary || fParticle == particle) 
 			{status = fKill; }
   	}
-
-	//G4Step* theStep;
-	//G4String thePostPVName = theStep->GetPostStepPoint()->GetPhysicalVolume()->GetName(); 
-
-	//if (thePostPVname == "LogicDetector")
-	//	{status = fKill; }
 
   	return status;
 }

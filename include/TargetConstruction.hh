@@ -3,6 +3,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include <vector>
+#include "G4ThreeVector.hh"
 
 //My own classes 
 class TargetConstructionMessenger;
@@ -26,49 +27,25 @@ class TargetConstruction
 		//Base class method
 		void Construct(G4LogicalVolume *logicWorld);
 
-		//Own class methods
-		//Functions for creating different shaped objects
-		void Box(G4int ObjectNumber);
-		void HollowBox(G4int ObjectNumber);
-		void Cylinder(G4int ObjectNumber);
-		void Sphere(G4int ObjectNumber);
-		void Trapezoid(G4int ObjectNumber);
-		void Ellipsoid(G4int ObjectNumber);
-
-		void SubtractSolid(G4int ObjectNumber);
-
-		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);
-		void AddPhysicalVolume(int, G4String Name, G4LogicalVolume* MotherBox);
-
-		//Functions used through out class
-		G4Material* FindMaterial(G4String MaterialName);
-		G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
-		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
-		void Visualization(G4LogicalVolume*, G4Colour);
-
 		//Appends to a 2D vector another vector filled with an objects geometry 
 		inline void AddDimensions(std::vector<G4double> value){Dimensions.push_back (value);}	
 
-		//Functions to do with an array of objects being used
+		//Functions to do with an properities of objects being used
 		inline void AddTypeOfObjects(G4String value){TypeOfObjects.push_back (value);}
 		inline void SetTypeOfObjects(G4int n, G4String value){TypeOfObjects[n] = value;}
 
 		inline void AddLogicVolumeArray(bool value){LogicVolumeArray.push_back (value);}
 		inline void SetLogicVolumeArray(int n, bool value){LogicVolumeArray[n] = value;}
 
-		//Functions to do with an array of the positions of the objects being used
 		inline void AddVectorPosition(G4ThreeVector value){Positions.push_back (value);}
 		inline void SetVectorPosition(G4int n, G4ThreeVector value){Positions[n] = value;}
 
-		//Functions to do with an array of rotations of the objects being used
 		inline void AddVectorRotation(G4ThreeVector value){Rotations.push_back (value);}
 		inline void SetVectorRotation(G4int n, G4ThreeVector value){Rotations[n] = value;}
 
-		//Functions to do with an array of materials of the objects being used
 		inline void AddMaterial(G4String value){Materials.push_back (value);}
 		inline void SetMaterial(G4int n, G4String value){Materials[n] = value;} 
 
-		//Functions to do with an array of boolean operations for the object being used
 		inline void AddBooleanOp(bool value){BooleanOp.push_back (value);}
 		inline void SetBooleanOp(G4int n, bool value){BooleanOp[n] = value;} 
 
@@ -94,6 +71,28 @@ class TargetConstruction
 		void SetVisualization(G4bool value){VisualizationValue = value;}
 
 	private:
+
+		//Functions for creating different shaped objects
+		void Box(G4int ObjectNumber);
+		void HollowBox(G4int ObjectNumber);
+		void Cylinder(G4int ObjectNumber);
+		void Sphere(G4int ObjectNumber);
+		void Trapezoid(G4int ObjectNumber);
+		void Ellipsoid(G4int ObjectNumber);
+
+		//Complex objects
+		void SubtractSolid(G4int ObjectNumber);
+
+		//Add its material and place it in the world
+		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);
+		void AddPhysicalVolume(int, G4String Name, G4LogicalVolume* MotherBox);
+
+		//Functions used through out class
+		G4Material* FindMaterial(G4String MaterialName);
+		G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
+		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
+		void Visualization(G4LogicalVolume*, G4Colour);
+
 		//Pointer to its messenger class
 		TargetConstructionMessenger *TCMessenger;		
 
