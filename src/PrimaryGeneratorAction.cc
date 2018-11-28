@@ -1,6 +1,5 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
-#include "Data.hh"
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
@@ -15,10 +14,10 @@
 #include <iomanip>
 #include <fstream>
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject)
+PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 {
 	//Create a messenger for this class
-  	gunMessenger = new PrimaryGeneratorActionMessenger(this, data);
+  	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 
 	//Set the number of particles for each event
 	G4int nofParticles = 1;
@@ -39,7 +38,7 @@ void PrimaryGeneratorAction::SetDefaultKinematic()
 	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
 	ParticleGun -> SetParticleDefinition(gamma);
-  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1.,0.,0.));	
+  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)

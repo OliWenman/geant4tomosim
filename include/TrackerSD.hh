@@ -21,7 +21,7 @@ class Data;
 class TrackerSD : public G4VSensitiveDetector
 {
   	public:
-		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, const G4bool DetectorEfficiency, const G4bool EnergyDataOption);
+		TrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, const G4bool DetectorEfficiency);
     		~TrackerSD();
   
     		//Base Methods
@@ -29,7 +29,7 @@ class TrackerSD : public G4VSensitiveDetector
 
   	private:
 		bool DetectorEfficiency;
-		bool EnergyDataOption;
+		int nBins;
 
 		//Pointers to different classes
 		Data* data;

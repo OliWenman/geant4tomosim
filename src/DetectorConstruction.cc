@@ -244,7 +244,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 		else
 		{
 			//Create a detector optimised for perfomance
-    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, EnergyDataOption);
+    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
 			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
 		}	
 	}

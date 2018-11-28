@@ -9,14 +9,13 @@
 class G4Event;
 class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
-class Data;
 
 //It defines a single particle which hits the detectors perpendicular to the input face
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction(Data* data);    
+    		PrimaryGeneratorAction();    
     		~PrimaryGeneratorAction();
     		void GeneratePrimaries(G4Event* );
 		void ReadOutInfo(G4String SaveFilePath);
@@ -34,6 +33,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4ParticleGun* GetParticleGun() {return ParticleGun;}
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
 		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
+		G4double GetMaxEnergy(){return energyCmd;}
 
   	private:
 		//Pointer to G4ParticleGun
@@ -42,9 +42,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4ParticleDefinition *gamma;
 		G4ParticleDefinition *electron;
 		G4ParticleDefinition *positron;
-
-		//Pointer to DetectorConstruction class
-		Data* data;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;

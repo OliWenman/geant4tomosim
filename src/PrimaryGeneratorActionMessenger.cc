@@ -1,6 +1,5 @@
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "PrimaryGeneratorAction.hh"
-#include "Data.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4UIcmdWithAString.hh"
@@ -9,7 +8,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
 
-PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun, Data* DataObject): PGAction(Gun), data(DataObject)
+PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun): PGAction(Gun)
 {	
 	gunDirectory = new G4UIdirectory("/gun/");
 	gunDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
@@ -49,7 +48,6 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		energyCmd -> GetNewUnitValue(newValue);
 		PGAction -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
-		data -> SetMaxEnergy(energyCmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamWidthY_Cmd )
   	{ 

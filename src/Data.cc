@@ -1,27 +1,17 @@
 #include "Data.hh"
-//#include "DataMessenger.hh"
 #include <iomanip>
 #include <fstream>
 #include "G4UnitsTable.hh"
-//#include <string.h>
 #include <vector>
 #include <array>
 #include "G4ThreeVector.hh"
 #include <string> 
 
-//#include "hdf5.h"
-//#include "H5Cpp.h"
-
-//using namespace H5;
-
-Data::Data()
-{	
-	nImage = 0;	
-}
+Data::Data(){}
 
 Data::~Data(){}
 
-void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
+void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
 {
 	if (nImage == 0)
 	{
@@ -32,11 +22,12 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
 		//Creates a 1D vector for the hit data
 		std::vector<int> iHitDataMatrix(nDetectorsY*nDetectorsZ, 0);
 		SetHitData(iHitDataMatrix);
-		if (EnergyDataCmd == true)
+		if (nBins > 0)
 		{
 			//Creates a 2D vector for the energy data	
-			std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(NoBins_Cmd,0));
+			std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(nBins, 0));
 			SetEnergyData(iEnergyMatrix);
+			NoBins_Cmd = nBins;
 		}
 	}
 	else 
@@ -44,7 +35,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
 		//Reset the data to zero ready for the next image
 		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
 
-		if (EnergyDataCmd == true)
+		if (nBins > 0)
 		{
 			//Resets the energy data to zero for the next image
 			for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
@@ -52,23 +43,28 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ)
 	}
 }
 
-/*void Data::SetUpHitData(int Nrow, int Ncolumn)
+void Data::SetUpEnergy(int nBins)//
 {
-	//Saves the rows and columns inputted using the Set methods
-	SetNumberRows(Nrow);
-	SetNumberColumns(Ncolumn);
+	std::vector<double> iEnergyBins (nBins, 0);
+	std::vector<int> iEnergyFreq (nBins, 0);
 
-	//Creates a 1D vector for the hit data
-	std::vector<int> iHitDataMatrix(Nrow*Ncolumn, 0);
-	SetHitData(iHitDataMatrix);
+	int Energy = 0;
+	for (int ele = 0 ; ele < nBins ; ele++)
+	{
+		++Energy;
+		iEnergyBins[ele] = (MaxE/nBins)*Energy;
+	}
+
+	EnergyBins = iEnergyBins;
+	EnergyFreq = iEnergyFreq;
+
+	NoBins_Cmd = nBins;
 }
 
-void Data::SetUpEnergyData()
+void Data::SaveEnergyFreq(double E)//
 {
-	//Creates a 2D vector for the energy data	
-	std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(NoBins_Cmd,0));
-	SetEnergyData(iEnergyMatrix);
-}*/
+	++EnergyFreq[floor(E/(MaxE/NoBins_Cmd))-1];
+}
 
 void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 {
@@ -92,7 +88,7 @@ void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)
 	}
 }
 
-void Data::WriteToTextFile()
+void Data::WriteToTextFile(int nImage)
 {
 	if (TextFileCmd == true)
 	{
@@ -216,22 +212,6 @@ void Data::WriteToTextFile()
 			//Lets the user know that the data was saved successfully
 			outdata.close();
 			G4cout << "The data has been successfully written to " << FilePath << EnergyFileName << G4endl << G4endl;
-
-			//Resets the energy data to zero for the next image
-			//for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
 		}
-	}
-	
-	//Reset the data to zero ready for the next image
-	//memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
-
-	++nImage;
-}
-
-void Data::WriteToHDF5()
-{
-	if (HDF5FileCmd == true)
-	{
-
 	}
 }

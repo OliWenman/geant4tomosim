@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #Used to find the .so file built using CMake
 import sys
+import matplotlib.pyplot as plt
 sys.path.insert(0, './../build/src')
 
 from G4Units import *
@@ -10,15 +11,23 @@ import numpy as np
 nDetY = 250
 nDetZ = 210
 DetectorDimensions = [0.1, 0.1, 0.1]*mm
-nBins = 10
+nBins = 25
 
 NumberOfImages = 1
 TotalRotation = 180*deg
-nParticles = 10000000
+nParticles = 1000000
 
 Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ)
 
-Sim.run(nParticles, NumberOfImages, TotalRotation)
+Sim.run(nParticles, NumberOfImages, TotalRotation, nBins)
 
+#x = Sim.lastEnergyBins()
+#y = Sim.lastEnergyFreq()
+
+#print(x,"\n")
+#print(y)
+
+#plt.plot(x,y)
+#plt.show()
 

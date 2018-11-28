@@ -66,7 +66,7 @@ void Simulation::Setup()
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
 
-	PGA = new PrimaryGeneratorAction(data);
+	PGA = new PrimaryGeneratorAction();
 	runManager -> SetUserAction(PGA);
 	runManager -> SetUserAction(new StackingAction());
 
@@ -96,11 +96,16 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 
 	G4String SaveFilePath = "./../Output/Text/";
 
+	//Readout the inputs from the user and save to a file
 	DC -> ReadOutInfo(SaveFilePath);
 	PGA -> ReadOutInfo(SaveFilePath);
 	PL -> ReadOutInfo(SaveFilePath);
 
+	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA -> SetWorldLength(DC -> GetWorldSize().x());
+
+	//Tell the data class what the max energy is
+	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
 
         G4cout << "\nCommands successfully added\n"
 
@@ -130,7 +135,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			}
 
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
-			data -> SetNoBins(nBins);
 
 			//Prints the time and date of the local time that the simulation started
 			time_t now = time(0);
@@ -180,7 +184,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		LoopTimer.Start();
 
 		//Creates the arrays for the data, wipes them after each image
-		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
+		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image, nBins);
+		data -> SetUpEnergy(nBins);
 		
 		G4cout << "\n================================================================================"
 		       << "\n                                 IMAGE " <<  Image+1
@@ -246,7 +251,7 @@ void Simulation::Visualisation()
 		visManager = new G4VisExecutive();
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
-		G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
+		G4cout << "\n\n////////////////////////////////////////////////////////////////////////////////\n"
 		       << "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
 		       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
 
@@ -348,6 +353,16 @@ std::vector<int> Simulation::GetLastImage()
 std::vector<std::vector<int> > Simulation::GetLastEnergyData()
 {
 	return data -> GetEnergyData();
+}
+
+std::vector<int> Simulation::GetEnergyFreq()
+{
+	return data -> GetEnergyFreq();
+}
+
+std::vector<double> Simulation::GetEnergyBins()
+{
+	return data -> GetEnergyBins();
 }
 
 //Private functions

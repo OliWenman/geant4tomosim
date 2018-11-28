@@ -5,7 +5,6 @@
 #include "globals.hh"
 
 class PrimaryGeneratorAction;
-class Data;
 
 class G4UImessenger;
 
@@ -19,14 +18,13 @@ class G4UIcmdWithAnInteger;
 class PrimaryGeneratorActionMessenger: public G4UImessenger 
 { 
 	public:
-		PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Action, Data* data);
+		PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Action);
 		~PrimaryGeneratorActionMessenger(void);
 
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
 		PrimaryGeneratorAction* PGAction;
-		Data* data;
 
 		G4UIdirectory *gunDirectory;
 		//Pointer to the G4UIdirectory

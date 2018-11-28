@@ -12,18 +12,21 @@ THE DETECTOR SETUP:
 
 BEAM INFORMATION: 
 
-- Energy of the monochomatic beam is: 25 keV
+- Energy of the monochomatic beam is: 100 keV
 - Beam dimensions: 2.5 x 2.1 mm 
 
 THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
 
 LivermorePhysics:
 - Photoelectric effect
+- Compton scattering
+- Rayleigh scattering
+- Fluorescence
 
 META DATA: 
 
-- The seed used: 1543318244
+- The seed used: 1543401862
 - Number of projections being processed: 1
-- Number of photons per image: 10000000
-- Number of particles per detector on average: 190
+- Number of photons per image: 1000000
+- Number of particles per detector on average: 19
 - Full rotation angle: 3.14159 rad  

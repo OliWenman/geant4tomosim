@@ -45,6 +45,8 @@ cdef class PySim:
     #Start the simulation
     def run(self, int TotalParticles, int NumberOfImages, dTheta, int bins = 0):
 
+        print "Py: The number of bins = ", bins 
+
         if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
 
            #Create a h5 file to view the data after the simulation is complete
@@ -57,8 +59,7 @@ cdef class PySim:
 
            if bins >= 1:
               print("Energy data turned on")
-              nBins = 10
-              EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, nBins, NumberOfImages))
+              EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, bins, NumberOfImages))
            else:
               print("Energy data won't be recorded. ")
 
@@ -78,7 +79,7 @@ cdef class PySim:
                if bins >= 1:
                   E = np.array(self.lastEnergyData())
                   EnergyDataSet[:, :, nImage] = E[:, :]
-
+                  
            #Close the file
            h5file.close()
 
@@ -103,4 +104,10 @@ cdef class PySim:
 
     def lastEnergyData(self):
         return self.thisptr.GetLastEnergyData()
+
+    def lastEnergyBins(self):
+        return self.thisptr.GetEnergyBins()
+
+    def lastEnergyFreq(self):
+        return self.thisptr.GetEnergyFreq()
 

@@ -23,22 +23,24 @@ class Data
 		inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
-		void SetUpData(int nDetectorsY, int nDetectorsZ);
+		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins);
 	
-		//void SetUpHitData(int Nrow, int Ncolumn);
-		//void SetUpEnergyData();
+		void SetUpEnergy(int nBins);//
+		void SaveEnergyFreq(double E);		
 
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 
 		void SaveEnergyData(G4int DetectorNumber, G4double edep);
 
 		void MakeSpaces(int nSpaces, std::ofstream &outdata);
-		void WriteToTextFile();
-		void WriteToHDF5();
+		void WriteToTextFile(int nImage);
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
 		std::vector<std::vector<int> > GetEnergyData(){return EnergyMatrix;}
+
+		std::vector<double> GetEnergyBins(){return EnergyBins;}//
+		std::vector<int> GetEnergyFreq(){return EnergyFreq;}//
 
 		G4int GetNoImages(){return NoImages_Cmd;}
 
@@ -67,12 +69,13 @@ class Data
 
 		//Data members
 		std::vector<int> HitDataArray;
+		std::vector<double> EnergyBins;//
+		std::vector<int> EnergyFreq;//
+
 		std::vector<std::vector<int> > EnergyMatrix;
 
 		G4int rows;
 		G4int columns;	
-
-		G4int nImage;
 
 		G4bool TextFileCmd;
 		G4bool HDF5FileCmd;
