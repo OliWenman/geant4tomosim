@@ -16,21 +16,17 @@ class Data
 		~Data();
 		
 		//Class methods
-		inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
+		//inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins);
-	
 		void SetUpEnergy(int nBins);//
-		void SaveEnergyFreq(double E);		
 
+		void SaveEnergyFreq(double E);//		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
-
 		void SaveEnergyData(G4int DetectorNumber, G4double edep);
 
 		void WriteToTextFile(int nImage);
-
-		void MakeSpaces(int nSpaces, std::ofstream &outdata);
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
@@ -52,7 +48,7 @@ class Data
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
 	private:	
-
+		void MakeSpaces(int nSpaces, std::ofstream &outdata);
 
 		DataMessenger* dataMessenger;
 

@@ -20,6 +20,7 @@
 //Geant4 units
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
+#include "G4ThreeVector.hh"
 
 //Read/write to a file
 #include <fstream>
@@ -31,6 +32,8 @@ Simulation::Simulation()
 
 	Reset = false;
 	Ready = false;
+
+	WriteToTextCmd = false;
 
 	G4cout << "\nWelcome to the tomography data simulation!\n"; 
 
@@ -80,12 +83,13 @@ void Simulation::Setup()
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
 
-void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
+void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions)
 {
 	G4String PathToFiles = "./../scripts/";
 
 	DC -> SetNoDetectorsY(nDetectorsY);
 	DC -> SetNoDetectorsZ(nDetectorsZ);
+	DC -> SetDetectorSize(G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2])); 
 
 	//Apply the commands from the macro files to fill the values
 	G4cout << "\nReading Geometry.mac... ";
@@ -96,16 +100,16 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 
 	G4String SaveFilePath = "./../Output/Text/";
 
-	//Readout the inputs from the user and save to a file
-	DC -> ReadOutInfo(SaveFilePath);
-	PGA -> ReadOutInfo(SaveFilePath);
-	PL -> ReadOutInfo(SaveFilePath);
-
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA -> SetWorldLength(DC -> GetWorldSize().x());
 
 	//Tell the data class what the max energy is
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
+
+	//Readout the inputs from the user and save to a file
+	DC -> ReadOutInfo(SaveFilePath);
+	PGA -> ReadOutInfo(SaveFilePath);
+	PL -> ReadOutInfo(SaveFilePath);
 
         G4cout << "\nCommands successfully added\n"
 
@@ -118,6 +122,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ)
 
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle, int nBins)
 {
+	//Checks to see if simulation is ready (pyInitialise has been used before)
 	if (Ready == true)
 	{
 		if(Image == 0)
@@ -201,6 +206,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 		G4cout << "\nRun finished " << G4endl;
 
+		if (WriteToTextCmd == true)
+			{data -> WriteToTextFile(Image);}
+
 		unsigned long long int limit = 2147483647;
 
 		//Print the progress of the simulation
@@ -253,7 +261,7 @@ void Simulation::Visualisation()
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << "\n\n////////////////////////////////////////////////////////////////////////////////\n"
 		       << "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
-		       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
+		       << "\n////////////////////////////////////////////////////////////////////////////////\n" << G4endl;
 
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");

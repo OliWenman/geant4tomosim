@@ -8,23 +8,23 @@ from G4Units import *
 import sim
 import numpy as np
 
-nDetY = 250
-nDetZ = 210
-DetectorDimensions = [0.1, 0.1, 0.1]*mm
-nBins = 25
+nDetY = 25
+nDetZ = 21
+DetectorDimensions = [0.05, 0.05, 0.05]*mm
 
+nBins = 250
 NumberOfImages = 1
 TotalRotation = 180*deg
-nParticles = 1000000
+nParticles = 10000000
 
 Sim = sim.PySim()
-Sim.initialise(nDetY, nDetZ)
+Sim.initialise(nDetY, nDetZ, DetectorDimensions)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation, nBins)
 
 #x = Sim.lastEnergyBins()
 #y = Sim.lastEnergyFreq()
-
+#y[nBins -1] = 0
 #print(x,"\n")
 #print(y)
 

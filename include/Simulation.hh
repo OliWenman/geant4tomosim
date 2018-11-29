@@ -22,7 +22,7 @@ class Simulation
 
 		//Methods
 		//To be called from Python
-		void pyInitialise(int nDetectorsY, int nDetectorsZ);
+		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions);
 		std::vector<int> pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta, int bins);
 
 		//To be called from C++		
@@ -32,18 +32,18 @@ class Simulation
 		//Python or C++
 		std::vector<int> GetLastImage();
 		std::vector<std::vector<int> > GetLastEnergyData();
-
-		std::vector<double> GetEnergyBins();
-		std::vector<int> GetEnergyFreq();
-		void Visualisation();
+		std::vector<double> GetEnergyBins();//
+		std::vector<int> GetEnergyFreq();//
 
 		void SetSeed(long int value){seedCmd = value;}
+		void SetWriteToText(bool value){WriteToTextCmd = value;}
 
 	private:
 		//It's own private functions to be called by the public functions
 		void Setup();
 		void BeamOn(unsigned long long int nParticles);
 		void CompletionTime(double LoopTimer, int Image, int NoImages);
+		void Visualisation();
 		
 		//Pointers to different classes
 		SimulationMessenger* simMessenger;
@@ -60,6 +60,7 @@ class Simulation
 		bool Ready;
 
 		long int seedCmd;
+		bool WriteToTextCmd;
 };
 
 #endif

@@ -13,6 +13,7 @@
 //Geant4 Units
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
+#include "G4TwoVector.hh"
 
 //Randomize position of the beam
 #include "Randomize.hh"
@@ -64,9 +65,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 {
+	G4ThreeVector BeamDimensions = G4ThreeVector(WorldLength, BeamWidthY_Cmd, BeamHeightZ_Cmd);
+
 	G4cout << "\nBEAM INFORMATION: \n"
 	       << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
-	       << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << G4endl;
+	       << "\n- Beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
 
 	//Creation of the writing to data file stream
 	std::fstream outdata; 

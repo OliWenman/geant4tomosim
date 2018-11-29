@@ -113,8 +113,6 @@ void PhysicsList::ConstructEM()
 			}
 			else if(PhysicsPackageCmd == "StandardPhysics")
 			{
-				G4cout << G4endl << "STANDARD PHYSICS: ";
-
 				if (PhotoElectricCmd == true)
 				{
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();

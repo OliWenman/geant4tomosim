@@ -8,10 +8,9 @@
 
 #Data Settings
 /data/Seed 0
-/data/bins 10			#(Choose the number of bins you would like the energy of the photons to be split into for the detectors to detector)
 
 #Gun Settings
-/gun/setEnergy 100 keV		#(Set the initial energy of the monochromatic X-ray beam)
+/gun/setEnergy 20 keV		#(Set the initial energy of the monochromatic X-ray beam)
 /gun/setBeamWidth 2.5 mm #000013 mm		#(Set the beam width)
 /gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
@@ -20,7 +19,7 @@
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings	
-/detector/size 0.01 0.01 0.01 mm	
+#/detector/size 0.01 0.01 0.01 mm	
 /detector/material G4_Galactic	#(Set the material of the detectors)
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
 

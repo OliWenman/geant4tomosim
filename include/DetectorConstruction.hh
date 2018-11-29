@@ -7,7 +7,7 @@
 //My own classes
 class DetectorConstructionMessenger;
 class Data;
-class TrackerSD;
+class TomographySD;
 class VisTrackerSD;
 class TargetConstruction;
 
@@ -70,7 +70,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Pointers to my own classes 
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
-		TrackerSD* aTrackerSD;
+		TomographySD* tomoSD;
 		VisTrackerSD* VTrackerSD;
 		TargetConstruction* TC;
 

@@ -67,11 +67,11 @@ void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
 	int nBin = floor(edep/(MaxE/NoBins_Cmd));
 
 	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
-	if (nBin == NoBins_Cmd)
-		{&++EnergyMatrix[DetectorNumber][nBin-1];}
-	else
-		{//+1 to the energy bin
-		 &++EnergyMatrix[DetectorNumber][nBin];}
+	//if (nBin == NoBins_Cmd)
+	//	{&++EnergyMatrix[DetectorNumber][nBin-1];}
+	//else
+		//{//+1 to the energy bin
+		 &++EnergyMatrix[DetectorNumber][nBin-1];//}
 }
 
 void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)

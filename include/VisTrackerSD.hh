@@ -19,7 +19,7 @@ class Data;
 class VisTrackerSD : public G4VSensitiveDetector
 {
   	public:
-		VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data,  const G4bool DetEfficiency, const G4bool EOption);
+		VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data,  const G4bool DetEfficiency);
     		virtual ~VisTrackerSD();
 
 		//Set methods

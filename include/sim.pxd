@@ -6,7 +6,7 @@ cdef extern from "Simulation.hh":
    cdef cppclass Simulation:
       Simulation() except +
       
-      void pyInitialise(int, int)
+      void pyInitialise(int, int, vector[double])
       vector[int] pyRun(unsigned long long int, int, int, double, int)
 
       vector[int] GetLastImage()

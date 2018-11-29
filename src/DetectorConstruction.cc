@@ -1,7 +1,7 @@
 //Own classes
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionMessenger.hh"
-#include "TrackerSD.hh"
+#include "TomographySD.hh"
 #include "VisTrackerSD.hh"
 #include "Data.hh"
 #include "TargetConstruction.hh"
@@ -60,20 +60,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		TC -> SetVisualization(Visualization_Cmd);
 
 		//Checks to see if the detectors are outside the world geometry and displays a warning message
-		if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * GetNoDetectorsY())
+		if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * NoDetectorsY_Cmd)
 		{
-			G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
-			       << G4endl << "         WARNING: Detectors are outside world volume in Y direction. "
-		  	       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.y()*2, "Length")
-	              	       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
+			G4cout << "\n////////////////////////////////////////////////////////////////////////////////"
+			       << "\n         WARNING: Detectors are outside world volume in Y direction. "
+		  	       << "\n         Needs to be at most " << G4BestUnit(WorldSize_Cmd.y()*2, "Length") << ". Currently equal to " << G4BestUnit(DetectorSize_Cmd.y()*NoDetectorsY_Cmd, "Length")
+	              	       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
 		}
 
-		if (WorldSize_Cmd.z() < DetectorSize_Cmd.z()* GetNoDetectorsZ())
+		if (WorldSize_Cmd.z() < DetectorSize_Cmd.z() * NoDetectorsZ_Cmd)
 		{	
-			G4cout << G4endl << "////////////////////////////////////////////////////////////////////////////////"
-		       	       << G4endl << "         WARNING: Detectors are outside world volume in Z direction. "
-		       	       << G4endl << "                          Needs to be at least " << G4BestUnit(WorldSize_Cmd.z()*2, "Length")
-	                       << G4endl << "////////////////////////////////////////////////////////////////////////////////" << G4endl;
+			G4cout << "\n////////////////////////////////////////////////////////////////////////////////"
+		       	       << "\n         WARNING: Detectors are outside world volume in Z direction. "
+		       	       << "\n         Needs to be at most " << G4BestUnit(WorldSize_Cmd.z()*2, "Length") << ". Currently equal to " << G4BestUnit(DetectorSize_Cmd.z()*NoDetectorsZ_Cmd, "Length")
+	                       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
 		}
 
 		//Create an instance of the world geometry
@@ -224,28 +224,22 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
   	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector("TrackerChamberSD", false);
+  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector("TomographyDetector", false);
 
   	if (!theSD) 
 	{
-		bool EnergyDataOption;
-		if (data -> GetNoBins() == 0)
-			{EnergyDataOption == false;}
-		else if (data -> GetNoBins() > 0)
-			{EnergyDataOption == true;}
-
 		//If the sensitive detector hasn't already been created, create one
 		if (GetVisualization() == true)
 		{
 			//Create a visual detector
-			VTrackerSD = new VisTrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd, EnergyDataOption);
+			VTrackerSD = new VisTrackerSD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
 			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
 		}
 		else
 		{
 			//Create a detector optimised for perfomance
-    			aTrackerSD = new TrackerSD("TrackerChamberSD", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
-			SDmanager->AddNewDetector(aTrackerSD);	// Store SD if built	
+    			tomoSD = new TomographySD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
+			SDmanager->AddNewDetector(tomoSD);	// Store SD if built	
 		}	
 	}
 	
@@ -253,7 +247,7 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 	if (Visualization_Cmd == true)
 		{volume -> SetSensitiveDetector(VTrackerSD);}
 	else
-		{volume -> SetSensitiveDetector(aTrackerSD);}
+		{volume -> SetSensitiveDetector(tomoSD);}
 }
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
@@ -274,20 +268,23 @@ void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle)
 
 void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 {
+	G4ThreeVector FullDetDimensions = G4ThreeVector(DetectorSize_Cmd.x()*1, DetectorSize_Cmd.y()*NoDetectorsY_Cmd, DetectorSize_Cmd.z()*NoDetectorsZ_Cmd);
+
 	G4cout << "\nWORLD SETUP: \n"
 	       << "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
 	       << "\n- World Material: " << WorldMaterial << "\n"
 
 	       << "\nTHE DETECTOR SETUP: \n"
 	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	       << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
+	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
+	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
 	if (DetectorEfficiency_Cmd == false)
 	{	
 		G4cout << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
 	}
 	else
 	{	
-		G4cout << "\n- Detectors are assumed to be 100%\ effiicent " << G4endl;
+		G4cout << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
 	}
 	
 	//Creation of the writing to data file stream
@@ -310,14 +307,15 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 
 	        << "\nTHE DETECTOR SETUP:\n"
 	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	        << "\n- Invidual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length");
+	        << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
+		<< "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
 	if (DetectorEfficiency_Cmd == false)
 	{	
 		outdata << "\n- Detector material: " << DetectorMaterial_Cmd << "\n";
 	}
 	else
 	{	
-		outdata << "\n- Detectors are assumed to be 100%\ effiicent \n";
+		outdata << "\n- Detectors are assumed to be 100%\ efficient \n";
 	}
 
 	outdata.close();

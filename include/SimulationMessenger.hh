@@ -5,7 +5,6 @@
 #include "globals.hh"
 
 class Simulation;
-class Data;
 
 class G4UImessenger;
 
@@ -26,19 +25,15 @@ class SimulationMessenger: public G4UImessenger
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
+		//Pointer to Simulation class
 		Simulation* sim;
-		Data* data;
 
+		//Pointers to different commands
 		G4UIdirectory* SimulationDirectory;
-
-    		G4UIcmdWithABool* TextFileCmd;
-		G4UIcmdWithABool* HDF5FileCmd;
-		G4UIcmdWithAnInteger *NoBins_Cmd;
+    		G4UIcmdWithABool* WriteToTextCmd;
 		G4UIcmdWithAnInteger *NoImages_Cmd;
 		G4UIcmdWithAString *NoPhotons_Cmd;
-		G4UIcmdWithABool *Visualization_Cmd;
 		G4UIcmdWithAnInteger *seedCmd;
-		G4UIcmdWithABool *EnergyDataCmd;
 };
 
 #endif 

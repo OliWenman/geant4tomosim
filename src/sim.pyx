@@ -27,7 +27,7 @@ cdef class PySim:
         del self.thisptr
 
     #Get needed information from textfiles settings.mac and Geometry.mac
-    def initialise(self, int nDetY, int nDetZ):
+    def initialise(self, int nDetY, int nDetZ, list DetectorDimensions):
         if nDetY >= 1 and nDetZ >= 1:
 
            #Make the number of detectors availiable for the Python class
@@ -35,7 +35,7 @@ cdef class PySim:
            self.nDetectorsZ = nDetZ
 
            #Call the C++ function
-           self.thisptr.pyInitialise(self.nDetectorsY, self.nDetectorsZ)
+           self.thisptr.pyInitialise(self.nDetectorsY, self.nDetectorsZ, DetectorDimensions)
 
            self.Ready = True
 

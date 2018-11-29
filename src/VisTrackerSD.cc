@@ -10,12 +10,11 @@
 #include "G4UnitsTable.hh"
 #include "G4Track.hh"
 
-VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency, const G4bool EOption) 
+VisTrackerSD::VisTrackerSD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency) 
           : G4VSensitiveDetector(name), fHitsCollection(NULL), data(DataObject)
 {
 	//Setup the data only at the begining of simulation so it doesn't waste time doing work it has already done	
 	DetectorEfficiency = DetEfficiency;
-	EnergyOption = EOption;	
 	
 	collectionName.insert(hitsCollectionName);
 }
@@ -54,9 +53,6 @@ G4bool VisTrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	
 	//Save the detector hits to the data class
 	data -> SaveHitData(nDetector);;
-
-	if (EnergyOption  == true)
-		{data -> SaveEnergyData(nDetector, ParticleEnergy);}
 
   	return true;
 }

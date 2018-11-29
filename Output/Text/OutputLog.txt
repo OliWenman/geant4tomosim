@@ -6,13 +6,14 @@ WORLD SETUP:
 
 THE DETECTOR SETUP:
 
-- Number of detectors: 250 x 210 = 52500
-- Invidual detector dimensions: 5 5 5 um 
-- Detectors are assumed to be 100% effiicent 
+- Number of detectors: 25 x 21 = 525
+- Individual detector dimensions: 50 50 50 um 
+- Full detector dimensions: 0.05 1.25 1.05 mm 
+- Detectors are assumed to be 100% efficient 
 
 BEAM INFORMATION: 
 
-- Energy of the monochomatic beam is: 100 keV
+- Energy of the monochomatic beam is: 20 keV
 - Beam dimensions: 2.5 x 2.1 mm 
 
 THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
@@ -25,8 +26,8 @@ LivermorePhysics:
 
 META DATA: 
 
-- The seed used: 1543404918
+- The seed used: 1543483189
 - Number of projections being processed: 1
-- Number of photons per image: 1000000
-- Number of particles per detector on average: 19
+- Number of photons per image: 10000000
+- Number of particles per detector on average: 19047
 - Full rotation angle: 3.14159 rad  
