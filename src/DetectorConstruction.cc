@@ -2,9 +2,13 @@
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionMessenger.hh"
 #include "TomographySD.hh"
-#include "VisTrackerSD.hh"
+#include "TomographyVSD.hh"
+#include "FluorescenceSD.hh"
 #include "Data.hh"
 #include "TargetConstruction.hh"
+
+#include "G4VSDFilter.hh"
+#include "G4SDParticleFilter.hh"
 
 //Material database
 #include "G4NistManager.hh"
@@ -35,6 +39,9 @@
 //Read/write to a file
 #include <iomanip>
 #include <fstream>
+
+#include "G4StepLimiter.hh"
+#include "G4UserLimits.hh"
 
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 	
@@ -86,6 +93,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//Create an instance of the logical volume and find the material
 	logicWorld = new G4LogicalVolume(solidWorld, FindMaterial(WorldMaterial), "World");
+
 	//Visualization attributes
 	Visualization(logicWorld, G4Colour::White());
 
@@ -143,6 +151,17 @@ void DetectorConstruction::SolidDetectors()
 	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
                                         SolidContainer->GetYHalfLength(),
                                         SolidContainer->GetZHalfLength());
+
+//------------------------------------------------------------------
+	//FLUORESCENCE DETECTOR
+
+	//if (data -> GetNoBins > 0)
+	//{
+		SolidFluoDet = new G4Box("FluorescenceDetector",
+					 2.0*mm,
+					 0.05*mm,
+					 1.5*mm);
+	//}
 }
 
 void DetectorConstruction::LVDetectors()
@@ -174,10 +193,24 @@ void DetectorConstruction::LVDetectors()
 	param -> SetMaterials(theMaterials);
 
 	//Make the detectors sensitive to hits
-	AttachSensitiveDetector(PhantomBoxes_logic);
+	AttachSensitiveDetector(PhantomBoxes_logic, "TomographyDetector");
 
 	Visualization(container_logic, G4Colour::Red());
 	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
+
+//------------------------------------------------------------------
+	//FLUORESCENCE DETECTOR
+	//if (data -> GetNoDetectors() > 0)
+	//{
+		FluoDet_logic = new G4LogicalVolume(SolidFluoDet,
+						    FindMaterial("G4_Galactic"),
+						    "LVFluorescenceDetector");
+
+		//Make the detectors sensitive to hits
+		AttachSensitiveDetector(FluoDet_logic, "FluorescenceDetector");
+		
+		Visualization(FluoDet_logic, G4Colour::Cyan());	
+	//}
 }
 
 void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
@@ -207,6 +240,21 @@ void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
 
 	//Gives warning messages when set to 1?
 	PhantomBoxes_phys->SetRegularStructureId(1);
+
+//------------------------------------------------------------------
+	//FLUORESCENCE DETECTOR	
+	//if (data -> GetNoBins() > 0)
+	//{
+		G4VPhysicalVolume* phyFluoDetector = new G4PVPlacement(0,
+								       G4ThreeVector(0, 1.5*mm, 0),
+								       FluoDet_logic,
+								       "Fluorecense detector",
+								       logicMotherBox,
+								       false,
+								       0,
+								       false);
+	//}
+
 }
 
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
@@ -216,7 +264,7 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);;
 }
 
-void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume) 
+void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4String TypeDetector) 
 {
 	// Avoid unnecessary work
   	if (!volume) 
@@ -224,30 +272,43 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume)
 
   	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector("TomographyDetector", false);
+  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector(TypeDetector, false);
 
   	if (!theSD) 
 	{
 		//If the sensitive detector hasn't already been created, create one
-		if (GetVisualization() == true)
+		if (GetVisualization() == true && TypeDetector == "TomographyDetector")
 		{
 			//Create a visual detector
-			VTrackerSD = new VisTrackerSD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
-			SDmanager->AddNewDetector(VTrackerSD);	// Store SD if built	
+			tomoVSD = new TomographyVSD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
+			SDmanager->AddNewDetector(tomoVSD);	// Store SD if built	
+			G4cout << "\n Adding VTomographyDetector detector " << G4endl;
 		}
-		else
+		else if (TypeDetector == "TomographyDetector")
 		{
 			//Create a detector optimised for perfomance
-    			tomoSD = new TomographySD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
+    			tomoSD = new TomographySD("TomographyDetector", data, DetectorEfficiency_Cmd);
 			SDmanager->AddNewDetector(tomoSD);	// Store SD if built	
+			G4cout << "\n Adding TomographyDetector detector " << G4endl;
 		}	
+		else if (TypeDetector == "FluorescenceDetector")
+		{
+			fluorescenceSD = new FluorescenceSD("FluorescenceDetector", data, DetectorEfficiency_Cmd);
+			SDmanager->AddNewDetector(fluorescenceSD);
+			G4cout << "\n Adding Fluorescence detector " << G4endl;
+
+			G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+			fluorescenceSD -> SetFilter(gammaFilter);
+		}
 	}
-	
+
 	//Add the correct sensitive detector to the logical volume
-	if (Visualization_Cmd == true)
-		{volume -> SetSensitiveDetector(VTrackerSD);}
-	else
+	if (Visualization_Cmd == true && TypeDetector == "TomographyDetector")
+		{volume -> SetSensitiveDetector(tomoVSD);}
+	else if (TypeDetector == "TomographyDetector")
 		{volume -> SetSensitiveDetector(tomoSD);}
+	else if (TypeDetector == "FluorescenceDetector")
+		{volume -> SetSensitiveDetector(fluorescenceSD);}
 }
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)

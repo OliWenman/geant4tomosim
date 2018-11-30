@@ -17,15 +17,14 @@ class Data;
 class TomographySD : public G4VSensitiveDetector
 {
   	public:
-		TomographySD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* data, const G4bool DetectorEfficiency);
+		TomographySD(const G4String& name, Data* data, const G4bool DetectorEfficiency);
     		~TomographySD();
   
     		//Base Methods
-    		G4bool ProcessHits(G4Step* step, G4TouchableHistory* );
+    		G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* );
 
   	private:
 		bool DetectorEfficiency;
-		int nBins;
 
 		//Pointers to different classes
 		Data* data;

@@ -24,11 +24,13 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value;}
 		void SetFluorescence(G4bool value){FluorescenceCmd = value;}
 
+		G4bool GetFluorescence(){return FluorescenceCmd;}
+
 		//Construct the particles and processes
 		void ConstructEM();
   		void ConstructParticle();
   		void ConstructProcess();
-		void SetCuts(G4double aValue);
+		void SetCuts();
 
 		//Read and save info user has inputted
 		void ReadOutInfo(G4String SaveFilePath);

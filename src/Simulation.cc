@@ -71,7 +71,6 @@ void Simulation::Setup()
 
 	PGA = new PrimaryGeneratorAction();
 	runManager -> SetUserAction(PGA);
-	runManager -> SetUserAction(new StackingAction());
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();
@@ -100,6 +99,9 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 
 	G4String SaveFilePath = "./../Output/Text/";
 
+	if (PL -> GetFluorescence() == false)
+		{runManager -> SetUserAction(new StackingAction());}
+
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA -> SetWorldLength(DC -> GetWorldSize().x());
 
@@ -122,7 +124,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle, int nBins)
 {
-	//Checks to see if simulation is ready (pyInitialise has been used before)
+	//Checks to see if simulation is ready (if pyInitialise has been used before)
 	if (Ready == true)
 	{
 		if(Image == 0)
@@ -190,7 +192,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image, nBins);
-		data -> SetUpEnergy(nBins);
 		
 		G4cout << "\n================================================================================"
 		       << "\n                                 IMAGE " <<  Image+1

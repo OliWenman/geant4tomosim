@@ -1,7 +1,7 @@
 
 WORLD SETUP: 
 
-- World dimensions: 1 0.1275 0.105 cm 
+- World dimensions: 1 0.16 0.105 cm 
 - World Material: G4_AIR
 
 THE DETECTOR SETUP:
@@ -23,11 +23,12 @@ LivermorePhysics:
 - Compton scattering
 - Rayleigh scattering
 - Fluorescence
+Tracking primary and secondary particles.
 
 META DATA: 
 
-- The seed used: 1543483189
+- The seed used: 150
 - Number of projections being processed: 1
-- Number of photons per image: 10000000
-- Number of particles per detector on average: 19047
+- Number of photons per image: 1000
+- Number of particles per detector on average: 1
 - Full rotation angle: 3.14159 rad  

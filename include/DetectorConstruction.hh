@@ -8,7 +8,8 @@
 class DetectorConstructionMessenger;
 class Data;
 class TomographySD;
-class VisTrackerSD;
+class TomographyVSD;
+class FluorescenceSD;
 class TargetConstruction;
 
 //Solids, logic volume and physical volume for the geometry
@@ -39,7 +40,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void PVDetectors(G4LogicalVolume* logicMotherBox);
 
 		G4Material* FindMaterial(G4String material);
-		void AttachSensitiveDetector(G4LogicalVolume* volume);
+		void AttachSensitiveDetector(G4LogicalVolume* volume, G4String TypeDetector);
 		void Visualization(G4LogicalVolume*, G4Colour);
 		
 		//Set methods
@@ -71,7 +72,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
 		TomographySD* tomoSD;
-		VisTrackerSD* VTrackerSD;
+		TomographyVSD* tomoVSD;
+		FluorescenceSD* fluorescenceSD;
 		TargetConstruction* TC;
 
 		//Pointers to the solid and logic of the world
@@ -84,6 +86,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4Box* SolidPhantomBoxes;
 		G4LogicalVolume* container_logic;
 		G4LogicalVolume* PhantomBoxes_logic;
+
+		G4Box* SolidFluoDet;
+		G4LogicalVolume* FluoDet_logic; 
 
 		//World variables
 		G4ThreeVector WorldSize_Cmd;

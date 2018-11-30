@@ -37,6 +37,8 @@
 //Seperate out variables from strings
 #include "G4Tokenizer.hh"
 
+#include "G4Region.hh"
+
 TargetConstruction::TargetConstruction()
 {	
 	TCMessenger = new TargetConstructionMessenger(this);
@@ -218,7 +220,7 @@ void TargetConstruction::Trapezoid(G4int ObjectNumber)
             			     dy2,
             			     dz);
 
-	G4cout << "\n- Created solid: Trapezoid"+StringNumber;
+	G4cout << "\n- Created solid: Trapezoid"+StringNumber; 
 }
 
 void TargetConstruction::Ellipsoid(G4int ObjectNumber)
@@ -301,7 +303,11 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
 
-		G4cout << "\n- Created logic volume: LV" << Solid -> GetName() << " \n";
+		G4cout << "\n- Created logic volume: LV" << Solid -> GetName() << " -> Material: " << Material << " \n" ;
+
+		G4Region* targetRegion = new G4Region("targetRegion");
+  		logicObject->SetRegion(targetRegion);
+  		//siloRegion->AddRootLogicalVolume(wallLog);
 	}
 }
 

@@ -20,11 +20,9 @@ class Data
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins);
-		void SetUpEnergy(int nBins);//
 
 		void SaveEnergyFreq(double E);//		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
-		void SaveEnergyData(G4int DetectorNumber, G4double edep);
 
 		void WriteToTextFile(int nImage);
 

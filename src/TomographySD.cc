@@ -4,8 +4,8 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 
-TomographySD::TomographySD(const G4String& name, const G4String& hitsCollectionName, G4int NumDetectorsY, G4int NumDetectorsZ, Data* DataObject, const G4bool DetEfficiency) 
-          : G4VSensitiveDetector(name), data(DataObject)
+TomographySD::TomographySD(const G4String& name, Data* DataObject, const G4bool DetEfficiency) 
+             : G4VSensitiveDetector(name), data(DataObject)
 {
 	//Set the values in it's own class so it doesn't have to constantly get them
 	DetectorEfficiency = DetEfficiency;

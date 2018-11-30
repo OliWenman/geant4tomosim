@@ -55,11 +55,11 @@ cdef class PySim:
            FullPath = WorkingDirectory + BuildDirectory
            print "The data will be saved in:", FullPath
 
-           if bins >= 1:
-              print("Energy data turned on")
-              EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, bins, NumberOfImages))
-           else:
-              print("Energy data won't be recorded. ")
+           #if bins >= 1:
+           #   print("Energy data turned on")
+           #   EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, bins, NumberOfImages))
+           #else:
+           #   print("Energy data won't be recorded. ")
 
            dataset = h5file.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
         
@@ -74,9 +74,9 @@ cdef class PySim:
                #Append the 2D Data to a 3D data set
                dataset[:, :, nImage] = Image[:, :]
 
-               if bins >= 1:
-                  E = np.array(self.lastEnergyData())
-                  EnergyDataSet[:, :, nImage] = E[:, :]
+               #if bins >= 1:
+               #   E = np.array(self.lastEnergyData())
+               #   EnergyDataSet[:, :, nImage] = E[:, :]
                   
            #Close the file
            h5file.close()
@@ -104,7 +104,7 @@ cdef class PySim:
         return self.thisptr.GetLastEnergyData()
 
     def lastEnergyBins(self):
-        return self.thisptr.GetEnergyBins()
+        return np.array(self.thisptr.GetEnergyBins())
 
     def lastEnergyFreq(self):
         return self.thisptr.GetEnergyFreq()

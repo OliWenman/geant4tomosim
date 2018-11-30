@@ -19,9 +19,19 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
 		SetHitData(iHitDataMatrix);
 		if (nBins > 0)
 		{
-			//Creates a 2D vector for the energy data	
-			std::vector<std::vector<int> > iEnergyMatrix(rows * columns, std::vector<int>(nBins, 0));
-			SetEnergyData(iEnergyMatrix);
+			std::vector<double> iEnergyBins (nBins, 0);
+			std::vector<int> iEnergyFreq (nBins, 0);
+
+			int Energy = 0;
+			for (int ele = 0 ; ele < nBins ; ele++)
+			{
+				++Energy;
+				iEnergyBins[ele] = (MaxE/nBins)*Energy;
+			}
+
+			EnergyBins = iEnergyBins;
+			EnergyFreq = iEnergyFreq;
+
 			NoBins_Cmd = nBins;
 		}
 	}
@@ -33,45 +43,16 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
 		if (nBins > 0)
 		{
 			//Resets the energy data to zero for the next image
-			for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
+			//for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
+			memset(&EnergyBins[0], 0, sizeof(EnergyBins[0]) * NoBins_Cmd);
+			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);
 		}
 	}
-}
-
-void Data::SetUpEnergy(int nBins)//
-{
-	std::vector<double> iEnergyBins (nBins, 0);
-	std::vector<int> iEnergyFreq (nBins, 0);
-
-	int Energy = 0;
-	for (int ele = 0 ; ele < nBins ; ele++)
-	{
-		++Energy;
-		iEnergyBins[ele] = (MaxE/nBins)*Energy;
-	}
-
-	EnergyBins = iEnergyBins;
-	EnergyFreq = iEnergyFreq;
-
-	NoBins_Cmd = nBins;
 }
 
 void Data::SaveEnergyFreq(double E)//
 {
 	++EnergyFreq[floor(E/(MaxE/NoBins_Cmd))-1];
-}
-
-void Data::SaveEnergyData(G4int DetectorNumber, G4double edep)
-{
-	//Calculates which bin the energy should be placed into, floor function rounds down to the nearest interger
-	int nBin = floor(edep/(MaxE/NoBins_Cmd));
-
-	//If detectors are 100% efficient (vacuum), then energy is energy of photon and will fit outside bin size. Adjusts it to max energy bin
-	//if (nBin == NoBins_Cmd)
-	//	{&++EnergyMatrix[DetectorNumber][nBin-1];}
-	//else
-		//{//+1 to the energy bin
-		 &++EnergyMatrix[DetectorNumber][nBin-1];//}
 }
 
 void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)

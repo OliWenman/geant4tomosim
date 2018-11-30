@@ -37,6 +37,8 @@
 #include "G4LivermoreRayleighModel.hh"
 #include "G4LivermoreIonisationModel.hh"
 
+#include "G4RegionStore.hh"
+
 //Read/write to a file
 #include <iomanip>
 #include <fstream>
@@ -48,7 +50,8 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
 	//Sets the cutvalues
-	G4double Cutvalue = 1*mm;
+	G4double cutForGamma = 10*mm;
+	G4double cutForElectron = 10*mm;
 }
 
 PhysicsList::~PhysicsList()
@@ -62,6 +65,10 @@ void PhysicsList::ConstructParticle()
 	G4Electron::ElectronDefinition();
 	G4Positron::PositronDefinition();
 	G4GenericIon::GenericIonDefinition();
+
+	G4Proton::ProtonDefinition();
+	G4MuonPlus::MuonPlusDefinition();
+  	G4MuonMinus::MuonMinusDefinition();
 }
 
 void PhysicsList::ConstructProcess()
@@ -146,18 +153,49 @@ void PhysicsList::ConstructEM()
 				//Relaxtion processes after the photoelctric effect
 				G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
   				de->SetFluo(true);
-  				de->SetAuger(false);   
-  				de->SetPIXE(false);  
+  				de->SetAuger(true);   
+  				de->SetPIXE(true);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 				PhysicProcesses.push_back ("Fluorescence");
+
+				G4eIonisation* i = new G4eIonisation();
+				i -> SetEmModel(new G4LivermoreIonisationModel());
+				pmanager -> AddDiscreteProcess(i);
+				
 			}
 		}
 	}
+
+	//SetCuts();
 	G4cout << G4endl;
 }
 
-void PhysicsList::SetCuts(G4double Cutvalue)
-	{SetCutValue(Cutvalue, "gamma");}
+void PhysicsList::SetCuts()
+{	
+  	/*// default production thresholds for the world volume
+  	SetCutsWithDefault();
+
+  	// Production thresholds for detector regions
+  	G4Region* region;
+  	G4String regName;
+  	G4ProductionCuts* cuts;
+
+ 	regName = "targetRegion";
+  	region = G4RegionStore::GetInstance()->GetRegion(regName);
+  	cuts = new G4ProductionCuts;
+  	cuts->SetProductionCut(0.0001*mm, G4ProductionCuts::GetIndex("e-")); // same cuts for gamma, e- and e+
+  	region->SetProductionCuts(cuts);
+
+  	//regName = "calorimeter";
+  	//region = G4RegionStore::GetInstance()->GetRegion(regName);
+  	//cuts = new G4ProductionCuts;
+  	//cuts->SetProductionCut(0.01*mm,G4ProductionCuts::GetIndex("gamma"));
+  	//cuts->SetProductionCut(0.1*mm,G4ProductionCuts::GetIndex("e-"));
+  	//cuts->SetProductionCut(0.1*mm,G4ProductionCuts::GetIndex("e+"));
+  	//region->SetProductionCuts(cuts);*/
+
+	SetCutValue(cutForElectron, "electron");
+}
 
 void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 {
@@ -167,8 +205,15 @@ void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++)
 	{
 		G4cout << "\n- " << PhysicProcesses[element];
+	}	 
+	if (FluorescenceCmd == true)
+	{
+		G4cout << "\nTracking primary and secondary particles." << G4endl;
 	}
-	G4cout << G4endl;	 
+	else
+	{
+		G4cout << "\nSecondary particles will be killed to help save computational time." << G4endl;
+	}
 
 	//Creation of the writing to data file stream
 	std::fstream outdata; 
@@ -191,7 +236,14 @@ void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 	{
 		outdata << "\n- " << PhysicProcesses[element];
 	}
-	outdata << "\n";	
+	if (FluorescenceCmd == true)
+	{
+		outdata << "\nTracking primary and secondary particles." << G4endl;
+	}
+	else
+	{
+		outdata << "\nSecondary particles will be killed to help save computational time." << G4endl;
+	}	
 
 	outdata.close();      
 }
