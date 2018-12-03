@@ -50,7 +50,7 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 	TC = new TargetConstruction();
 
 	nImage = 0;
-	WorldMaterial = "G4_AIR";
+	WorldMaterial = "G4_Galactic";
 }
 
 DetectorConstruction::~DetectorConstruction()

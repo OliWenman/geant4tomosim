@@ -47,22 +47,41 @@ cdef class PySim:
 
         if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
 
+           Path = './../build/Output/HDF5/'
+
            #Create a h5 file to view the data after the simulation is complete
-           h5file = h5py.File('./../build/Output/HDF5/DetectorTest.h5', 'w')
+           h5file1 = h5py.File(Path + 'Projections.h5', 'w')
+           h5file2 = h5py.File(Path + 'Fluorescence.h5', 'w')
 
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/build/Output/HDF5/"
            FullPath = WorkingDirectory + BuildDirectory
            print "The data will be saved in:", FullPath
 
-           #if bins >= 1:
-           #   print("Energy data turned on")
-           #   EnergyDataSet = h5file.create_dataset('Energy', shape=(self.nDetectorsZ * self.nDetectorsY, bins, NumberOfImages))
-           #else:
-           #   print("Energy data won't be recorded. ")
+           imageGroup = h5file1.create_group('Projections')
+           imageGroup.attrs['NX_class'] = 'NXdata'
+           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
 
-           dataset = h5file.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
-        
+           if bins >= 1:
+              print("Energy data turned on")
+              
+              xLabel = 'Energy(keV)'
+              yLabel = 'Photons'
+              energyGroup = h5file2.create_group('Fluorescence')
+              energyGroup.attrs['NX_class'] = 'NXdata'
+
+              energyGroup.attrs['axes'] = xLabel         # X axis of default plot
+              energyGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+
+              # X axis data
+              energySet = energyGroup.create_dataset(xLabel, shape = (2500,))
+              # Y axis data
+              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages))
+              
+           else:
+              print("Energy data won't be recorded. ")
+
            iTime = time.time()
 
            #Run the simulation for the number of images that are required
@@ -72,14 +91,18 @@ cdef class PySim:
                Image = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta, bins), (-1, self.nDetectorsY))  
 
                #Append the 2D Data to a 3D data set
-               dataset[:, :, nImage] = Image[:, :]
+               imageSet[:, :, nImage] = Image[:, :]
+               
+               if bins >= 1:
+                  if nImage == 0:
+                     energySet[:] = np.array(self.lastEnergyBins())*1000
 
-               #if bins >= 1:
-               #   E = np.array(self.lastEnergyData())
-               #   EnergyDataSet[:, :, nImage] = E[:, :]
+                  y = np.array(self.lastEnergyFreq())
+                  nPhotonSet[:, nImage] = self.lastEnergyFreq()
                   
-           #Close the file
-           h5file.close()
+           #Close the files
+           h5file1.close()
+           h5file2.close()
 
            #Ouput the time in the appropriate units
            eTime = time.time()

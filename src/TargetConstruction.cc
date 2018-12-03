@@ -305,8 +305,8 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 
 		G4cout << "\n- Created logic volume: LV" << Solid -> GetName() << " -> Material: " << Material << " \n" ;
 
-		G4Region* targetRegion = new G4Region("targetRegion");
-  		logicObject->SetRegion(targetRegion);
+		//G4Region* targetRegion = new G4Region("targetRegion");
+  		//logicObject->SetRegion(targetRegion);
   		//siloRegion->AddRootLogicalVolume(wallLog);
 	}
 }

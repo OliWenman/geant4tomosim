@@ -50,8 +50,8 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
 	//Sets the cutvalues
-	G4double cutForGamma = 10*mm;
-	G4double cutForElectron = 10*mm;
+	//cutForGamma = 10*mm;
+	//cutForElectron = 100*mm;
 }
 
 PhysicsList::~PhysicsList()
@@ -161,7 +161,6 @@ void PhysicsList::ConstructEM()
 				G4eIonisation* i = new G4eIonisation();
 				i -> SetEmModel(new G4LivermoreIonisationModel());
 				pmanager -> AddDiscreteProcess(i);
-				
 			}
 		}
 	}
@@ -194,7 +193,9 @@ void PhysicsList::SetCuts()
   	//cuts->SetProductionCut(0.1*mm,G4ProductionCuts::GetIndex("e+"));
   	//region->SetProductionCuts(cuts);*/
 
-	SetCutValue(cutForElectron, "electron");
+	//SetCutValue(cutForElectron, "electron");
+
+	//G4cout << "Cuts for electrons: " << cutForElectron << G4endl;
 }
 
 void PhysicsList::ReadOutInfo(G4String SaveFilePath)
