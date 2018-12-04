@@ -29,6 +29,9 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	WorldSize_Cmd -> SetDefaultValue(G4ThreeVector(0.9*m, 0.9*m, 0.9*m));
 	WorldSize_Cmd -> SetRange("worldX > 0 || worldY > 0 || worldZ > 0");
 
+	WorldMaterial_Cmd = new G4UIcmdWithAString("/world/material", this);
+	WorldMaterial_Cmd -> SetGuidance("Set the world's material");
+
 	Visualization_Cmd = new G4UIcmdWithABool("/world/visualization", this);
 	Visualization_Cmd -> SetGuidance("Set if you would like the ouput of a .HepRep file to be visualized later ");
 	Visualization_Cmd -> SetDefaultValue(false);	
@@ -45,13 +48,11 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	NoDetectorsY_Cmd -> SetGuidance("Pick the number of detectors you would like to have. ");
 	NoDetectorsY_Cmd -> SetParameterName("nDetY", true);
 	NoDetectorsY_Cmd -> SetRange("nDetY > 0");
-	NoDetectorsY_Cmd -> SetDefaultValue(100);
 	
 	//Number in z direction command
 	NoDetectorsZ_Cmd = new G4UIcmdWithAnInteger("/detector/numberZ", this);
 	NoDetectorsZ_Cmd -> SetParameterName("nDetZ", true, true);
 	NoDetectorsZ_Cmd -> SetRange("nDetZ > 0");
-	NoDetectorsZ_Cmd -> SetDefaultValue(100);
 	NoDetectorsZ_Cmd -> SetGuidance("Pick the number of detectors you would like to have.  ");
 
 	//Detector Size command
@@ -61,21 +62,20 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	DetectorSize_Cmd -> SetUnitCandidates("mm cm m um ");
 	DetectorSize_Cmd -> SetRange("X > 0 || Y > 0 || Z > 0");
 	DetectorSize_Cmd -> SetDefaultUnit("m");
-	DetectorSize_Cmd -> SetDefaultValue(G4ThreeVector(0.001*m, 0.005*m, 0.005*m));		
 
 	DetectorMaterial_Cmd = new G4UIcmdWithAString("/detector/material", this);
 	DetectorMaterial_Cmd -> SetGuidance("Set the material of the detector ");
 	DetectorMaterial_Cmd -> SetDefaultValue("G4_SODIUM_IODIDE");
 
 	DetectorEfficiency_Cmd = new G4UIcmdWithABool("/detector/MaxEfficiency", this);
-	DetectorEfficiency_Cmd -> SetGuidance("Set the efficncy of the detectors to be 100%\ efficient or realistic ");
-	DetectorEfficiency_Cmd -> SetDefaultValue(true);		
+	DetectorEfficiency_Cmd -> SetGuidance("Set the efficncy of the detectors to be 100%\ efficient or realistic ");	
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
 {
 	delete WorldDirectory;	
 	delete WorldSize_Cmd;
+	delete WorldMaterial_Cmd;
 	delete Visualization_Cmd;
 
 	delete DetectorDirectory;
@@ -92,6 +92,10 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	{
 		G4ThreeVector Dimensions = WorldSize_Cmd -> GetNew3VectorValue(newValue);
 		ConstructDet -> SetWorldSize(Dimensions/2);
+	}
+	if( command == WorldMaterial_Cmd )
+	{
+		ConstructDet -> SetWorldMaterial(newValue);
 	}
 	else if( command == Visualization_Cmd )
 	{

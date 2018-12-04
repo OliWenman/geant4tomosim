@@ -39,6 +39,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//Pointers for different data members
 		//WORLD VARIABLES
 		G4UIcmdWith3VectorAndUnit *WorldSize_Cmd;
+		G4UIcmdWithAString *WorldMaterial_Cmd;
 		G4UIcmdWithABool *Visualization_Cmd;
 
 		//DETECTOR VARIABLES

@@ -69,6 +69,7 @@ class TargetConstruction
 		
 		//Get and set the visualization settings
 		void SetVisualization(G4bool value){VisualizationValue = value;}
+		void ReadOutInfo();
 
 	private:
 

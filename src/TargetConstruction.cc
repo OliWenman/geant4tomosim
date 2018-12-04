@@ -58,7 +58,7 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 {
 	//Set the Starting positions (only once)
 	if (nImage == 0)
-		{G4cout << "\nTHE GEOMETRY SETUP\n "; StartingPositions = Positions;}
+		{StartingPositions = Positions;}
 
 	//Loop through the number of objects there are to be created
 	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
@@ -116,8 +116,6 @@ void TargetConstruction::Box(G4int ObjectNumber)
 
 	//Create a G4VSolid of the box
 	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x(), TargetSize.y(), TargetSize.z());
-
-	G4cout << "\n- Created solid: Cube"+StringNumber;
 }
 
 void TargetConstruction::HollowBox(G4int ObjectNumber)
@@ -150,8 +148,6 @@ void TargetConstruction::HollowBox(G4int ObjectNumber)
 	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
 							       outerBox, 
 							       innerBox);
-
-	G4cout << "\n- Created solid: HollowCube"+StringNumber;
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber)
@@ -173,8 +169,6 @@ void TargetConstruction::Cylinder(G4int ObjectNumber)
                   		 	hz,
                   		 	startAngle,
                   		 	spanningAngle);
-
-	G4cout << "\n- Created solid: Cylinder"+StringNumber;
 }
 
 void TargetConstruction::Sphere(G4int ObjectNumber)
@@ -198,8 +192,6 @@ void TargetConstruction::Sphere(G4int ObjectNumber)
 				     	endPhi,
 				     	startingTheta,
 				     	endTheta);
-
-	G4cout << "\n- Created solid: Sphere"+StringNumber;
 }
 
 void TargetConstruction::Trapezoid(G4int ObjectNumber)
@@ -219,8 +211,6 @@ void TargetConstruction::Trapezoid(G4int ObjectNumber)
             			     dy1,
             			     dy2,
             			     dz);
-
-	G4cout << "\n- Created solid: Trapezoid"+StringNumber; 
 }
 
 void TargetConstruction::Ellipsoid(G4int ObjectNumber)
@@ -240,8 +230,6 @@ void TargetConstruction::Ellipsoid(G4int ObjectNumber)
                     				 pzSemiAxis,
                     				 pzBottomCut,
                     				 pzTopCut);
-
-	G4cout << "\n- Created solid: Ellipsoid"+StringNumber;
 }
 
 void TargetConstruction::SubtractSolid(G4int ObjectNumber)
@@ -303,8 +291,6 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
 
-		G4cout << "\n- Created logic volume: LV" << Solid -> GetName() << " -> Material: " << Material << " \n" ;
-
 		//G4Region* targetRegion = new G4Region("targetRegion");
   		//logicObject->SetRegion(targetRegion);
   		//siloRegion->AddRootLogicalVolume(wallLog);
@@ -355,9 +341,6 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 
 		//Let the runManager know the geometry has changed between runs
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
-
-		if(nImage == 0)
-			{G4cout << "- Created physical volume: phy" << Name;} 
 	}
 }
 
@@ -401,5 +384,73 @@ void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
   		LV -> SetVisAttributes(ObjectColour);
 	}
+}
+
+void TargetConstruction::ReadOutInfo()
+{
+	G4cout << "\nTHE GEOMETRY SETUP: " << G4endl;
+ 
+	//Loop through the number of objects there are to be created
+	for(G4int n = 0; n < TypeOfObjects.size(); n++)
+	{
+		if(TypeOfObjects[n] == "Cube")
+		{
+			G4cout << "\nCube" << n << ": " 
+			       << "\n  - Dimensions: x = " << G4BestUnit(Dimensions[n][0], "Length") 
+					       << ", y = " << G4BestUnit(Dimensions[n][1], "Length")
+					       << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
+
+			       << "\n  - Material: " << Materials[n]
+			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
+		}
+		else if(TypeOfObjects[n] == "HollowCube")
+		{	
+			G4cout << "\nHollowCube" << n << ": "
+			       << "\n  - Dimensions: outer cube: x = " << G4BestUnit(Dimensions[n][0], "Length") 
+							   << ", y = " << G4BestUnit(Dimensions[n][1], "Length") 
+							   << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
+			       << "\n                inner cube: x = " << G4BestUnit(Dimensions[n][3], "Length") 
+							   << ", y = " << G4BestUnit(Dimensions[n][4], "Length") 
+							   << ", z = " << G4BestUnit(Dimensions[n][5], "Length")
+
+			       << "\n  - Material: " << Materials[n]
+			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
+		}
+		else if(TypeOfObjects[n] == "Sphere")
+		{
+			G4cout << "\nSphere" << n << ": "
+                               << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
+					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
+                               << "\n                inner phi = " << G4BestUnit(Dimensions[n][2], "Angle")
+					       << ", outer phi = " << G4BestUnit(Dimensions[n][3], "Angle") << ", "
+			       << "\n                inner theta = " << G4BestUnit(Dimensions[n][4], "Angle")
+					       << ", outer theta = " << G4BestUnit(Dimensions[n][5], "Angle")   
+
+			       << "\n  - Material: " << Materials[n]
+			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
+		}
+		else if(TypeOfObjects[n] == "Cylinder")
+		{	
+			G4cout << "\nCylinder" << n << ": "
+			       << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
+					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
+			       << "\n                height = " << G4BestUnit(Dimensions[n][2], "Length") << ", "
+			       << "\n                inner phi = " << G4BestUnit(Dimensions[n][3], "Angle")
+					       << ", outer phi = " << G4BestUnit(Dimensions[n][4], "Angle") 
+
+			       << "\n  - Material: " << Materials[n]
+			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
+		} 
+
+		/*else if(TypeOfObjects[n] == "Trapezoid") 
+			{Trapezoid(n);}
+
+		else if(TypeOfObjects[n] == "Ellipsoid")
+			{Ellipsoid(n);}
+
+		else if(TypeOfObjects[n] == "SubtractSolid")
+			{SubtractSolid(n);}*/
+	}
+
 }
 

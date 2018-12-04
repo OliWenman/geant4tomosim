@@ -45,6 +45,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		
 		//Set methods
 		void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
+		void SetWorldMaterial(G4String value){WorldMaterial_Cmd = value;}
 		void SetVisualization(G4bool value){Visualization_Cmd = value;}
 
 		void SetNoDetectorsY(G4int value){NoDetectorsY_Cmd = value;} 
@@ -52,6 +53,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetDetectorSize(G4ThreeVector value){DetectorSize_Cmd = value;}
 		void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
 		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
+		void SetFluorescenceDet(G4bool value){FluorescenceDet = value;}
 
 		//Get methods
 		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
@@ -92,7 +94,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//World variables
 		G4ThreeVector WorldSize_Cmd;
-		G4String WorldMaterial;
+		G4String WorldMaterial_Cmd;
 		G4bool Visualization_Cmd;
 
 		//Detector variables
@@ -104,6 +106,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Image variables
 		G4int nImage;
+
+		bool FluorescenceDet;
 };
 
 #endif

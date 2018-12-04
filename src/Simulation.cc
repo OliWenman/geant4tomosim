@@ -354,6 +354,7 @@ void Simulation::RunSimulation()
 	}*/
 }
 
+//Functions to be wrapped by Cython
 std::vector<int> Simulation::GetLastImage()
 {
 	return data -> GetHitData();

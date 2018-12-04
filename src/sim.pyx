@@ -51,7 +51,6 @@ cdef class PySim:
 
            #Create a h5 file to view the data after the simulation is complete
            h5file1 = h5py.File(Path + 'Projections.h5', 'w')
-           h5file2 = h5py.File(Path + 'Fluorescence.h5', 'w')
 
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/build/Output/HDF5/"
@@ -62,9 +61,11 @@ cdef class PySim:
            imageGroup.attrs['NX_class'] = 'NXdata'
            imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
 
+           #If the energy data is to be recored, setup the h5file
            if bins >= 1:
               print("Energy data turned on")
-              
+              h5file2 = h5py.File(Path + 'Fluorescence.h5', 'w')              
+
               xLabel = 'Energy(keV)'
               yLabel = 'Photons'
               energyGroup = h5file2.create_group('Fluorescence')
@@ -76,6 +77,7 @@ cdef class PySim:
 
               # X axis data
               energySet = energyGroup.create_dataset(xLabel, shape = (2500,))
+
               # Y axis data
               nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages))
               
@@ -95,14 +97,16 @@ cdef class PySim:
                
                if bins >= 1:
                   if nImage == 0:
-                     energySet[:] = np.array(self.lastEnergyBins())*1000
+                     #Energy data will return as MeV so convert to keV and set x axis
+                     energySet[:] = self.lastEnergyBins()*1000
 
-                  y = np.array(self.lastEnergyFreq())
+                  #Append the energy frequency to the 2D data
                   nPhotonSet[:, nImage] = self.lastEnergyFreq()
                   
            #Close the files
            h5file1.close()
-           h5file2.close()
+           if bins >= 1:
+              h5file2.close()
 
            #Ouput the time in the appropriate units
            eTime = time.time()
@@ -130,5 +134,5 @@ cdef class PySim:
         return np.array(self.thisptr.GetEnergyBins())
 
     def lastEnergyFreq(self):
-        return self.thisptr.GetEnergyFreq()
+        return np.array(self.thisptr.GetEnergyFreq())
 
