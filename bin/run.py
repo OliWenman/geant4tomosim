@@ -15,14 +15,14 @@ nDetZ = 21
 DetectorDimensions = [0.05, 0.05, 0.05]*mm
 
 nBins = 2500
-NumberOfImages = 3
+NumberOfImages = 2
 TotalRotation = 180*deg
-nParticles = 5000000
+nParticles = 500
 
 Sim = sim.PySim()
-Sim.initialise(nDetY, nDetZ, DetectorDimensions)
+Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 
-#Sim.run(nParticles, NumberOfImages, TotalRotation, nBins)
+Sim.run(nParticles, NumberOfImages, TotalRotation)
 
 #==========================================================================
 """

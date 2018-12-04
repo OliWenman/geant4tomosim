@@ -25,8 +25,6 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	WorldSize_Cmd -> SetGuidance("Set the world size for the x, y and z dimensions ");
 	WorldSize_Cmd -> SetParameterName("worldX","worldY","worldZ",true,true);
 	WorldSize_Cmd -> SetUnitCandidates("mm cm m um ");
-	WorldSize_Cmd -> SetDefaultUnit("m");
-	WorldSize_Cmd -> SetDefaultValue(G4ThreeVector(0.9*m, 0.9*m, 0.9*m));
 	WorldSize_Cmd -> SetRange("worldX > 0 || worldY > 0 || worldZ > 0");
 
 	WorldMaterial_Cmd = new G4UIcmdWithAString("/world/material", this);
@@ -61,7 +59,6 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	DetectorSize_Cmd -> SetParameterName("X","Y","Z",true,true);
 	DetectorSize_Cmd -> SetUnitCandidates("mm cm m um ");
 	DetectorSize_Cmd -> SetRange("X > 0 || Y > 0 || Z > 0");
-	DetectorSize_Cmd -> SetDefaultUnit("m");
 
 	DetectorMaterial_Cmd = new G4UIcmdWithAString("/detector/material", this);
 	DetectorMaterial_Cmd -> SetGuidance("Set the material of the detector ");

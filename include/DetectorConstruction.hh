@@ -28,7 +28,7 @@ class G4Colour;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
-    		DetectorConstruction(Data* data);
+    		DetectorConstruction(Data *data);
     		~DetectorConstruction();
 
 		//Base class method

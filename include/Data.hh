@@ -7,8 +7,6 @@
 #include <math.h>      
 #include "globals.hh"
 
-class DataMessenger;
-
 class Data
 {
 	public:
@@ -19,7 +17,7 @@ class Data
 		//inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
 		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
-		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins);
+		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
 		void SaveEnergyFreq(double E);//		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
@@ -43,12 +41,11 @@ class Data
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
 
+		void SetNoBins(G4int value){NoBins_Cmd = value;}
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
 	private:	
 		void MakeSpaces(int nSpaces, std::ofstream &outdata);
-
-		DataMessenger* dataMessenger;
 
 		//Data members
 		std::vector<int> HitDataArray;

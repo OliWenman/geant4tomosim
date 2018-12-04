@@ -22,8 +22,8 @@ class Simulation
 
 		//Methods
 		//To be called from Python
-		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions);
-		std::vector<int> pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta, int bins);
+		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
+		std::vector<int> pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta);
 
 		//To be called from C++		
 		void Initialize();

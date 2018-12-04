@@ -6,7 +6,7 @@ Data::Data(){}
 
 Data::~Data(){}
 
-void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
+void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 {
 	if (nImage == 0)
 	{
@@ -17,22 +17,20 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
 		//Creates a 1D vector for the hit data
 		std::vector<int> iHitDataMatrix(nDetectorsY*nDetectorsZ, 0);
 		SetHitData(iHitDataMatrix);
-		if (nBins > 0)
+		if (NoBins_Cmd > 0)
 		{
-			std::vector<double> iEnergyBins (nBins, 0);
-			std::vector<int> iEnergyFreq (nBins, 0);
+			std::vector<double> iEnergyBins (NoBins_Cmd, 0);
+			std::vector<int> iEnergyFreq (NoBins_Cmd, 0);
 
 			int Energy = 0;
-			for (int ele = 0 ; ele < nBins ; ele++)
+			for (int ele = 0 ; ele < NoBins_Cmd ; ele++)
 			{
 				++Energy;
-				iEnergyBins[ele] = (MaxE/nBins)*Energy;
+				iEnergyBins[ele] = (MaxE/NoBins_Cmd)*Energy;
 			}
 
 			EnergyBins = iEnergyBins;
 			EnergyFreq = iEnergyFreq;
-
-			NoBins_Cmd = nBins;
 		}
 	}
 	else 
@@ -40,11 +38,9 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage, int nBins)
 		//Reset the data to zero ready for the next image
 		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns*rows);
 
-		if (nBins > 0)
+		if (NoBins_Cmd > 0)
 		{
-			//Resets the energy data to zero for the next image
-			//for(auto& x : EnergyMatrix) memset(&x[0],0,sizeof(int)*x.size());
-			memset(&EnergyBins[0], 0, sizeof(EnergyBins[0]) * NoBins_Cmd);
+			//Resets the energy frequency to zero for the next image
 			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);
 		}
 	}

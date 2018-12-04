@@ -134,15 +134,15 @@ void TargetConstruction::HollowBox(G4int ObjectNumber)
 					       		 Dimensions[ObjectNumber][5]);
 
 	//Create G4VSolids of the two boxes
-	G4Box *outerBox = new G4Box("OuterBox" + StringNumber, 
+	G4Box* outerBox = new G4Box("OuterBox" + StringNumber, 
 				    outerBoxDimensions.x(), 
 				    outerBoxDimensions.y(), 
 				    outerBoxDimensions.z());
 
-	G4Box *innerBox = new G4Box("InnerBox" + StringNumber,
-				    outerBoxDimensions.x()-innerBoxDimensions.x(),
-				    outerBoxDimensions.y()-innerBoxDimensions.y(),
-				    outerBoxDimensions.z()-innerBoxDimensions.z());
+	G4Box* innerBox = new G4Box("InnerBox" + StringNumber,
+				    innerBoxDimensions.x(),
+				    innerBoxDimensions.y(),
+				    innerBoxDimensions.z());
 
 	//Subtract them from each other to get a hollow cube
 	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 

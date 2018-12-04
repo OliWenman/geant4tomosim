@@ -82,13 +82,19 @@ void Simulation::Setup()
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
 
-void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions)
+void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
 	G4String PathToFiles = "./../scripts/";
 
 	DC -> SetNoDetectorsY(nDetectorsY);
 	DC -> SetNoDetectorsZ(nDetectorsZ);
 	DC -> SetDetectorSize(G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2])); 
+
+	if (nBins > 0)
+		{DC -> SetFluorescenceDet(true);}
+	else
+		{DC -> SetFluorescenceDet(false);}
+	data -> SetNoBins(nBins);
 
 	//Apply the commands from the macro files to fill the values
 	G4cout << "\nReading Geometry.mac... ";
@@ -122,7 +128,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	Ready = true;	
 }
 
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle, int nBins)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
 {
 	//Checks to see if simulation is ready (if pyInitialise has been used before)
 	if (Ready == true)
@@ -191,7 +197,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		LoopTimer.Start();
 
 		//Creates the arrays for the data, wipes them after each image
-		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image, nBins);
+		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
 		
 		G4cout << "\n================================================================================"
 		       << "\n                                 IMAGE " <<  Image+1

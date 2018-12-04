@@ -7,18 +7,19 @@
 /physics/EM/Fluorescence true
 
 #Data Settings
-/data/Seed 0
+/data/Seed 1543930243
 
 #1543501150
 
 #Gun Settings
-/gun/setEnergy 6 keV		#(Set the initial energy of the monochromatic X-ray beam)
+/gun/setEnergy 150 keV		#(Set the initial energy of the monochromatic X-ray beam)
 /gun/setBeamWidth 2.5 mm             		#(Set the beam width)
 /gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
-/world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/world/material G4_Galactic
+/world/visualization true	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings	
 #/detector/size 0.01 0.01 0.01 mm	
