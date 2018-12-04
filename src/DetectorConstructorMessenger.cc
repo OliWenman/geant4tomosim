@@ -57,7 +57,7 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	DetectorSize_Cmd = new G4UIcmdWith3VectorAndUnit("/detector/size", this);
 	DetectorSize_Cmd -> SetGuidance("Set the detector size, x, y and z. ");
 	DetectorSize_Cmd -> SetParameterName("X","Y","Z",true,true);
-	DetectorSize_Cmd -> SetUnitCandidates("mm cm m um ");
+	DetectorSize_Cmd -> SetUnitCandidates("m mm cm m um nm");
 	DetectorSize_Cmd -> SetRange("X > 0 || Y > 0 || Z > 0");
 
 	DetectorMaterial_Cmd = new G4UIcmdWithAString("/detector/material", this);
@@ -66,6 +66,12 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 
 	DetectorEfficiency_Cmd = new G4UIcmdWithABool("/detector/MaxEfficiency", this);
 	DetectorEfficiency_Cmd -> SetGuidance("Set the efficncy of the detectors to be 100%\ efficient or realistic ");	
+
+	FluorDetSize_Cmd = new G4UIcmdWith3VectorAndUnit("/detector/fluorescence/dimensions", this);
+	FluorDetSize_Cmd -> SetGuidance("Set the dimensions of the fluorescence detector");
+	FluorDetSize_Cmd -> SetParameterName("X","Y","Z",true,true);
+	FluorDetSize_Cmd  -> SetUnitCandidates("m mm cm m um nm");
+	FluorDetSize_Cmd  -> SetRange("X > 0 || Y > 0 || Z > 0");
 }
 
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
@@ -81,6 +87,8 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
 	delete DetectorSize_Cmd;
 	delete DetectorMaterial_Cmd;
 	delete DetectorEfficiency_Cmd;
+
+	delete FluorDetSize_Cmd;
 }
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -119,5 +127,9 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 	else if( command == DetectorEfficiency_Cmd )
 	{
 		ConstructDet -> SetDetectorEfficiency(DetectorEfficiency_Cmd -> GetNewBoolValue(newValue));	
+	}
+	else if( command == FluorDetSize_Cmd )
+	{
+		ConstructDet -> SetFluorDetSize(FluorDetSize_Cmd -> GetNew3VectorValue(newValue));
 	}
 }

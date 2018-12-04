@@ -45,7 +45,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//DETECTOR VARIABLES
 		G4UIcmdWithAnInteger *NoDetectorsY_Cmd;
 		G4UIcmdWithAnInteger *NoDetectorsZ_Cmd;
-		G4UIcmdWithAString *NoDetectors_Cmd;
+		G4UIcmdWith3VectorAndUnit *FluorDetSize_Cmd;
 
 		G4UIcmdWith3VectorAndUnit *DetectorSize_Cmd;
 		G4UIcmdWithAString *DetectorMaterial_Cmd;

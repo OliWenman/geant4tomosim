@@ -25,6 +25,7 @@
 #/detector/size 0.01 0.01 0.01 mm	
 /detector/material G4_Galactic	#(Set the material of the detectors)
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
+/detector/fluorescence/dimensions 2 0.01 1 mm
 
 /run/initialize
 #/hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))

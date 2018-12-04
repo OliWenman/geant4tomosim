@@ -7,9 +7,6 @@
 #include "Data.hh"
 #include "TargetConstruction.hh"
 
-#include "G4VSDFilter.hh"
-#include "G4SDParticleFilter.hh"
-
 //Material database
 #include "G4NistManager.hh"
 
@@ -31,6 +28,10 @@
 //Efficient geometry for the millions of detectors
 #include "G4PVParameterised.hh"
 #include "G4PhantomParameterisation.hh"
+
+//Particle filters
+#include "G4VSDFilter.hh"
+#include "G4SDParticleFilter.hh"
 
 //Geant4 units
 #include "G4SystemOfUnits.hh"
@@ -160,9 +161,9 @@ void DetectorConstruction::SolidDetectors()
 	if (FluorescenceDet == true)
 	{
 		SolidFluoDet = new G4Box("FluorescenceDetector",
-			         	 2.0*mm,
-				 	 0.05*mm,
-			         	 1.5*mm);
+			         	 FluorDetSize_Cmd.x(),
+					 FluorDetSize_Cmd.y(),
+					 FluorDetSize_Cmd.z());
 	}
 }
 
@@ -345,6 +346,8 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	       << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
 	       << "\nTHE DETECTOR SETUP: \n"
+
+	       << "\nTransmission detectors: "
 	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
@@ -376,6 +379,8 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	        << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
 	        << "\nTHE DETECTOR SETUP:\n"
+
+		<< "\nTransmission detectors: "
 	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	        << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 		<< "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
