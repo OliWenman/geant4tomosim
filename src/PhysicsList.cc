@@ -51,7 +51,7 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
 
 	//Sets the cutvalues
 	//cutForGamma = 10*mm;
-	//cutForElectron = 100*mm;
+	//cutForElectron = 1*um;
 }
 
 PhysicsList::~PhysicsList()
@@ -167,6 +167,8 @@ void PhysicsList::ConstructEM()
 
 	//SetCuts();
 	G4cout << G4endl;
+
+	SetCutValue(cutForElectron, "electron");
 }
 
 void PhysicsList::SetCuts()
@@ -196,6 +198,9 @@ void PhysicsList::SetCuts()
 	//SetCutValue(cutForElectron, "electron");
 
 	//G4cout << "Cuts for electrons: " << cutForElectron << G4endl;
+
+	//G4VUserPhysicsList::SetCuts();
+
 }
 
 void PhysicsList::ReadOutInfo(G4String SaveFilePath)

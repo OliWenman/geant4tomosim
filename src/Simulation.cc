@@ -60,6 +60,7 @@ void Simulation::Setup()
 
 	//Create an instance of the classes
 	runManager = new G4RunManager();
+	//runManager -> SetVerboseLevel(1);
 	data = new Data();
 	DC = new DetectorConstruction(data); 
 	PL = new PhysicsList(); 

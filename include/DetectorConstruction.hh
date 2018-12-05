@@ -34,15 +34,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Base class method
     		G4VPhysicalVolume* Construct();
 		
-		//Own class functions
-		void SolidDetectors();
-		void LVDetectors();
-		void PVDetectors(G4LogicalVolume* logicMotherBox);
-
-		G4Material* FindMaterial(G4String material);
-		void AttachSensitiveDetector(G4LogicalVolume* volume, G4String TypeDetector);
-		void Visualization(G4LogicalVolume*, G4Colour);
-		
 		//Set methods
 		void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
 		void SetWorldMaterial(G4String value){WorldMaterial_Cmd = value;}
@@ -71,6 +62,16 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void ReadOutInfo(G4String SaveFilePath);
 
   	protected:
+
+		//Own class functions
+		void SolidDetectors();
+		void LVDetectors();
+		void PVDetectors(G4LogicalVolume* logicMotherBox);
+
+		G4Material* FindMaterial(G4String material);
+		void AttachSensitiveDetector(G4LogicalVolume* volume, G4String TypeDetector);
+		void Visualization(G4LogicalVolume*, G4Colour);
+
 		//Pointers to my own classes 
 		DetectorConstructionMessenger* detectorMessenger;
 		Data* data;
@@ -106,6 +107,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4bool DetectorEfficiency_Cmd;
 
 		G4ThreeVector FluorDetSize_Cmd;
+		G4ThreeVector FluorDetPos_Cmd;
 
 		//Image variables
 		G4int nImage;

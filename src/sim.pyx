@@ -63,7 +63,7 @@ cdef class PySim:
 
            imageGroup = h5file1.create_group('Projections')
            imageGroup.attrs['NX_class'] = 'NXdata'
-           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages))
+           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
 
            #If the energy data is to be recored, setup the h5file
            if self.Bins >= 1:
@@ -80,10 +80,10 @@ cdef class PySim:
               energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               # X axis data
-              energySet = energyGroup.create_dataset(xLabel, shape = (2500,))
+              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = 'i4')
 
               # Y axis data
-              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages))
+              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages), dtype = 'i4')
               
            else:
               print("Energy data won't be recorded. ")

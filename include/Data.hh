@@ -35,9 +35,6 @@ class Data
 		G4double GetMaxEnergy(){return MaxE;}
 
 		//Set Methods
-		void SetHitData(std::vector<int> UpdatedData){HitDataArray = UpdatedData;}
-		void SetEnergyData(std::vector<std::vector<int> >  UpdatedData){EnergyMatrix = UpdatedData;}
-		
 		void SetNumberRows(G4int value){rows = value;}
 		void SetNumberColumns(G4int value){columns = value;}
 

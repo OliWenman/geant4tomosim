@@ -15,8 +15,8 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		SetNumberColumns(nDetectorsZ);
 
 		//Creates a 1D vector for the hit data
-		std::vector<int> iHitDataMatrix(nDetectorsY*nDetectorsZ, 0);
-		SetHitData(iHitDataMatrix);
+		std::vector<int> iHitDataArray(nDetectorsY*nDetectorsZ, 0);
+		HitDataArray = iHitDataArray;
 		if (NoBins_Cmd > 0)
 		{
 			std::vector<double> iEnergyBins (NoBins_Cmd, 0);

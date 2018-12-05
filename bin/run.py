@@ -17,13 +17,12 @@ DetectorDimensions = [0.05, 0.05, 0.05]*mm
 nBins = 2500
 NumberOfImages = 1
 TotalRotation = 180*deg
-nParticles = 500
+nParticles = 100
 
 Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
-
 #==========================================================================
 """
 xLabel = 'Energy'

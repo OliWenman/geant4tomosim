@@ -90,6 +90,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		//Creates the dimensions for the detector
 		param = new G4PhantomParameterisation();
 		SolidDetectors();	
+
+		FluorDetPos_Cmd = G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0);
 	}
 
 	//Create an instance of the logical volume and find the material
@@ -252,7 +254,7 @@ void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
 	if (FluorescenceDet == true)
 	{
 		G4VPhysicalVolume* phyFluoDetector = new G4PVPlacement(0,
-							       	       G4ThreeVector(0, 1.5*mm, 0),
+							       	       FluorDetPos_Cmd,
 							               FluoDet_logic,
 							               "Fluorecense detector",
 							               logicMotherBox,
@@ -350,7 +352,15 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	       << "\nTransmission detectors: "
 	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
-	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
+	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
+
+	if (FluorescenceDet == true)
+	{
+		G4cout << "\nFluorescence detector: "
+		       << "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
+		       << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
+		       << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
+	}
 	if (DetectorEfficiency_Cmd == false)
 	{	
 		G4cout << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
@@ -384,6 +394,14 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	        << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 		<< "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
+
+	if (FluorescenceDet == true)
+	{
+		outdata << "\nFluorescence detector: "
+		        << "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
+		        << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
+		        << "\n- Number of bins: " << data -> GetNoBins() << std::endl;
+	}
 	if (DetectorEfficiency_Cmd == false)
 	{	
 		outdata << "\n- Detector material: " << DetectorMaterial_Cmd << "\n";
