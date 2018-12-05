@@ -39,8 +39,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     		G4ParticleGun* ParticleGun;
 
 		G4ParticleDefinition *gamma;
-		G4ParticleDefinition *electron;
-		G4ParticleDefinition *positron;
+		//G4ParticleDefinition *electron;
+		//G4ParticleDefinition *positron;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;

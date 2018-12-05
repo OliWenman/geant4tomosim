@@ -56,8 +56,24 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 
 DetectorConstruction::~DetectorConstruction()
 {	
+	//Delete the messenger and Target Construct class
 	delete detectorMessenger; 
 	delete TC;
+
+	//Delete the transmission detectors
+	delete param;
+	delete SolidContainer;
+	delete SolidPhantomBoxes;
+	delete container_logic;
+	delete PhantomBoxes_logic;
+
+	//Delete the fluorescence detectors
+	delete SolidFluoDet;
+	delete FluoDet_logic; 
+
+	//Delete the wolrd
+	delete solidWorld;
+	delete logicWorld;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

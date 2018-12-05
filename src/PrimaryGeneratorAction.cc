@@ -38,6 +38,8 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
   	delete ParticleGun;
 	delete gunMessenger;
+
+	//G4RunmManager will delete gamma
 }
 
 void PrimaryGeneratorAction::SetDefaultKinematic()

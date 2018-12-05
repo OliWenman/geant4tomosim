@@ -15,7 +15,7 @@ nDetZ = 21
 DetectorDimensions = [0.05, 0.05, 0.05]*mm
 
 nBins = 2500
-NumberOfImages = 1
+NumberOfImages = 2
 TotalRotation = 180*deg
 nParticles = 100
 

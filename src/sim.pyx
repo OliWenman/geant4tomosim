@@ -61,9 +61,12 @@ cdef class PySim:
            FullPath = WorkingDirectory + BuildDirectory
            print "The data will be saved in:", FullPath
 
+           #Make the data saved as 32-bit signed integer 
+           dataType = 'i4'
+
            imageGroup = h5file1.create_group('Projections')
            imageGroup.attrs['NX_class'] = 'NXdata'
-           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
+           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = dataType)
 
            #If the energy data is to be recored, setup the h5file
            if self.Bins >= 1:
@@ -80,10 +83,10 @@ cdef class PySim:
               energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               # X axis data
-              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = 'i4')
+              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = dataType)
 
               # Y axis data
-              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages), dtype = 'i4')
+              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages), dtype = dataType)
               
            else:
               print("Energy data won't be recorded. ")
@@ -94,10 +97,10 @@ cdef class PySim:
            for nImage in range(NumberOfImages):
 
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               Image = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta), (-1, self.nDetectorsY))  
+               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta), (-1, self.nDetectorsY))  
 
                #Append the 2D Data to a 3D data set
-               imageSet[:, :, nImage] = Image[:, :]
+               imageSet[:, :, nImage] = simOutput[:, :]
                
                if self.Bins >= 1:
                   if nImage == 0:

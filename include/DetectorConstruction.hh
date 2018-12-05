@@ -80,10 +80,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		FluorescenceSD* fluorescenceSD;
 		TargetConstruction* TC;
 
-		//Pointers to the solid and logic of the world
-		G4Box* solidWorld;
-		G4LogicalVolume* logicWorld;
-
 		//Pointers to detector geometry (solid and logic)
 		G4PhantomParameterisation* param;
 		G4Box* SolidContainer;
@@ -95,6 +91,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4LogicalVolume* FluoDet_logic; 
 
 		//World variables
+		G4Box* solidWorld;
+		G4LogicalVolume* logicWorld;
 		G4ThreeVector WorldSize_Cmd;
 		G4String WorldMaterial_Cmd;
 		G4bool Visualization_Cmd;

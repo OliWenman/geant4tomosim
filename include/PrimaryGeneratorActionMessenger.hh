@@ -27,8 +27,6 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		PrimaryGeneratorAction* PGAction;
 
 		G4UIdirectory *gunDirectory;
-		//Pointer to the G4UIdirectory
-		G4UIdirectory *ParticleDirectory;
 
     		G4UIcmdWithADoubleAndUnit *energyCmd;  
 		G4UIcmdWithADoubleAndUnit *BeamWidthY_Cmd;
