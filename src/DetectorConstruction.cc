@@ -107,6 +107,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		param = new G4PhantomParameterisation();
 		SolidDetectors();	
 
+		//Set the position of the fluorescence detector a distance of 5% from the world boundary 
 		FluorDetPos_Cmd = G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0);
 	}
 
@@ -129,15 +130,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
 	PVDetectors(logicWorld);
-
-	//Construct the target geometry
-	TC->Construct(logicWorld);
 	
+	TC -> Construct(logicWorld);
+
 	++nImage;
 
 	//Return the world 
 	return physWorld;
-
 }
 
 void DetectorConstruction::SolidDetectors()
@@ -227,7 +226,7 @@ void DetectorConstruction::LVDetectors()
 	if (FluorescenceDet == true)
 	{
 		FluoDet_logic = new G4LogicalVolume(SolidFluoDet,
-					    	    FindMaterial("G4_Galactic"),
+					    	    DetMaterial,
 				                    "LVFluorescenceDetector");
 
 		//Make the detectors sensitive to hits
@@ -389,14 +388,12 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	//Creation of the writing to data file stream
 	std::ofstream outdata; 
 
-	G4String SettingsName = "OutputLog.txt";
-
 	//Open the file within the path set
-	outdata.open(SaveFilePath+SettingsName); 
+	outdata.open(SaveFilePath); 
    	
 	//Output error if can't open file
 	if( !outdata ) 
-	{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from DetectorConstruction.\n" << std::endl;
+	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from DetectorConstruction.\n" << std::endl;
       		exit(1);
    	}
 

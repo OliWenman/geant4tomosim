@@ -63,31 +63,31 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 	//Loop through the number of objects there are to be created
 	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
 	{
-		G4String StringNumber = std::to_string(nObject);
+		G4String StringNumber = std::to_string(nObject + 1);
 
 		//Create the dimensions of the object and assign its logic volume (if it has one) only once depending on the shape it is
 		if (nImage == 0)
 		{
 			if(TypeOfObjects[nObject] == "Cube")
-				{Box(nObject);}
+				{Box(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "HollowCube")
-				{HollowBox(nObject);}
+				{HollowBox(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "Sphere")
-				{Sphere(nObject);}
+				{Sphere(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "Cylinder")
-				{Cylinder(nObject);} 
+				{Cylinder(nObject, StringNumber);} 
 
 			else if(TypeOfObjects[nObject] == "SubtractSolid")
-				{SubtractSolid(nObject);}
+				{SubtractSolid(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "Trapezoid") 
-				{Trapezoid(nObject);}
+				{Trapezoid(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "Ellipsoid")
-				{Ellipsoid(nObject);}
+				{Ellipsoid(nObject, StringNumber);}
 
 			else
 				{G4cout << "\nERROR: Wrong TypesOfObjects String" << G4endl; exit(-1);}
@@ -104,11 +104,8 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 	++nImage;	
 }
 
-void TargetConstruction::Box(G4int ObjectNumber)
+void TargetConstruction::Box(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	//Get the dimensiosn for the box
 	G4ThreeVector TargetSize = G4ThreeVector(Dimensions[ObjectNumber][0], 
 						 Dimensions[ObjectNumber][1],
@@ -118,11 +115,8 @@ void TargetConstruction::Box(G4int ObjectNumber)
 	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x(), TargetSize.y(), TargetSize.z());
 }
 
-void TargetConstruction::HollowBox(G4int ObjectNumber)
+void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	//Get the dimensions for the outerBox
 	G4ThreeVector outerBoxDimensions = G4ThreeVector(Dimensions[ObjectNumber][0], 
 					       		 Dimensions[ObjectNumber][1],
@@ -150,11 +144,8 @@ void TargetConstruction::HollowBox(G4int ObjectNumber)
 							       innerBox);
 }
 
-void TargetConstruction::Cylinder(G4int ObjectNumber)
+void TargetConstruction::Cylinder(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	//Get the dimensions of the cylinder
 	G4double innerRadius = Dimensions[ObjectNumber][0];
 	G4double outerRadius = Dimensions[ObjectNumber][1];
@@ -171,11 +162,8 @@ void TargetConstruction::Cylinder(G4int ObjectNumber)
                   		 	spanningAngle);
 }
 
-void TargetConstruction::Sphere(G4int ObjectNumber)
+void TargetConstruction::Sphere(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	//Get the dimensions of the sphere
 	G4double innerRadius = Dimensions[ObjectNumber][0];
 	G4double outerRadius = Dimensions[ObjectNumber][1];
@@ -194,11 +182,8 @@ void TargetConstruction::Sphere(G4int ObjectNumber)
 				     	endTheta);
 }
 
-void TargetConstruction::Trapezoid(G4int ObjectNumber)
+void TargetConstruction::Trapezoid(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	G4double dx1 = Dimensions[ObjectNumber][0];
         G4double dx2 = Dimensions[ObjectNumber][1];
         G4double dy1 = Dimensions[ObjectNumber][2];
@@ -213,11 +198,8 @@ void TargetConstruction::Trapezoid(G4int ObjectNumber)
             			     dz);
 }
 
-void TargetConstruction::Ellipsoid(G4int ObjectNumber)
+void TargetConstruction::Ellipsoid(G4int ObjectNumber, G4String StringNumber)
 {
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	G4double pxSemiAxis = Dimensions[ObjectNumber][0];
         G4double pySemiAxis = Dimensions[ObjectNumber][1];
         G4double pzSemiAxis = Dimensions[ObjectNumber][2];
@@ -232,7 +214,7 @@ void TargetConstruction::Ellipsoid(G4int ObjectNumber)
                     				 pzTopCut);
 }
 
-void TargetConstruction::SubtractSolid(G4int ObjectNumber)
+void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber)
 {
 	//From the string, be able to take the needed paramenters out as seperate variables
 	G4Tokenizer next(SubtractObject[SubtractSolidCounter]);
@@ -268,9 +250,6 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber)
 	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(OuterObject, true); 
 	G4VSolid* InnerSolid = G4SolidStore::GetInstance() -> GetSolid(InnerObject, true); 
 
-	//Convert the ObjectNumber to a string
-	G4String StringNumber = std::to_string(ObjectNumber);
-
 	//Create the new solid from 
 	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + StringNumber, 
 							      OuterSolid, 
@@ -287,6 +266,7 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 	//If its logic volume value is true, add its logic volume
 	if (LogicVolumeArray[ObjectNumber] == true)
 	{
+		//DefineMaterial();
 		//Finds the right G4VSolid
 		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
 		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
@@ -393,9 +373,10 @@ void TargetConstruction::ReadOutInfo()
 	//Loop through the number of objects there are to be created
 	for(G4int n = 0; n < TypeOfObjects.size(); n++)
 	{
+		int N = n + 1;
 		if(TypeOfObjects[n] == "Cube")
 		{
-			G4cout << "\nCube" << n << ": " 
+			G4cout << "\nCube" << N << ": " 
 			       << "\n  - Dimensions: x = " << G4BestUnit(Dimensions[n][0], "Length") 
 					       << ", y = " << G4BestUnit(Dimensions[n][1], "Length")
 					       << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
@@ -405,7 +386,7 @@ void TargetConstruction::ReadOutInfo()
 		}
 		else if(TypeOfObjects[n] == "HollowCube")
 		{	
-			G4cout << "\nHollowCube" << n << ": "
+			G4cout << "\nHollowCube" << N << ": "
 			       << "\n  - Dimensions: outer cube: x = " << G4BestUnit(Dimensions[n][0], "Length") 
 							   << ", y = " << G4BestUnit(Dimensions[n][1], "Length") 
 							   << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
@@ -418,7 +399,7 @@ void TargetConstruction::ReadOutInfo()
 		}
 		else if(TypeOfObjects[n] == "Sphere")
 		{
-			G4cout << "\nSphere" << n << ": "
+			G4cout << "\nSphere" << N << ": "
                                << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
 					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
                                << "\n                inner phi = " << G4BestUnit(Dimensions[n][2], "Angle")
@@ -431,7 +412,7 @@ void TargetConstruction::ReadOutInfo()
 		}
 		else if(TypeOfObjects[n] == "Cylinder")
 		{	
-			G4cout << "\nCylinder" << n << ": "
+			G4cout << "\nCylinder" << N << ": "
 			       << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
 					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
 			       << "\n                height = " << G4BestUnit(Dimensions[n][2], "Length") << ", "
@@ -454,3 +435,68 @@ void TargetConstruction::ReadOutInfo()
 
 }
 
+void TargetConstruction::DefineMaterial()
+{
+	/*//Single elements
+	G4double atomicWeight = 39.95*g/mole;
+	G4double density = 1.390*g/cm3;
+	G4int z = 18;
+	G4String Name = "liquidArgon";
+	G4Material* lAr = new G4Material(Name, z, atomicWeight, density);
+
+	return lAr;*/
+
+//=======================================================================
+
+	/*//Molecules
+	G4String name = "Hydrogen";
+	G4String symbol = "H";
+	G4int z = 1;
+	G4double a = 1.01*g/mole;	
+	G4Element* hydrogen = new G4Element(name, symbol, z, a); 
+
+	name = "Oxygen";
+	symbol = "O";
+	z = 8;
+	a = 16.00*g/mole; 
+	G4Element* oxygen = new G4Element(name, symbol, z, a);
+
+	name = "Water";
+	G4double density = 1.000*g/cm3;
+	G4int n_components = 2;
+	G4Material* H2O = new G4Material(name, density, n_components);
+
+	H2O -> AddElement(hydrogen, 2);
+	H2O -> AddElement(oxygen, 1);
+
+	return H2O;*/
+
+//=====================================================================
+
+	//Isotopes
+	G4int z = 92;
+	G4int A = 235;
+	G4double a = 235.044*g/mole;
+	G4String name = "U235";
+	G4Isotope* isoU235 = new G4Isotope(name, z, A, a);
+
+	z = 92;
+	A = 238;
+	a = 238.051*g/mole;
+	name = "U238";
+	G4Isotope* isoU238 = new G4Isotope(name, z, A, a);
+
+	name = "enr. U";
+	G4String symbol = "U";
+	G4int nComponents = 2;
+	G4Element* enrichedU = new G4Element(name, symbol, nComponents);
+
+	enrichedU -> AddIsotope(isoU235, 80.*perCent);
+	enrichedU -> AddIsotope(isoU238, 20.*perCent);
+
+	G4double density = 19.1*g/cm3;
+	nComponents = 1;
+	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
+	G4int fraction_mass = 1;
+	mat_enrichedU -> AddElement(enrichedU, fraction_mass);
+}

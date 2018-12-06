@@ -1,0 +1,40 @@
+
+WORLD SETUP: 
+
+- World dimensions: 1 0.16 0.105 cm 
+- World Material: G4_Galactic
+
+THE DETECTOR SETUP:
+
+Transmission detectors: 
+- Number of detectors: 250 x 210 = 52500
+- Individual detector dimensions: 5 5 5 um 
+- Full detector dimensions: 0.005 1.25 1.05 mm 
+Fluorescence detector: 
+- Dimensions: 2 0.01 1 mm 
+- Position: 0 1.52 0 mm 
+- Number of bins: 2500
+
+- Detectors are assumed to be 100% efficient 
+
+BEAM INFORMATION: 
+
+- Energy of the monochomatic beam is: 10 keV
+- Beam dimensions: 2.5 x 2.1 mm 
+
+THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
+
+LivermorePhysics:
+- Photoelectric effect
+- Compton scattering
+- Rayleigh scattering
+- Fluorescence
+Tracking primary and secondary particles.
+
+META DATA: 
+
+- The seed used: 1543930243
+- Number of projections being processed: 10
+- Number of photons per image: 20000000
+- Number of particles per detector on average: 380
+- Full rotation angle: 3.14159 rad  

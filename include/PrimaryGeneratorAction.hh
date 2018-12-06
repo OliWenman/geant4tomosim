@@ -9,6 +9,8 @@ class G4Event;
 class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
 
+
+class G4GeneralParticleSource;
 //It defines a single particle which hits the detectors perpendicular to the input face
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
@@ -37,6 +39,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   	private:
 		//Pointer to G4ParticleGun
     		G4ParticleGun* ParticleGun;
+		//G4GeneralParticleSource* ParticleGun;
 
 		G4ParticleDefinition *gamma;
 		//G4ParticleDefinition *electron;

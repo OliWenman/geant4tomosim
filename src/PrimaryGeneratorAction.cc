@@ -1,6 +1,7 @@
 //Own classes
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
+#include "G4GeneralParticleSource.hh"
 
 //Used to create an event to fire the particles
 #include "G4Event.hh"
@@ -30,6 +31,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 	//Set the number of particles for each event
 	G4int nofParticles = 1;
   	ParticleGun = new G4ParticleGun(nofParticles);
+	//ParticleGun = new G4ParticleGun(nofParticles);
 
 	SetDefaultKinematic();
 }
@@ -39,7 +41,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
   	delete ParticleGun;
 	delete gunMessenger;
 
-	//G4RunmManager will delete gamma
+	//G4RunManager will delete gamma
 }
 
 void PrimaryGeneratorAction::SetDefaultKinematic()
@@ -76,14 +78,12 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 	//Creation of the writing to data file stream
 	std::fstream outdata; 
 
-	G4String SettingsName = "OutputLog.txt";
-
 	//Open the file within the path set
-	outdata.open(SaveFilePath+SettingsName, std::fstream::app); 
+	outdata.open(SaveFilePath, std::fstream::app); 
    	
 	//Output error if can't open file
 	if( !outdata ) 
-	{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from PrimaryGeneratorAction.\n" << std::endl;
+	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PrimaryGeneratorAction.\n" << std::endl;
       		exit(1);
    	}
 

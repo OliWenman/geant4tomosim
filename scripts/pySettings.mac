@@ -2,9 +2,9 @@
 
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering false	
-/physics/EM/RayleighScattering false
-/physics/EM/Fluorescence false
+/physics/EM/ComptonScattering true	
+/physics/EM/RayleighScattering true
+/physics/EM/Fluorescence true
 
 #Data Settings
 /data/Seed 1543930243
@@ -12,14 +12,14 @@
 #1543501150
 
 #Gun Settings
-/gun/setEnergy 20 keV		#(Set the initial energy of the monochromatic X-ray beam)
+/gun/setEnergy 10 keV		#(Set the initial energy of the monochromatic X-ray beam)
 /gun/setBeamWidth 2.5 mm             		#(Set the beam width)
 /gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
 /world/material G4_Galactic
-/world/visualization true	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings	
 #/detector/size 0.01 0.01 0.01 mm	
@@ -29,3 +29,7 @@
 
 /run/initialize
 #/hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))
+
+#/gps/ene/type Gauss
+#/gps/ene/mono 40 keV
+#/gps/ene/sigma 20 keV

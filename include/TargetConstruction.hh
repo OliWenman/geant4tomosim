@@ -74,15 +74,15 @@ class TargetConstruction
 	private:
 
 		//Functions for creating different shaped objects
-		void Box(G4int ObjectNumber);
-		void HollowBox(G4int ObjectNumber);
-		void Cylinder(G4int ObjectNumber);
-		void Sphere(G4int ObjectNumber);
-		void Trapezoid(G4int ObjectNumber);
-		void Ellipsoid(G4int ObjectNumber);
+		void Box(G4int ObjectNumber, G4String StringNumber);
+		void HollowBox(G4int ObjectNumber, G4String StringNumber);
+		void Cylinder(G4int ObjectNumber, G4String StringNumber);
+		void Sphere(G4int ObjectNumber, G4String StringNumber);
+		void Trapezoid(G4int ObjectNumber, G4String StringNumber);
+		void Ellipsoid(G4int ObjectNumber, G4String StringNumber);
 
 		//Complex objects
-		void SubtractSolid(G4int ObjectNumber);
+		void SubtractSolid(G4int ObjectNumber, G4String StringNumber);
 
 		//Add its material and place it in the world
 		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);
@@ -90,6 +90,7 @@ class TargetConstruction
 
 		//Functions used through out class
 		G4Material* FindMaterial(G4String MaterialName);
+		void DefineMaterial();
 		G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
 		G4ThreeVector OffSetRotation(G4int ObjectNumber, G4ThreeVector Centre, G4double Radius, G4double Angle);
 		void Visualization(G4LogicalVolume*, G4Colour);

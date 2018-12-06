@@ -34,7 +34,7 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *WorldDirectory;
 		G4UIdirectory *DetectorDirectory;
-		G4UIdirectory *DataDirectory;
+		//G4UIdirectory *DataDirectory;
 		
 		//Pointers for different data members
 		//WORLD VARIABLES

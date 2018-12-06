@@ -1,3 +1,5 @@
+#/Materials/Define/Element liquidAr 18 39.95 g/mole 1.390 g/cm3
+
 /Target/CheckAllOverlaps false
 /Target/TotalRotationAngle 180 deg
 
@@ -7,7 +9,7 @@
 /Target/HollowCube/Dimensions 0.5 0.5 0.5 0.1 0.1 0.1 mm 
 /Target/Position -0.0 -0.0 -0.0 mm
 /Target/Rotation 0.0 0 0.0 deg
-/Target/Material/Database G4_Pb
+/Target/Material/Database G4_Ti
 
 #/Target/Cube/Dimensions 0.5 0.5 0.5 mm
 #/Target/Position 0.0 0.0 0.0 mm		

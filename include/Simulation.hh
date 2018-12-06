@@ -2,10 +2,11 @@
 #define Simulation_h 1
 
 #include <vector>
+#include "globals.hh"
 
 class SimulationMessenger;
 class Data;
-class Input;
+class DefineMaterials;
 class DetectorConstruction;
 class PhysicsList;
 class PrimaryGeneratorAction;
@@ -51,7 +52,7 @@ class Simulation
 		G4VisManager* visManager;
 		G4UImanager* UImanager;
 		Data* data;
-		Input* input;
+		DefineMaterials* materials;
 		DetectorConstruction* DC;
 		PhysicsList* PL;
 		PrimaryGeneratorAction* PGA;
@@ -61,6 +62,8 @@ class Simulation
 
 		long int seedCmd;
 		bool WriteToTextCmd;
+
+		G4String SaveLogPath;
 };
 
 #endif

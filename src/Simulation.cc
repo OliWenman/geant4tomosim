@@ -6,6 +6,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
 #include "Data.hh"
+#include "DefineMaterials.hh"
 
 //Geant4 managers for running the simulation
 #include "G4RunManager.hh"
@@ -50,6 +51,7 @@ Simulation::~Simulation()
 	delete visManager;
 
 	delete data;
+	delete materials;
 
 	G4cout << "\nSimulation deleted! \n" << G4endl;
 }
@@ -63,7 +65,8 @@ void Simulation::Setup()
 	//runManager -> SetVerboseLevel(1);
 	data = new Data();
 	DC = new DetectorConstruction(data); 
-	PL = new PhysicsList(); 
+	PL = new PhysicsList();
+	materials = new DefineMaterials(); 
 	visManager = 0;
 
 	//Setup the Geant4 user and action intialization	
@@ -104,10 +107,10 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	G4cout << "\nReading pySettings.mac...\n";
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "pySettings.mac");
 
-	G4String SaveFilePath = "./../Output/Text/";
-
 	if (PL -> GetFluorescence() == false)
 		{runManager -> SetUserAction(new StackingAction());}
+
+	SaveLogPath = "./../Output/Text/SimulationLog.txt";
 
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA -> SetWorldLength(DC -> GetWorldSize().x());
@@ -116,9 +119,9 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
 
 	//Readout the inputs from the user and save to a file
-	DC -> ReadOutInfo(SaveFilePath);
-	PGA -> ReadOutInfo(SaveFilePath);
-	PL -> ReadOutInfo(SaveFilePath);
+	DC -> ReadOutInfo(SaveLogPath);
+	PGA -> ReadOutInfo(SaveLogPath);
+	PL -> ReadOutInfo(SaveLogPath);
 
         G4cout << "\nCommands successfully added\n"
 
@@ -170,15 +173,12 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			//Creation of the writing to data file stream
 			std::fstream outdata; 
 
-			G4String SaveFilePath = "./../Output/Text/";
-			G4String SettingsName = "OutputLog.txt";
-
 			//Open the file within the path set
-			outdata.open(SaveFilePath+SettingsName, std::fstream::app); 
+			outdata.open(SaveLogPath, std::fstream::app); 
    	
 			//Output error if can't open file
 			if( !outdata ) 
-			{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from Simulation::pyRun\n" << std::endl;
+			{ 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation::pyRun\n" << std::endl;
       				exit(1);
    			}
 

@@ -224,14 +224,12 @@ void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 	//Creation of the writing to data file stream
 	std::fstream outdata; 
 
-	G4String SettingsName = "OutputLog.txt";
-
 	//Open the file within the path set
-	outdata.open(SaveFilePath+SettingsName, std::fstream::app); 
+	outdata.open(SaveFilePath, std::fstream::app); 
    	
 	//Output error if can't open file
 	if( !outdata ) 
-	{ 	std::cerr << "\nError: " << SettingsName << " file could not be opened from PhysicsList.\n" << std::endl;
+	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PhysicsList.\n" << std::endl;
       		exit(1);
    	}
 

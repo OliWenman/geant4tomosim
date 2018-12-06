@@ -83,7 +83,7 @@ cdef class PySim:
               energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               # X axis data
-              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = dataType)
+              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = 'f8')
 
               # Y axis data
               nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages), dtype = dataType)
