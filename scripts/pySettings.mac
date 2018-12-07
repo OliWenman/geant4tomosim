@@ -7,18 +7,18 @@
 /physics/EM/Fluorescence true
 
 #Data Settings
-/data/Seed 1543930243
+/data/Seed 0
 
 #1543501150
 
 #Gun Settings
-/gun/setEnergy 10 keV		#(Set the initial energy of the monochromatic X-ray beam)
-/gun/setBeamWidth 2.5 mm             		#(Set the beam width)
-/gun/setBeamHeight 2.1 mm			#(Set the beam height)
+#/gun/setEnergy 10 keV		#(Set the initial energy of the monochromatic X-ray beam)
+#/gun/setBeamWidth 2.5 mm             		#(Set the beam width)
+#/gun/setBeamHeight 2.1 mm			#(Set the beam height)
 
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
-/world/material G4_Galactic
+/world/material G4_Xe
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings	
@@ -27,9 +27,18 @@
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
 /detector/fluorescence/dimensions 2 0.01 1 mm
 
-/run/initialize
 #/hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))
+/run/initialize
 
-#/gps/ene/type Gauss
-#/gps/ene/mono 40 keV
-#/gps/ene/sigma 20 keV
+/gps/pos/type Plane
+/gps/pos/shape Square
+
+/gps/pos/halfx 1.05 mm
+/gps/pos/halfy 1.25 mm
+/gps/pos/rot1 0 0 1  
+/gps/pos/rot2 0 1 0 
+
+/gps/ene/type Gauss
+/gps/ene/mono 30 keV
+/gps/ene/sigma 10 keV
+

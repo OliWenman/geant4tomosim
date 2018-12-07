@@ -48,7 +48,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 
 void Data::SaveEnergyFreq(double E)//
 {
-	++EnergyFreq[floor(E/(MaxE/NoBins_Cmd))-1];
+	++EnergyFreq[floor(E*1000/(MaxE/NoBins_Cmd))];
 }
 
 void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)

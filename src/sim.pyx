@@ -83,10 +83,10 @@ cdef class PySim:
               energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               # X axis data
-              energySet = energyGroup.create_dataset(xLabel, shape = (2500,), dtype = 'f8')
+              energySet = energyGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
 
               # Y axis data
-              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (2500, NumberOfImages), dtype = dataType)
+              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = dataType)
               
            else:
               print("Energy data won't be recorded. ")
@@ -105,7 +105,7 @@ cdef class PySim:
                if self.Bins >= 1:
                   if nImage == 0:
                      #Energy data will return as MeV so convert to keV and set x axis only once
-                     energySet[:] = self.lastEnergyBins()*1000
+                     energySet[:] = self.lastEnergyBins()
 
                   #Append the energy frequency to the 2D data
                   nPhotonSet[:, nImage] = self.lastEnergyFreq()
@@ -143,3 +143,5 @@ cdef class PySim:
     def lastEnergyFreq(self):
         return np.array(self.thisptr.GetEnergyFreq())
 
+    def beamEnergy(self):
+        return np.array(self.thisptr.GetBeamEnergyFreq())  

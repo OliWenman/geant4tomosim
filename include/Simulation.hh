@@ -36,6 +36,8 @@ class Simulation
 		std::vector<double> GetEnergyBins();//
 		std::vector<int> GetEnergyFreq();//
 
+		std::vector<int> GetBeamEnergyFreq();
+
 		void SetSeed(long int value){seedCmd = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}
 

@@ -10,19 +10,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import h5py
 
-nDetY = 250
-nDetZ = 210
-DetectorDimensions = [0.005, 0.005, 0.005]*mm
+nDetY = 25
+nDetZ = 21
+DetectorDimensions = [0.05, 0.05, 0.05]*mm
 
-nBins = 2500
-NumberOfImages = 10
+nBins = 2000
+NumberOfImages = 1
 TotalRotation = 180*deg
-nParticles = 20000000
+nParticles = 10000000
 
 Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
+
+BeamEnergyY = Sim.beamEnergy()
+BeamEnergyX = Sim.lastEnergyBins()
+
+plt.plot(BeamEnergyX, BeamEnergyY)
+plt.show()
 #==========================================================================
 """
 xLabel = 'Energy'

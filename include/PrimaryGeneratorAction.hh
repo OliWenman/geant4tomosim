@@ -4,10 +4,14 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
+#include <vector>
 
 class G4Event;
 class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
+class G4SPSPosDistribution;
+class G4SPSAngDistribution;
+class G4SPSEneDistribution;
 
 
 class G4GeneralParticleSource;
@@ -20,30 +24,30 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     		~PrimaryGeneratorAction();
     		void GeneratePrimaries(G4Event* );
 		void ReadOutInfo(G4String SaveFilePath);
-    		
-		//Set methods		
-		void SetDefaultKinematic();
 
 		//Set methods
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
 		inline void SetBeamWidthY(G4double value){BeamWidthY_Cmd = value;} 
 		inline void SetBeamHeightZ(G4double value){BeamHeightZ_Cmd = value;} 
-		void SetWorldLength(G4double value){WorldLength = value;}
+		void SetValues(int nBins, double Position);
+
+		void SetBeamCheck(bool value){BeamCheck = value;}
 			
 		//Get methods
-		G4ParticleGun* GetParticleGun() {return ParticleGun;}
+		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
 		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
-		G4double GetMaxEnergy(){return energyCmd;}
+		G4double GetMaxEnergy(){return eMax;}
+
+		std::vector<double> GetBeamEnergyBins(){return BeamEnergyBins;}
+		std::vector<int> GetBeamEnergyFreq(){return BeamEnergyFreq;}
 
   	private:
 		//Pointer to G4ParticleGun
-    		G4ParticleGun* ParticleGun;
-		//G4GeneralParticleSource* ParticleGun;
+    		//G4ParticleGun* ParticleGun;
+		G4GeneralParticleSource* ParticleGun;
 
 		G4ParticleDefinition *gamma;
-		//G4ParticleDefinition *electron;
-		//G4ParticleDefinition *positron;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;
@@ -52,7 +56,14 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double energyCmd;
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;
-		G4double WorldLength;
+
+		G4double eMax;
+		G4double Bins;
+
+		std::vector<double> BeamEnergyBins;
+		std::vector<int> BeamEnergyFreq;
+
+		bool BeamCheck;
 };
 
 #endif

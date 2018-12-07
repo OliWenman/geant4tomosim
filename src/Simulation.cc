@@ -113,7 +113,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	SaveLogPath = "./../Output/Text/SimulationLog.txt";
 
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
-	PGA -> SetWorldLength(DC -> GetWorldSize().x());
+	PGA-> SetValues(nBins, DC -> GetWorldSize().x());
 
 	//Tell the data class what the max energy is
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
@@ -241,6 +241,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
+
+		if (Image == 0)
+			{PGA -> SetBeamCheck(true);}
 
 		CompletionTime(LoopTimer.GetRealElapsed(), Image + 1, NumberOfImages);
 
@@ -380,6 +383,11 @@ std::vector<int> Simulation::GetEnergyFreq()
 std::vector<double> Simulation::GetEnergyBins()
 {
 	return data -> GetEnergyBins();
+}
+
+std::vector<int> Simulation::GetBeamEnergyFreq()
+{
+	return PGA -> GetBeamEnergyFreq();
 }
 
 //Private functions

@@ -23,17 +23,28 @@
 #include <iomanip>
 #include <fstream>
 
+#include "G4SPSPosDistribution.hh"
+#include "G4SPSAngDistribution.hh"
+#include "G4SPSEneDistribution.hh"
+
 PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 
 	//Set the number of particles for each event
-	G4int nofParticles = 1;
-  	ParticleGun = new G4ParticleGun(nofParticles);
-	//ParticleGun = new G4ParticleGun(nofParticles);
+  	//ParticleGun = new G4ParticleGun(1);
+	ParticleGun = new G4GeneralParticleSource();
 
-	SetDefaultKinematic();
+	BeamCheck = false;
+
+	//Setup which particle is used and its starting conidiions
+	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
+
+	ParticleGun -> SetParticleDefinition(gamma);
+  	//ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
+
+	//SetDefaultKinematic();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -44,24 +55,17 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	//G4RunManager will delete gamma
 }
 
-void PrimaryGeneratorAction::SetDefaultKinematic()
-{
-	//Setup which particle is used and its starting conidiions
-	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-
-	ParticleGun -> SetParticleDefinition(gamma);
-  	ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
-}
-
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	//Allow the particles to be fired randomly within the beam width
-	G4double y0 = BeamWidthY_Cmd * (G4UniformRand()-0.5);
-  	G4double z0 = BeamHeightZ_Cmd * (G4UniformRand()-0.5);
-
-	//Set the ParticleGun conditions
-	ParticleGun -> SetParticleEnergy(energyCmd);
-	ParticleGun -> SetParticlePosition(G4ThreeVector(-WorldLength, y0, z0));
+	if (BeamCheck == false)
+	{	//Create a graph of the beam energy, only for the first image
+		int bins = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins));
+		if (bins >= Bins)
+		{
+			bins = Bins - 1;
+		}	
+		++BeamEnergyFreq[bins];
+	}
 
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
@@ -69,7 +73,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 {
-	G4ThreeVector BeamDimensions = G4ThreeVector(WorldLength, BeamWidthY_Cmd, BeamHeightZ_Cmd);
+	G4ThreeVector BeamDimensions = G4ThreeVector(0, BeamWidthY_Cmd, BeamHeightZ_Cmd);
 
 	G4cout << "\nBEAM INFORMATION: \n"
 	       << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
@@ -92,4 +96,27 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 	        << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << "\n";
 
 	outdata.close();
+}
+
+void PrimaryGeneratorAction::SetValues(int nBins, double Position)
+{
+	//Automatically set the gun position to the end of the world volume
+	ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(-Position, 0, 0));
+
+	//Automatically set the gun momentum in the positive x direction
+	ParticleGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+
+	//Find the energy sigma value for the distrubition (in keV)
+	G4double eSigma = ParticleGun -> GetCurrentSource() -> GetEneDist() -> GetSE() * 1000;
+
+	//Find the main energy value (in keV)
+	G4double eMono = ParticleGun -> GetCurrentSource() -> GetEneDist() -> GetMonoEnergy() * 1000;
+
+	//Set the max energy value (in keV)
+	eMax = (eMono + eSigma) * 2;
+
+	std::vector<int> iBeamEnergyFreq(nBins, 0);
+	BeamEnergyFreq = iBeamEnergyFreq;
+
+	Bins = nBins;
 }

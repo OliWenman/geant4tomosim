@@ -50,8 +50,8 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
   	PhysicsMessenger = new PhysicsListMessenger(this);
 
 	//Sets the cutvalues
-	//cutForGamma = 10*mm;
-	//cutForElectron = 1*um;
+	cutForGamma = 10*mm;
+	cutForElectron = 1*um;
 }
 
 PhysicsList::~PhysicsList()

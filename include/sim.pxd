@@ -14,3 +14,5 @@ cdef extern from "Simulation.hh":
 
       vector[int] GetEnergyFreq()
       vector[double] GetEnergyBins()
+
+      vector[int] GetBeamEnergyFreq()
