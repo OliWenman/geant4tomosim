@@ -7,7 +7,6 @@ from G4Units import *
 import sim
 import numpy as np
 import matplotlib.pyplot as plt
-import numpy as np
 import h5py
 
 nDetY = 25
@@ -24,11 +23,6 @@ Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
 
-BeamEnergyY = Sim.beamEnergy()
-BeamEnergyX = Sim.lastEnergyBins()
-
-plt.plot(BeamEnergyX, BeamEnergyY)
-plt.show()
 #==========================================================================
 """
 xLabel = 'Energy'

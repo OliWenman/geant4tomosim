@@ -2,7 +2,7 @@
 WORLD SETUP: 
 
 - World dimensions: 1 0.16 0.105 cm 
-- World Material: G4_Xe
+- World Material: G4_Galactic
 
 THE DETECTOR SETUP:
 
@@ -33,7 +33,7 @@ Tracking primary and secondary particles.
 
 META DATA: 
 
-- The seed used: 1544201513
+- The seed used: 1544444446
 - Number of projections being processed: 1
 - Number of photons per image: 10000000
 - Number of particles per detector on average: 19047

@@ -168,7 +168,7 @@ void PhysicsList::ConstructEM()
 	//SetCuts();
 	G4cout << G4endl;
 
-	SetCutValue(cutForElectron, "electron");
+	//SetCutValue(cutForElectron, "electron");
 }
 
 void PhysicsList::SetCuts()

@@ -61,33 +61,37 @@ cdef class PySim:
            FullPath = WorkingDirectory + BuildDirectory
            print "The data will be saved in:", FullPath
 
-           #Make the data saved as 32-bit signed integer 
-           dataType = 'i4'
-
            imageGroup = h5file1.create_group('Projections')
-           imageGroup.attrs['NX_class'] = 'NXdata'
-           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = dataType)
+           #imageGroup.attrs['NX_class'] = 'NXdata'
+           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
 
            #If the energy data is to be recored, setup the h5file
            if self.Bins >= 1:
-              print("Energy data turned on")
-              h5file2 = h5py.File(Path + 'Fluorescence.h5', 'w')              
+              print("Recording the energy data")     
 
-              xLabel = 'Energy(keV)'
-              yLabel = 'Photons'
-              energyGroup = h5file2.create_group('Fluorescence')
-              energyGroup.attrs['NX_class'] = 'NXdata'
+              #Fluorescence data
+              xLabel = "Energy(keV)"
+              yLabel = "Photons"
+              fluorescenceGroup = h5file1.create_group('Fluorescence')
+              fluorescenceGroup.attrs['NX_class'] = 'NXdata'
 
-              energyGroup.attrs['axes'] = xLabel         # X axis of default plot
-              energyGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              energyGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+              fluorescenceGroup.attrs['axes'] = xLabel         # X axis of default plot
+              fluorescenceGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              fluorescenceGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
-              # X axis data
-              energySet = energyGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
+              fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
+              fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = 'i4')  # Y axis data
 
-              # Y axis data
-              nPhotonSet = energyGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = dataType)
-              
+              #Beam energy data
+              beamGroup = h5file1.create_group('BeamEnergy')
+              beamGroup.attrs['NX_class'] = 'NXdata'
+
+              beamGroup.attrs['axes'] = xLabel         # X axis of default plot
+              beamGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              beamGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+
+              energybeamSet = beamGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
+              energyphotonSet = beamGroup.create_dataset(yLabel, shape = (self.Bins,), dtype = 'i4')
            else:
               print("Energy data won't be recorded. ")
 
@@ -104,16 +108,18 @@ cdef class PySim:
                
                if self.Bins >= 1:
                   if nImage == 0:
-                     #Energy data will return as MeV so convert to keV and set x axis only once
-                     energySet[:] = self.lastEnergyBins()
+                     #
+                     fluorescenceSet[:] = self.lastEnergyBins()
+                     energybeamSet[:] = self.lastEnergyBins()
+                     energyphotonSet[:] = self.beamEnergy()
 
                   #Append the energy frequency to the 2D data
-                  nPhotonSet[:, nImage] = self.lastEnergyFreq()
+                  fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
                   
            #Close the files
            h5file1.close()
-           if self.Bins >= 1:
-              h5file2.close()
+           #if self.Bins >= 1:
+           #   h5file2.close()
 
            #Ouput the time in the appropriate units
            eTime = time.time()
