@@ -142,6 +142,8 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
 	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
 							       outerBox, 
 							       innerBox);
+	G4cout << "\nHollowCube" + StringNumber << G4endl;
+
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber, G4String StringNumber)
@@ -180,6 +182,8 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4String StringNumber)
 				     	endPhi,
 				     	startingTheta,
 				     	endTheta);
+	G4cout << "\nSphere" + StringNumber << G4endl;
+
 }
 
 void TargetConstruction::Trapezoid(G4int ObjectNumber, G4String StringNumber)

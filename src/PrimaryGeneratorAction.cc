@@ -1,4 +1,5 @@
 //Own classes
+#include "Data.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "G4GeneralParticleSource.hh"
@@ -27,7 +28,7 @@
 #include "G4SPSAngDistribution.hh"
 #include "G4SPSEneDistribution.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject)
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
@@ -37,6 +38,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 	ParticleGun = new G4GeneralParticleSource();
 
 	BeamCheck = false;
+	BeamData = false;
 
 	//Setup which particle is used and its starting conidiions
 	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
@@ -57,7 +59,12 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	if (BeamCheck == false)
+	//Generate the particle in the event
+  	ParticleGun -> GeneratePrimaryVertex(anEvent);
+
+	data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+
+	if (BeamCheck == false && BeamData == true)
 	{	//Create a graph of the beam energy, only for the first image
 		int bins = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins));
 		if (bins >= Bins)
@@ -66,9 +73,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		}	
 		++BeamEnergyFreq[bins];
 	}
-
-	//Generate the particle in the event
-  	ParticleGun -> GeneratePrimaryVertex(anEvent);
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)

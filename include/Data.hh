@@ -6,6 +6,7 @@
 //Used to access the function floor 
 #include <math.h>      
 #include "globals.hh"
+#include "G4ThreeVector.hh"
 
 class Data
 {
@@ -22,6 +23,8 @@ class Data
 		void SaveEnergyFreq(double E);//		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 
+		void SaveFullMapping(double E);
+
 		void WriteToTextFile(int nImage);
 
 		//Get Methods
@@ -30,6 +33,8 @@ class Data
 
 		std::vector<double> GetEnergyBins(){return EnergyBins;}//
 		std::vector<int> GetEnergyFreq(){return EnergyFreq;}//
+
+		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4double GetMaxEnergy(){return MaxE;}
@@ -41,6 +46,13 @@ class Data
 		void SetNoBins(G4int value){NoBins_Cmd = value;}
 		void SetMaxEnergy(G4double value){MaxE = value;}
 
+		void SetHalfDetectorDimensions(G4ThreeVector value){halfDetectorDimensions = value;}
+		void SetParticlePosition(G4ThreeVector value){ParticlePosition = value;}
+
+		void SetFFF(bool value){fluoreFullField = value;}
+		void SetFFM(bool value){fluoreFullMapping = value;}
+		void SetBE(bool value){beamEnergy = value;}
+
 	private:	
 		void MakeSpaces(int nSpaces, std::ofstream &outdata);
 
@@ -51,6 +63,8 @@ class Data
 
 		std::vector<std::vector<int> > EnergyMatrix;
 
+		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
+
 		G4int rows;
 		G4int columns;	
 
@@ -58,6 +72,13 @@ class Data
 
 		G4int NoBins_Cmd;
 		G4double MaxE;
+
+		G4ThreeVector ParticlePosition;
+		G4ThreeVector halfDetectorDimensions; 
+
+		bool fluoreFullField;
+		bool fluoreFullMapping;
+		bool beamEnergy;
 };
 
 #endif

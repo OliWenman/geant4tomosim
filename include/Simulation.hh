@@ -23,6 +23,7 @@ class Simulation
 
 		//Methods
 		//To be called from Python
+		void pyOutputOptions(bool FFF, bool FFM, bool BM);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
 		std::vector<int> pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta);
 
@@ -37,6 +38,8 @@ class Simulation
 		std::vector<int> GetEnergyFreq();//
 
 		std::vector<int> GetBeamEnergyFreq();
+		std::vector<std::vector<std::vector<int> > > GetFullMapping();
+
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}

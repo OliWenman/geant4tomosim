@@ -6,6 +6,7 @@
 #include "globals.hh"
 #include <vector>
 
+class Data;
 class G4Event;
 class G4ParticleDefination;
 class PrimaryGeneratorActionMessenger;
@@ -20,7 +21,7 @@ class G4GeneralParticleSource;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction();    
+    		PrimaryGeneratorAction(Data *data);    
     		~PrimaryGeneratorAction();
     		void GeneratePrimaries(G4Event* );
 		void ReadOutInfo(G4String SaveFilePath);
@@ -32,6 +33,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetValues(int nBins, double Position);
 
 		void SetBeamCheck(bool value){BeamCheck = value;}
+		void SetBeamData(bool value){BeamData = value;}
+		void SetFluoreFM(bool value){FluoreFM = value;}
 			
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
@@ -49,6 +52,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		G4ParticleDefinition *gamma;
 
+		Data* data;
+
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;
 		
@@ -64,6 +69,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		std::vector<int> BeamEnergyFreq;
 
 		bool BeamCheck;
+		bool BeamData;
+		bool FluoreFM;
 };
 
 #endif

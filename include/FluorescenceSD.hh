@@ -15,12 +15,20 @@ class FluorescenceSD : public G4VSensitiveDetector
   
     		G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* );
 
+		void SetFFF(bool value){fluoreFullField = value;}
+		void SetFFM(bool value){fluoreFullMapping = value;}
+
   	private:
 		bool DetectorEfficiency;
 		int nBins;
 
 		//Pointers to different classes
 		Data* data;
+
+		bool fluoreFullField;
+		bool fluoreFullMapping;
+		
+		
 };
 
 #endif

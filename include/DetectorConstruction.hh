@@ -57,6 +57,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String GetDetectorMaterial(){return DetectorMaterial_Cmd;}
 		G4bool GetDetectorEfficiency(){return DetectorEfficiency_Cmd;}
 
+		FluorescenceSD* GetFluoreDetector(){return fluorescenceSD;}
+
 		void RelayToTC(int NumberOfImages, double TotalAngle);
 	
 		void ReadOutInfo(G4String SaveFilePath);

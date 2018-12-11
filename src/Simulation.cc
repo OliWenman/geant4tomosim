@@ -2,6 +2,7 @@
 #include "Simulation.hh"
 #include "SimulationMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "FluorescenceSD.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
@@ -73,7 +74,7 @@ void Simulation::Setup()
 	runManager -> SetUserInitialization(DC);
 	runManager -> SetUserInitialization(PL);
 
-	PGA = new PrimaryGeneratorAction();
+	PGA = new PrimaryGeneratorAction(data);
 	runManager -> SetUserAction(PGA);
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
@@ -86,9 +87,25 @@ void Simulation::Setup()
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
 
+void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
+{
+	PGA -> SetBeamData(BE);
+	PGA -> SetFluoreFM(FFM);
+
+	data -> SetFFF(FFF);
+	data -> SetFFM(FFM);
+	data -> SetBE(BE);
+
+	FluorescenceSD* tempPointer = DC -> GetFluoreDetector();
+	tempPointer -> SetFFF(FFF);
+	tempPointer -> SetFFM(FFM);
+}
+
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
 	G4String PathToFiles = "./../scripts/";
+
+	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
 
 	DC -> SetNoDetectorsY(nDetectorsY);
 	DC -> SetNoDetectorsZ(nDetectorsZ);
@@ -98,7 +115,9 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 		{DC -> SetFluorescenceDet(true);}
 	else
 		{DC -> SetFluorescenceDet(false);}
+
 	data -> SetNoBins(nBins);
+	data -> SetHalfDetectorDimensions(halfDimensions);	
 
 	//Apply the commands from the macro files to fill the values
 	G4cout << "\nReading Geometry.mac... ";
@@ -390,6 +409,10 @@ std::vector<int> Simulation::GetBeamEnergyFreq()
 	return PGA -> GetBeamEnergyFreq();
 }
 
+std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping()
+{
+	return data -> GetFullMapping();
+}
 //Private functions
 void Simulation::BeamOn(unsigned long long int nParticles)
 {

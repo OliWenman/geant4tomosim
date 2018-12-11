@@ -8,7 +8,6 @@
 
 #Data Settings
 /data/Seed 0
-
 #1543501150
 
 #Gun Settings
@@ -23,7 +22,7 @@
 
 #Detector Settings	
 #/detector/size 0.01 0.01 0.01 mm	
-/detector/material G4_Galactic	#(Set the material of the detectors)
+/detector/material G4_AIR	#(Set the material of the detectors)
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
 /detector/fluorescence/dimensions 2 0.01 1 mm
 

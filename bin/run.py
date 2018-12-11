@@ -9,19 +9,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 
-nDetY = 25
-nDetZ = 21
-DetectorDimensions = [0.05, 0.05, 0.05]*mm
+nDetY = 5
+nDetZ = 5
+DetectorDimensions = [0.1, 0.32, 0.21]*mm
 
 nBins = 2000
-NumberOfImages = 1
+NumberOfImages = 2
 TotalRotation = 180*deg
-nParticles = 10000000
+nParticles = 1000000
+
+fluoreFF = True
+fluoreFM = False
+beamEnergy = True
 
 Sim = sim.PySim()
+
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
+Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
+
+#fm = Sim.fullMapping()
+
+
+#Path = './../build/Output/HDF5/'
+
+#Create a h5 file to view the data after the simulation is complete
+#h5file1 = h5py.File(Path + 'FullMappingTest.h5', 'w')
+#BuildDirectory = "/build/Output/HDF5/"
+
+#fullMappingGroup = h5file1.create_group('FullMapping')
+          
+#fullMappingSet = fullMappingGroup.create_dataset('Mapping', shape=(nBins, nDetY, nDetZ), dtype = 'i4')
+#fullMappingSet[:,:,:] = fm
 
 #==========================================================================
 """

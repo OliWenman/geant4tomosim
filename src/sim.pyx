@@ -10,26 +10,42 @@ cdef class PySim:
     cdef Simulation *thisptr     
 
     #Makes the following available in Python-space:
+    #Detector variables
     cdef public int nDetectorsY
     cdef public int nDetectorsZ
-
     cdef public int Bins
 
+    #Output options for the simulation
+    cdef public bint FFF 
+    cdef public bint FFM 
+    cdef public bint BE 
+
+    #Simulation time
     cdef public double SimTime
 
+    #Boolean if simulation is ready to go
     cdef public bint Ready
   
     #Constructor, create an instance of the C++ class
     def __cinit__(self):
         self.Ready = False
+        self.FFF = False
+        self.FFM = True
+        self.BE = False
         self.thisptr = new Simulation()
 
     #Delete the C++ class
     def __dealloc__(self):
         del self.thisptr
 
+    def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = True, bint beamEnergy = False):
+        self.FFF = fluoreFullField
+        self.FFM = fluoreFullMapping
+        self.BE = beamEnergy
+        self.thisptr.pyOutputOptions(self.FFF, self.FFM, self.BE)
+
     #Get needed information from textfiles pySettings.mac and Geometry.mac
-    def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 0):
+    def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 2000):
         if nDetY >= 1 and nDetZ >= 1:
 
            #Make the number of detectors availiable for the Python class
@@ -66,9 +82,9 @@ cdef class PySim:
            imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
 
            #If the energy data is to be recored, setup the h5file
-           if self.Bins >= 1:
-              print("Recording the energy data")     
+           if self.FFF == True:
 
+              print("Recording full field fluorescence data")     
               #Fluorescence data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
@@ -82,7 +98,12 @@ cdef class PySim:
               fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
               fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = 'i4')  # Y axis data
 
+           if self.BE == True:
+
+              print("Recording beam energy data")
               #Beam energy data
+              xLabel = "Energy(keV)"
+              yLabel = "Photons"
               beamGroup = h5file1.create_group('BeamEnergy')
               beamGroup.attrs['NX_class'] = 'NXdata'
 
@@ -106,20 +127,20 @@ cdef class PySim:
                #Append the 2D Data to a 3D data set
                imageSet[:, :, nImage] = simOutput[:, :]
                
-               if self.Bins >= 1:
-                  if nImage == 0:
-                     #
+               if nImage == 0:
+                  if self.FFF == True:
                      fluorescenceSet[:] = self.lastEnergyBins()
+
+                  if self.BE == True:
                      energybeamSet[:] = self.lastEnergyBins()
                      energyphotonSet[:] = self.beamEnergy()
 
+               if self.FFF == True:
                   #Append the energy frequency to the 2D data
                   fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
                   
            #Close the files
            h5file1.close()
-           #if self.Bins >= 1:
-           #   h5file2.close()
 
            #Ouput the time in the appropriate units
            eTime = time.time()
@@ -151,3 +172,8 @@ cdef class PySim:
 
     def beamEnergy(self):
         return np.array(self.thisptr.GetBeamEnergyFreq())  
+
+    def fullMapping(self):
+        return np.array(self.thisptr.GetFullMapping())
+
+

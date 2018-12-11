@@ -6,6 +6,7 @@ cdef extern from "Simulation.hh":
    cdef cppclass Simulation:
       Simulation() except +
       
+      void pyOutputOptions(bint, bint, bint)
       void pyInitialise(int, int, vector[double], int)
       vector[int] pyRun(unsigned long long int, int, int, double)
 
@@ -16,3 +17,5 @@ cdef extern from "Simulation.hh":
       vector[double] GetEnergyBins()
 
       vector[int] GetBeamEnergyFreq()
+
+      vector[vector[vector[int]]] GetFullMapping()
