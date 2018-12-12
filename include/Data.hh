@@ -29,7 +29,6 @@ class Data
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
-		std::vector<std::vector<int> > GetEnergyData(){return EnergyMatrix;}
 
 		std::vector<double> GetEnergyBins(){return EnergyBins;}//
 		std::vector<int> GetEnergyFreq(){return EnergyFreq;}//
@@ -60,8 +59,6 @@ class Data
 		std::vector<int> HitDataArray;
 		std::vector<double> EnergyBins;//
 		std::vector<int> EnergyFreq;//
-
-		std::vector<std::vector<int> > EnergyMatrix;
 
 		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
 

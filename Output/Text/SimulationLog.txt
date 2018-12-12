@@ -7,13 +7,13 @@ WORLD SETUP:
 THE DETECTOR SETUP:
 
 Transmission detectors: 
-- Number of detectors: 5 x 5 = 25
+- Number of detectors: 250 x 210 = 52500
 - Individual detector dimensions: 100 320 210 um 
-- Full detector dimensions: 0.1 1.6 1.05 mm 
+- Full detector dimensions: 0.01 8 4.41 cm 
 Fluorescence detector: 
 - Dimensions: 2 0.01 1 mm 
 - Position: 0 1.52 0 mm 
-- Number of bins: 2000
+- Number of bins: 20
 
 - Detectors are assumed to be 100% efficient 
 
@@ -33,8 +33,8 @@ Tracking primary and secondary particles.
 
 META DATA: 
 
-- The seed used: 1544548635
+- The seed used: 1544613737
 - Number of projections being processed: 2
 - Number of photons per image: 1000000
-- Number of particles per detector on average: 40000
+- Number of particles per detector on average: 19
 - Full rotation angle: 3.14159 rad  

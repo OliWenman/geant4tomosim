@@ -89,16 +89,23 @@ void Simulation::Setup()
 
 void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
 {
+	//Tell the PrimaryGeneratorAction class what data to record
 	PGA -> SetBeamData(BE);
 	PGA -> SetFluoreFM(FFM);
 
+	//Tell the Data class what data to record
 	data -> SetFFF(FFF);
 	data -> SetFFM(FFM);
 	data -> SetBE(BE);
 
-	FluorescenceSD* tempPointer = DC -> GetFluoreDetector();
-	tempPointer -> SetFFF(FFF);
-	tempPointer -> SetFFM(FFM);
+	//Tell the FluorescencSD class what data to record
+	FluorescenceSD* fluorescenceDetector = DC -> GetFluoreDetector();
+	
+	//Checks to see if it exists first
+	if(fluorescenceDetector)
+	{	fluorescenceDetector -> SetFFF(FFF);
+		fluorescenceDetector -> SetFFM(FFM);
+	}
 }
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
@@ -387,11 +394,6 @@ void Simulation::RunSimulation()
 std::vector<int> Simulation::GetLastImage()
 {
 	return data -> GetHitData();
-}
-
-std::vector<std::vector<int> > Simulation::GetLastEnergyData()
-{
-	return data -> GetEnergyData();
 }
 
 std::vector<int> Simulation::GetEnergyFreq()

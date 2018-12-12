@@ -33,7 +33,6 @@ class Simulation
 
 		//Python or C++
 		std::vector<int> GetLastImage();
-		std::vector<std::vector<int> > GetLastEnergyData();
 		std::vector<double> GetEnergyBins();//
 		std::vector<int> GetEnergyFreq();//
 

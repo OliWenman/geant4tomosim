@@ -11,7 +11,6 @@ cdef extern from "Simulation.hh":
       vector[int] pyRun(unsigned long long int, int, int, double)
 
       vector[int] GetLastImage()
-      vector[vector[int]] GetLastEnergyData()
 
       vector[int] GetEnergyFreq()
       vector[double] GetEnergyBins()

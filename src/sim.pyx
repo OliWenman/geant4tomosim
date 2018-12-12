@@ -113,8 +113,22 @@ cdef class PySim:
 
               energybeamSet = beamGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
               energyphotonSet = beamGroup.create_dataset(yLabel, shape = (self.Bins,), dtype = 'i4')
-           else:
-              print("Energy data won't be recorded. ")
+           
+           if self.FFM == True:
+
+              print("Recording full mapping fluorescence")
+              #Fluorescence data
+              xLabel = "Energy(keV)"
+              yLabel = "Photons"
+              fluorescenceFMGroup = h5file1.create_group('FluorescenceFM')
+              fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
+
+              fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
+              fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+
+              fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
+              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (self.Bins, self.nDetectorsY, self.nDetectorsZ, NumberOfImages), dtype = 'i4')  # Y axis data
 
            iTime = time.time()
 
@@ -128,16 +142,23 @@ cdef class PySim:
                imageSet[:, :, nImage] = simOutput[:, :]
                
                if nImage == 0:
+                  energyBins = self.lastEnergyBins()
                   if self.FFF == True:
-                     fluorescenceSet[:] = self.lastEnergyBins()
+                     fluorescenceSet[:] = energyBins
+
+                  if self.FFM == True:
+                     fluorescenceFMSet[:] = energyBins
 
                   if self.BE == True:
-                     energybeamSet[:] = self.lastEnergyBins()
+                     energybeamSet[:] = energyBins
                      energyphotonSet[:] = self.beamEnergy()
 
                if self.FFF == True:
                   #Append the energy frequency to the 2D data
                   fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
+
+               if self.FFM == True:
+                  fluorPhotonFMSet[:, :, :, nImage] = self.fullMapping()
                   
            #Close the files
            h5file1.close()
@@ -160,9 +181,6 @@ cdef class PySim:
     #Return the image data from the simulation
     def lastImage(self):
         return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
-
-    def lastEnergyData(self):
-        return self.thisptr.GetLastEnergyData()
 
     def lastEnergyBins(self):
         return np.array(self.thisptr.GetEnergyBins())
