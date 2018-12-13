@@ -59,13 +59,31 @@ void PrimaryGeneratorAction::PrintProgress()
 {
 	++CurrentEvent;
 
-	int Progress = (double(CurrentEvent)/NumberOfEvents)*100;
+	//Works out the percentage of how many events it has completed
+	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100;
 
-	if (Progress != NumberCheck)
-	{
-		G4cout << "\r" "Current run progress: " << Progress << "%" << std::flush;
-		NumberCheck = Progress;
+	//Prints only at the start of the simulation
+	if(CurrentEvent == 1 && CurrentImage == 1)
+	{	G4cout << "\n================================================================================"
+		          "\n                            SIMULATION RUNNING..."
+	                  "\n================================================================================\n\n" << G4endl;
 	}
+
+	//Only prints the percentage if the image number has changed
+	if (ImageProgress != NumberCheck)
+	{	//Calculates the total progress of the simulation
+		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
+		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
+
+		//Prints above one line and over rides it
+		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  "\n\rTotal progress: " << TotalProgress << "\%" << std::flush;
+		NumberCheck = ImageProgress;
+	}
+
+	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
+	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
+		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete"  "\n\rTotal progress: 100\%" << G4endl;
+
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)

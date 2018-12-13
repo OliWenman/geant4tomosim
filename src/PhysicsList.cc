@@ -89,6 +89,7 @@ void PhysicsList::ConstructEM()
 		//Finds the physics processes for each particle 
   	  	G4ParticleDefinition* particle = particleIterator->value();
     		G4ProcessManager* pmanager = particle->GetProcessManager();
+		pmanager -> SetVerboseLevel(0);
     		G4String particleName = particle->GetParticleName();
 		
 		//Adds the physics that were turned on via the commands for the gamma particle

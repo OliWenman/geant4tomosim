@@ -142,7 +142,7 @@ cdef class PySim:
 
                #Append the 2D Data to a 3D data set
                imageSet[:, :, nImage] = simOutput[:, :]
-               print("\nTransmission data saved")
+               #print("\nTransmission data saved")
                
                if nImage == 0:
                   energyBins = self.lastEnergyBins()
@@ -160,7 +160,7 @@ cdef class PySim:
                if self.FFF == True:
                   #Append the energy frequency to the 2D data
                   fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
-                  print("Full field fluorescence data saved")
+                  #print("Full field fluorescence data saved")
 
                if self.FFM == True:
                   fluorPhotonFMSet[:, :, :, nImage] = self.fullMapping()
@@ -179,7 +179,7 @@ cdef class PySim:
            elif self.SimTime < 60*60:
               print message, round(self.SimTime/60, 3), "minutes. "
            else:
-              print message, round(self.SimTime/60*60, 3), "hours. "
+              print message, round(self.SimTime/(60*60), 3), "hours. "
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")

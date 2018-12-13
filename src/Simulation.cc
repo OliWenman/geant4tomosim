@@ -83,6 +83,7 @@ void Simulation::Setup()
 	UImanager -> ApplyCommand("/control/verbose 0");	
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
+	//UImanager -> ApplyCommand("/run/initialize 0");
 
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
@@ -178,7 +179,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			}
 
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
-			PGA -> SetNumberOfEvents(TotalParticles);
+			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
 
 			//Prints the time and date of the local time that the simulation started
 			time_t now = time(0);
@@ -218,22 +219,20 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 				<< "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << " \n";
 
 			outdata.close();
+
+			G4cout << "\n================================================================================"
+		                  "\n                                 Geant4 info"
+	                          "\n================================================================================\n" << G4endl;
 		}
 
 		//Start internal looptimer to update the estimated time for completion
 		G4Timer LoopTimer;
 		LoopTimer.Start();
 
-		PGA -> ResetEvents();
+		PGA -> ResetEvents(Image + 1);
 
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
-		
-		G4cout << "\n================================================================================"
-		       << "\n                                 IMAGE " <<  Image+1
-	               << "\n================================================================================\n" 
-
-		       << "\nProcessing..." << G4endl;
 		
 		//Beam on to start the simulation
 		BeamOn(TotalParticles);
@@ -241,14 +240,14 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager() -> ReinitializeGeometry();
 
-		G4cout << "\nRun finished " << G4endl;
+		//G4cout << "\n\nRun finished " << G4endl;
 
 		if (WriteToTextCmd == true)
 			{data -> WriteToTextFile(Image);}
 
 		unsigned long long int limit = 2147483647;
 
-		//Print the progress of the simulation
+		/*//Print the progress of the simulation
 		int Progress = ((Image+1)*100)/NumberOfImages;
 
 		//Print the progress depending if all the particles have been done
@@ -266,7 +265,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			//If less then 100% complete, output preparing to do another run of the same image
 			if (Progress < 100)
 				{G4cout << "\nStarting next run for the remaining number of photons ";}
-		}
+		}*/
 
 		//Stop loop timer and estimate the remaining time left
 		LoopTimer.Stop();
@@ -274,13 +273,13 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		if (Image == 0)
 			{PGA -> SetBeamCheck(true);}
 
-		CompletionTime(LoopTimer.GetRealElapsed(), Image + 1, NumberOfImages);
+		//CompletionTime(LoopTimer.GetRealElapsed(), Image + 1, NumberOfImages);
 
 		if (Image + 1 == NumberOfImages)
 		{
 			G4cout << "\n================================================================================"
-	                       << "\n                        The simulation is finihsed! "
-	                       << "\n================================================================================" << G4endl;
+	                          "\n                        The simulation is finihsed! "
+	                          "\n================================================================================" << G4endl;
 		}
 	
 		return data -> GetHitData();

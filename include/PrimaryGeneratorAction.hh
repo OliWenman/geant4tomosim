@@ -35,8 +35,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetBeamCheck(bool value){BeamCheck = value;}
 		void SetBeamData(bool value){BeamData = value;}
 		void SetFluoreFM(bool value){FluoreFM = value;}
-		void SetNumberOfEvents(unsigned long long int value){NumberOfEvents = value;}
-		void ResetEvents(){CurrentEvent = 0; NumberCheck = -1;}
+		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; NumberOfRuns = TotalImages;}
+		void ResetEvents(int nImage){CurrentEvent = 0; NumberCheck = -1; CurrentImage = nImage;}
 
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
@@ -44,7 +44,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
 		G4double GetMaxEnergy(){return eMax;}
 
-		std::vector<double> GetBeamEnergyBins(){return BeamEnergyBins;}
 		std::vector<int> GetBeamEnergyFreq(){return BeamEnergyFreq;}
 
   	private:
@@ -67,18 +66,21 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double eMax;
 		G4double Bins;
 
-		std::vector<double> BeamEnergyBins;
+		//std::vector<double> BeamEnergyBins;
 		std::vector<int> BeamEnergyFreq;
 
 		bool BeamCheck;
 		bool BeamData;
 		bool FluoreFM;
 
+		//Function and variables to do with printing the progress
 		void PrintProgress();
 		int CurrentEvent;
-		unsigned long long int NumberOfEvents;
-
 		int NumberCheck;
+		int CurrentImage;
+		int NumberOfRuns;
+		int TotalProgress;
+		unsigned long long int NumberOfEvents;
 };
 
 #endif
