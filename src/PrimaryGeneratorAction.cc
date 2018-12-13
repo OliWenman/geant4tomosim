@@ -45,8 +45,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 
 	ParticleGun -> SetParticleDefinition(gamma);
   	//ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
-
-	//SetDefaultKinematic();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -57,22 +55,37 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	//G4RunManager will delete gamma
 }
 
+void PrimaryGeneratorAction::PrintProgress()
+{
+	++CurrentEvent;
+
+	int Progress = (double(CurrentEvent)/NumberOfEvents)*100;
+
+	if (Progress != NumberCheck)
+	{
+		G4cout << "\r" "Current run progress: " << Progress << "%" << std::flush;
+		NumberCheck = Progress;
+	}
+}
+
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
 	//Generate the particle in the event
   	ParticleGun -> GeneratePrimaryVertex(anEvent);
-
-	data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+	
+	if (FluoreFM == true)
+		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
 
 	if (BeamCheck == false && BeamData == true)
 	{	//Create a graph of the beam energy, only for the first image
 		int bins = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins));
 		if (bins >= Bins)
-		{
 			bins = Bins - 1;
-		}	
+
 		++BeamEnergyFreq[bins];
 	}
+
+	PrintProgress();
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)

@@ -81,10 +81,12 @@ cdef class PySim:
            #imageGroup.attrs['NX_class'] = 'NXdata'
            imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
 
+           print("\nThe simulation will record the following data: ")
+           print("- Transmission")
            #If the energy data is to be recored, setup the h5file
            if self.FFF == True:
 
-              print("Recording full field fluorescence data")     
+              print("- Full field fluorescence")     
               #Fluorescence data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
@@ -98,9 +100,25 @@ cdef class PySim:
               fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
               fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = 'i4')  # Y axis data
 
+           if self.FFM == True:
+
+              print("- Full mapping fluorescence")
+              #Fluorescence data
+              xLabel = "Energy(keV)"
+              yLabel = "Photons"
+              fluorescenceFMGroup = h5file1.create_group('FluorescenceFM')
+              fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
+
+              fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
+              fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+
+              fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
+              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (self.Bins, self.nDetectorsY, self.nDetectorsZ, NumberOfImages), dtype = 'i4')  # Y axis data           
+
            if self.BE == True:
 
-              print("Recording beam energy data")
+              print("- Beam energy")
               #Beam energy data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
@@ -113,22 +131,6 @@ cdef class PySim:
 
               energybeamSet = beamGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
               energyphotonSet = beamGroup.create_dataset(yLabel, shape = (self.Bins,), dtype = 'i4')
-           
-           if self.FFM == True:
-
-              print("Recording full mapping fluorescence")
-              #Fluorescence data
-              xLabel = "Energy(keV)"
-              yLabel = "Photons"
-              fluorescenceFMGroup = h5file1.create_group('FluorescenceFM')
-              fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
-
-              fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
-              fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
-
-              fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
-              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (self.Bins, self.nDetectorsY, self.nDetectorsZ, NumberOfImages), dtype = 'i4')  # Y axis data
 
            iTime = time.time()
 
@@ -140,6 +142,7 @@ cdef class PySim:
 
                #Append the 2D Data to a 3D data set
                imageSet[:, :, nImage] = simOutput[:, :]
+               print("\nTransmission data saved")
                
                if nImage == 0:
                   energyBins = self.lastEnergyBins()
@@ -152,13 +155,16 @@ cdef class PySim:
                   if self.BE == True:
                      energybeamSet[:] = energyBins
                      energyphotonSet[:] = self.beamEnergy()
+                     print("Beam energy data saved")
 
                if self.FFF == True:
                   #Append the energy frequency to the 2D data
                   fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
+                  print("Full field fluorescence data saved")
 
                if self.FFM == True:
                   fluorPhotonFMSet[:, :, :, nImage] = self.fullMapping()
+                  print("Full mapping fluorescence data saved")
                   
            #Close the files
            h5file1.close()

@@ -35,7 +35,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetBeamCheck(bool value){BeamCheck = value;}
 		void SetBeamData(bool value){BeamData = value;}
 		void SetFluoreFM(bool value){FluoreFM = value;}
-			
+		void SetNumberOfEvents(unsigned long long int value){NumberOfEvents = value;}
+		void ResetEvents(){CurrentEvent = 0; NumberCheck = -1;}
+
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
@@ -71,6 +73,12 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		bool BeamCheck;
 		bool BeamData;
 		bool FluoreFM;
+
+		void PrintProgress();
+		int CurrentEvent;
+		unsigned long long int NumberOfEvents;
+
+		int NumberCheck;
 };
 
 #endif

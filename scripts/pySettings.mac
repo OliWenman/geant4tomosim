@@ -2,9 +2,9 @@
 
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true	
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 
 #Data Settings
 /data/Seed 0
@@ -38,6 +38,6 @@
 /gps/pos/rot2 0 1 0 
 
 /gps/ene/type Gauss
-/gps/ene/mono 30 keV
+/gps/ene/mono 60 keV
 /gps/ene/sigma 10 keV
 

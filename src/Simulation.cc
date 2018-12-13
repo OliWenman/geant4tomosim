@@ -178,6 +178,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			}
 
 			DC -> RelayToTC(NumberOfImages, TotalAngle);
+			PGA -> SetNumberOfEvents(TotalParticles);
 
 			//Prints the time and date of the local time that the simulation started
 			time_t now = time(0);
@@ -223,6 +224,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		G4Timer LoopTimer;
 		LoopTimer.Start();
 
+		PGA -> ResetEvents();
+
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
 		
@@ -252,17 +255,17 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		if(limit - TotalParticles  > 0)
 		{	
 			//Outputs how much of the simulation is complete
-			G4cout << "\n" << Progress << "%\ complete " << G4endl;
+			G4cout << "\nOverall progress: " << Progress << "%\ "<< G4endl;
 		}
 		else
 		{	
 			//Equation to work out how much of the simulation is complete if it has to do another run for the remaining number of photons
 			Progress = Progress * (TotalParticles - limit*(NumberOfImages - Image+1)/TotalParticles);
-			G4cout << "\n" << Progress << "%\ complete " << G4endl;
+			G4cout << "\nOverall progress: " << Progress << "%\ complete ";
 
 			//If less then 100% complete, output preparing to do another run of the same image
 			if (Progress < 100)
-				{G4cout << "Starting next run for the remaining number of photons " << G4endl;}
+				{G4cout << "\nStarting next run for the remaining number of photons ";}
 		}
 
 		//Stop loop timer and estimate the remaining time left

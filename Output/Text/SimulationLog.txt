@@ -8,12 +8,12 @@ THE DETECTOR SETUP:
 
 Transmission detectors: 
 - Number of detectors: 250 x 210 = 52500
-- Individual detector dimensions: 100 320 210 um 
-- Full detector dimensions: 0.01 8 4.41 cm 
+- Individual detector dimensions: 1 5 5 um 
+- Full detector dimensions: 0.001 1.25 1.05 mm 
 Fluorescence detector: 
 - Dimensions: 2 0.01 1 mm 
 - Position: 0 1.52 0 mm 
-- Number of bins: 20
+- Number of bins: 1000
 
 - Detectors are assumed to be 100% efficient 
 
@@ -26,15 +26,12 @@ THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
 
 LivermorePhysics:
 - Photoelectric effect
-- Compton scattering
-- Rayleigh scattering
-- Fluorescence
-Tracking primary and secondary particles.
+Secondary particles will be killed to help save computational time.
 
 META DATA: 
 
-- The seed used: 1544613737
-- Number of projections being processed: 2
-- Number of photons per image: 1000000
-- Number of particles per detector on average: 19
+- The seed used: 1544694189
+- Number of projections being processed: 1
+- Number of photons per image: 10000000
+- Number of particles per detector on average: 190
 - Full rotation angle: 3.14159 rad  
