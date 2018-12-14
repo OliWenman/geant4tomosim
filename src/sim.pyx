@@ -75,13 +75,13 @@ cdef class PySim:
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/build/Output/HDF5/"
            FullPath = WorkingDirectory + BuildDirectory
-           print "The data will be saved in:", FullPath
+           print "\nThe data will be saved in:", FullPath
 
            imageGroup = h5file1.create_group('Projections')
            #imageGroup.attrs['NX_class'] = 'NXdata'
            imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
 
-           print("\nThe simulation will record the following data: ")
+           print("The simulation will record the following data: ")
            print("- Transmission")
            #If the energy data is to be recored, setup the h5file
            if self.FFF == True:

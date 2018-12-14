@@ -206,7 +206,8 @@ void PhysicsList::SetCuts()
 
 void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 {
-	G4cout << "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
+	G4cout << "\n--------------------------------------------------------------------"
+		  "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
 	       << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++)

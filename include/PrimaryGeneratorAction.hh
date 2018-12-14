@@ -13,7 +13,8 @@ class PrimaryGeneratorActionMessenger;
 class G4SPSPosDistribution;
 class G4SPSAngDistribution;
 class G4SPSEneDistribution;
-
+class G4Timer;
+#include "G4Timer.hh"
 
 class G4GeneralParticleSource;
 //It defines a single particle which hits the detectors perpendicular to the input face
@@ -55,6 +56,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		Data* data;
 
+		G4Timer Timer;
+
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;
 		
@@ -76,6 +79,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		//Function and variables to do with printing the progress
 		void PrintProgress();
 		void ProgressBar(int Percent);
+		void EstimatedTime(int Percent);
+		void TimeConversion(double time);
 		int CurrentEvent;
 		int ImageProgressCheck;
 		int CurrentImage;
@@ -83,6 +88,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		int TotalProgress;
 		int TotalProgressCheck;
 		unsigned long long int NumberOfEvents;
+		double RemainingETSeconds;
 };
 
 #endif

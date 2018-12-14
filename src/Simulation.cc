@@ -83,7 +83,6 @@ void Simulation::Setup()
 	UImanager -> ApplyCommand("/control/verbose 0");	
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
-	//UImanager -> ApplyCommand("/run/initialize 0");
 
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
@@ -150,7 +149,8 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	PGA -> ReadOutInfo(SaveLogPath);
 	PL -> ReadOutInfo(SaveLogPath);
 
-        G4cout << "\nCommands successfully added\n"
+        G4cout << "\n--------------------------------------------------------------------"
+		  "\nCommands successfully added\n"
 
 	       << "\nSimulation Ready!" << G4endl;
 
@@ -186,7 +186,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			//Convert now to tm struct for local timezone
 			tm* localtm = localtime(&now);
 
-			G4cout << "\nStarting simulation! \n\n"
+			G4cout << "\nStarting simulation... \n\n"
 
 			       << asctime(localtm)
 
@@ -200,7 +200,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 			//Creation of the writing to data file stream
 			std::fstream outdata; 
-
+	
 			//Open the file within the path set
 			outdata.open(SaveLogPath, std::fstream::app); 
    	
@@ -225,10 +225,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 	                          "\n================================================================================\n" << G4endl;
 		}
 
-		//Start internal looptimer to update the estimated time for completion
-		G4Timer LoopTimer;
-		LoopTimer.Start();
-
 		PGA -> ResetEvents(Image + 1);
 
 		//Creates the arrays for the data, wipes them after each image
@@ -244,31 +240,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 		if (WriteToTextCmd == true)
 			{data -> WriteToTextFile(Image);}
-
-		unsigned long long int limit = 2147483647;
-
-		/*//Print the progress of the simulation
-		int Progress = ((Image+1)*100)/NumberOfImages;
-
-		//Print the progress depending if all the particles have been done
-		if(limit - TotalParticles  > 0)
-		{	
-			//Outputs how much of the simulation is complete
-			G4cout << "\nOverall progress: " << Progress << "%\ "<< G4endl;
-		}
-		else
-		{	
-			//Equation to work out how much of the simulation is complete if it has to do another run for the remaining number of photons
-			Progress = Progress * (TotalParticles - limit*(NumberOfImages - Image+1)/TotalParticles);
-			G4cout << "\nOverall progress: " << Progress << "%\ complete ";
-
-			//If less then 100% complete, output preparing to do another run of the same image
-			if (Progress < 100)
-				{G4cout << "\nStarting next run for the remaining number of photons ";}
-		}*/
-
-		//Stop loop timer and estimate the remaining time left
-		LoopTimer.Stop();
 
 		if (Image == 0)
 			{PGA -> SetBeamCheck(true);}

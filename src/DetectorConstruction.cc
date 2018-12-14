@@ -358,21 +358,22 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 
 	G4ThreeVector FullDetDimensions = G4ThreeVector(DetectorSize_Cmd.x()*1, DetectorSize_Cmd.y()*NoDetectorsY_Cmd, DetectorSize_Cmd.z()*NoDetectorsZ_Cmd);
 
-	G4cout << "\nWORLD SETUP: \n"
-	       << "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
+	G4cout << "\n--------------------------------------------------------------------"
+		  "\nWORLD SETUP: \n"
+	          "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
 	       << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
 	       << "\nTHE DETECTOR SETUP: \n"
 
 	       << "\nTransmission detectors: "
-	       << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
+	          "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
 
 	if (FluorescenceDet == true)
 	{
 		G4cout << "\nFluorescence detector: "
-		       << "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
+		          "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
 		       << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
 		       << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
 	}
@@ -398,20 +399,20 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
    	}
 
 	outdata << "\nWORLD SETUP: \n"
-	        << "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
+	           "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
 	        << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
 	        << "\nTHE DETECTOR SETUP:\n"
 
-		<< "\nTransmission detectors: "
-	        << "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
+		   "\nTransmission detectors: "
+	           "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	        << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 		<< "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
 
 	if (FluorescenceDet == true)
 	{
 		outdata << "\nFluorescence detector: "
-		        << "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
+		           "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
 		        << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
 		        << "\n- Number of bins: " << data -> GetNoBins() << std::endl;
 	}

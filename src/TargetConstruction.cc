@@ -372,7 +372,8 @@ void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 
 void TargetConstruction::ReadOutInfo()
 {
-	G4cout << "\nTHE GEOMETRY SETUP: " << G4endl;
+	G4cout << "\n--------------------------------------------------------------------"
+		  "\nTHE GEOMETRY SETUP: " << G4endl;
  
 	//Loop through the number of objects there are to be created
 	for(G4int n = 0; n < TypeOfObjects.size(); n++)
@@ -381,7 +382,7 @@ void TargetConstruction::ReadOutInfo()
 		if(TypeOfObjects[n] == "Cube")
 		{
 			G4cout << "\nCube" << N << ": " 
-			       << "\n  - Dimensions: x = " << G4BestUnit(Dimensions[n][0], "Length") 
+			          "\n  - Dimensions: x = " << G4BestUnit(Dimensions[n][0], "Length") 
 					       << ", y = " << G4BestUnit(Dimensions[n][1], "Length")
 					       << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
 
@@ -391,7 +392,7 @@ void TargetConstruction::ReadOutInfo()
 		else if(TypeOfObjects[n] == "HollowCube")
 		{	
 			G4cout << "\nHollowCube" << N << ": "
-			       << "\n  - Dimensions: outer cube: x = " << G4BestUnit(Dimensions[n][0], "Length") 
+			          "\n  - Dimensions: outer cube: x = " << G4BestUnit(Dimensions[n][0], "Length") 
 							   << ", y = " << G4BestUnit(Dimensions[n][1], "Length") 
 							   << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
 			       << "\n                inner cube: x = " << G4BestUnit(Dimensions[n][3], "Length") 

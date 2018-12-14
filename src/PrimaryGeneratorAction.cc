@@ -28,7 +28,9 @@
 #include "G4SPSAngDistribution.hh"
 #include "G4SPSEneDistribution.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject)
+#include "G4Timer.hh"
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), Timer()
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
@@ -45,6 +47,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 
 	ParticleGun -> SetParticleDefinition(gamma);
   	//ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
+
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -60,16 +63,48 @@ void PrimaryGeneratorAction::ProgressBar(int Percent)
 	int intervals = 50;
 	int dProgress = 100/intervals;
 
-
-	G4cout << "  [";
+	G4cout << " (";
 	for (int bar = -1; bar < intervals ; ++bar)
 	{
 		if (bar*dProgress < Percent)
-			G4cout << ">";
+			G4cout << "|";
 		else
 			G4cout << " ";
 	}
-	G4cout << "] ";
+	G4cout << ") ";
+}
+
+void PrimaryGeneratorAction::EstimatedTime(int Percent)
+{
+	int interval = 2;
+
+	if (Percent % interval == 0 && Percent != 0)
+	{
+		Timer.Stop();	
+
+		RemainingETSeconds = (Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed();
+	
+		TimeConversion(RemainingETSeconds);
+	}
+	else 
+	{
+		if (Percent < interval)
+			G4cout << "\rEstimated time remaining: calculating... ";
+	}
+}
+
+void PrimaryGeneratorAction::TimeConversion(double time)
+{
+	//Prints out the sustiable units for the estimated time 
+	if (time > 60)
+	{
+		if(time > 60*60)
+			{G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";}
+		else
+			{G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";}
+	}
+	else
+		{G4cout << "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}
 }
 
 void PrimaryGeneratorAction::PrintProgress()
@@ -81,33 +116,44 @@ void PrimaryGeneratorAction::PrintProgress()
 
 	//Prints only at the start of the simulation
 	if(CurrentEvent == 1 && CurrentImage == 1)
-	{	G4cout << "\n================================================================================"
+	{	Timer.Start();	
+		
+		G4cout << "\n================================================================================"
 		          "\n                            SIMULATION RUNNING..."
-	                  "\n================================================================================\n\n\n" 
+	                  "\n================================================================================\n\n\n\n" 
 
-			  "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
-                                    "\033[K" "\n\rTotal progress: " << TotalProgress << "\%";
+			  "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
+                                    "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
+			  EstimatedTime(0);
 	}
 
 	//Only prints the percentage if the image number has changed
 	if (ImageProgress != ImageProgressCheck)
-	{	//Calculates the total progress of the simulation
+	{	
+		//Calculates the total progress of the simulation
 		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
 		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
+		
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete\n";
-		if(TotalProgress != TotalProgressCheck)
-			{G4cout << "\033[K" "\rTotal progress: " << TotalProgress << "\%"; ProgressBar(TotalProgress);}
+		G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << std::setw(3) << ImageProgress << "%\ complete\n";
 
-		//ProgressBar(TotalProgress);
+		if(TotalProgress != TotalProgressCheck)
+			{G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
+			EstimatedTime(TotalProgress);}
+
 		G4cout << std::flush;
 	}
 
+	
+
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete"  "\n\rTotal progress: 100\%" << G4endl;
+		{G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete\n"  
+                                              "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
+		EstimatedTime(100);
+		Timer.Stop();}
 
 }
 
@@ -135,8 +181,9 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 {
 	G4ThreeVector BeamDimensions = G4ThreeVector(0, BeamWidthY_Cmd, BeamHeightZ_Cmd);
 
-	G4cout << "\nBEAM INFORMATION: \n"
-	       << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
+	G4cout << "\n--------------------------------------------------------------------"
+		  "\nBEAM INFORMATION: \n"
+	          "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
 	       << "\n- Beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
 
 	//Creation of the writing to data file stream
