@@ -36,7 +36,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetBeamData(bool value){BeamData = value;}
 		void SetFluoreFM(bool value){FluoreFM = value;}
 		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; NumberOfRuns = TotalImages;}
-		void ResetEvents(int nImage){CurrentEvent = 0; NumberCheck = -1; CurrentImage = nImage;}
+		void ResetEvents(int nImage){CurrentEvent = 0; ImageProgressCheck = TotalProgressCheck = -1; CurrentImage = nImage;}
 
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
@@ -75,11 +75,13 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		//Function and variables to do with printing the progress
 		void PrintProgress();
+		void ProgressBar(int Percent);
 		int CurrentEvent;
-		int NumberCheck;
+		int ImageProgressCheck;
 		int CurrentImage;
 		int NumberOfRuns;
 		int TotalProgress;
+		int TotalProgressCheck;
 		unsigned long long int NumberOfEvents;
 };
 

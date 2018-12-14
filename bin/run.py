@@ -14,9 +14,9 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*mm
 
 nBins = 1000
-NumberOfImages = 3
+NumberOfImages = 10
 TotalRotation = 180*deg
-nParticles = 1000000
+nParticles = 20000000
 
 fluoreFF = True
 fluoreFM = False

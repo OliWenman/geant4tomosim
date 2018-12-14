@@ -26,15 +26,12 @@ THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
 
 LivermorePhysics:
 - Photoelectric effect
-- Compton scattering
-- Rayleigh scattering
-- Fluorescence
-Tracking primary and secondary particles.
+Secondary particles will be killed to help save computational time.
 
 META DATA: 
 
-- The seed used: 1544721051
-- Number of projections being processed: 3
-- Number of photons per image: 1000000
-- Number of particles per detector on average: 19
+- The seed used: 1544782928
+- Number of projections being processed: 10
+- Number of photons per image: 20000000
+- Number of particles per detector on average: 380
 - Full rotation angle: 3.14159 rad  

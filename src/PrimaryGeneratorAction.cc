@@ -55,6 +55,23 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	//G4RunManager will delete gamma
 }
 
+void PrimaryGeneratorAction::ProgressBar(int Percent)
+{
+	int intervals = 50;
+	int dProgress = 100/intervals;
+
+
+	G4cout << "  [";
+	for (int bar = -1; bar < intervals ; ++bar)
+	{
+		if (bar*dProgress < Percent)
+			G4cout << ">";
+		else
+			G4cout << " ";
+	}
+	G4cout << "] ";
+}
+
 void PrimaryGeneratorAction::PrintProgress()
 {
 	++CurrentEvent;
@@ -66,18 +83,26 @@ void PrimaryGeneratorAction::PrintProgress()
 	if(CurrentEvent == 1 && CurrentImage == 1)
 	{	G4cout << "\n================================================================================"
 		          "\n                            SIMULATION RUNNING..."
-	                  "\n================================================================================\n\n" << G4endl;
+	                  "\n================================================================================\n\n\n" 
+
+			  "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
+                                    "\033[K" "\n\rTotal progress: " << TotalProgress << "\%";
 	}
 
 	//Only prints the percentage if the image number has changed
-	if (ImageProgress != NumberCheck)
+	if (ImageProgress != ImageProgressCheck)
 	{	//Calculates the total progress of the simulation
 		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
 		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
+		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  "\n\rTotal progress: " << TotalProgress << "\%" << std::flush;
-		NumberCheck = ImageProgress;
+		G4cout << "\033[1A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete\n";
+		if(TotalProgress != TotalProgressCheck)
+			{G4cout << "\033[K" "\rTotal progress: " << TotalProgress << "\%"; ProgressBar(TotalProgress);}
+
+		//ProgressBar(TotalProgress);
+		G4cout << std::flush;
 	}
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
