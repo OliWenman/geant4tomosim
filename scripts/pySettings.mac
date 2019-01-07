@@ -39,5 +39,5 @@
 
 /gps/ene/type Gauss
 /gps/ene/mono 60 keV
-/gps/ene/sigma 10 keV
+/gps/ene/sigma 5 keV
 

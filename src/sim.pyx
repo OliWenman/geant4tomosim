@@ -70,7 +70,7 @@ cdef class PySim:
            Path = './../build/Output/HDF5/'
 
            #Create a h5 file to view the data after the simulation is complete
-           h5file1 = h5py.File(Path + 'Projections.h5', 'w')
+           h5file1 = h5py.File(Path + 'SimulationData.h5', 'w')
 
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/build/Output/HDF5/"
@@ -155,7 +155,6 @@ cdef class PySim:
                   if self.BE == True:
                      energybeamSet[:] = energyBins
                      energyphotonSet[:] = self.beamEnergy()
-                     print("Beam energy data saved")
 
                if self.FFF == True:
                   #Append the energy frequency to the 2D data
@@ -164,7 +163,6 @@ cdef class PySim:
 
                if self.FFM == True:
                   fluorPhotonFMSet[:, :, :, nImage] = self.fullMapping()
-                  print("Full mapping fluorescence data saved")
                   
            #Close the files
            h5file1.close()

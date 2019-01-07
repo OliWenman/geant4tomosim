@@ -76,19 +76,24 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		bool BeamData;
 		bool FluoreFM;
 
-		//Function and variables to do with printing the progress
+		//Functions to do with the progress of the simulation
 		void PrintProgress();
 		void ProgressBar(int Percent);
 		void EstimatedTime(int Percent);
-		void TimeConversion(double time);
+		void PrintTime(double time);
+
 		int CurrentEvent;
-		int ImageProgressCheck;
+		unsigned long long int NumberOfEvents;
+		
 		int CurrentImage;
 		int NumberOfRuns;
+		int ImageProgressCheck;
+
 		int TotalProgress;
 		int TotalProgressCheck;
-		unsigned long long int NumberOfEvents;
-		double RemainingETSeconds;
+
+		double remainingTime;
+		bool timeCheck;
 };
 
 #endif
