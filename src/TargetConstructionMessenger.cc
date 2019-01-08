@@ -23,15 +23,15 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 
 	//Command to set the dimensions of a sphere
 	SphereDimensions_Cmd = new G4UIcmdWithAString("/Target/Sphere/Dimensions", this);
-	SphereDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, Inner radius, Outer radius, Starting Phi angle, Delta Phi angle, Starting Theta angle , Delta Theta angle");
+	SphereDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, inner radius, outer radius, unit, starting phi angle, delta phi angle, starting theta angle, delta theta angle and unit. ");
 
 	//Command to set the dimensions of a sphere
 	CylinderDimensions_Cmd = new G4UIcmdWithAString("/Target/Cylinder/Dimensions", this);
-	CylinderDimensions_Cmd -> SetGuidance("Set the dimensions of a cylinder that you would like, Inner radius, Outer radius, Length, Delta Phi angle and ending Phi angle");
+	CylinderDimensions_Cmd -> SetGuidance("Set the dimensions of a cylinder that you would like, inner radius, outer radius, length, delta phi angle and ending phi angle");
 
 	//Command to set the dimensions of a hollow cube
 	HollowCubeDimensions_Cmd = new G4UIcmdWithAString("/Target/HollowCube/Dimensions", this);
-	HollowCubeDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, outer x, y, z , unit, inner x, y, z unit");
+	HollowCubeDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, outer x, y, z, unit, inner x, y, z unit");
 
 	//Command to set the dimensions of a cube
 	CubeDimensions_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/Cube/Dimensions", this);
@@ -50,7 +50,7 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 
 	//Command to set the dimensions of subtraction solid
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
-	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape");
+	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape.\nName of solid1, name of solid 2, position vector within solid1 and unit, rotation vector of solid2 inside solid 1 and unit");
 	
 	//Command to set the position of an object
 	TargetPosition_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/Position", this);
@@ -100,14 +100,14 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	Centre_Cmd -> SetDefaultValue(G4ThreeVector(0.0*m, 0.0*m, 0.0*m));
 
 	//Create a dictionary for units
-	mapOfUnits.insert(std::make_pair("m",m));
-	mapOfUnits.insert(std::make_pair("cm",cm));
-	mapOfUnits.insert(std::make_pair("mm",mm));
-	mapOfUnits.insert(std::make_pair("um",um));
-	mapOfUnits.insert(std::make_pair("nm",nm));
-
-	mapOfUnits.insert(std::make_pair("rad",rad));
-	mapOfUnits.insert(std::make_pair("deg",deg));
+	MapLengthUnits.insert(std::make_pair("m",m));
+	MapLengthUnits.insert(std::make_pair("cm",cm));
+	MapLengthUnits.insert(std::make_pair("mm",mm));
+	MapLengthUnits.insert(std::make_pair("um",um));
+	MapLengthUnits.insert(std::make_pair("nm",nm));
+	
+	MapAngleUnits.insert(std::make_pair("rad", rad));
+	MapAngleUnits.insert(std::make_pair("deg", deg));
 }
 
 TargetConstructionMessenger::~TargetConstructionMessenger()
@@ -134,6 +134,66 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete Centre_Cmd;
 }
 
+void TargetConstructionMessenger::CheckUnits(G4UIcommand* command, G4String newValue, G4String Unit, G4String TypeOfUnit)
+{
+    //Function to check if the units exist. If it doesn't, print an error and stop program
+    if(TypeOfUnit == "Length" && MapLengthUnits.count(Unit) == 0)
+    {
+        G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid length unit!\nGuidance: "
+               << command -> GetGuidanceLine(0) << "\nAvailable units: ";
+        
+        for (std::map<std::string, double>::iterator it = MapLengthUnits.begin(); it != MapLengthUnits.end(); ++it)
+            G4cout << it -> first << " ";
+        G4cout << G4endl;
+        
+        exit(0);
+        
+    }
+    else if (TypeOfUnit == "Angle" && MapAngleUnits.count(Unit) == 0)
+    {
+        G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid angle unit!\nGuidance: "
+               << command -> GetGuidanceLine(0) << "\nAvailable units: ";
+        
+        for (std::map<std::string, double>::iterator it = MapAngleUnits.begin(); it != MapAngleUnits.end(); ++it)
+            G4cout << it -> first << " ";
+        G4cout << G4endl;
+        
+        exit(0);
+    }
+}
+
+void TargetConstructionMessenger:: CheckUnits(G4String command, G4String commandInput, G4String Unit, G4String TypeOfUnit)
+{
+    //Function to check if the units exist. If it doesn't, print an error and stop program
+    if(TypeOfUnit == "Length" && MapLengthUnits.count(Unit) == 0)
+    {
+        G4String Guidance = "Choose two solids to be subtracted to create a new shape.\nName of solid1, name of solid 2, position vector within solid1 and unit, rotation vector of solid2 inside solid 1 and unit";
+    
+        G4cout << "\nERROR: " << command << " " << commandInput << " -> Invalid length unit!\nGuidance: "
+               << Guidance << "\nAvailable units: ";
+        
+        for (std::map<std::string, double>::iterator it = MapLengthUnits.begin(); it != MapLengthUnits.end(); ++it)
+            G4cout << it -> first << " ";
+        G4cout << G4endl;
+        
+        exit(0);
+        
+    }
+    else if (TypeOfUnit == "Angle" && MapAngleUnits.count(Unit) == 0)
+    {
+        G4String Guidance = "Choose two solids to be subtracted to create a new shape.\nName of solid1, name of solid 2, position vector within solid1 and unit, rotation vector of solid2 inside solid 1 and unit";
+    
+        G4cout << "\nERROR: " << command << " " << commandInput << " -> Invalid angle unit!\nGuidance: "
+               << Guidance << "\nAvailable units: ";
+        
+        for (std::map<std::string, double>::iterator it = MapAngleUnits.begin(); it != MapAngleUnits.end(); ++it)
+            G4cout << it -> first << " ";
+        G4cout << G4endl;
+        
+        exit(0);
+    }
+}
+
 void TargetConstructionMessenger::AppendVectors(G4String ObjectName, std::vector<double> Array)
 {
 	//Append to all needed vectors to make them the same length. Fill as empty until filled with a variable
@@ -158,9 +218,10 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double innerRadius = std::stod(next());
 		G4double outerRadius = std::stod(next());
 		G4String RadiusUnit = next();
+		CheckUnits(command, newValue, RadiusUnit, "Length");
 
-		innerRadius = innerRadius*mapOfUnits[RadiusUnit];
-		outerRadius = outerRadius*mapOfUnits[RadiusUnit];
+		innerRadius = innerRadius*MapLengthUnits[RadiusUnit];
+		outerRadius = outerRadius*MapLengthUnits[RadiusUnit];
 
 		//Define each variable with in the string for angle
 		G4double StartingPhi = std::stod(next());
@@ -168,12 +229,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double StartingTheta = std::stod(next());
 		G4double EndTheta = std::stod(next());	
 		G4String AngleUnit = next();
+    	CheckUnits(command, newValue, AngleUnit, "Angle");
 
 		//Multiply the values by the correct unit
-		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
-		EndPhi = EndPhi*mapOfUnits[AngleUnit];
-		StartingTheta = StartingTheta*mapOfUnits[AngleUnit];
-		EndTheta = EndTheta*mapOfUnits[AngleUnit];
+		StartingPhi = StartingPhi*MapAngleUnits[AngleUnit];
+		EndPhi = EndPhi*MapAngleUnits[AngleUnit];
+		StartingTheta = StartingTheta*MapAngleUnits[AngleUnit];
+		EndTheta = EndTheta*MapAngleUnits[AngleUnit];
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
@@ -191,20 +253,22 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double outerRadius = std::stod(next());
 		G4double length = std::stod(next());
 		G4String RadiusUnit = next();
+		CheckUnits(command, newValue, RadiusUnit, "Length");
 
 		//Multiply the values by the correct unit
-		innerRadius = innerRadius*mapOfUnits[RadiusUnit];
-		outerRadius = outerRadius*mapOfUnits[RadiusUnit];
-		length = length*mapOfUnits[RadiusUnit];
+		innerRadius = innerRadius*MapLengthUnits[RadiusUnit];
+		outerRadius = outerRadius*MapLengthUnits[RadiusUnit];
+		length = length*MapLengthUnits[RadiusUnit];
 		
 		//Define each variable with in the string for angle
 		G4double StartingPhi = std::stod(next());
 		G4double EndPhi = std::stod(next());
 		G4String AngleUnit = next();
+		CheckUnits(command, newValue, AngleUnit, "Angle");
 
 		//Multiply the values by the correct unit
-		StartingPhi = StartingPhi*mapOfUnits[AngleUnit];
-		EndPhi = EndPhi*mapOfUnits[AngleUnit];
+		StartingPhi = StartingPhi*MapAngleUnits[AngleUnit];
+		EndPhi = EndPhi*MapAngleUnits[AngleUnit];
 		
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
@@ -227,15 +291,16 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double innerZ = std::stod(next());
 
 		G4String Unit = next();
+		CheckUnits(command, newValue, Unit, "Length");
 
 		//Multiply the values by the correct unit
-		outerX = outerX*mapOfUnits[Unit];
-		outerY = outerY*mapOfUnits[Unit];
-		outerZ = outerZ*mapOfUnits[Unit];
+		outerX = outerX*MapLengthUnits[Unit];
+		outerY = outerY*MapLengthUnits[Unit];
+		outerZ = outerZ*MapLengthUnits[Unit];
 
-		innerX = innerX*mapOfUnits[Unit];
-		innerY = innerY*mapOfUnits[Unit];
-		innerZ = innerZ*mapOfUnits[Unit];
+		innerX = innerX*MapLengthUnits[Unit];
+		innerY = innerY*MapLengthUnits[Unit];
+		innerZ = innerZ*MapLengthUnits[Unit];
 
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {outerX, outerY, outerZ, innerX, innerY, innerZ};
@@ -262,12 +327,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4double dy2 = std::stod(next());
 		G4double dz  = std::stod(next());
 		G4String Unit = next();
+		CheckUnits(command, newValue, Unit, "Length");
 
-		dx1 = dx1*mapOfUnits[Unit];
-		dx2 = dx2*mapOfUnits[Unit];
-		dy1 = dy1*mapOfUnits[Unit];
-		dy2 = dy2*mapOfUnits[Unit];
-		dz  = dz*mapOfUnits[Unit];
+		dx1 = dx1*MapLengthUnits[Unit];
+		dx2 = dx2*MapLengthUnits[Unit];
+		dy1 = dy1*MapLengthUnits[Unit];
+		dy2 = dy2*MapLengthUnits[Unit];
+		dz  = dz*MapLengthUnits[Unit];
 		
 		std::vector<G4double> Array = {dx1, dx2, dy1, dy2, dz};
 
@@ -278,17 +344,18 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4Tokenizer next(newValue);
 
 		G4double pxSemiAxis = std::stod(next());
-                G4double pySemiAxis = std::stod(next());
-                G4double pzSemiAxis = std::stod(next());
-                G4double pzBottomCut = std::stod(next());
-                G4double pzTopCut = std::stod(next());
+        G4double pySemiAxis = std::stod(next());
+        G4double pzSemiAxis = std::stod(next());
+        G4double pzBottomCut = std::stod(next());
+        G4double pzTopCut = std::stod(next());
 		G4String Unit = next();
+		CheckUnits(command, newValue, Unit, "Length");
 
-		pxSemiAxis = pxSemiAxis * mapOfUnits[Unit];
-		pySemiAxis = pySemiAxis * mapOfUnits[Unit];
-		pzSemiAxis = pzSemiAxis * mapOfUnits[Unit];
-		pzBottomCut = pzBottomCut * mapOfUnits[Unit];
-		pzTopCut = pzTopCut * mapOfUnits[Unit];
+		pxSemiAxis = pxSemiAxis * MapLengthUnits[Unit];
+		pySemiAxis = pySemiAxis * MapLengthUnits[Unit];
+		pzSemiAxis = pzSemiAxis * MapLengthUnits[Unit];
+		pzBottomCut = pzBottomCut * MapLengthUnits[Unit];
+		pzTopCut = pzTopCut * MapLengthUnits[Unit];
 
 		std::vector<G4double> Array = {pxSemiAxis, pySemiAxis, pzSemiAxis, pzBottomCut, pzTopCut};
 	

@@ -24,6 +24,7 @@ beamEnergy = False
 
 Sim = sim.PySim()
 
+#Sim.dataPaths("sdfjkjksdfa", "ajsdb", "ksdbjsd")
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 

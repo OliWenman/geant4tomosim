@@ -363,9 +363,10 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	          "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
 	       << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
-	       << "\nTHE DETECTOR SETUP: \n"
+                  "\n--------------------------------------------------------------------"
+	          "\nTHE DETECTOR SETUP: \n"
 
-	       << "\nTransmission detectors: "
+	          "\nTransmission detectors: "
 	          "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
 	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
@@ -398,11 +399,13 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
       		exit(1);
    	}
 
-	outdata << "\nWORLD SETUP: \n"
+	outdata << "\n--------------------------------------------------------------------"
+		   "\nWORLD SETUP: \n"
 	           "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
 	        << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
-	        << "\nTHE DETECTOR SETUP:\n"
+                   "\n--------------------------------------------------------------------"
+	           "\nTHE DETECTOR SETUP:\n"
 
 		   "\nTransmission detectors: "
 	           "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd

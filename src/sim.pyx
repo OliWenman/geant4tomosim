@@ -44,6 +44,9 @@ cdef class PySim:
         self.BE = beamEnergy
         self.thisptr.pyOutputOptions(self.FFF, self.FFM, self.BE)
 
+    def dataPaths(self, a, b, c):
+        self.thisptr.pyDataPaths(a, b, c)
+
     #Get needed information from textfiles pySettings.mac and Geometry.mac
     def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 2000):
         if nDetY >= 1 and nDetZ >= 1:

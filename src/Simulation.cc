@@ -127,10 +127,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
 	//Apply the commands from the macro files to fill the values
-	G4cout << "\nReading Geometry.mac... ";
+	G4cout << G4endl << "Reading Geometry.mac... ";
+	//UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
 
-	G4cout << "\nReading pySettings.mac...\n";
+	G4cout << "\nReading pySettings.mac..." << G4endl;
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "pySettings.mac");
 
 	if (PL -> GetFluorescence() == false)
@@ -159,6 +160,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	Ready = true;	
 }
 
+void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
+{
+	G4cout << "\nsettingsPath = " << settingsPath;
+}
+
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
 {
 	//Checks to see if simulation is ready (if pyInitialise has been used before)
@@ -166,6 +172,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 	{
 		if(Image == 0)
 		{
+        		UImanager -> ApplyCommand("/control/verbose 0");
 			//Keeps the seed
 			if (seedCmd != 0)	
 				{CLHEP::HepRandom::setTheSeed(seedCmd);}
@@ -364,30 +371,26 @@ void Simulation::RunSimulation()
 }
 
 //Functions to be wrapped by Cython
-std::vector<int> Simulation::GetLastImage()
-{
+std::vector<int> Simulation::GetLastImage(){
 	return data -> GetHitData();
 }
 
-std::vector<int> Simulation::GetEnergyFreq()
-{
+std::vector<int> Simulation::GetEnergyFreq(){
 	return data -> GetEnergyFreq();
 }
 
-std::vector<double> Simulation::GetEnergyBins()
-{
+std::vector<double> Simulation::GetEnergyBins(){
 	return data -> GetEnergyBins();
 }
 
-std::vector<int> Simulation::GetBeamEnergyFreq()
-{
+std::vector<int> Simulation::GetBeamEnergyFreq(){
 	return PGA -> GetBeamEnergyFreq();
 }
 
-std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping()
-{
+std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
 	return data -> GetFullMapping();
 }
+
 //Private functions
 void Simulation::BeamOn(unsigned long long int nParticles)
 {

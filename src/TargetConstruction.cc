@@ -232,23 +232,25 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 	G4double y = std::stod(next());
 	G4double z = std::stod(next());
 	G4String LengthUnit = next();
+	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
 
 	//Get the correct unit for the length using the dictionary created in the TCMessenger
-	x = x * TCMessenger -> GetUnit(LengthUnit);
-	y = y * TCMessenger -> GetUnit(LengthUnit);
-	z = z * TCMessenger -> GetUnit(LengthUnit);
+	x = x * TCMessenger -> GetLengthUnit(LengthUnit);
+	y = y * TCMessenger -> GetLengthUnit(LengthUnit);
+	z = z * TCMessenger -> GetLengthUnit(LengthUnit);
 
 	//Find the rotation of the inner object insde the string
 	G4double Rotx = std::stod(next());
 	G4double Roty = std::stod(next());
 	G4double Rotz = std::stod(next());
 	G4String AngleUnit = next();
+	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
 
 	//Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
 	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
-	RotateInnerObject -> rotateX(Rotx * TCMessenger -> GetUnit(AngleUnit));
-	RotateInnerObject -> rotateY(Rotz * TCMessenger -> GetUnit(AngleUnit));
-	RotateInnerObject -> rotateZ(Roty * TCMessenger -> GetUnit(AngleUnit));	
+	RotateInnerObject -> rotateX(Rotx * TCMessenger -> GetAngleUnit(AngleUnit));
+	RotateInnerObject -> rotateY(Rotz * TCMessenger -> GetAngleUnit(AngleUnit));
+	RotateInnerObject -> rotateZ(Roty * TCMessenger -> GetAngleUnit(AngleUnit));	
 
 	//Find the correct solids with the name of the objects inputted
 	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(OuterObject, true); 

@@ -1,9 +1,11 @@
 
+--------------------------------------------------------------------
 WORLD SETUP: 
 
 - World dimensions: 1 0.16 0.105 cm 
 - World Material: G4_Galactic
 
+--------------------------------------------------------------------
 THE DETECTOR SETUP:
 
 Transmission detectors: 
@@ -30,7 +32,7 @@ Secondary particles will be killed to help save computational time.
 
 META DATA: 
 
-- The seed used: 1546872562
+- The seed used: 1546953999
 - Number of projections being processed: 10
 - Number of photons per image: 1000000
 - Number of particles per detector on average: 19

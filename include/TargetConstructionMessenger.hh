@@ -28,9 +28,13 @@ class TargetConstructionMessenger: public G4UImessenger
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 
 		//Own methods
-		double GetUnit(G4String Unit){return mapOfUnits[Unit];}
+		double GetLengthUnit(G4String Unit){return MapLengthUnits[Unit];}
+		double GetAngleUnit(G4String Unit){return MapAngleUnits[Unit];}
 
 		void AppendVectors(G4String ObjectName, std::vector<double> Array);
+		
+		void CheckUnits(G4UIcommand* aCommand, G4String commandValue, G4String Unit, G4String TypeOfUnit);
+		void CheckUnits(G4String aCommand, G4String commandValue, G4String Unit, G4String TypeOfUnit);
 		
 	private:		
 		//Pointer to the TargetConstruction class
@@ -64,6 +68,7 @@ class TargetConstructionMessenger: public G4UImessenger
 		int ObjectCounter;
 
 		//Dictionary for units
-		std::map<std::string, double> mapOfUnits;		
+		std::map<std::string, double> MapLengthUnits;		
+		std::map<std::string, double> MapAngleUnits;		
 };
 #endif

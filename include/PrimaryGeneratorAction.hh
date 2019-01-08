@@ -3,6 +3,7 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
+#include "G4Timer.hh"
 #include "globals.hh"
 #include <vector>
 
@@ -14,7 +15,6 @@ class G4SPSPosDistribution;
 class G4SPSAngDistribution;
 class G4SPSEneDistribution;
 class G4Timer;
-#include "G4Timer.hh"
 
 class G4GeneralParticleSource;
 //It defines a single particle which hits the detectors perpendicular to the input face
@@ -84,7 +84,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		int CurrentEvent;
 		unsigned long long int NumberOfEvents;
-		
 		int CurrentImage;
 		int NumberOfRuns;
 		int ImageProgressCheck;

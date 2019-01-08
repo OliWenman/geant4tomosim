@@ -23,7 +23,7 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	DefElement -> SetGuidance("Define an element with input of it's name, z number, atomicweight, unit, density, unit");
 
 	DefIsotope = new G4UIcmdWithAString("/Materials/Define/Isotope", this);
-	DefIsotope -> SetGuidance("Define an isotope ");
+	DefIsotope -> SetGuidance("Define an isotope with input of its name, z number, nucleon number, and atomic weight");
 
 	UnitDict.insert(std::make_pair("g/mole", g/mole));
 	UnitDict.insert(std::make_pair("kg/mole", kg/mole));
@@ -73,6 +73,7 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
 		G4double atomicWeight = std::stod(next());
 
 		materials -> DefineIsotope(name, z, A, atomicWeight*UnitDict[next()]);
+    	}
 		
 		/*//Isotopes
 	G4int z = 92;
@@ -100,7 +101,6 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
 	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
 	G4int fraction_mass = 1;
 	mat_enrichedU -> AddElement(enrichedU, fraction_mass);*/
-	}
 }
 		
 
