@@ -2,6 +2,8 @@
 #include "Data.hh"
 #include "TargetConstruction.hh"
 #include "TargetConstructionMessenger.hh"
+//Output to console/write to file
+#include "SettingsLog.hh"
 
 //Different shapes for solids
 #include "G4VSolid.hh"
@@ -142,8 +144,6 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
 	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
 							       outerBox, 
 							       innerBox);
-	G4cout << "\nHollowCube" + StringNumber << G4endl;
-
 }
 
 void TargetConstruction::Cylinder(G4int ObjectNumber, G4String StringNumber)
@@ -182,8 +182,6 @@ void TargetConstruction::Sphere(G4int ObjectNumber, G4String StringNumber)
 				     	endPhi,
 				     	startingTheta,
 				     	endTheta);
-	G4cout << "\nSphere" + StringNumber << G4endl;
-
 }
 
 void TargetConstruction::Trapezoid(G4int ObjectNumber, G4String StringNumber)
@@ -263,7 +261,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
 
-	G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
+	//G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
 	++SubtractSolidCounter;
 }
 
@@ -374,7 +372,7 @@ void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 
 void TargetConstruction::ReadOutInfo()
 {
-	G4cout << "\n--------------------------------------------------------------------"
+	/*G4cout << "\n--------------------------------------------------------------------"
 		  "\nTHE GEOMETRY SETUP: " << G4endl;
  
 	//Loop through the number of objects there are to be created
@@ -428,7 +426,7 @@ void TargetConstruction::ReadOutInfo()
 
 			       << "\n  - Material: " << Materials[n]
 			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
-		} 
+		}*/
 
 		/*else if(TypeOfObjects[n] == "Trapezoid") 
 			{Trapezoid(n);}
@@ -438,7 +436,7 @@ void TargetConstruction::ReadOutInfo()
 
 		else if(TypeOfObjects[n] == "SubtractSolid")
 			{SubtractSolid(n);}*/
-	}
+	//}
 
 }
 
@@ -481,7 +479,7 @@ void TargetConstruction::DefineMaterial()
 //=====================================================================
 
 	//Isotopes
-	G4int z = 92;
+	/*G4int z = 92;
 	G4int A = 235;
 	G4double a = 235.044*g/mole;
 	G4String name = "U235";
@@ -505,5 +503,5 @@ void TargetConstruction::DefineMaterial()
 	nComponents = 1;
 	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
 	G4int fraction_mass = 1;
-	mat_enrichedU -> AddElement(enrichedU, fraction_mass);
+	mat_enrichedU -> AddElement(enrichedU, fraction_mass);*/
 }

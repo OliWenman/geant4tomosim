@@ -3,24 +3,22 @@
 import sys
 sys.path.insert(0, './../build/src')
 
-from G4Units import *
+#from G4Units import *
+import G4Units as G4
 import sim
-import numpy as np
-import matplotlib.pyplot as plt
-import h5py
 
 nDetY = 250
 nDetZ = 210
-DetectorDimensions = [0.001, 0.005, 0.005]*mm
+DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 nBins = 1000
 NumberOfImages = 1
-TotalRotation = 180*deg
+TotalRotation = 180*G4.deg
 nParticles = 10000000
 
-fluoreFF = True
-fluoreFM = True
-beamEnergy = True
+fluoreFF = False
+fluoreFM = False
+beamEnergy = False
 
 Sim = sim.PySim()
 
@@ -30,5 +28,5 @@ Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
 
-print "Photon transmission = ", Sim.photonTransmission()
+#print "Photon transmission = ", Sim.photonTransmission()
 

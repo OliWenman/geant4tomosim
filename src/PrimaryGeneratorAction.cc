@@ -3,6 +3,8 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "G4GeneralParticleSource.hh"
+//Output to console/write to file
+#include "SettingsLog.hh"
 
 //Used to create an event to fire the particles
 #include "G4Event.hh"
@@ -20,39 +22,24 @@
 //Randomize position of the beam
 #include "Randomize.hh"
 
-//Read/write to a file
-#include <iomanip>
-#include <fstream>
-
+//To access GPS varabiles
 #include "G4SPSPosDistribution.hh"
 #include "G4SPSAngDistribution.hh"
 #include "G4SPSEneDistribution.hh"
-
-#include "G4Timer.hh"
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), Timer()
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 
-	//Set the number of particles for each event
-  	//ParticleGun = new G4ParticleGun(1);
-	//ParticleGun = new G4GeneralParticleSource();
-
 	BeamCheck = false;
 	BeamData = false;
 	timeCheck = false;
 	
+	//Defualt values
 	EnergyDistTypeCmd = "Mono";
 	energyCmd = 30*keV;
 	EnergySigmaCmd = 0*keV;
-
-	//Setup which particle is used and its starting conidiions
-	//gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-
-	//ParticleGun -> SetParticleDefinition(gamma);
-  	//ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
-
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -115,12 +102,12 @@ void PrimaryGeneratorAction::PrintTime(double time)
 	if (time > 60)
 	{
 		if(time > 60*60)
-			{G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";}
+			G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";
 		else
-			{G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";}
+			G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
 	}
 	else
-		{G4cout << "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}
+		G4cout << "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << int(time) << " s        ";
 }
 
 void PrimaryGeneratorAction::PrintProgress()
@@ -136,10 +123,10 @@ void PrimaryGeneratorAction::PrintProgress()
 		
 		G4cout << "\n================================================================================"
 		          "\n                            SIMULATION RUNNING..."
-	                  "\n================================================================================\n\n\n\n" 
+	              "\n================================================================================\n\n\n\n" 
 
 			  "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
-                                    "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
+                         "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
 			  EstimatedTime(0);
 	}
 
@@ -163,8 +150,6 @@ void PrimaryGeneratorAction::PrintProgress()
 		G4cout << std::flush;
 	}
 
-	
-
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
 	{	G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete\n"  
@@ -173,7 +158,6 @@ void PrimaryGeneratorAction::PrintProgress()
 		G4cout << G4endl;
 		Timer.Stop();
 	}
-
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -181,8 +165,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     if (EnergyDistTypeCmd == "Mono")
     {
         //Allow the particles to be fired randomly within the beam width
-        	G4double y0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
-      	G4double z0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
+      	G4double y0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
+      	G4double z0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
 
         	//Set the ParticleGun conditions
         	fastParticleGun -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
@@ -224,28 +208,35 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 {
 	G4ThreeVector BeamDimensions = G4ThreeVector(0, BeamWidthY_Cmd, BeamHeightZ_Cmd);
 
-	G4cout << "\n--------------------------------------------------------------------"
-		  "\nBEAM INFORMATION: \n"
-	          "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
-	       << "\n- Beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
-
-	//Creation of the writing to data file stream
-	std::fstream outdata; 
-
-	//Open the file within the path set
-	outdata.open(SaveFilePath, std::fstream::app); 
+    std::ofstream SaveToFile;
+    
+    //Open the file within the path set
+	SaveToFile.open(SaveFilePath, std::fstream::app); 
    	
 	//Output error if can't open file
-	if( !outdata ) 
+	if( !SaveToFile ) 
 	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PrimaryGeneratorAction.\n" << std::endl;
-      		exit(1);
+      	exit(1);
    	}
+    
+    SettingsLog log(SaveToFile, G4cout);
 
-	outdata << "\nBEAM INFORMATION: \n"
-	        << "\n- Energy of the monochomatic beam is: " << G4BestUnit(energyCmd, "Energy")
-	        << "\n- Beam dimensions: " << BeamWidthY_Cmd << " x " << G4BestUnit(BeamHeightZ_Cmd, "Length") << "\n";
+	log << "\n--------------------------------------------------------------------"
+	       "\nBEAM INFORMATION: \n"
+		      
+           "\n- Beam type: " << EnergyDistTypeCmd;
+    if (EnergyDistTypeCmd == "Gauss")
+    {
+        log << "\n- Mean energy: " << G4BestUnit(energyCmd, "Energy")
+            << "\n- Sigma of the distrbution: " << G4BestUnit(EnergySigmaCmd, "Energy");
+    }
+    else
+        log << "\n- Energy of the monochomatic beam: " << G4BestUnit(energyCmd, "Energy");
+	       
+	log << "\n- Half beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
 
-	outdata.close();
+    SaveToFile.close();
+    
 }
 
 void PrimaryGeneratorAction::SetValues(int nBins, double Position)
@@ -270,16 +261,6 @@ void PrimaryGeneratorAction::SetValues(int nBins, double Position)
         EnergySigmaCmd = 0*keV;
         
         StartingPosition = -Position;
-        
-        	/*//Set the max energy value (in keV)
-        	eMax = energyCmd * 2;
-
-        	std::vector<int> iBeamEnergyFreq(nBins, 0);
-        	BeamEnergyFreq = iBeamEnergyFreq;
-
-        	Bins = nBins;*/
-        	
-        	G4cout << "\nMono" << G4endl;
     }
     //If option picked is "Mono(GPS)" or "Gauss"
     else if (EnergyDistTypeCmd == EDistTypeOptions[1] || EnergyDistTypeCmd == EDistTypeOptions[2] )
@@ -305,31 +286,17 @@ void PrimaryGeneratorAction::SetValues(int nBins, double Position)
         if (EnergyDistTypeCmd == EDistTypeOptions[1])
         {
             ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
             EnergySigmaCmd = 0*keV;
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
-            
-            G4cout << "\nMono(GPS)" << G4endl;
         }
         else 
-        {
             ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
-            G4cout << "\nGauss" << G4endl;
-        }
-
-        	/*//Set the max energy value (in keV)
-        	eMax = (energyCmd + EnergySigmaCmd)*2*1000;
-
-        	std::vector<int> iBeamEnergyFreq(nBins, 0);
-        	BeamEnergyFreq = iBeamEnergyFreq;
-
-        	Bins = nBins;*/
+        
+        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
+        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
     }
     else
     {
-        G4cout << "\nYou have not selected an avaiable option for the command \"/beam/energy/type\". You can pick from: \n";
+        G4cout << "\nYou have not selected an available option for the command \"/beam/energy/type\". You can pick from: \n";
         for (int ele = 0; ele < EDistTypeOptions.size(); ele++)
             G4cout << EDistTypeOptions[ele] << " ";
         G4cout << G4endl;

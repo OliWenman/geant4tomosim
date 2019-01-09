@@ -6,6 +6,8 @@
 #include "FluorescenceSD.hh"
 #include "Data.hh"
 #include "TargetConstruction.hh"
+//Output to console/write to file
+#include "SettingsLog.hh"
 
 //Material database
 #include "G4NistManager.hh"
@@ -36,10 +38,6 @@
 //Geant4 units
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-
-//Read/write to a file
-#include <iomanip>
-#include <fstream>
 
 #include "G4StepLimiter.hh"
 #include "G4UserLimits.hh"
@@ -358,76 +356,48 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 
 	G4ThreeVector FullDetDimensions = G4ThreeVector(DetectorSize_Cmd.x()*1, DetectorSize_Cmd.y()*NoDetectorsY_Cmd, DetectorSize_Cmd.z()*NoDetectorsZ_Cmd);
 
-	G4cout << "\n--------------------------------------------------------------------"
-		  "\nWORLD SETUP: \n"
-	          "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
-	       << "\n- World Material: " << WorldMaterial_Cmd << "\n"
-
-                  "\n--------------------------------------------------------------------"
-	          "\nTHE DETECTOR SETUP: \n"
-
-	          "\nTransmission detectors: "
-	          "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	       << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
-	       << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
-
-	if (FluorescenceDet == true)
-	{
-		G4cout << "\nFluorescence detector: "
-		          "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
-		       << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
-		       << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
-	}
-	if (DetectorEfficiency_Cmd == false)
-	{	
-		G4cout << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
-	}
-	else
-	{	
-		G4cout << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
-	}
-	
-	//Creation of the writing to data file stream
-	std::ofstream outdata; 
-
-	//Open the file within the path set
-	outdata.open(SaveFilePath); 
+    std::ofstream SaveToFile;
+    
+    //Open the file within the path set
+	SaveToFile.open(SaveFilePath); 
    	
 	//Output error if can't open file
-	if( !outdata ) 
+	if( !SaveToFile ) 
 	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from DetectorConstruction.\n" << std::endl;
-      		exit(1);
+      	exit(1);
    	}
+    
+    SettingsLog log(SaveToFile, G4cout);
 
-	outdata << "\n--------------------------------------------------------------------"
+	log << "\n--------------------------------------------------------------------"
 		   "\nWORLD SETUP: \n"
-	           "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
-	        << "\n- World Material: " << WorldMaterial_Cmd << "\n"
+	       "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
+	    << "\n- World Material: " << WorldMaterial_Cmd << "\n"
 
-                   "\n--------------------------------------------------------------------"
-	           "\nTHE DETECTOR SETUP:\n"
+           "\n--------------------------------------------------------------------"
+	       "\nTHE DETECTOR SETUP: \n"
 
-		   "\nTransmission detectors: "
-	           "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	        << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
-		<< "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length");
+	       "\nTransmission detectors: "
+	       "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
+	    << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
+	    << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
 
 	if (FluorescenceDet == true)
 	{
-		outdata << "\nFluorescence detector: "
-		           "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
-		        << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
-		        << "\n- Number of bins: " << data -> GetNoBins() << std::endl;
+		log << "\nFluorescence detector: "
+		       "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
+		    << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
+	        << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
 	}
 	if (DetectorEfficiency_Cmd == false)
 	{	
-		outdata << "\n- Detector material: " << DetectorMaterial_Cmd << "\n";
+		log << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
 	}
 	else
 	{	
-		outdata << "\n- Detectors are assumed to be 100%\ efficient \n";
+		log << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
 	}
-
-	outdata.close();
+	
+	SaveToFile.close();
 }
 

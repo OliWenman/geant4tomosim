@@ -3,9 +3,9 @@
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true	
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 #
 #Seed settings
 /data/Seed 0
@@ -40,8 +40,8 @@
 #/gps/ene/mono 40 keV
 #/gps/ene/sigma 5 keV
 #
-/beam/energy/type Gauss
-/beam/energy/mono 10 keV
+/beam/energy/type Mono
+/beam/energy/mono 25 keV
 /beam/energy/sigma 3 keV
 /beam/position/halfx 1.05 mm
 /beam/position/halfy 1.25 mm

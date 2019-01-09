@@ -1,5 +1,7 @@
 #include "PhysicsList.hh"
 #include "PhysicsListMessenger.hh"
+//Output to console/write to file
+#include "SettingsLog.hh"
 
 #include "G4SystemOfUnits.hh"
 //#include "G4PhysListFactory.hh"
@@ -38,10 +40,6 @@
 #include "G4LivermoreIonisationModel.hh"
 
 #include "G4RegionStore.hh"
-
-//Read/write to a file
-#include <iomanip>
-#include <fstream>
 
 
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
@@ -206,51 +204,36 @@ void PhysicsList::SetCuts()
 
 void PhysicsList::ReadOutInfo(G4String SaveFilePath)
 {
-	G4cout << "\n--------------------------------------------------------------------"
-		  "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
-	       << PhysicsPackageCmd << ":";
-
-	for (int element = 0 ; element < PhysicProcesses.size() ; element++)
-	{
-		G4cout << "\n- " << PhysicProcesses[element];
-	}	 
-	if (FluorescenceCmd == true)
-	{
-		G4cout << "\nTracking primary and secondary particles." << G4endl;
-	}
-	else
-	{
-		G4cout << "\nSecondary particles will be killed to help save computational time." << G4endl;
-	}
-
-	//Creation of the writing to data file stream
-	std::fstream outdata; 
-
-	//Open the file within the path set
-	outdata.open(SaveFilePath, std::fstream::app); 
+	 std::ofstream SaveToFile;
+    
+    	//Open the file within the path set
+	SaveToFile.open(SaveFilePath, std::fstream::app); 
    	
 	//Output error if can't open file
-	if( !outdata ) 
+	if( !SaveToFile ) 
 	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PhysicsList.\n" << std::endl;
       		exit(1);
    	}
+    
+    	SettingsLog log(SaveToFile, G4cout);
 
-	outdata << "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
-	        << PhysicsPackageCmd << ":";
+	log << "\n--------------------------------------------------------------------"
+      	       "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
+	    << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++)
 	{
-		outdata << "\n- " << PhysicProcesses[element];
-	}
+		log << "\n- " << PhysicProcesses[element];
+	}	 
 	if (FluorescenceCmd == true)
 	{
-		outdata << "\nTracking primary and secondary particles." << G4endl;
+		log << "\n\nTracking primary and secondary particles." << G4endl;
 	}
 	else
 	{
-		outdata << "\nSecondary particles will be killed to help save computational time." << G4endl;
-	}	
+		log << "\n\nSecondary particles will be killed to help save computational time." << G4endl;
+	}
 
-	outdata.close();      
+	SaveToFile.close();
 }
 

@@ -8,6 +8,8 @@
 #include "StackingAction.hh"
 #include "Data.hh"
 #include "DefineMaterials.hh"
+//Output to console/write to file
+#include "SettingsLog.hh"
 
 //Geant4 managers for running the simulation
 #include "G4RunManager.hh"
@@ -23,10 +25,6 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "G4ThreeVector.hh"
-
-//Read/write to a file
-#include <fstream>
-#include <iomanip>
 
 Simulation::Simulation()
 {	
@@ -127,17 +125,18 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
 	//Apply the commands from the macro files to fill the values
-	G4cout << G4endl << "Reading Geometry.mac... ";
-	//UImanager -> ApplyCommand("/control/verbose 2");
+	G4cout << G4endl << "\nReading Geometry.mac... \n\n";
+	UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
 
+    UImanager -> ApplyCommand("/control/verbose 0");
 	G4cout << "\nReading pySettings.mac..." << G4endl;
 	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "pySettings.mac");
 
 	if (PL -> GetFluorescence() == false)
 		{runManager -> SetUserAction(new StackingAction());}
 
-	SaveLogPath = "./../Output/Text/SimulationLog.txt";
+	SaveLogPath = "./../build/Output/HDF5/SimulationLog.txt";
 
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA-> SetValues(nBins, DC -> GetWorldSize().x());
@@ -192,43 +191,36 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 			//Convert now to tm struct for local timezone
 			tm* localtm = localtime(&now);
 
-			G4cout << "\nStarting simulation... \n\n"
+			G4cout << "\nStarting simulation... \n";
 
-			       << asctime(localtm)
-
-			       << "\nMETA DATA: \n"
-
-			       << "\n- The seed used: " << seedCmd
-			       << "\n- Number of projections being processed: " << NumberOfImages
-	                       << "\n- Number of photons per image: " << TotalParticles
-	                       << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			       << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << G4endl;
-
-			//Creation of the writing to data file stream
-			std::fstream outdata; 
-	
-			//Open the file within the path set
-			outdata.open(SaveLogPath, std::fstream::app); 
+             std::ofstream SaveToFile;
+    
+             //Open the file within the path set
+            	SaveToFile.open(SaveLogPath, std::fstream::app); 
    	
-			//Output error if can't open file
-			if( !outdata ) 
-			{ 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation::pyRun\n" << std::endl;
-      				exit(1);
-   			}
+            	//Output error if can't open file
+            	if( !SaveToFile ) 
+            	{ 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+              	exit(1);
+           	}
+    
+             SettingsLog log(SaveToFile, G4cout);
 
-			outdata << "\nMETA DATA: \n" 
+			log << "\n--------------------------------------------------------------------"
+			       "\nMETA DATA: \n"
 
-				    << "\n- The seed used: " << seedCmd
-				    << "\n- Number of projections being processed: " << NumberOfImages
-	                 << "\n- Number of photons per image: " << TotalParticles
-	                 << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			     	<< "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << " \n";
+			    << "\n- The seed used: " << seedCmd
+			    << "\n- Number of projections being processed: " << NumberOfImages
+                 << "\n- Number of photons per image: " << TotalParticles
+                 << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+			    << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
+                 << "\n\n" << asctime(localtm) << G4endl;
 
-			outdata.close();
+             SaveToFile.close();
 
 			G4cout << "\n================================================================================"
 		              "\n                                 Geant4 info"
-	                  "\n================================================================================\n" << G4endl;
+	                  "\n================================================================================" << G4endl;
 		}
 
 		PGA -> ResetEvents(Image + 1);

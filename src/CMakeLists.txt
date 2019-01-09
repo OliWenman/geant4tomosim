@@ -9,3 +9,5 @@ cython_add_module( sim sim.pyx Simulation.cc ${sources})
 #Link any external libraries used with .so file
 target_link_libraries( sim ${Geant4_LIBRARIES} )
 
+file(COPY G4Units.py DESTINATION ./)
+
