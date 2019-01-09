@@ -31,6 +31,9 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
     		G4UIcmdWithADoubleAndUnit *energyCmd;  
 		G4UIcmdWithADoubleAndUnit *BeamWidthY_Cmd;
 		G4UIcmdWithADoubleAndUnit *BeamHeightZ_Cmd;
+		
+		G4UIcmdWithAString *EnergyDisTypeCmd;
+		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;
 };
 
 #endif 

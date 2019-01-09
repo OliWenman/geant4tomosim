@@ -14,13 +14,13 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*mm
 
 nBins = 1000
-NumberOfImages = 10
+NumberOfImages = 1
 TotalRotation = 180*deg
-nParticles = 1000000
+nParticles = 10000000
 
-fluoreFF = False
-fluoreFM = False
-beamEnergy = False
+fluoreFF = True
+fluoreFM = True
+beamEnergy = True
 
 Sim = sim.PySim()
 
@@ -29,4 +29,6 @@ Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 
 Sim.run(nParticles, NumberOfImages, TotalRotation)
+
+print "Photon transmission = ", Sim.photonTransmission()
 

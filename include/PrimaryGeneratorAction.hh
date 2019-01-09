@@ -29,6 +29,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		//Set methods
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
+		inline void SetEnergyDistType(G4String value ){EnergyDistTypeCmd = value;}
+		inline void SetEnergySigma(G4double value ){EnergySigmaCmd = value;}
+		
 		inline void SetBeamWidthY(G4double value){BeamWidthY_Cmd = value;} 
 		inline void SetBeamHeightZ(G4double value){BeamHeightZ_Cmd = value;} 
 		void SetValues(int nBins, double Position);
@@ -49,7 +52,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
   	private:
 		//Pointer to G4ParticleGun
-    		//G4ParticleGun* ParticleGun;
+    		G4ParticleGun* fastParticleGun;
 		G4GeneralParticleSource* ParticleGun;
 
 		G4ParticleDefinition *gamma;
@@ -63,8 +66,12 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		
 		//Declaring data variables
 		G4double energyCmd;
+		G4String EnergyDistTypeCmd;
+    		G4double EnergySigmaCmd;
+		
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;
+    		G4double StartingPosition;
 
 		G4double eMax;
 		G4double Bins;

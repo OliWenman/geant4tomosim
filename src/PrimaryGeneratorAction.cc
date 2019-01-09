@@ -37,24 +37,30 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 
 	//Set the number of particles for each event
   	//ParticleGun = new G4ParticleGun(1);
-	ParticleGun = new G4GeneralParticleSource();
+	//ParticleGun = new G4GeneralParticleSource();
 
 	BeamCheck = false;
 	BeamData = false;
 	timeCheck = false;
+	
+	EnergyDistTypeCmd = "Mono";
+	energyCmd = 30*keV;
+	EnergySigmaCmd = 0*keV;
 
 	//Setup which particle is used and its starting conidiions
-	gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
+	//gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
-	ParticleGun -> SetParticleDefinition(gamma);
+	//ParticleGun -> SetParticleDefinition(gamma);
   	//ParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));	
 
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
-  	delete ParticleGun;
+  	//delete ParticleGun;
 	delete gunMessenger;
+	delete ParticleGun;
+	delete fastParticleGun;
 
 	//G4RunManager will delete gamma
 }
@@ -140,7 +146,7 @@ void PrimaryGeneratorAction::PrintProgress()
 	//Only prints the percentage if the image number has changed
 	if (ImageProgress != ImageProgressCheck)
 	{	
-		//Calculates the total progress of the simulation
+		//Calculates the total progress of the simulationEnergySigmaCmd
 		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
 		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
 		
@@ -172,19 +178,43 @@ void PrimaryGeneratorAction::PrintProgress()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-	//Generate the particle in the event
-  	ParticleGun -> GeneratePrimaryVertex(anEvent);
-	
-	if (FluoreFM == true)
-		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+    if (EnergyDistTypeCmd == "Mono")
+    {
+        //Allow the particles to be fired randomly within the beam width
+        	G4double y0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
+      	G4double z0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
+
+        	//Set the ParticleGun conditions
+        	fastParticleGun -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
+        	
+        	//Generate the particle in the event
+      	fastParticleGun -> GeneratePrimaryVertex(anEvent);
+      	
+      	if (FluoreFM == true)
+        		data -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
+    }
+	else
+    {
+        	//Generate the particle in the event
+         ParticleGun -> GeneratePrimaryVertex(anEvent);
+         
+         if (FluoreFM == true)
+        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+    }
 
 	if (BeamCheck == false && BeamData == true)
-	{	//Create a graph of the beam energy, only for the first image
-		int bins = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins));
-		if (bins >= Bins)
-			bins = Bins - 1;
+	{	//Save beam energy data for the first image
+        	int bin;
+        	
+        	if (EnergyDistTypeCmd == "Mono")
+             bin = floor(energyCmd*1000/(eMax/Bins)) -1;
+        else
+             bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;
+		
+		if (bin < 0)
+        		bin = 0;
 
-		++BeamEnergyFreq[bins];
+		++BeamEnergyFreq[bin];
 	}
 
 	PrintProgress();
@@ -220,23 +250,97 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
 
 void PrimaryGeneratorAction::SetValues(int nBins, double Position)
 {
-	//Automatically set the gun position to the end of the world volume
-	ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(-Position, 0, 0));
+    //Setup which particle is used and its starting conidiions
+   gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
+   
+   //A list of available options for a user to pick from
+   std::vector<G4String> EDistTypeOptions = {"Mono", "Mono(GPS)", "Gauss"};
 
-	//Automatically set the gun momentum in the positive x direction
-	ParticleGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+    //If option picked is "Mono"
+    if (EnergyDistTypeCmd == EDistTypeOptions[0])
+    {
+        fastParticleGun = new G4ParticleGun(1);
+        
+        fastParticleGun -> SetParticleDefinition(gamma);
+        
+        fastParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+        
+        fastParticleGun -> SetParticleEnergy(energyCmd);
+        
+        EnergySigmaCmd = 0*keV;
+        
+        StartingPosition = -Position;
+        
+        	/*//Set the max energy value (in keV)
+        	eMax = energyCmd * 2;
 
-	//Find the energy sigma value for the distrubition (in keV)
-	G4double eSigma = ParticleGun -> GetCurrentSource() -> GetEneDist() -> GetSE() * 1000;
+        	std::vector<int> iBeamEnergyFreq(nBins, 0);
+        	BeamEnergyFreq = iBeamEnergyFreq;
 
-	//Find the main energy value (in keV)
-	G4double eMono = ParticleGun -> GetCurrentSource() -> GetEneDist() -> GetMonoEnergy() * 1000;
+        	Bins = nBins;*/
+        	
+        	G4cout << "\nMono" << G4endl;
+    }
+    //If option picked is "Mono(GPS)" or "Gauss"
+    else if (EnergyDistTypeCmd == EDistTypeOptions[1] || EnergyDistTypeCmd == EDistTypeOptions[2] )
+    {
+        ParticleGun = new G4GeneralParticleSource();
 
-	//Set the max energy value (in keV)
-	eMax = (eMono + eSigma) * 2;
+        ParticleGun -> SetParticleDefinition(gamma);
 
-	std::vector<int> iBeamEnergyFreq(nBins, 0);
-	BeamEnergyFreq = iBeamEnergyFreq;
+        //Automatically set the gun position to the end of the world volume
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(-Position, 0, 0));
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfX(BeamWidthY_Cmd);
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfY(BeamHeightZ_Cmd);
+        //Automatically set the correct rotation
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot1(G4ThreeVector(0, 0, 1));
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot2(G4ThreeVector(0, 1, 0));
+        //Automatically select the shape and type
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisType("Plane");
+        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisShape("Square");
 
-	Bins = nBins;
+        //Automatically set the gun momentum in the positive x direction
+        ParticleGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+
+        if (EnergyDistTypeCmd == EDistTypeOptions[1])
+        {
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
+            EnergySigmaCmd = 0*keV;
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
+            
+            G4cout << "\nMono(GPS)" << G4endl;
+        }
+        else 
+        {
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
+            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
+            G4cout << "\nGauss" << G4endl;
+        }
+
+        	/*//Set the max energy value (in keV)
+        	eMax = (energyCmd + EnergySigmaCmd)*2*1000;
+
+        	std::vector<int> iBeamEnergyFreq(nBins, 0);
+        	BeamEnergyFreq = iBeamEnergyFreq;
+
+        	Bins = nBins;*/
+    }
+    else
+    {
+        G4cout << "\nYou have not selected an avaiable option for the command \"/beam/energy/type\". You can pick from: \n";
+        for (int ele = 0; ele < EDistTypeOptions.size(); ele++)
+            G4cout << EDistTypeOptions[ele] << " ";
+        G4cout << G4endl;
+        exit(0);
+    }
+    
+    	//Set the max energy value (in keV)
+    eMax = (energyCmd + EnergySigmaCmd)*2*1000;
+
+    std::vector<int> iBeamEnergyFreq(nBins, 0);
+   	BeamEnergyFreq = iBeamEnergyFreq;
+
+    Bins = nBins;
 }

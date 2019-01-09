@@ -188,6 +188,9 @@ cdef class PySim:
     #Return the image data from the simulation
     def lastImage(self):
         return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
+    
+    def photonTransmission(self):
+        return np.sum(self.thisptr.GetLastImage())
 
     def lastEnergyBins(self):
         return np.array(self.thisptr.GetEnergyBins())

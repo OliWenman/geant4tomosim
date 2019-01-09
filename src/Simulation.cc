@@ -151,9 +151,8 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	PL -> ReadOutInfo(SaveLogPath);
 
         G4cout << "\n--------------------------------------------------------------------"
-		  "\nCommands successfully added\n"
-
-	       << "\nSimulation Ready!" << G4endl;
+		          "\nCommands successfully added\n"
+		          "\nSimulation Ready!" << G4endl;
 
 	Visualisation();
 
@@ -219,17 +218,17 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 
 			outdata << "\nMETA DATA: \n" 
 
-				<< "\n- The seed used: " << seedCmd
-				<< "\n- Number of projections being processed: " << NumberOfImages
-	                        << "\n- Number of photons per image: " << TotalParticles
-	                        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-				<< "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << " \n";
+				    << "\n- The seed used: " << seedCmd
+				    << "\n- Number of projections being processed: " << NumberOfImages
+	                 << "\n- Number of photons per image: " << TotalParticles
+	                 << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+			     	<< "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << " \n";
 
 			outdata.close();
 
 			G4cout << "\n================================================================================"
-		                  "\n                                 Geant4 info"
-	                          "\n================================================================================\n" << G4endl;
+		              "\n                                 Geant4 info"
+	                  "\n================================================================================\n" << G4endl;
 		}
 
 		PGA -> ResetEvents(Image + 1);
@@ -256,8 +255,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		if (Image + 1 == NumberOfImages)
 		{
 			G4cout << "\n================================================================================"
-	                          "\n                        The simulation is finihsed! "
-	                          "\n================================================================================" << G4endl;
+	                   "\n                        The simulation is finihsed! "
+	                   "\n================================================================================" << G4endl;
 		}
 	
 		return data -> GetHitData();
@@ -277,8 +276,8 @@ void Simulation::Visualisation()
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << "\n\n////////////////////////////////////////////////////////////////////////////////\n"
-		       << "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
-		       << "\n////////////////////////////////////////////////////////////////////////////////\n" << G4endl;
+		          "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
+		          "\n////////////////////////////////////////////////////////////////////////////////\n" << G4endl;
 
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");

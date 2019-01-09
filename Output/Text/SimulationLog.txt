@@ -21,19 +21,22 @@ Fluorescence detector:
 
 BEAM INFORMATION: 
 
-- Energy of the monochomatic beam is: 0 eV 
-- Beam dimensions: 0 x 0 fm 
+- Energy of the monochomatic beam is: 10 keV
+- Beam dimensions: 1.05 x 1.25 mm 
 
 THE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED
 
 LivermorePhysics:
 - Photoelectric effect
-Secondary particles will be killed to help save computational time.
+- Compton scattering
+- Rayleigh scattering
+- Fluorescence
+Tracking primary and secondary particles.
 
 META DATA: 
 
-- The seed used: 1546953999
-- Number of projections being processed: 10
-- Number of photons per image: 1000000
-- Number of particles per detector on average: 19
+- The seed used: 1547030588
+- Number of projections being processed: 1
+- Number of photons per image: 10000000
+- Number of particles per detector on average: 190
 - Full rotation angle: 3.14159 rad  

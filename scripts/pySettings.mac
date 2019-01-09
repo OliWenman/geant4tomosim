@@ -3,9 +3,9 @@
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering false	
-/physics/EM/RayleighScattering false
-/physics/EM/Fluorescence false
+/physics/EM/ComptonScattering true	
+/physics/EM/RayleighScattering true
+/physics/EM/Fluorescence true
 #
 #Seed settings
 /data/Seed 0
@@ -28,15 +28,21 @@
 #/gun/setBeamWidth 2.5 mm             		#(Set the beam width)
 #/gun/setBeamHeight 2.1 mm			#(Set the beam height)
 #
-/gps/pos/type Plane
-/gps/pos/shape Square
+#/gps/pos/type Plane
+#/gps/pos/shape Square
 #
-/gps/pos/halfx 1.05 mm
-/gps/pos/halfy 1.25 mm
-/gps/pos/rot1 0 0 1  
-/gps/pos/rot2 0 1 0 
+#/gps/pos/halfx 1.05 mm
+#/gps/pos/halfy 1.25 mm
+#/gps/pos/rot1 0 0 1  
+#/gps/pos/rot2 0 1 0 
 #
-/gps/ene/type Gauss
-/gps/ene/mono 60 keV
-/gps/ene/sigma 5 keV
+#/gps/ene/type Gauss
+#/gps/ene/mono 40 keV
+#/gps/ene/sigma 5 keV
+#
+/beam/energy/type Gauss
+/beam/energy/mono 10 keV
+/beam/energy/sigma 3 keV
+/beam/position/halfx 1.05 mm
+/beam/position/halfy 1.25 mm
 
