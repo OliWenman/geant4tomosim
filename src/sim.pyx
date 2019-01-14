@@ -4,6 +4,7 @@ import h5py
 import time
 import os
 import gc
+import getpass
 
 cdef class PySim:
 
@@ -86,18 +87,42 @@ cdef class PySim:
 
            #Create a h5 file to view the data after the simulation is complete
            h5file1 = h5py.File(Path + 'SimulationData.nxs', 'w')
+           #Create a h5 file to view the data after the simulation is complete
+
+           h5file1.attrs['default'] = 'entry'
+
+           #/entry/entry1
+           nxentry = h5file1.create_group('entry1')
+           nxentry.attrs['NX_class'] = 'NXentry'
+           nxentry.attrs['default'] = 'data'
+           
+           #/entry/entry1/tomo_entry
+           tomo_entry = nxentry.create_group('tomo_entry')
+           tomo_entry.attrs['NX_class'] = 'NXsubentry'
+           
+           
+           #/entry/entry1/tomo_entry/user
+           user = tomo_entry.create_group('user')
+           user.attrs['NX_class'] = 'NXuser'
+           user.create_dataset('username', data = getpass.getuser())
+           
+           #/entry/entry1/tomo_entry/data
+           data = tomo_entry.create_group('data')
+           data.attrs['NX_class'] = 'NXdata'
+           data.attrs['defination'] = 'NXtomo'
 
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/Output/HDF5/"
            FullPath = WorkingDirectory + BuildDirectory
            print "\nThe data will be saved in:", FullPath
 
-           imageGroup = h5file1.create_group('Projections')
-           #imageGroup.attrs['NX_class'] = 'NXdata'
+           imageGroup = data.create_group('Projections')
+           imageGroup.attrs['NX_class'] = 'NXdata'
            imageSet = imageGroup.create_dataset('Images', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
 
            print("The simulation will record the following data: ")
            print("- Transmission")
+           
            #If the energy data is to be recored, setup the h5file
            if self.FFF == True:
 
@@ -105,12 +130,13 @@ cdef class PySim:
               #Fluorescence data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
-              fluorescenceGroup = h5file1.create_group('Fluorescence')
+              fluorescenceGroup = data.create_group('Fluorescence')
               fluorescenceGroup.attrs['NX_class'] = 'NXdata'
 
               fluorescenceGroup.attrs['axes'] = xLabel         # X axis of default plot
-              fluorescenceGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              fluorescenceGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+              #fluorescenceGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              #fluorescenceGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+              fluorescenceGroup.attrs[yLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
 
               fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
               fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins ), dtype = 'i4')  # Y axis data
@@ -121,14 +147,15 @@ cdef class PySim:
               #Fluorescence data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
-              fluorescenceFMGroup = h5file1.create_group('FluorescenceFM')
+              fluorescenceFMGroup = data.create_group('FluorescenceFM')
               fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
 
               fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
-              fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
+              #fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
+              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
 
               fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
+              
               fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins, self.nDetectorsY, self.nDetectorsZ), dtype = 'i4')  # Y axis data           
 
            if self.BE == True:
@@ -137,7 +164,7 @@ cdef class PySim:
               #Beam energy data
               xLabel = "Energy(keV)"
               yLabel = "Photons"
-              beamGroup = h5file1.create_group('BeamEnergy')
+              beamGroup = data.create_group('BeamEnergy')
               beamGroup.attrs['NX_class'] = 'NXdata'
 
               beamGroup.attrs['axes'] = xLabel         # X axis of default plot
@@ -149,14 +176,17 @@ cdef class PySim:
 
            iTime = time.time()
            
+           Mode = "Calibrating"
+           if nCalibrations == 0:
+               self.thisptr.pyRun(0, dTheta, 0, nCalibrations, Mode), (-1, self.nDetectorsY)
+           
            #Do flat field images
            for nImage in range(nCalibrations):
-               Mode = "Calibrating"
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                calibrationOutPut = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, nCalibrations, Mode), (-1, self.nDetectorsY))  
                #Append the 2D Data to a 3D data set
-               imageSet[5 + nImage, :, :] = calibrationOutPut[:, :]     
-
+               imageSet[nCalibrations + nImage, :, :] = calibrationOutPut[:, :]     
+           
            #Run the simulation for the number of images that are required
            for nImage in range(NumberOfImages):
 
@@ -167,7 +197,7 @@ cdef class PySim:
                #Append the 2D Data to a 3D data set
                imageSet[nImage + (nCalibrations*2), :, :] = simOutput[:, :]
                #print("\nTransmission data saved")
-               
+               iSavingTime = time.time()
                if nImage == 0:
                   energyBins = self.lastEnergyBins()
                   if self.FFF == True:
@@ -187,6 +217,10 @@ cdef class PySim:
 
                if self.FFM == True:
                   fluorPhotonFMSet[nImage, :, :, :] = self.fullMapping()
+                  
+               eSavingTime = time.time()
+               SavingTime  = eSavingTime - iSavingTime
+               self.thisptr.SetSavingTime(SavingTime)
                   
            #Close the files
            h5file1.close()

@@ -220,17 +220,17 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 {
 	//From the string, be able to take the needed paramenters out as seperate variables
 	G4Tokenizer next(SubtractObject[SubtractSolidCounter]);
-
+    
 	//Names of the two objects being used
 	G4String OuterObject = next();
 	G4String InnerObject= next();
-
+    
 	//Find the positions of the inner object inside the string 
 	G4double x = std::stod(next());
 	G4double y = std::stod(next());
 	G4double z = std::stod(next());
 	G4String LengthUnit = next();
-	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
+	//TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
 
 	//Get the correct unit for the length using the dictionary created in the TCMessenger
 	x = x * TCMessenger -> GetLengthUnit(LengthUnit);
@@ -242,7 +242,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 	G4double Roty = std::stod(next());
 	G4double Rotz = std::stod(next());
 	G4String AngleUnit = next();
-	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
+	//TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
 
 	//Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
 	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
@@ -261,8 +261,10 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 							      RotateInnerObject, 
 							      G4ThreeVector(x, y, z));
 
+    G4cout << "\nSubtractSolidCounter = " << SubtractSolidCounter << G4endl;
 	//G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
 	++SubtractSolidCounter;
+	
 }
 
 void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName, G4String Material)
@@ -306,8 +308,8 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 		    //Updates the rotation of the object
 		    G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
 		    RotateObjectAngle->rotateX(StartingRotation.x());
-		    RotateObjectAngle->rotateY(DeltaAngle + StartingRotation.y());
-		    RotateObjectAngle->rotateZ(StartingRotation.z());
+		    RotateObjectAngle->rotateY(StartingRotation.y());
+		    RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
 
 		    //Offsets the rotation
 		    G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
@@ -361,7 +363,7 @@ G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVect
 		G4double NewZ = Positions[MasterVolume].z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
 
 		return G4ThreeVector(NewX, StartingPositions[ObjectNumber].y() ,NewZ);
-	}
+}
 }
 
 void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)

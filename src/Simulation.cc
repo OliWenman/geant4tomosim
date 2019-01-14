@@ -35,6 +35,8 @@ Simulation::Simulation()
 	Ready = false;
 
 	WriteToTextCmd = false;
+	
+	//SimMode = "Calibrating";
 
 	G4cout << "\nWelcome to the tomography data simulation!\n"; 
 
@@ -125,20 +127,32 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetNoBins(nBins);
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
-    //UImanager -> ApplyCommand("/control/verbose 0");
-	G4cout << "\nReading pySettings.mac..." << G4endl;
-	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
-	
-	//Apply the commands from the macro files to fill the values
+    //Apply the commands from the macro files to fill the values
 	G4cout << G4endl << "Reading Geometry.mac... ";
 	
 	//UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
 
+    //UImanager -> ApplyCommand("/control/verbose 0");
+	G4cout << "\nReading pySettings.mac..." << G4endl;
+	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
+
 	if (PL -> GetFluorescence() == false)
 		{runManager -> SetUserAction(new StackingAction());}
 
 	SaveLogPath = "./../Output/HDF5/SimulationLog.txt";
+
+    //Keeps the seed (broken)?
+	if (seedCmd != 0)	
+		{CLHEP::HepRandom::setTheSeed(seedCmd);}
+
+	//Random seed
+	else if (seedCmd == 0)	
+	{
+		//set random seed with system time
+		seedCmd = time(NULL);
+		CLHEP::HepRandom::setTheSeed(seedCmd);
+	}
 
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA-> SetValues(nBins, DC -> GetWorldSize().x());
@@ -150,11 +164,11 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	          "\nCommands successfully added\n"
 	          "\nSimulation Ready!" << G4endl;
 
+    UImanager -> ApplyCommand("/run/initialize");	
+
 	Visualisation();
 
 	Ready = true;
-
-	UImanager -> ApplyCommand("/run/initialize");	
 }
 
 void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
@@ -175,21 +189,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			
 			DC -> GetTargetConstruction() -> SetSimMode(Mode);
 		    PGA -> SetSimMode(Mode);
+		    
+		    UImanager -> ApplyCommand("/control/verbose 0");
 			
 		    if (Mode == "Calibrating")
 	        { 
-        	    UImanager -> ApplyCommand("/control/verbose 0");
-			    //Keeps the seed
-			    if (seedCmd != 0)	
-				    {CLHEP::HepRandom::setTheSeed(seedCmd);}
-
-			    //Random seed
-			    else if (seedCmd == 0)	
-			    {
-				    //set random seed with system time
-				    seedCmd = time(NULL);
-				    CLHEP::HepRandom::setTheSeed(seedCmd);
-			    }
 
                 std::ofstream SaveToFile;
     
@@ -274,13 +278,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			    G4cout << "\n================================================================================"
 		                  "\n                                 Geant4 info"
 	                      "\n================================================================================" << G4endl;
-		    }
-		    else if (Mode == "Simulating")
-		    {
-		        //DC -> GetTargetConstruction() -> SetSimMode(Mode);
-		        //PGA -> SetSimMode(Mode);
-		    }
-		      
+		    } 
 		}
 		PGA -> ResetEvents(Image + 1);
 
@@ -314,7 +312,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 	        else if (Mode == "Calibrating")
 	        {
 	            G4cout << "\n================================================================================"
-	                      "\n                 Calibrating finished, simulating sample... "
+	                      "\n                 Calibration finished, simulating sample... "
 	                      "\n================================================================================" << G4endl;
 	        }
 		}
@@ -370,6 +368,11 @@ int Simulation::GetNumberCalibrations()
 {
     TargetConstruction* TempTC = DC -> GetTargetConstruction();
     return TempTC -> GetCalibrationImages();
+}
+
+void Simulation::SetSavingTime(double Time)
+{
+    PGA -> SetSavingTime(Time);
 }
 
 //Private functions

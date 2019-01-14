@@ -22,3 +22,5 @@ cdef extern from "Simulation.hh":
       vector[vector[vector[int]]] GetFullMapping()
       
       int GetNumberCalibrations()
+      
+      void SetSavingTime(double)

@@ -41,5 +41,8 @@ add_subdirectory( src )
 add_subdirectory( bin )
 
 #Copy the Data_Output folder to the build directory
-file(COPY Output DESTINATION ./)
-file(COPY scripts DESTINATION ./)
+file(COPY  ${CMAKE_CURRENT_SOURCE_DIR}/Output
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts 
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+message("-- Copied scripts")

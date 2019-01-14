@@ -36,6 +36,7 @@ class Simulation
 		std::vector<int> GetBeamEnergyFreq();
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
 		int GetNumberCalibrations();
+		void SetSavingTime(double Time);
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}

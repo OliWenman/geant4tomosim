@@ -7,18 +7,18 @@ sys.path.insert(0, './../src')
 import G4Units as G4
 import sim
 
-nDetY = 250
-nDetZ = 210
-DetectorDimensions = [0.01, 0.005, 0.005]*G4.mm
+nDetY = 25
+nDetZ = 21
+DetectorDimensions = [0.01, 0.05, 0.05]*G4.mm
 
-nBins = 1000
-NumberOfImages = 10
+nBins = 100
+NumberOfImages = 5
 TotalRotation = 180*G4.deg
-nParticles = 1000000
+nParticles = 1000
 
-fluoreFF = True
+fluoreFF = False
 fluoreFM = False
-beamEnergy = True
+beamEnergy = False
 
 Sim = sim.PySim()
 

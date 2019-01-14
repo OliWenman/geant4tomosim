@@ -77,7 +77,7 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
 		if (timeCheck == false){
 			Timer.Stop();	
 
-			remainingTime = (Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed();
+			remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + SavingTime;
 	
 			PrintTime(remainingTime);
 

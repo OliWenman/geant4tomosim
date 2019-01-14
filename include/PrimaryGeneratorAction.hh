@@ -39,8 +39,10 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetBeamCheck(bool value){BeamCheck = value;}
 		void SetBeamData(bool value){BeamData = value;}
 		void SetFluoreFM(bool value){FluoreFM = value;}
-		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; NumberOfRuns = TotalImages;}
+		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; NumberOfRuns = TotalImages; }//SavingTime = 0;}
 		void ResetEvents(int nImage){CurrentEvent = 0; ImageProgressCheck = TotalProgressCheck = -1; CurrentImage = nImage;}
+		
+		void SetSavingTime(double value){SavingTime = value;}
 
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
@@ -96,6 +98,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		int CurrentImage;
 		int NumberOfRuns;
 		int ImageProgressCheck;
+		double SavingTime;
 
 		int TotalProgress;
 		int TotalProgressCheck;
