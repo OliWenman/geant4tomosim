@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #Used to find the .so file built using CMake
 import sys
-sys.path.insert(0, './../build/src')
+sys.path.insert(0, './../src')
 
 #from G4Units import *
 import G4Units as G4
@@ -9,16 +9,16 @@ import sim
 
 nDetY = 250
 nDetZ = 210
-DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
+DetectorDimensions = [0.01, 0.005, 0.005]*G4.mm
 
 nBins = 1000
-NumberOfImages = 1
+NumberOfImages = 10
 TotalRotation = 180*G4.deg
-nParticles = 10000000
+nParticles = 1000000
 
-fluoreFF = False
+fluoreFF = True
 fluoreFM = False
-beamEnergy = False
+beamEnergy = True
 
 Sim = sim.PySim()
 
@@ -26,7 +26,7 @@ Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 
-Sim.run(nParticles, NumberOfImages, TotalRotation)
+Sim.run(nParticles, TotalRotation, NumberOfImages)
 
 #print "Photon transmission = ", Sim.photonTransmission()
 

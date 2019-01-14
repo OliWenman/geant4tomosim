@@ -63,6 +63,7 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWithADoubleAndUnit *FullRotationAngle_Cmd;
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 		G4UIcmdWith3VectorAndUnit *Centre_Cmd;	
+		G4UIcmdWithAnInteger *CalibrationImages_Cmd;
 
 		//Count the number of objects placed
 		int ObjectCounter;

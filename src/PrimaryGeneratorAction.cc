@@ -121,13 +121,25 @@ void PrimaryGeneratorAction::PrintProgress()
 	if(CurrentEvent == 1 && CurrentImage == 1)
 	{	Timer.Start();	
 		
-		G4cout << "\n================================================================================"
-		          "\n                            SIMULATION RUNNING..."
-	              "\n================================================================================\n\n\n\n" 
+		if (SimMode == "Calibrating")
+		{
+		    G4cout << "\n================================================================================"
+		              "\n                               Calibrating..."
+	                  "\n================================================================================\n\n\n\n"
+	                  
+	                  "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
+                      "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
+		}
+		else if (SimMode == "Simulating")
+		{
+		    G4cout << "\n================================================================================"
+		              "\n                            SIMULATION RUNNING..."
+	                  "\n================================================================================\n\n\n\n" 
 
-			  "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
-                         "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
-			  EstimatedTime(0);
+			          "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << ImageProgress << "%\ complete"  
+                      "\033[K" "\n\rTotal progress: " << TotalProgress << "\%\n";
+	        EstimatedTime(0);
+	     }
 	}
 
 	//Only prints the percentage if the image number has changed
@@ -168,10 +180,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
       	G4double y0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
       	G4double z0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
 
-        	//Set the ParticleGun conditions
-        	fastParticleGun -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
+        //Set the ParticleGun conditions
+        fastParticleGun -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
         	
-        	//Generate the particle in the event
+        //Generate the particle in the event
       	fastParticleGun -> GeneratePrimaryVertex(anEvent);
       	
       	if (FluoreFM == true)
@@ -179,11 +191,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     }
 	else
     {
-        	//Generate the particle in the event
-         ParticleGun -> GeneratePrimaryVertex(anEvent);
+        //Generate the particle in the event
+        ParticleGun -> GeneratePrimaryVertex(anEvent);
          
-         if (FluoreFM == true)
-        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+        if (FluoreFM == true)
+       		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
     }
 
 	if (BeamCheck == false && BeamData == true)

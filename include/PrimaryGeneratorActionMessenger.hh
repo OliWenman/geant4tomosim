@@ -26,11 +26,11 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 	private:
 		PrimaryGeneratorAction* PGAction;
 
-		G4UIdirectory *gunDirectory;
+		G4UIdirectory *BeamDirectory;
 
-    		G4UIcmdWithADoubleAndUnit *energyCmd;  
-		G4UIcmdWithADoubleAndUnit *BeamWidthY_Cmd;
-		G4UIcmdWithADoubleAndUnit *BeamHeightZ_Cmd;
+    		G4UIcmdWithADoubleAndUnit *EnergyCmd;  
+		G4UIcmdWithADoubleAndUnit *BeamHalfXCmd;
+		G4UIcmdWithADoubleAndUnit *BeamHalfYCmd;
 		
 		G4UIcmdWithAString *EnergyDisTypeCmd;
 		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;

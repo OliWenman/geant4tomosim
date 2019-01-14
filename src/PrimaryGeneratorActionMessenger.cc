@@ -10,14 +10,14 @@
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun): PGAction(Gun)
 {	
-	gunDirectory = new G4UIdirectory("/beam/");
-	gunDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
+	BeamDirectory = new G4UIdirectory("/beam/");
+	BeamDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
 
-	energyCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/mono", this);
-	energyCmd -> SetGuidance("Set the kinetic energy. ");
-  	energyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
-	energyCmd -> SetParameterName("E", true);
-	energyCmd -> SetRange("E > 0");
+	EnergyCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/mono", this);
+	EnergyCmd -> SetGuidance("Set the kinetic energy. ");
+  	EnergyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
+	EnergyCmd -> SetParameterName("E", true);
+	EnergyCmd -> SetRange("E > 0");
 	
 	EnergyDisTypeCmd = new G4UIcmdWithAString("/beam/energy/type", this);
 	EnergyDisTypeCmd -> SetGuidance("Set the type of distrubition you want for the energy of the beam. Mono or Gauss, Mono will use G4ParticleGun, Gauss will use G4GeneralParticleSource(GPS)");
@@ -28,37 +28,37 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	EnergySigmaCmd -> SetParameterName("sE", true);
 	EnergySigmaCmd -> SetRange("sE >= 0");
 
-	BeamWidthY_Cmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfx", this);
-	BeamWidthY_Cmd -> SetGuidance("Set the width you would like the beam to be. ");
-	BeamWidthY_Cmd -> SetUnitCandidates("nm um mm cm m");
-	BeamWidthY_Cmd -> SetParameterName("Width", true);
-	BeamWidthY_Cmd -> SetRange("Width > 0");
+	BeamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfx", this);
+	BeamHalfXCmd -> SetGuidance("Set the width you would like the beam to be. ");
+	BeamHalfXCmd -> SetUnitCandidates("nm um mm cm m");
+	BeamHalfXCmd -> SetParameterName("Width", true);
+	BeamHalfXCmd -> SetRange("Width > 0");
 
-	BeamHeightZ_Cmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfy", this);
-	BeamHeightZ_Cmd -> SetGuidance("Set the height you would like the beam to be. ");
-	BeamHeightZ_Cmd -> SetUnitCandidates("nm um mm cm m");
-	BeamHeightZ_Cmd -> SetParameterName("Height", true);
-	BeamHeightZ_Cmd -> SetRange("Height > 0");
+	BeamHalfYCmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfy", this);
+	BeamHalfYCmd -> SetGuidance("Set the height you would like the beam to be. ");
+	BeamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
+	BeamHalfYCmd -> SetParameterName("Height", true);
+	BeamHalfYCmd -> SetRange("Height > 0");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 {
-	delete gunDirectory;
+	delete BeamDirectory;
 
-	delete energyCmd;
+	delete EnergyCmd;
 	delete EnergyDisTypeCmd;
 	delete EnergySigmaCmd;
 
-	delete BeamWidthY_Cmd;
-	delete BeamHeightZ_Cmd;
+	delete BeamHalfXCmd;
+	delete BeamHalfYCmd;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == energyCmd )
+	if( command == EnergyCmd )
   	{ 
-		energyCmd -> GetNewUnitValue(newValue);
-		PGAction -> SetParticleEnergy(energyCmd -> GetNewDoubleValue(newValue)); 
+		EnergyCmd -> GetNewUnitValue(newValue);
+		PGAction -> SetParticleEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == EnergyDisTypeCmd)
 	{
@@ -68,15 +68,14 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	{
         	PGAction -> SetEnergySigma(EnergySigmaCmd -> GetNewDoubleValue(newValue));
 	}
-	else if( command == BeamWidthY_Cmd )
+	else if( command == BeamHalfXCmd)
   	{ 
-		BeamWidthY_Cmd -> GetNewUnitValue(newValue);
-		PGAction -> SetBeamWidthY(BeamWidthY_Cmd -> GetNewDoubleValue(newValue)); 
+		BeamHalfXCmd -> GetNewUnitValue(newValue);
+		PGAction -> SetBeamWidthY(BeamHalfXCmd -> GetNewDoubleValue(newValue)); 
 	}
-	else if( command == BeamHeightZ_Cmd )
+	else if( command == BeamHalfYCmd)
   	{ 
-		BeamHeightZ_Cmd -> GetNewUnitValue(newValue);
-		PGAction -> SetBeamHeightZ(BeamHeightZ_Cmd -> GetNewDoubleValue(newValue)); 
+		BeamHalfYCmd -> GetNewUnitValue(newValue);
+		PGAction -> SetBeamHeightZ(BeamHalfYCmd -> GetNewDoubleValue(newValue)); 
 	}
 }
-

@@ -70,6 +70,11 @@ class TargetConstruction
 		//Get and set the visualization settings
 		void SetVisualization(G4bool value){VisualizationValue = value;}
 		void ReadOutInfo();
+		
+		void SetCalibrationImages(int value){CalibrationImages = value;}
+		int GetCalibrationImages(){return CalibrationImages;}
+		
+		void SetSimMode(G4String value){SimMode = value; nImage = 0;}
 
 	private:
 
@@ -128,6 +133,8 @@ class TargetConstruction
 		//Image counter and total number of images
 		G4int nImage;
 		G4int TotalImages;
+		int CalibrationImages;
+		G4String SimMode;
 };
 
 #endif	

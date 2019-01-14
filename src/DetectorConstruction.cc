@@ -129,9 +129,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	LVDetectors();
 	PVDetectors(logicWorld);
 	
+	
 	TC -> Construct(logicWorld);
 
-	++nImage;
+	++nImage; 
 
 	//Return the world 
 	return physWorld;
@@ -200,13 +201,13 @@ void DetectorConstruction::LVDetectors()
 
 	//Creates the logical volume for the phantom container	
 	container_logic = new G4LogicalVolume(SolidContainer, 
-					      DetMaterial, 
-					      "LVPhantomContainer");
+                					        DetMaterial, 
+                					       "LVPhantomContainer");
 
 	//The parameterised volume which uses this parameterisation is placed in the container logical volume
 	PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
-           				         DetMaterial,        // material is not relevant here...
-           				         "LVPhantomBox");
+                   				           DetMaterial,        // material is not relevant here...
+                   				           "LVPhantomBox");
 
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
@@ -223,9 +224,7 @@ void DetectorConstruction::LVDetectors()
 	//FLUORESCENCE DETECTOR
 	if (FluorescenceDet == true)
 	{
-		FluoDet_logic = new G4LogicalVolume(SolidFluoDet,
-					    	    DetMaterial,
-				                    "LVFluorescenceDetector");
+		FluoDet_logic = new G4LogicalVolume(SolidFluoDet, DetMaterial, "LVFluorescenceDetector");
 
 		//Make the detectors sensitive to hits
 		AttachSensitiveDetector(FluoDet_logic, "FluorescenceDetector");
@@ -344,7 +343,7 @@ void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 	}
 }
 
-void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle)
+void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle )
 {
 	TC -> SetFullRotationAngle(TotalAngle);
 	TC -> SetTotalImages(NumberOfImages);
@@ -399,5 +398,10 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	}
 	
 	SaveToFile.close();
+}
+
+TargetConstruction* DetectorConstruction::GetTargetConstruction()
+{
+    return TC;
 }
 

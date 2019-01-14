@@ -62,6 +62,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void RelayToTC(int NumberOfImages, double TotalAngle);
 	
 		void ReadOutInfo(G4String SaveFilePath);
+		
+		TargetConstruction *GetTargetConstruction();
 
   	protected:
 

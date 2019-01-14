@@ -92,6 +92,9 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	OffSetRadius_Cmd -> SetDefaultUnit("cm");
 	OffSetRadius_Cmd -> SetDefaultValue(0.5*cm);
 
+    CalibrationImages_Cmd = new G4UIcmdWithAnInteger("/data/CalibrateImages", this);
+    
+
 	//Command to set the centre of this rotation if there is an offset
 	Centre_Cmd = new G4UIcmdWith3VectorAndUnit("/Target/OffSet/Centre", this);
 	Centre_Cmd -> SetGuidance("Set the centre for the target to rotate round");
@@ -132,6 +135,8 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete FullRotationAngle_Cmd;
 	delete OffSetRadius_Cmd;
 	delete Centre_Cmd;
+	
+	delete CalibrationImages_Cmd;
 }
 
 void TargetConstructionMessenger::CheckUnits(G4UIcommand* command, G4String newValue, G4String Unit, G4String TypeOfUnit)
@@ -405,5 +410,9 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	{
 		G4ThreeVector Centre = Centre_Cmd -> GetNew3VectorValue(newValue);
 		TC -> SetCentrePosition(Centre);	
+	}
+	else if( command == CalibrationImages_Cmd)
+	{
+	    TC -> SetCalibrationImages(CalibrationImages_Cmd -> GetNewIntValue(newValue));
 	}
 }

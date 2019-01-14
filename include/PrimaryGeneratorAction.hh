@@ -22,9 +22,9 @@ class G4GeneralParticleSource;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    		PrimaryGeneratorAction(Data *data);    
-    		~PrimaryGeneratorAction();
-    		void GeneratePrimaries(G4Event* );
+    	PrimaryGeneratorAction(Data *data);    
+    	~PrimaryGeneratorAction();
+   		void GeneratePrimaries(G4Event* );
 		void ReadOutInfo(G4String SaveFilePath);
 
 		//Set methods
@@ -49,10 +49,12 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double GetMaxEnergy(){return eMax;}
 
 		std::vector<int> GetBeamEnergyFreq(){return BeamEnergyFreq;}
+		
+		void SetSimMode(G4String value){SimMode = value; CurrentEvent = 0;}
 
   	private:
-		//Pointer to G4ParticleGun
-    		G4ParticleGun* fastParticleGun;
+		//Pointers to the particle source
+    	G4ParticleGun* fastParticleGun;
 		G4GeneralParticleSource* ParticleGun;
 
 		G4ParticleDefinition *gamma;
@@ -67,11 +69,11 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		//Declaring data variables
 		G4double energyCmd;
 		G4String EnergyDistTypeCmd;
-    		G4double EnergySigmaCmd;
+    	G4double EnergySigmaCmd;
 		
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;
-    		G4double StartingPosition;
+    	G4double StartingPosition;
 
 		G4double eMax;
 		G4double Bins;
@@ -100,6 +102,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		double remainingTime;
 		bool timeCheck;
+		G4String SimMode;
 };
 
 #endif

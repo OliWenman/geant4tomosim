@@ -26,11 +26,7 @@ class Simulation
 		void pyOutputOptions(bool FFF, bool FFM, bool BM);
 		void pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
-		std::vector<int> pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double dTheta);
-
-		//To be called from C++		
-		void Initialize();
-		void RunSimulation();
+		std::vector<int> pyRun(unsigned long long int TotalParticles, double dTheta, int Image, int NumberOfImages, std::string Mode);
 
 		//Python or C++
 		std::vector<int> GetLastImage();
@@ -39,7 +35,7 @@ class Simulation
 
 		std::vector<int> GetBeamEnergyFreq();
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
-
+		int GetNumberCalibrations();
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}
@@ -48,7 +44,6 @@ class Simulation
 		//It's own private functions to be called by the public functions
 		void Setup();
 		void BeamOn(unsigned long long int nParticles);
-		void CompletionTime(double LoopTimer, int Image, int NoImages);
 		void Visualisation();
 		
 		//Pointers to different classes
@@ -69,6 +64,7 @@ class Simulation
 		bool WriteToTextCmd;
 
 		G4String SaveLogPath;
+		G4String PathToScripts;
 };
 
 #endif

@@ -20,7 +20,7 @@ class Data
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
-		void SaveEnergyFreq(double E);//		
+		void SaveEnergyFreq(double E);		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 
 		void SaveFullMapping(double E);
@@ -57,9 +57,8 @@ class Data
 
 		//Data members
 		std::vector<int> HitDataArray;
-		std::vector<double> EnergyBins;//
-		std::vector<int> EnergyFreq;//
-
+		std::vector<double> EnergyBins;
+		std::vector<int> EnergyFreq;
 		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
 
 		G4int rows;

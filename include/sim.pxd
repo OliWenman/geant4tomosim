@@ -10,7 +10,7 @@ cdef extern from "Simulation.hh":
       void pyOutputOptions(bint, bint, bint)
       void pyInitialise(int, int, vector[double], int)
       void pyDataPaths(string, string, string)
-      vector[int] pyRun(unsigned long long int, int, int, double)
+      vector[int] pyRun(unsigned long long int, double, int, int, string)
 
       vector[int] GetLastImage()
 
@@ -20,3 +20,5 @@ cdef extern from "Simulation.hh":
       vector[int] GetBeamEnergyFreq()
 
       vector[vector[vector[int]]] GetFullMapping()
+      
+      int GetNumberCalibrations()

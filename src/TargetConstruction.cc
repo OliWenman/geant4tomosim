@@ -101,7 +101,7 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 		//Place the object in the world volume for each image
 		AddPhysicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, World);
 	} 
-
+	    
 	//Update the image counter
 	++nImage;	
 }
@@ -283,48 +283,51 @@ void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName
 
 void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4LogicalVolume* MotherBox)
 {
-	//If its logic volume value is true, add its physical volume
-	if (LogicVolumeArray[ObjectNumber] == true)
-	{
-		if (MasterCheck == false)
-		{
-			MasterVolume = ObjectNumber;
-			MasterCheck = true;
-		}
+    if (SimMode == "Simulating")
+    {
+	    //If its logic volume value is true, add its physical volume
+	    if (LogicVolumeArray[ObjectNumber] == true)
+	    {
+		    if (MasterCheck == false)
+		    {
+			    MasterVolume = ObjectNumber;
+			    MasterCheck = true;
+		    }
 
-		//Finds the right logic volume
-		G4LogicalVolume* Object = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+Name, true);
+		    //Finds the right logic volume
+		    G4LogicalVolume* Object = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+Name, true);
 
-		//Get its starting rotation angle
-		G4ThreeVector StartingRotation = Rotations[ObjectNumber];
+		    //Get its starting rotation angle
+		    G4ThreeVector StartingRotation = Rotations[ObjectNumber];
 		
-		//Calculate how much the object rotates between each image
-		G4double DeltaAngle = RotateObject();
+		    //Calculate how much the object rotates between each image
+		    G4double DeltaAngle = RotateObject();
 
-		//Updates the rotation of the object
-		G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
-		RotateObjectAngle->rotateX(StartingRotation.x());
-		RotateObjectAngle->rotateY(DeltaAngle + StartingRotation.y());
-		RotateObjectAngle->rotateZ(StartingRotation.z());
+		    //Updates the rotation of the object
+		    G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+		    RotateObjectAngle->rotateX(StartingRotation.x());
+		    RotateObjectAngle->rotateY(DeltaAngle + StartingRotation.y());
+		    RotateObjectAngle->rotateZ(StartingRotation.z());
 
-		//Offsets the rotation
-		G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
+		    //Offsets the rotation
+		    G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
 
-		//Create the target physical volume
-		G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
-							 	  NewTargetPosition,    
-							  	  Object,           //its logical volume
-							  	  "phy"+Name,               //its name
-							  	  MotherBox,                     //its mother  volume
-							 	  false,                 //no boolean operation
-							 	  ObjectNumber,                     //copy number
-							 	  OverlapCheck_Cmd);		//overlaps checking      
+		    //Create the target physical volume
+		    G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
+							 	    NewTargetPosition,    
+							  	    Object,           //its logical volume
+							  	    "phy"+Name,               //its name
+							  	    MotherBox,                     //its mother  volume
+							 	    false,                 //no boolean operation
+							 	    ObjectNumber,                     //copy number
+							 	    OverlapCheck_Cmd);		//overlaps checking      
 
-		//Visualization attributes
-		Visualization(Object, G4Colour::White());
+		    //Visualization attributes
+		    Visualization(Object, G4Colour::White());
 
-		//Let the runManager know the geometry has changed between runs
-		G4RunManager::GetRunManager()->GeometryHasBeenModified();
+		    //Let the runManager know the geometry has changed between runs
+		    G4RunManager::GetRunManager()->GeometryHasBeenModified();
+	    }
 	}
 }
 

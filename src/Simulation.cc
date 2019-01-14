@@ -2,6 +2,7 @@
 #include "Simulation.hh"
 #include "SimulationMessenger.hh"
 #include "DetectorConstruction.hh"
+#include "TargetConstruction.hh"
 #include "FluorescenceSD.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
@@ -108,7 +109,7 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
-	G4String PathToFiles = "./../scripts/";
+	PathToScripts = "./../scripts/";
 
 	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
 
@@ -124,19 +125,20 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetNoBins(nBins);
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
-	//Apply the commands from the macro files to fill the values
-	G4cout << G4endl << "\nReading Geometry.mac... \n\n";
-	UImanager -> ApplyCommand("/control/verbose 2");
-	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
-
-    UImanager -> ApplyCommand("/control/verbose 0");
+    //UImanager -> ApplyCommand("/control/verbose 0");
 	G4cout << "\nReading pySettings.mac..." << G4endl;
-	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "pySettings.mac");
+	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
+	
+	//Apply the commands from the macro files to fill the values
+	G4cout << G4endl << "Reading Geometry.mac... ";
+	
+	//UImanager -> ApplyCommand("/control/verbose 2");
+	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
 
 	if (PL -> GetFluorescence() == false)
 		{runManager -> SetUserAction(new StackingAction());}
 
-	SaveLogPath = "./../build/Output/HDF5/SimulationLog.txt";
+	SaveLogPath = "./../Output/HDF5/SimulationLog.txt";
 
 	//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	PGA-> SetValues(nBins, DC -> GetWorldSize().x());
@@ -144,18 +146,15 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	//Tell the data class what the max energy is
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
 
-	//Readout the inputs from the user and save to a file
-	DC -> ReadOutInfo(SaveLogPath);
-	PGA -> ReadOutInfo(SaveLogPath);
-	PL -> ReadOutInfo(SaveLogPath);
-
-        G4cout << "\n--------------------------------------------------------------------"
-		          "\nCommands successfully added\n"
-		          "\nSimulation Ready!" << G4endl;
+    G4cout << "\n--------------------------------------------------------------------"
+	          "\nCommands successfully added\n"
+	          "\nSimulation Ready!" << G4endl;
 
 	Visualisation();
 
-	Ready = true;	
+	Ready = true;
+
+	UImanager -> ApplyCommand("/run/initialize");	
 }
 
 void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
@@ -163,73 +162,135 @@ void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4Str
 	G4cout << "\nsettingsPath = " << settingsPath;
 }
 
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Image, int NumberOfImages, double TotalAngle)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double TotalAngle, int Image, int NumberOfImages, std::string Mode)
 {
 	//Checks to see if simulation is ready (if pyInitialise has been used before)
 	if (Ready == true)
 	{
-		if(Image == 0)
+        if(Image == 0)
 		{
-        		UImanager -> ApplyCommand("/control/verbose 0");
-			//Keeps the seed
-			if (seedCmd != 0)	
-				{CLHEP::HepRandom::setTheSeed(seedCmd);}
-
-			//Random seed
-			else if (seedCmd == 0)	
-			{
-				//set random seed with system time
-				seedCmd = time(NULL);
-				CLHEP::HepRandom::setTheSeed(seedCmd);
-			}
-
-			DC -> RelayToTC(NumberOfImages, TotalAngle);
+		
+		    DC -> RelayToTC(NumberOfImages, TotalAngle);
 			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
+			
+			DC -> GetTargetConstruction() -> SetSimMode(Mode);
+		    PGA -> SetSimMode(Mode);
+			
+		    if (Mode == "Calibrating")
+	        { 
+        	    UImanager -> ApplyCommand("/control/verbose 0");
+			    //Keeps the seed
+			    if (seedCmd != 0)	
+				    {CLHEP::HepRandom::setTheSeed(seedCmd);}
 
-			//Prints the time and date of the local time that the simulation started
-			time_t now = time(0);
-			//Convert now to tm struct for local timezone
-			tm* localtm = localtime(&now);
+			    //Random seed
+			    else if (seedCmd == 0)	
+			    {
+				    //set random seed with system time
+				    seedCmd = time(NULL);
+				    CLHEP::HepRandom::setTheSeed(seedCmd);
+			    }
 
-			G4cout << "\nStarting simulation... \n";
-
-             std::ofstream SaveToFile;
+                std::ofstream SaveToFile;
     
-             //Open the file within the path set
-            	SaveToFile.open(SaveLogPath, std::fstream::app); 
+                //Open the file within the path set
+                SaveToFile.open(SaveLogPath, std::fstream::app); 
    	
-            	//Output error if can't open file
-            	if( !SaveToFile ) 
-            	{ 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+                //Output error if can't open file
+                if( !SaveToFile ) 
+                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
               	exit(1);
-           	}
+           	    }
     
-             SettingsLog log(SaveToFile, G4cout);
+                SettingsLog log(SaveToFile, G4cout);
+            
+                //Readout the inputs from the user and save to a file
+	            DC -> ReadOutInfo(SaveLogPath);
+	            PGA -> ReadOutInfo(SaveLogPath);
+	            PL -> ReadOutInfo(SaveLogPath);
 
-			log << "\n--------------------------------------------------------------------"
-			       "\nMETA DATA: \n"
+			    log << "\n--------------------------------------------------------------------"
+			           "\nMETA DATA: \n"
 
-			    << "\n- The seed used: " << seedCmd
-			    << "\n- Number of projections being processed: " << NumberOfImages
-                 << "\n- Number of photons per image: " << TotalParticles
-                 << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			    << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
-                 << "\n\n" << asctime(localtm) << G4endl;
+			        << "\n- The seed used: " << seedCmd
+			        << "\n- Number of projections being processed: " << NumberOfImages
+                    << "\n- Number of photons per image: " << TotalParticles
+                    << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
+                 
+                    << "\n\n--------------------------------------------------------------------"
+                 
+                    << "\nCommands used for target geometry: \n" << G4endl;
 
-             SaveToFile.close();
+                std::ifstream ReadFile;
 
-			G4cout << "\n================================================================================"
-		              "\n                                 Geant4 info"
-	                  "\n================================================================================" << G4endl;
+                G4String ScriptName = "Geometry.mac";
+                ReadFile.open(PathToScripts+ScriptName);
+                if (!ReadFile) 
+                {
+                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
+                    exit(1); 
+                }
+                std::string Line;
+            
+                while ((std::getline(ReadFile, Line))) 
+                {
+                    if (Line.find('#') == std::string::npos)
+                        log << Line << G4endl;
+                }
+
+                ReadFile.close();
+             
+                ScriptName = "pySettings.mac";
+                ReadFile.open(PathToScripts+ScriptName);
+                if (!ReadFile) 
+                {
+                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
+                    exit(1); 
+                }
+             
+                log << "\n--------------------------------------------------------------------"
+                 
+                    << "\nCommands used for settings: \n" << G4endl;
+             
+                 while ((std::getline(ReadFile, Line))) 
+                {
+                    if (Line.find('#') == std::string::npos)
+                        log << Line << G4endl;
+                }
+                ReadFile.close();
+             
+                //Prints the time and date of the local time that the simulation started
+			    time_t now = time(0);
+			    //Convert now to tm struct for local timezone
+			    tm* localtm = localtime(&now);
+
+			    G4cout << "\n--------------------------------------------------------------------"
+			              "\nStarting simulation... \n";
+			          
+			    log << "\n" << asctime(localtm);
+			    SaveToFile.close();
+
+			    G4cout << "\n================================================================================"
+		                  "\n                                 Geant4 info"
+	                      "\n================================================================================" << G4endl;
+		    }
+		    else if (Mode == "Simulating")
+		    {
+		        //DC -> GetTargetConstruction() -> SetSimMode(Mode);
+		        //PGA -> SetSimMode(Mode);
+		    }
+		      
 		}
-
 		PGA -> ResetEvents(Image + 1);
 
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
 		
-		//Beam on to start the simulation
-		BeamOn(TotalParticles);
+		if (NumberOfImages != 0 || TotalParticles != 0)
+		{   //Beam on to start the simulation
+		    BeamOn(TotalParticles);
+		}
 		
 		//Prepare for next run that geometry has changed
 		G4RunManager::GetRunManager() -> ReinitializeGeometry();
@@ -242,17 +303,25 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int Im
 		if (Image == 0)
 			{PGA -> SetBeamCheck(true);}
 
-		//CompletionTime(LoopTimer.GetRealElapsed(), Image + 1, NumberOfImages);
-
 		if (Image + 1 == NumberOfImages)
 		{
-			G4cout << "\n================================================================================"
-	                   "\n                        The simulation is finihsed! "
-	                   "\n================================================================================" << G4endl;
+		    if (Mode == "Simulating" && NumberOfImages != 0)
+		    {
+			    G4cout << "\n================================================================================"
+	                      "\n                        The simulation is finihsed! "
+	                      "\n================================================================================" << G4endl;
+	        }
+	        else if (Mode == "Calibrating")
+	        {
+	            G4cout << "\n================================================================================"
+	                      "\n                 Calibrating finished, simulating sample... "
+	                      "\n================================================================================" << G4endl;
+	        }
 		}
 	
 		return data -> GetHitData();
 	}
+	
 	else if (Ready == false)
 	{
 		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
@@ -276,91 +345,6 @@ void Simulation::Visualisation()
 	}
 }
 
-void Simulation::Initialize()
-{
-	/*G4String PathToFiles = "./../scripts/";
-
-	//Apply the commands from the macro files to fill the values
-	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "Geometry.mac");
-	UImanager -> ApplyCommand("/control/execute " + PathToFiles + "cSettings.mac");
-	Visualisation();
-
-	//Find the total number of images
-	G4int TotalImages = input -> GetNoImages();
-
-	//Find the total number of particles and convert to a number
-	unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
-
-	G4cout << "\nNumber of projections being processed: " << TotalImages
-	       << "\nNumber of photons per image: " << TotalParticles
-	       << "\nNumber of detectors: " << DC -> GetNoDetectorsY() << " x " << DC -> GetNoDetectorsZ()
-	       << "\nNumber of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-
-	       << "\n\nSimulation Ready!" << G4endl;
-
-	Ready = true;*/
-}
-
-void Simulation::RunSimulation()
-{
-	/*if (Ready == true)
-	{
-		//Start the simulation timer
-		G4Timer FullTime;
-		FullTime.Start();
-
-		G4cout << "Starting simulation \n";
-
-		//Prints the time and date of the local time that the simulation started
-		time_t now = time(0);
-		//Convert now to tm struct for local timezone
-		tm* localtm = localtime(&now);
-		G4cout << "\n" << asctime(localtm) << "\n";
-
-		//Find the total number of images
-		G4int TotalImages = input -> GetNoImages();
-
-		//Find the total number of particles and convert to a number
-		unsigned long long int TotalParticles = std::stoull(input->GetNoPhotons());
-
-		for (G4int Image = 0; Image < TotalImages; Image++)
-		{
-			//Start internal looptimer to update the estimated time for completion
-			G4Timer LoopTimer;
-			LoopTimer.Start();
-
-			//Creates the arrays for the data, wipes them after each image
-			data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ());
-		
-			//Beam on to start the simulation
-			BeamOn(TotalParticles);
-		
-			//Prepare for next run that geometry has changed
-			G4RunManager::GetRunManager() -> ReinitializeGeometry();
-		
-			SaveDataToFile();
-
-			//Stop loop timer and estimate the remaining time left
-			LoopTimer.Stop();
-			CompletionTime(LoopTimer.GetRealElapsed(), Image, TotalImages);
-		}
-	
-		//Stop the full simulation time and save to data class
-		FullTime.Stop();
-		input -> SetSimulationTime(FullTime.GetRealElapsed());
-		input -> WriteToTextFile();
-
-		G4cout << "\n================================================================================"
-	               << "\n                        The simulation is finihsed! "
-	               << "\n             Total simulation run time : "<< FullTime
-	               << "\n================================================================================" << G4endl;
-	}
-	else if (Ready == false)
-	{
-		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
-	}*/
-}
-
 //Functions to be wrapped by Cython
 std::vector<int> Simulation::GetLastImage(){
 	return data -> GetHitData();
@@ -380,6 +364,12 @@ std::vector<int> Simulation::GetBeamEnergyFreq(){
 
 std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
 	return data -> GetFullMapping();
+}
+
+int Simulation::GetNumberCalibrations()
+{
+    TargetConstruction* TempTC = DC -> GetTargetConstruction();
+    return TempTC -> GetCalibrationImages();
 }
 
 //Private functions
@@ -412,25 +402,5 @@ void Simulation::BeamOn(unsigned long long int nParticles)
 	else 
 	{	//If the inputted number of particles is within the limit, fire that number of particles
 		runManager -> BeamOn(nParticles);
-	}
-}
-
-void Simulation::CompletionTime(double LoopTimer, int Image, int NoImages)
-{
-	//Calculates the estimated time
-	G4double ETSeconds = (LoopTimer * NoImages) - (LoopTimer * Image);
-
-	if (NoImages > 1 && Image < NoImages)
-	{
-		//Prints out the sustiable units for the estimated time 
-		if (ETSeconds > 60)
-		{
-			if(ETSeconds > 60*60)
-				{G4cout << int(ETSeconds/(60*60)) << " hours left \n";}
-			else
-				{G4cout << int(ETSeconds/60) << " minutes left \n";}
-		}
-		else
-			{G4cout << "Less than a minute left to go... \n";}
 	}
 }

@@ -86,9 +86,9 @@ void PhysicsList::ConstructEM()
 	{
 		//Finds the physics processes for each particle 
   	  	G4ParticleDefinition* particle = particleIterator->value();
-    		G4ProcessManager* pmanager = particle->GetProcessManager();
+    	G4ProcessManager* pmanager = particle->GetProcessManager();
 		pmanager -> SetVerboseLevel(0);
-    		G4String particleName = particle->GetParticleName();
+    	G4String particleName = particle->GetParticleName();
 		
 		//Adds the physics that were turned on via the commands for the gamma particle
 		if(particleName == "gamma")
@@ -142,9 +142,9 @@ void PhysicsList::ConstructEM()
 			{
 				//Outputs an error saying if the physics inputted is not a valid input and stops the simulation
 				G4cout << "\n================================================================================"
-	       	       		       << "\n            ERROR - INVALID PHYSICS INPUT: " << PhysicsPackageCmd << G4endl
-		                       << "\n            Refer to the README for list of available Physics inputs "
-	                               << "\n================================================================================" << G4endl;
+	       	       	   << "\n            ERROR - INVALID PHYSICS INPUT: " << PhysicsPackageCmd << G4endl
+		               << "\n            Refer to the README for list of available Physics inputs "
+	                   << "\n================================================================================" << G4endl;
 				exit(-1);
 			}
 			if (FluorescenceCmd == true)
@@ -215,16 +215,17 @@ void PhysicsList::ReadOutInfo(G4String SaveFilePath)
       		exit(1);
    	}
     
-    	SettingsLog log(SaveToFile, G4cout);
+    SettingsLog log(SaveToFile, G4cout);
 
 	log << "\n--------------------------------------------------------------------"
-      	       "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
+      	   "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
 	    << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++)
 	{
 		log << "\n- " << PhysicProcesses[element];
 	}	 
+	
 	if (FluorescenceCmd == true)
 	{
 		log << "\n\nTracking primary and secondary particles." << G4endl;

@@ -1,48 +1,29 @@
-#Settings for the simulation
-#
+#SETTINGS FOR THE SIMULATION
+#Seed settings
+/data/Seed 0
+
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
 /physics/EM/ComptonScattering false	
 /physics/EM/RayleighScattering false
 /physics/EM/Fluorescence false
-#
-#Seed settings
-/data/Seed 0
-#
+
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
 /world/material G4_Galactic
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
-#
+
 #Detector Settings		
 /detector/material G4_AIR	#(Set the material of the detectors)
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
 /detector/fluorescence/dimensions 2 0.01 1 mm
-#
-#/hits/verbose 0			#(Choose if you would like to track the number of events happening (0 = no information, 1 = Events, 2 = Events and hits))
-/run/initialize 
-#
-#Gun Settings
-#/gun/setEnergy 10 keV		#(Set the initial energy of the monochromatic X-ray beam)
-#/gun/setBeamWidth 2.5 mm             		#(Set the beam width)
-#/gun/setBeamHeight 2.1 mm			#(Set the beam height)
-#
-#/gps/pos/type Plane
-#/gps/pos/shape Square
-#
-#/gps/pos/halfx 1.05 mm
-#/gps/pos/halfy 1.25 mm
-#/gps/pos/rot1 0 0 1  
-#/gps/pos/rot2 0 1 0 
-#
-#/gps/ene/type Gauss
-#/gps/ene/mono 40 keV
-#/gps/ene/sigma 5 keV
-#
+
+#Beam Settings
 /beam/energy/type Mono
-/beam/energy/mono 25 keV
-/beam/energy/sigma 3 keV
+/beam/energy/mono 20 keV
+/beam/energy/sigma 4 keV
 /beam/position/halfx 1.05 mm
 /beam/position/halfy 1.25 mm
 
+#/run/initialize 

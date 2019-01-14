@@ -3,6 +3,7 @@ import numpy as np
 import h5py
 import time
 import os
+import gc
 
 cdef class PySim:
 
@@ -66,23 +67,34 @@ cdef class PySim:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
 
     #Start the simulation
-    def run(self, int TotalParticles, int NumberOfImages, dTheta):
+    def run(self, int TotalParticles, dTheta, int NumberOfImages):
 
         if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
 
-           Path = './../build/Output/HDF5/'
+           Path = './../Output/HDF5/'
+           
+           nCalibrations = self.thisptr.GetNumberCalibrations()
+           TotalNumberOfProjections = NumberOfImages + (nCalibrations*2)
+
+           #Check to see if file is open
+           for obj in gc.get_objects():   # Browse through ALL objects
+               if isinstance(obj, h5py.File):   # Just HDF5 files
+                  try:
+                     obj.close()
+                  except:
+                     pass # Was already closed
 
            #Create a h5 file to view the data after the simulation is complete
-           h5file1 = h5py.File(Path + 'SimulationData.h5', 'w')
+           h5file1 = h5py.File(Path + 'SimulationData.nxs', 'w')
 
            WorkingDirectory = os.path.dirname(os.getcwd())
-           BuildDirectory = "/build/Output/HDF5/"
+           BuildDirectory = "/Output/HDF5/"
            FullPath = WorkingDirectory + BuildDirectory
            print "\nThe data will be saved in:", FullPath
 
            imageGroup = h5file1.create_group('Projections')
            #imageGroup.attrs['NX_class'] = 'NXdata'
-           imageSet = imageGroup.create_dataset('Images', shape=(self.nDetectorsZ, self.nDetectorsY, NumberOfImages), dtype = 'i4')
+           imageSet = imageGroup.create_dataset('Images', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
 
            print("The simulation will record the following data: ")
            print("- Transmission")
@@ -101,7 +113,7 @@ cdef class PySim:
               fluorescenceGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
-              fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (self.Bins, NumberOfImages), dtype = 'i4')  # Y axis data
+              fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins ), dtype = 'i4')  # Y axis data
 
            if self.FFM == True:
 
@@ -117,7 +129,7 @@ cdef class PySim:
               fluorescenceFMGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
 
               fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
-              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (self.Bins, self.nDetectorsY, self.nDetectorsZ, NumberOfImages), dtype = 'i4')  # Y axis data           
+              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins, self.nDetectorsY, self.nDetectorsZ), dtype = 'i4')  # Y axis data           
 
            if self.BE == True:
 
@@ -136,15 +148,24 @@ cdef class PySim:
               energyphotonSet = beamGroup.create_dataset(yLabel, shape = (self.Bins,), dtype = 'i4')
 
            iTime = time.time()
+           
+           #Do flat field images
+           for nImage in range(nCalibrations):
+               Mode = "Calibrating"
+               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
+               calibrationOutPut = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, nCalibrations, Mode), (-1, self.nDetectorsY))  
+               #Append the 2D Data to a 3D data set
+               imageSet[5 + nImage, :, :] = calibrationOutPut[:, :]     
 
            #Run the simulation for the number of images that are required
            for nImage in range(NumberOfImages):
 
+               Mode = "Simulating"
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, nImage, NumberOfImages, dTheta), (-1, self.nDetectorsY))  
-
+               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, NumberOfImages, Mode), (-1, self.nDetectorsY))  
+               
                #Append the 2D Data to a 3D data set
-               imageSet[:, :, nImage] = simOutput[:, :]
+               imageSet[nImage + (nCalibrations*2), :, :] = simOutput[:, :]
                #print("\nTransmission data saved")
                
                if nImage == 0:
@@ -161,11 +182,11 @@ cdef class PySim:
 
                if self.FFF == True:
                   #Append the energy frequency to the 2D data
-                  fluorPhotonSet[:, nImage] = self.lastEnergyFreq()
+                  fluorPhotonSet[nImage, :] = self.lastEnergyFreq()
                   #print("Full field fluorescence data saved")
 
                if self.FFM == True:
-                  fluorPhotonFMSet[:, :, :, nImage] = self.fullMapping()
+                  fluorPhotonFMSet[nImage, :, :, :] = self.fullMapping()
                   
            #Close the files
            h5file1.close()
@@ -203,5 +224,3 @@ cdef class PySim:
 
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
-
-
