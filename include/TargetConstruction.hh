@@ -75,19 +75,25 @@ class TargetConstruction
 		int GetCalibrationImages(){return CalibrationImages;}
 		
 		void SetSimMode(G4String value){SimMode = value; nImage = 0;}
+		
+		void Box(G4int ObjectNumber, G4ThreeVector Dimensions);
+		void Sphere(G4int ObjectNumber, double innerRadius, double outerRadius, double StartingPhi, double EndPhi, double StartingTheta, double EndTheta);
+		void Cylinder(G4int ObjectNumber, double innerRadius, double outerRadius, double length,  double startAngle, double spanningAngle);
+		
+		//Complex objects
+		void SubtractSolid(G4int ObjectNumber, G4String Command);
+		
+		void CreateObject(G4String Name, G4String Type, std::vector<double> Dimensions);
 
 	private:
 
 		//Functions for creating different shaped objects
-		void Box(G4int ObjectNumber, G4String StringNumber);
+		//void Box(G4int ObjectNumber, G4String StringNumber);
 		void HollowBox(G4int ObjectNumber, G4String StringNumber);
-		void Cylinder(G4int ObjectNumber, G4String StringNumber);
-		void Sphere(G4int ObjectNumber, G4String StringNumber);
+		//void Cylinder(G4int ObjectNumber, G4String StringNumber);
+		//void Sphere(G4int ObjectNumber, G4String StringNumber);
 		void Trapezoid(G4int ObjectNumber, G4String StringNumber);
 		void Ellipsoid(G4int ObjectNumber, G4String StringNumber);
-
-		//Complex objects
-		void SubtractSolid(G4int ObjectNumber, G4String StringNumber);
 
 		//Add its material and place it in the world
 		void AddLogicalVolume(G4int ObjectNumber, G4String, G4String Material);
@@ -135,6 +141,8 @@ class TargetConstruction
 		G4int TotalImages;
 		int CalibrationImages;
 		G4String SimMode;
+		
+		//std::vector<CustomObject> ObjectDatabase;
 };
 
 #endif	

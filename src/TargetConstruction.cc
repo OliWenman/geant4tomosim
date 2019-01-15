@@ -70,20 +70,20 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 		//Create the dimensions of the object and assign its logic volume (if it has one) only once depending on the shape it is
 		if (nImage == 0)
 		{
-			if(TypeOfObjects[nObject] == "Cube")
-				{Box(nObject, StringNumber);}
+			//if(TypeOfObjects[nObject] == "Cube")
+			//	{Box(nObject, StringNumber);}
 
-			else if(TypeOfObjects[nObject] == "HollowCube")
+		    if(TypeOfObjects[nObject] == "HollowCube")
 				{HollowBox(nObject, StringNumber);}
 
-			else if(TypeOfObjects[nObject] == "Sphere")
-				{Sphere(nObject, StringNumber);}
+			//else if(TypeOfObjects[nObject] == "Sphere")
+			//	{Sphere(nObject, StringNumber);}
 
-			else if(TypeOfObjects[nObject] == "Cylinder")
-				{Cylinder(nObject, StringNumber);} 
+			//else if(TypeOfObjects[nObject] == "Cylinder")
+			//	{Cylinder(nObject, StringNumber);} 
 
-			else if(TypeOfObjects[nObject] == "SubtractSolid")
-				{SubtractSolid(nObject, StringNumber);}
+			//else if(TypeOfObjects[nObject] == "SubtractSolid")
+			//	{SubtractSolid(nObject, StringNumber);}
 
 			else if(TypeOfObjects[nObject] == "Trapezoid") 
 				{Trapezoid(nObject, StringNumber);}
@@ -91,8 +91,8 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 			else if(TypeOfObjects[nObject] == "Ellipsoid")
 				{Ellipsoid(nObject, StringNumber);}
 
-			else
-				{G4cout << "\nERROR: Wrong TypesOfObjects String" << G4endl; exit(-1);}
+			//else
+				//{G4cout << "\nERROR: Wrong TypesOfObjects String = " << TypeOfObjects[nObject] << G4endl; exit(-1);}
 
 			//Add its logical volume to that object
 			AddLogicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, Materials[nObject]);
@@ -106,15 +106,19 @@ void TargetConstruction::Construct(G4LogicalVolume* World)
 	++nImage;	
 }
 
-void TargetConstruction::Box(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector Dimensions)
 {
+    G4String StringNumber = std::to_string(ObjectNumber + 1);
+
+    
+
 	//Get the dimensiosn for the box
-	G4ThreeVector TargetSize = G4ThreeVector(Dimensions[ObjectNumber][0], 
-						 Dimensions[ObjectNumber][1],
-						 Dimensions[ObjectNumber][2]);
+	/*G4ThreeVector TargetSize = G4ThreeVector(Dimensions[ObjectNumber][0], 
+						                     Dimensions[ObjectNumber][1],
+						                     Dimensions[ObjectNumber][2]);*/
 
 	//Create a G4VSolid of the box
-	G4Box* Box = new G4Box("Cube" + StringNumber, TargetSize.x(), TargetSize.y(), TargetSize.z());
+	G4Box* Box = new G4Box("Cube" + StringNumber, Dimensions.x(), Dimensions.y(), Dimensions.z());
 }
 
 void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
@@ -146,33 +150,36 @@ void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
 							       innerBox);
 }
 
-void TargetConstruction::Cylinder(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::Cylinder(G4int ObjectNumber, double innerRadius, double outerRadius, double length, double startAngle, double spanningAngle)
 {
 	//Get the dimensions of the cylinder
-	G4double innerRadius = Dimensions[ObjectNumber][0];
+	/*G4double innerRadius = Dimensions[ObjectNumber][0];
 	G4double outerRadius = Dimensions[ObjectNumber][1];
 	G4double hz = Dimensions[ObjectNumber][2];
 	G4double startAngle = Dimensions[ObjectNumber][3];
-	G4double spanningAngle = Dimensions[ObjectNumber][4];
+	G4double spanningAngle = Dimensions[ObjectNumber][4];*/
+	G4String StringNumber = std::to_string(ObjectNumber + 1);
 		
 	//Create a G4VSolid of the cylinder
    	G4Tubs* TargetTube = new G4Tubs("Cylinder" + StringNumber ,
-				 	innerRadius,
-                  		 	outerRadius,
-                  		 	hz,
-                  		 	startAngle,
-                  		 	spanningAngle);
+				 	                innerRadius,
+                  		 	        outerRadius,
+                  		 	        length,
+                  		 	        startAngle,
+                  		 	        spanningAngle);
 }
 
-void TargetConstruction::Sphere(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::Sphere(G4int ObjectNumber, double innerRadius, double outerRadius, double startingPhi, double endPhi, double startingTheta, double endTheta)
 {
+    G4String StringNumber = std::to_string(ObjectNumber + 1);
+
 	//Get the dimensions of the sphere
-	G4double innerRadius = Dimensions[ObjectNumber][0];
+	/*G4double innerRadius = Dimensions[ObjectNumber][0];
 	G4double outerRadius = Dimensions[ObjectNumber][1];
 	G4double startingPhi = Dimensions[ObjectNumber][2];
 	G4double endPhi = Dimensions[ObjectNumber][3];
 	G4double startingTheta = Dimensions[ObjectNumber][4];
-	G4double endTheta = Dimensions[ObjectNumber][5]; 
+	G4double endTheta = Dimensions[ObjectNumber][5]; */
 
 	//Create a G4VSolid of the sphere
 	G4Sphere* Sphere = new G4Sphere("Sphere" + StringNumber, 
@@ -216,10 +223,12 @@ void TargetConstruction::Ellipsoid(G4int ObjectNumber, G4String StringNumber)
                     				 pzTopCut);
 }
 
-void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String Command)
 {
+    G4String StringNumber = std::to_string(ObjectNumber + 1);
+
 	//From the string, be able to take the needed paramenters out as seperate variables
-	G4Tokenizer next(SubtractObject[SubtractSolidCounter]);
+	G4Tokenizer next(Command);
     
 	//Names of the two objects being used
 	G4String OuterObject = next();
@@ -230,7 +239,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 	G4double y = std::stod(next());
 	G4double z = std::stod(next());
 	G4String LengthUnit = next();
-	//TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
+	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
 
 	//Get the correct unit for the length using the dictionary created in the TCMessenger
 	x = x * TCMessenger -> GetLengthUnit(LengthUnit);
@@ -242,7 +251,7 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 	G4double Roty = std::stod(next());
 	G4double Rotz = std::stod(next());
 	G4String AngleUnit = next();
-	//TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
+	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
 
 	//Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
 	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
@@ -256,14 +265,13 @@ void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String StringNumber
 
 	//Create the new solid from 
 	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + StringNumber, 
-							      OuterSolid, 
-							      InnerSolid, 
-							      RotateInnerObject, 
-							      G4ThreeVector(x, y, z));
+							                              OuterSolid, 
+							                              InnerSolid, 
+							                              RotateInnerObject, 
+							                              G4ThreeVector(x, y, z));
 
-    G4cout << "\nSubtractSolidCounter = " << SubtractSolidCounter << G4endl;
-	//G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
-	++SubtractSolidCounter;
+	G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
+	//++SubtractSolidCounter;
 	
 }
 
@@ -316,13 +324,13 @@ void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4
 
 		    //Create the target physical volume
 		    G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
-							 	    NewTargetPosition,    
-							  	    Object,           //its logical volume
-							  	    "phy"+Name,               //its name
-							  	    MotherBox,                     //its mother  volume
-							 	    false,                 //no boolean operation
-							 	    ObjectNumber,                     //copy number
-							 	    OverlapCheck_Cmd);		//overlaps checking      
+							 	                              NewTargetPosition,    
+							  	                              Object,           //its logical volume
+							  	                              "phy"+Name,               //its name
+							  	                              MotherBox,                     //its mother  volume
+							 	                              false,                 //no boolean operation
+							 	                              ObjectNumber,                     //copy number
+							 	                              OverlapCheck_Cmd);		//overlaps checking      
 
 		    //Visualization attributes
 		    Visualization(Object, G4Colour::White());

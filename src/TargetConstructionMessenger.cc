@@ -245,6 +245,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta};
 		
+		TC -> Sphere(ObjectCounter, innerRadius, outerRadius, StartingPhi, EndPhi, StartingTheta, EndTheta);
+		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		AppendVectors("Sphere", Array);
 	}
@@ -277,6 +279,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		
 		//Turn the variables into an array and append to the dimensions vector
 		std::vector<G4double> Array = {innerRadius, outerRadius, length, StartingPhi, EndPhi};
+		
+		TC -> Cylinder(ObjectCounter, innerRadius, outerRadius, length, StartingPhi, EndPhi);
 		
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		AppendVectors("Cylinder", Array);
@@ -318,6 +322,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//Convert the input to a standard vector to be compatible with the dimensions vector 
 		G4ThreeVector Dimensions = CubeDimensions_Cmd -> GetNew3VectorValue(newValue);
 		std::vector<G4double> Array = {Dimensions.x(), Dimensions.y(), Dimensions.z()};
+		
+		TC -> Box(ObjectCounter, Dimensions);
 
 		//Turn the variables into an array and append to the dimensions vector and all other vectors
 		AppendVectors("Cube", Array);
@@ -370,6 +376,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	else if(command == SubtractionSolid_Cmd)
 	{
 		TC -> AddSubtractObject(newValue);
+		TC -> SubtractSolid(ObjectCounter, newValue);
 		std::vector<G4double> Array; 
 		AppendVectors("SubtractSolid", Array);
 	}
