@@ -13,7 +13,8 @@
 #include "G4Tokenizer.hh"
 #include "G4UnitsTable.hh"
 
-#include "invalid_argument.hh"
+#include "CustomObject.hh"
+#include <vector>
 
 TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Target): G4UImessenger(), TC(Target)
 {	
@@ -26,45 +27,54 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 
 	//Command to set the dimensions of a sphere
 	SphereDimensions_Cmd = new G4UIcmdWithAString("/Target/Sphere/Dimensions", this);
-	SphereDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like, inner radius, outer radius, unit, starting phi angle, delta phi angle, starting theta angle, delta theta angle and unit. ");
+	SphereDimensions_Cmd -> SetGuidance("Set the dimensions of a sphere you would like: \n"
+	                                    "Name innerRadius outerRadius lengthUnit startPh endPhi startTheta endTheta angleUnit. ");
 
 	//Command to set the dimensions of a sphere
 	CylinderDimensions_Cmd = new G4UIcmdWithAString("/Target/Cylinder/Dimensions", this);
-	CylinderDimensions_Cmd -> SetGuidance("Set the dimensions of a cylinder that you would like, inner radius, outer radius, length, delta phi angle and ending phi angle");
+	CylinderDimensions_Cmd -> SetGuidance("Set the dimensions of a cylinder that you would like: \n" 
+	                                      "Name innerRadius outerRadius height lengthUnit startPhi endPhi angleUnit");
 
 	//Command to set the dimensions of a cube
 	CubeDimensions_Cmd = new G4UIcmdWithAString("/Target/Cube/Dimensions", this);
-	CubeDimensions_Cmd -> SetGuidance("Set the dimensions of a cube\nName x y z unit");
+	CubeDimensions_Cmd -> SetGuidance("Set the dimensions of a cube: \n"
+	                                  "Name x y z lengthUnit");
 
 	//Command to set the dimensions of a trapezoid
 	TrapezoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Trapezoid/Dimensions", this);
-	TrapezoidDimensions_Cmd -> SetGuidance("Set the dimensions of a trapezoid you would like, dx1, dx2, dy1, dy2 and dz");
+	TrapezoidDimensions_Cmd -> SetGuidance("Set the dimensions of a trapezoid you would like: \n" 
+	                                       "Name dx1 dx2 dy1 dy2 dz lengthUnit");
 
 	//Command to set the dimensions of a ellipsoid
 	EllipsoidDimensions_Cmd = new G4UIcmdWithAString("/Target/Ellipsoid/Dimensions", this);
-	EllipsoidDimensions_Cmd -> SetGuidance("Set the dimensions of a ellipsoid you would like, pxSemiAxis, pySemiAxis, pzSemiAxis, pzBottomCut and pzTopCut");
+	EllipsoidDimensions_Cmd -> SetGuidance("Set the dimensions of a ellipsoid you would like: \n"
+	                                       "Name pxSemiAxis pySemiAxis pzSemiAxis pzBottomCut pzTopCut lengthUnit");
 
 //=================================================================================================
 //  SUBTRACT SOLID COMMANDS
 
 	//Command to set the dimensions of subtraction solid
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
-	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape.\nName of new shape, name of solid1, name of solid 2, position vector within solid1 and unit, rotation vector of solid2 inside solid 1 and unit");
+	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape: \n"
+	                                    "Name ComponenentName1 ComponenetName2 x y z lengthUnit xTheta yTheta zTheta");
 
 //=================================================================================================
 //  POSITION, ROTATION AND MATERIAL COMMANDS	
 
 	//Command to set the position of an object
 	TargetPosition_Cmd = new G4UIcmdWithAString("/Target/Position", this);
-	TargetPosition_Cmd -> SetGuidance("Set the target position, x, y and z. ");
+	TargetPosition_Cmd -> SetGuidance("Set the position of a solid: \n"
+	                                  "Name x y z lengthUnit");
 
 	//Command to set the rotation of an object
 	TargetRotation_Cmd = new G4UIcmdWithAString("/Target/Rotation", this);
-	TargetRotation_Cmd -> SetGuidance("Set the starting rotation of the targert. ");
+	TargetRotation_Cmd -> SetGuidance("Set the starting rotation of a solid: \n "
+	                                  "Name xTheta yTheta zTheta angleUnit");
 
 	//Command to set the material of an object
 	TargetMaterial_Cmd = new G4UIcmdWithAString("/Target/Material", this);
-	TargetMaterial_Cmd -> SetGuidance("Set the material of the target ");
+	TargetMaterial_Cmd -> SetGuidance("Set the material of a solid: \n" 
+	                                  "Name Material (Material must already exist in the database)");
 
 //=================================================================================================
 //  OVERLAP CHECKING COMMAND
@@ -149,20 +159,20 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	
 		//Allows for multiple inputs for complex commands, seperates the variables out
 		G4Tokenizer next(newValue);
-		G4String Name = next();
+		G4String Name = CheckName(next, command, newValue);
 		
 		//Define each variable with in the string for length
-		G4double innerRadius = std::stod(next());
-		G4double outerRadius = std::stod(next());
+		G4double innerRadius = ConvertToDouble(next, newValue, command);
+		G4double outerRadius = ConvertToDouble(next, newValue, command);
 		G4double RadiusUnit = CheckUnits(next, command, newValue, "Length");
 		innerRadius = innerRadius*RadiusUnit;
 		outerRadius = outerRadius*RadiusUnit;
 
 		//Define each variable with in the string for angle
-		G4double StartingPhi = std::stod(next());
-		G4double EndPhi = std::stod(next());
-		G4double StartingTheta = std::stod(next());
-		G4double EndTheta = std::stod(next());	
+		G4double StartingPhi = ConvertToDouble(next, newValue, command);
+		G4double EndPhi = ConvertToDouble(next, newValue, command);
+		G4double StartingTheta = ConvertToDouble(next, newValue, command);
+		G4double EndTheta = ConvertToDouble(next, newValue, command);
 		G4double AngleUnit = CheckUnits(next, command, newValue, "Length");
 
 		//Multiply the values by the correct unit
@@ -185,9 +195,9 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4String Name = next();
 		
 		//Define each variable with in the string for length
-		G4double innerRadius = std::stod(next());
-		G4double outerRadius = std::stod(next());
-		G4double length = std::stod(next());
+		G4double innerRadius = ConvertToDouble(next, newValue, command);
+		G4double outerRadius = ConvertToDouble(next, newValue, command);
+		G4double length = ConvertToDouble(next, newValue, command);
 		G4double RadiusUnit = CheckUnits(next, command, newValue, "Length");
 		//Multiply the values by the correct unit
 		innerRadius = innerRadius*RadiusUnit;
@@ -195,8 +205,8 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		length = length*RadiusUnit;
 		
 		//Define each variable with in the string for angle
-		G4double StartingPhi = std::stod(next());
-		G4double EndPhi = std::stod(next());
+		G4double StartingPhi = ConvertToDouble(next, newValue, command);
+		G4double EndPhi = ConvertToDouble(next, newValue, command);
 		G4double AngleUnit = CheckUnits(next, command, newValue, "Angle");
 		//Multiply the values by the correct unit
 		StartingPhi = StartingPhi*AngleUnit;
@@ -212,10 +222,11 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4String Type = "Cube";
 		
 		G4Tokenizer next(newValue);
-		G4String Name = next();
+		G4String Name = CheckName(next, command, newValue);
 		
-		G4double x = InputNumberCheck(next, newValue, command);
-		/*G4double x = std::stod(next());*/ G4double y = std::stod(next()); G4double z = std::stod(next());
+		G4double x = ConvertToDouble(next, newValue, command);
+		G4double y = ConvertToDouble(next, newValue, command);
+		G4double z = ConvertToDouble(next, newValue, command);
 		G4double Unit = CheckUnits(next, command, newValue, "Length");
 		
 		x = x*Unit; 
@@ -232,13 +243,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	    G4String Type = "Trapezoid";
 	    
 		G4Tokenizer next(newValue);
-		G4String Name = next();
+		G4String Name = CheckName(next, command, newValue);
 		
-		G4double dx1 = std::stod(next());
-		G4double dx2 = std::stod(next());
-		G4double dy1 = std::stod(next());
-		G4double dy2 = std::stod(next());
-		G4double dz  = std::stod(next());
+		G4double dx1 = ConvertToDouble(next, newValue, command);
+		G4double dx2 = ConvertToDouble(next, newValue, command);
+		G4double dy1 = ConvertToDouble(next, newValue, command);
+		G4double dy2 = ConvertToDouble(next, newValue, command);
+		G4double dz  = ConvertToDouble(next, newValue, command);
 		G4double Unit = CheckUnits(next, command, newValue, "Length");
 
 		dx1 = dx1*Unit;
@@ -257,13 +268,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	
 		G4Tokenizer next(newValue);
 
-        G4String Name = next();
+        G4String Name = CheckName(next, command, newValue);
 
-		G4double pxSemiAxis = std::stod(next());
-        G4double pySemiAxis = std::stod(next());
-        G4double pzSemiAxis = std::stod(next());
-        G4double pzBottomCut = std::stod(next());
-        G4double pzTopCut = std::stod(next());
+		G4double pxSemiAxis = ConvertToDouble(next, newValue, command);
+        G4double pySemiAxis = ConvertToDouble(next, newValue, command);
+        G4double pzSemiAxis = ConvertToDouble(next, newValue, command);
+        G4double pzBottomCut = ConvertToDouble(next, newValue, command);
+        G4double pzTopCut = ConvertToDouble(next, newValue, command);
 		G4double Unit = CheckUnits(next, command, newValue, "Length");
 
 		pxSemiAxis = pxSemiAxis * Unit;
@@ -284,20 +295,24 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		//From the string, be able to take the needed paramenters out as seperate variables
 	    G4Tokenizer next(newValue);
     
-        G4String Name = next();
+        G4String Name = CheckName(next, command, newValue);
     
 	    //Names of the two objects being used
 	    G4String OuterObject = next();
 	    G4String InnerObject= next();
     
 	    //Find the positions of the inner object inside the string 
-	    G4double x = std::stod(next()); G4double y = std::stod(next()); G4double z = std::stod(next());
+	    G4double x = ConvertToDouble(next, newValue, command);
+	    G4double y = ConvertToDouble(next, newValue, command);
+	    G4double z = ConvertToDouble(next, newValue, command);
 	    G4double LengthUnit = CheckUnits(next, command, newValue, "Length");
 	    x = x * LengthUnit; y = y * LengthUnit; z = z * LengthUnit;
 	    G4ThreeVector innerPosition = G4ThreeVector(x, y, z); 
 
 	    //Find the rotation of the inner object insde the string
-	    G4double Rotx = std::stod(next()); G4double Roty = std::stod(next()); G4double Rotz = std::stod(next());
+	    G4double Rotx = ConvertToDouble(next, newValue, command); 
+	    G4double Roty = ConvertToDouble(next, newValue, command);; 
+	    G4double Rotz = ConvertToDouble(next, newValue, command);;
 	    G4double AngleUnit = CheckUnits(next, command, newValue, "Angle");
 	    Rotx = Rotx * AngleUnit; Roty = Roty * AngleUnit; Rotz = Rotz * AngleUnit;
 	    G4ThreeVector innerRotation = G4ThreeVector(Rotx, Roty, Rotz);
@@ -309,10 +324,13 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4Tokenizer next(newValue);
 		G4String Name = next();
 		
-		G4double x = std::stod(next()); G4double y = std::stod(next()); G4double z = std::stod(next());
+		G4double x = ConvertToDouble(next, newValue, command); 
+		G4double y = ConvertToDouble(next, newValue, command);
+		G4double z = ConvertToDouble(next, newValue, command);
 		G4double Unit = CheckUnits(next, command, newValue, "Length");
 		
 		x = x*Unit; y = y*Unit; z = z*Unit;
+		
 		TC -> AddPosition(Name, G4ThreeVector(x, y, z));
 	}
 	else if(command == TargetRotation_Cmd)
@@ -320,7 +338,9 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		G4Tokenizer next(newValue);
 		G4String Name = next();
 		
-		G4double x = std::stod(next()); G4double y = std::stod(next()); G4double z = std::stod(next());
+		G4double x = ConvertToDouble(next, newValue, command);
+		G4double y = ConvertToDouble(next, newValue, command);
+		G4double z = ConvertToDouble(next, newValue, command);
 		G4double Unit = CheckUnits(next, command, newValue, "Angle");
 		
 		x = x*Unit; y = y*Unit; z = z*Unit;
@@ -334,10 +354,6 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	    G4String Material = next();
 	    
 	    TC -> AddMaterial(Name, Material);
-	}
-	else if(command == BooleanOp_Cmd )
-	{
-		//TC -> AddBooleanOp(newValue);	
 	}
 	else if(command == OverlapCheck_Cmd)
 	{
@@ -364,20 +380,18 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	}
 }
 
-G4double TargetConstructionMessenger::InputNumberCheck(G4Tokenizer &next, G4String input, G4UIcommand* command)
+G4double TargetConstructionMessenger::ConvertToDouble(G4Tokenizer &next, G4String input, G4UIcommand* command)
 {
     G4double output;
     
     try
-    {
-        output = std::stod(next()); 
-    }
+    {   output = std::stod(next());} 
+        
     catch (const std::invalid_argument& ia)
     {
-        std::cerr << "\nERROR\nInvalid input for " << command -> GetCommandPath() << " " << input << std::endl;
-        G4cout << "Guidance: " << command -> GetGuidanceLine(0) << G4endl;
-        exit(0);
-        
+        G4cout << "\nERROR: Invalid input for " << command -> GetCommandPath() << " " << input
+               << "\nGuidance: " << command -> GetGuidanceLine(0) << G4endl;
+        exit(1);
     }
     
     return output;
@@ -410,7 +424,7 @@ G4double TargetConstructionMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand*
         
         G4cout << G4endl;
         
-        exit(0);
+        exit(1);
     }
     
     if (LengthUnit == true)
@@ -420,4 +434,18 @@ G4double TargetConstructionMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand*
         return MapAngleUnits[UnitString];
 }
 
-
+G4String TargetConstructionMessenger::CheckName(G4Tokenizer &next, G4UIcommand* command, G4String newValue)
+{
+    G4String Name = next();
+    std::vector<CustomObject> ObjectDatabase = TC -> GetObjectDatabase();
+    
+    for (int n = 0 ; n < ObjectDatabase.size() ; n++)
+    {   if (ObjectDatabase[n].Name == Name)
+        {
+            G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Object name \"" << Name << "\" already exists. Please pick another. " << G4endl;
+            exit(1);
+        }
+    }
+    
+    return Name;
+}

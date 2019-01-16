@@ -227,25 +227,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                     << "\nCommands used for target geometry: \n" << G4endl;
 
                 std::ifstream ReadFile;
-
-                G4String ScriptName = "Geometry.mac";
-                ReadFile.open(PathToScripts+ScriptName);
-                if (!ReadFile) 
-                {
-                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
-                    exit(1); 
-                }
                 std::string Line;
-            
-                while ((std::getline(ReadFile, Line))) 
-                {
-                    if (Line.find('#') == std::string::npos)
-                        log << Line << G4endl;
-                }
-
-                ReadFile.close();
              
-                ScriptName = "pySettings.mac";
+                G4String ScriptName = "pySettings.mac";
                 ReadFile.open(PathToScripts+ScriptName);
                 if (!ReadFile) 
                 {
@@ -262,6 +246,22 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                     if (Line.find('#') == std::string::npos)
                         log << Line << G4endl;
                 }
+                ReadFile.close();
+                
+                ScriptName = "Geometry.mac";
+                ReadFile.open(PathToScripts+ScriptName);
+                if (!ReadFile) 
+                {
+                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
+                    exit(1); 
+                }
+            
+                while ((std::getline(ReadFile, Line))) 
+                {
+                    if (Line.find('#') == std::string::npos)
+                        log << Line << G4endl;
+                }
+
                 ReadFile.close();
              
                 //Prints the time and date of the local time that the simulation started
@@ -331,7 +331,7 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		visManager = new G4VisExecutive();
+		visManager = new G4VisExecutive("quiet");
 
 		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
 		G4cout << "\n\n////////////////////////////////////////////////////////////////////////////////\n"

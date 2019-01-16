@@ -48,6 +48,9 @@ class TargetConstruction
 		G4double GetOffSetRadius(){return OffSetRadius_Cmd;}
 		G4bool GetOverlapCheck(){return OverlapCheck_Cmd;}
 		
+		std::vector<CustomObject> GetObjectDatabase(){return ObjectDatabase;}
+		
+		
 		//Create objects from TCMessenger
 		void CreateObject(G4String Name, G4String Type, std::vector<double> dimensions);
 		void CreateObject(G4String Name, G4String ComponentName1, G4String ComponentName2, G4String Type, G4ThreeVector innerPosition, G4ThreeVector innerRotation);

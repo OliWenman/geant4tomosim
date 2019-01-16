@@ -33,10 +33,11 @@ class TargetConstructionMessenger: public G4UImessenger
 		double GetLengthUnit(G4String Unit){return MapLengthUnits[Unit];}
 		double GetAngleUnit(G4String Unit){return MapAngleUnits[Unit];}
 		
-		G4double CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit);
-		
 	private:		
-	    G4double InputNumberCheck(G4Tokenizer &next, G4String theCommand, G4UIcommand* Command);
+	    G4String CheckName(G4Tokenizer &next, G4UIcommand* command, G4String newValue);
+	
+	    G4double ConvertToDouble(G4Tokenizer &next, G4String theCommand, G4UIcommand* Command);
+	    G4double CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit);
 	
 		//Pointer to the TargetConstruction class
 		TargetConstruction *TC;

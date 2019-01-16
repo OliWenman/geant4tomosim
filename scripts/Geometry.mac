@@ -2,7 +2,7 @@
 
 #Base of the object is a cube
 /Target/Cube/Dimensions Base 0.6 0.6 0.6 mm
-#/Target/Cube/Dimensions Base Test 0 0 mm
+#/Target/Cube/Dimensions Base 0.6 0.6 0.6 mm
 
 #Create the cylinder that will be used to cut out part of the base
 /Target/Cylinder/Dimensions HoleCut 0.0 0.3 0.8 mm 1 360 deg

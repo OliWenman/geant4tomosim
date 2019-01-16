@@ -150,10 +150,10 @@ void TargetConstruction::Trapezoid(G4String Name, std::vector<double> Dimensions
 void TargetConstruction::Ellipsoid(G4String Name, std::vector<double> Dimensions)
 {
 	G4double pxSemiAxis = Dimensions[0];
-        G4double pySemiAxis = Dimensions[1];
-        G4double pzSemiAxis = Dimensions[2];
-        G4double pzBottomCut = Dimensions[3];
-        G4double pzTopCut = Dimensions[4];
+    G4double pySemiAxis = Dimensions[1];
+    G4double pzSemiAxis = Dimensions[2];
+    G4double pzBottomCut = Dimensions[3];
+    G4double pzTopCut = Dimensions[4];
 
 	G4Ellipsoid* Ellipsoid = new G4Ellipsoid(Name,
                     				         pxSemiAxis,
@@ -275,7 +275,6 @@ void TargetConstruction::AddMaterial(G4String Name, G4String Material)
 		    
 		    Success = true;
 		    
-            G4cout << "\nMaterial \"" << ObjectDatabase[n].Material << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
             break;
         }
     }
