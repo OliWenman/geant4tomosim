@@ -18,6 +18,8 @@ class G4UIcmdWithAnInteger;
 class G4UIcmdWith3VectorAndUnit;
 class G4UIcmdWithABool;
 
+class G4Tokenizer;
+
 class TargetConstructionMessenger: public G4UImessenger 
 { 
 	public:
@@ -30,13 +32,12 @@ class TargetConstructionMessenger: public G4UImessenger
 		//Own methods
 		double GetLengthUnit(G4String Unit){return MapLengthUnits[Unit];}
 		double GetAngleUnit(G4String Unit){return MapAngleUnits[Unit];}
-
-		void AppendVectors(G4String ObjectName, std::vector<double> Array);
 		
-		void CheckUnits(G4UIcommand* aCommand, G4String commandValue, G4String Unit, G4String TypeOfUnit);
-		void CheckUnits(G4String aCommand, G4String commandValue, G4String Unit, G4String TypeOfUnit);
+		G4double CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit);
 		
 	private:		
+	    G4double InputNumberCheck(G4Tokenizer &next, G4String theCommand, G4UIcommand* Command);
+	
 		//Pointer to the TargetConstruction class
 		TargetConstruction *TC;
 
@@ -44,17 +45,17 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIdirectory *TargetDirectory;
 
 		//Different shapes
-		G4UIcmdWith3VectorAndUnit *CubeDimensions_Cmd;
-		G4UIcmdWithAString *HollowCubeDimensions_Cmd;
+		G4UIcmdWithAString *CubeDimensions_Cmd;
 		G4UIcmdWithAString *SphereDimensions_Cmd;
 		G4UIcmdWithAString *CylinderDimensions_Cmd;
 		G4UIcmdWithAString *TrapezoidDimensions_Cmd;
 		G4UIcmdWithAString *EllipsoidDimensions_Cmd;
+		
 		G4UIcmdWithAString *SubtractionSolid_Cmd;
 
 		//Object attributes
-		G4UIcmdWith3VectorAndUnit *TargetPosition_Cmd;
-		G4UIcmdWith3VectorAndUnit *TargetRotation_Cmd;
+		G4UIcmdWithAString *TargetPosition_Cmd;
+		G4UIcmdWithAString *TargetRotation_Cmd;
 		G4UIcmdWithAString *TargetMaterial_Cmd;
 		G4UIcmdWithABool *BooleanOp_Cmd;
 		G4UIcmdWithABool *OverlapCheck_Cmd;
@@ -64,9 +65,6 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWithADoubleAndUnit *OffSetRadius_Cmd;
 		G4UIcmdWith3VectorAndUnit *Centre_Cmd;	
 		G4UIcmdWithAnInteger *CalibrationImages_Cmd;
-
-		//Count the number of objects placed
-		int ObjectCounter;
 
 		//Dictionary for units
 		std::map<std::string, double> MapLengthUnits;		

@@ -41,12 +41,14 @@
 
 #include "G4Region.hh"
 
+//=================================================================================================
+//  CONSTRUCTORS/DESTRUCTORS
+
 TargetConstruction::TargetConstruction()
 {	
 	TCMessenger = new TargetConstructionMessenger(this);
 	nImage = 0;
 	TotalImages = 1;
-	SubtractSolidCounter = 0;
 	MasterVolume = 0;
 	MasterCheck = false;
 }
@@ -56,290 +58,202 @@ TargetConstruction::~TargetConstruction()
 	delete TCMessenger;
 }
 
+//=================================================================================================
+//  BUILD THE PHYSICAL VOLUMES OF OBJECTS THAT ARE IN THE DATABASE
+
 void TargetConstruction::Construct(G4LogicalVolume* World)
-{
-	//Set the Starting positions (only once)
-	if (nImage == 0)
-		{StartingPositions = Positions;}
-
-	//Loop through the number of objects there are to be created
-	for(G4int nObject = 0; nObject < TypeOfObjects.size(); nObject++)
+{	
+	for (int n = 0 ; n < ObjectDatabase.size() ; n++)
 	{
-		G4String StringNumber = std::to_string(nObject + 1);
-
-		//Create the dimensions of the object and assign its logic volume (if it has one) only once depending on the shape it is
-		if (nImage == 0)
-		{
-			//if(TypeOfObjects[nObject] == "Cube")
-			//	{Box(nObject, StringNumber);}
-
-		    if(TypeOfObjects[nObject] == "HollowCube")
-				{HollowBox(nObject, StringNumber);}
-
-			//else if(TypeOfObjects[nObject] == "Sphere")
-			//	{Sphere(nObject, StringNumber);}
-
-			//else if(TypeOfObjects[nObject] == "Cylinder")
-			//	{Cylinder(nObject, StringNumber);} 
-
-			//else if(TypeOfObjects[nObject] == "SubtractSolid")
-			//	{SubtractSolid(nObject, StringNumber);}
-
-			else if(TypeOfObjects[nObject] == "Trapezoid") 
-				{Trapezoid(nObject, StringNumber);}
-
-			else if(TypeOfObjects[nObject] == "Ellipsoid")
-				{Ellipsoid(nObject, StringNumber);}
-
-			//else
-				//{G4cout << "\nERROR: Wrong TypesOfObjects String = " << TypeOfObjects[nObject] << G4endl; exit(-1);}
-
-			//Add its logical volume to that object
-			AddLogicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, Materials[nObject]);
-		}
-
-		//Place the object in the world volume for each image
-		AddPhysicalVolume(nObject,TypeOfObjects[nObject]+StringNumber, World);
+	    if (ObjectDatabase[n].WorldPlacement == true)
+	        AddPhysicalVolume(ObjectDatabase[n], World); 
 	} 
 	    
 	//Update the image counter
 	++nImage;	
 }
+//=================================================================================================
+//  DIFFERENT OBJECT TYPES
 
-void TargetConstruction::Box(G4int ObjectNumber, G4ThreeVector Dimensions)
+void TargetConstruction::Box(G4String Name, std::vector<double> Dimensions)
 {
-    G4String StringNumber = std::to_string(ObjectNumber + 1);
-
-    
-
-	//Get the dimensiosn for the box
-	/*G4ThreeVector TargetSize = G4ThreeVector(Dimensions[ObjectNumber][0], 
-						                     Dimensions[ObjectNumber][1],
-						                     Dimensions[ObjectNumber][2]);*/
-
 	//Create a G4VSolid of the box
-	G4Box* Box = new G4Box("Cube" + StringNumber, Dimensions.x(), Dimensions.y(), Dimensions.z());
+	G4Box* Box = new G4Box(Name, Dimensions[0], Dimensions[1], Dimensions[2]);
+	
+	G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, true); 
+	
+	if (Solid)
+	    G4cout << "\nSolid added successfully " << Solid -> GetName() << G4endl;
+	else
+	    G4cout << "\nERROR: Solid not added " << G4endl;
 }
 
-void TargetConstruction::HollowBox(G4int ObjectNumber, G4String StringNumber)
-{
-	//Get the dimensions for the outerBox
-	G4ThreeVector outerBoxDimensions = G4ThreeVector(Dimensions[ObjectNumber][0], 
-					       		 Dimensions[ObjectNumber][1],
-					       		 Dimensions[ObjectNumber][2]);
-
-	//Get the dimensions for the innerBox
-	G4ThreeVector innerBoxDimensions = G4ThreeVector(Dimensions[ObjectNumber][3], 
-					       		 Dimensions[ObjectNumber][4],
-					       		 Dimensions[ObjectNumber][5]);
-
-	//Create G4VSolids of the two boxes
-	G4Box* outerBox = new G4Box("OuterBox" + StringNumber, 
-				    outerBoxDimensions.x(), 
-				    outerBoxDimensions.y(), 
-				    outerBoxDimensions.z());
-
-	G4Box* innerBox = new G4Box("InnerBox" + StringNumber,
-				    innerBoxDimensions.x(),
-				    innerBoxDimensions.y(),
-				    innerBoxDimensions.z());
-
-	//Subtract them from each other to get a hollow cube
-	G4SubtractionSolid *HollowBox = new G4SubtractionSolid("HollowCube" + StringNumber, 
-							       outerBox, 
-							       innerBox);
-}
-
-void TargetConstruction::Cylinder(G4int ObjectNumber, double innerRadius, double outerRadius, double length, double startAngle, double spanningAngle)
+void TargetConstruction::Cylinder(G4String Name, std::vector<double> Dimensions)
 {
 	//Get the dimensions of the cylinder
-	/*G4double innerRadius = Dimensions[ObjectNumber][0];
-	G4double outerRadius = Dimensions[ObjectNumber][1];
-	G4double hz = Dimensions[ObjectNumber][2];
-	G4double startAngle = Dimensions[ObjectNumber][3];
-	G4double spanningAngle = Dimensions[ObjectNumber][4];*/
-	G4String StringNumber = std::to_string(ObjectNumber + 1);
+	G4double innerRadius = Dimensions[0];
+	G4double outerRadius = Dimensions[1];
+	G4double height = Dimensions[2];
+	G4double startAngle = Dimensions[3];
+	G4double spanningAngle = Dimensions[4];
 		
 	//Create a G4VSolid of the cylinder
-   	G4Tubs* TargetTube = new G4Tubs("Cylinder" + StringNumber ,
+   	G4Tubs* TargetTube = new G4Tubs(Name,
 				 	                innerRadius,
                   		 	        outerRadius,
-                  		 	        length,
+                  		 	        height,
                   		 	        startAngle,
                   		 	        spanningAngle);
 }
 
-void TargetConstruction::Sphere(G4int ObjectNumber, double innerRadius, double outerRadius, double startingPhi, double endPhi, double startingTheta, double endTheta)
+void TargetConstruction::Sphere(G4String Name, std::vector<double> Dimensions)
 {
-    G4String StringNumber = std::to_string(ObjectNumber + 1);
+    G4cout << "\nSphere dimensions ";
+    for (int n = 0 ; n < Dimensions.size() ; n++)
+        G4cout << Dimensions[n] << " ";
+    G4cout << G4endl;
 
 	//Get the dimensions of the sphere
-	/*G4double innerRadius = Dimensions[ObjectNumber][0];
-	G4double outerRadius = Dimensions[ObjectNumber][1];
-	G4double startingPhi = Dimensions[ObjectNumber][2];
-	G4double endPhi = Dimensions[ObjectNumber][3];
-	G4double startingTheta = Dimensions[ObjectNumber][4];
-	G4double endTheta = Dimensions[ObjectNumber][5]; */
+	G4double innerRadius = Dimensions[0];
+	G4double outerRadius = Dimensions[1];
+	G4double startingPhi = Dimensions[2];
+	G4double endPhi = Dimensions[3];
+	G4double startingTheta = Dimensions[4];
+	G4double endTheta = Dimensions[5]; 
 
 	//Create a G4VSolid of the sphere
-	G4Sphere* Sphere = new G4Sphere("Sphere" + StringNumber, 
-				     	innerRadius,
-				     	outerRadius,
-				     	startingPhi,
-				     	endPhi,
-				     	startingTheta,
-				     	endTheta);
+	G4Sphere* Sphere = new G4Sphere(Name, 
+				     	            innerRadius,
+				     	            outerRadius,
+				     	            startingPhi,
+				     	            endPhi,
+				     	            startingTheta,
+				     	            endTheta);
 }
 
-void TargetConstruction::Trapezoid(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::Trapezoid(G4String Name, std::vector<double> Dimensions)
 {
-	G4double dx1 = Dimensions[ObjectNumber][0];
-        G4double dx2 = Dimensions[ObjectNumber][1];
-        G4double dy1 = Dimensions[ObjectNumber][2];
-        G4double dy2 = Dimensions[ObjectNumber][3];
-        G4double dz  = Dimensions[ObjectNumber][4];
+	G4double dx1 = Dimensions[0];
+    G4double dx2 = Dimensions[1];
+    G4double dy1 = Dimensions[2];
+    G4double dy2 = Dimensions[3];
+    G4double dz  = Dimensions[4];
 
-	G4Trd* Trapezoid = new G4Trd("Trapezoid" + StringNumber,
-				     dx1,
-          			     dx2,
-            			     dy1,
-            			     dy2,
-            			     dz);
+	G4Trd* Trapezoid = new G4Trd(Name,
+				                 dx1,
+          			             dx2,
+            			         dy1,
+            			         dy2,
+            			         dz);
 }
 
-void TargetConstruction::Ellipsoid(G4int ObjectNumber, G4String StringNumber)
+void TargetConstruction::Ellipsoid(G4String Name, std::vector<double> Dimensions)
 {
-	G4double pxSemiAxis = Dimensions[ObjectNumber][0];
-        G4double pySemiAxis = Dimensions[ObjectNumber][1];
-        G4double pzSemiAxis = Dimensions[ObjectNumber][2];
-        G4double pzBottomCut = Dimensions[ObjectNumber][3];
-        G4double pzTopCut = Dimensions[ObjectNumber][4];
+	G4double pxSemiAxis = Dimensions[0];
+        G4double pySemiAxis = Dimensions[1];
+        G4double pzSemiAxis = Dimensions[2];
+        G4double pzBottomCut = Dimensions[3];
+        G4double pzTopCut = Dimensions[4];
 
-	G4Ellipsoid* Ellipsoid = new G4Ellipsoid("Ellipsoid"+StringNumber,
-                    				 pxSemiAxis,
-                    				 pySemiAxis,
-                    				 pzSemiAxis,
-                    				 pzBottomCut,
-                    				 pzTopCut);
+	G4Ellipsoid* Ellipsoid = new G4Ellipsoid(Name,
+                    				         pxSemiAxis,
+                    				         pySemiAxis,
+                    				         pzSemiAxis,
+                    				         pzBottomCut,
+                    				         pzTopCut);
 }
 
-void TargetConstruction::SubtractSolid(G4int ObjectNumber, G4String Command)
-{
-    G4String StringNumber = std::to_string(ObjectNumber + 1);
+//=================================================================================================
+//  CREATE THE OBJECTS AND ITS ATTRIBUTES, SAVE TO DATABASE. BUILD THE MODEL
 
-	//From the string, be able to take the needed paramenters out as seperate variables
-	G4Tokenizer next(Command);
+//Create a simple object provided via Geant4 classes
+void TargetConstruction::CreateObject(G4String Name, G4String Type, std::vector<double> Dimensions)
+{
+    CustomObject newObject;
+    newObject.Name = Name;
+    newObject.Type = Type;
+    newObject.Dimensions = Dimensions;
+    newObject.WorldPlacement = false;
     
-	//Names of the two objects being used
-	G4String OuterObject = next();
-	G4String InnerObject= next();
+    int ObjectNumber = ObjectDatabase.size() + 1;
+    newObject.Number = ObjectNumber;
     
-	//Find the positions of the inner object inside the string 
-	G4double x = std::stod(next());
-	G4double y = std::stod(next());
-	G4double z = std::stod(next());
-	G4String LengthUnit = next();
-	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], LengthUnit, "Length");
+    ObjectDatabase.push_back (newObject);
+    
+    if (Type == "Cube")
+        Box(Name, Dimensions);
+    else if (Type == "Sphere")
+        Sphere(Name, Dimensions);
+    else if (Type == "Cylinder")
+        Cylinder(Name, Dimensions);
+    else if (Type == "Trapezoid")
+        Trapezoid(Name, Dimensions);
+    else if (Type == "Ellipsoid")
+        Ellipsoid(Name, Dimensions);
+}
 
-	//Get the correct unit for the length using the dictionary created in the TCMessenger
-	x = x * TCMessenger -> GetLengthUnit(LengthUnit);
-	y = y * TCMessenger -> GetLengthUnit(LengthUnit);
-	z = z * TCMessenger -> GetLengthUnit(LengthUnit);
+//Create complex objects by combining or subtracting components from objects
+void TargetConstruction::CreateObject(G4String Name, G4String ComponentName1, G4String ComponentName2, G4String Type, G4ThreeVector innerPosition, G4ThreeVector innerRotation)
+{
+    ComplexObject newObject;
+    
+    //Custom object properties that ComplexObject inherits from
+    newObject.Name = Name;
+    newObject.Type = Type;
+    newObject.WorldPlacement = false;
+    
+    int ObjectNumber = ObjectDatabase.size() + 1;
+    newObject.Number = ObjectNumber;
+    
+    //ComplexObject properties
+    newObject.ComponentName1 = ComponentName1;
+    newObject.ComponentName2 = ComponentName2;
+    newObject.InsidePosition = innerPosition;
+    newObject.InsideRotation = innerRotation;
+    
+    ObjectDatabase.push_back (newObject);
+    
+    if (Type == "SubtractSolid")
+    {
+        SubtractSolid(newObject);
+    }
+}
 
-	//Find the rotation of the inner object insde the string
-	G4double Rotx = std::stod(next());
-	G4double Roty = std::stod(next());
-	G4double Rotz = std::stod(next());
-	G4String AngleUnit = next();
-	TCMessenger -> CheckUnits("/Target/SubtractSolid", SubtractObject[SubtractSolidCounter], AngleUnit, "Angle");
+//=================================================================================================
+//  CREATE COMPLEX OBJECT
 
+void TargetConstruction::SubtractSolid(ComplexObject &complexObject)
+{
 	//Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
 	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
-	RotateInnerObject -> rotateX(Rotx * TCMessenger -> GetAngleUnit(AngleUnit));
-	RotateInnerObject -> rotateY(Rotz * TCMessenger -> GetAngleUnit(AngleUnit));
-	RotateInnerObject -> rotateZ(Roty * TCMessenger -> GetAngleUnit(AngleUnit));	
+	RotateInnerObject -> rotateX(complexObject.InsideRotation.x());
+	RotateInnerObject -> rotateY(complexObject.InsideRotation.y());
+	RotateInnerObject -> rotateZ(complexObject.InsideRotation.z());	
 
 	//Find the correct solids with the name of the objects inputted
-	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(OuterObject, true); 
-	G4VSolid* InnerSolid = G4SolidStore::GetInstance() -> GetSolid(InnerObject, true); 
+	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(complexObject.ComponentName1, true); 
+	G4VSolid* InnerSolid = G4SolidStore::GetInstance() -> GetSolid(complexObject.ComponentName2, true); 
 
 	//Create the new solid from 
-	G4SubtractionSolid *NewSolid = new G4SubtractionSolid("SubtractSolid" + StringNumber, 
+	G4SubtractionSolid *NewSolid = new G4SubtractionSolid(complexObject.Name, 
 							                              OuterSolid, 
 							                              InnerSolid, 
 							                              RotateInnerObject, 
-							                              G4ThreeVector(x, y, z));
-
-	G4cout << "\n- Created solid: SubtractSolid" + StringNumber << " -> Made up of " << OuterSolid -> GetName() << " & " << InnerSolid -> GetName();
-	//++SubtractSolidCounter;
+							                              complexObject.InsidePosition);
+	
+	G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(complexObject.Name, true); 
+	
+	if (Solid)
+	    G4cout << "\nSolid added successfully " << Solid -> GetName() << G4endl;
+	else
+	    G4cout << "\nERROR: Solid not added " << G4endl;
 	
 }
 
-void TargetConstruction::AddLogicalVolume(G4int ObjectNumber, G4String SolidName, G4String Material)
-{
-	//If its logic volume value is true, add its logic volume
-	if (LogicVolumeArray[ObjectNumber] == true)
-	{
-		//DefineMaterial();
-		//Finds the right G4VSolid
-		G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(SolidName, true); 
-		G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + SolidName);
-
-		//G4Region* targetRegion = new G4Region("targetRegion");
-  		//logicObject->SetRegion(targetRegion);
-  		//siloRegion->AddRootLogicalVolume(wallLog);
-	}
-}
-
-void TargetConstruction::AddPhysicalVolume(G4int ObjectNumber, G4String Name, G4LogicalVolume* MotherBox)
-{
-    if (SimMode == "Simulating")
-    {
-	    //If its logic volume value is true, add its physical volume
-	    if (LogicVolumeArray[ObjectNumber] == true)
-	    {
-		    if (MasterCheck == false)
-		    {
-			    MasterVolume = ObjectNumber;
-			    MasterCheck = true;
-		    }
-
-		    //Finds the right logic volume
-		    G4LogicalVolume* Object = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+Name, true);
-
-		    //Get its starting rotation angle
-		    G4ThreeVector StartingRotation = Rotations[ObjectNumber];
-		
-		    //Calculate how much the object rotates between each image
-		    G4double DeltaAngle = RotateObject();
-
-		    //Updates the rotation of the object
-		    G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
-		    RotateObjectAngle->rotateX(StartingRotation.x());
-		    RotateObjectAngle->rotateY(StartingRotation.y());
-		    RotateObjectAngle->rotateZ(DeltaAngle + StartingRotation.z());
-
-		    //Offsets the rotation
-		    G4ThreeVector NewTargetPosition = OffSetRotation(ObjectNumber, Positions[ObjectNumber], OffSetRadius_Cmd, DeltaAngle);
-
-		    //Create the target physical volume
-		    G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
-							 	                              NewTargetPosition,    
-							  	                              Object,           //its logical volume
-							  	                              "phy"+Name,               //its name
-							  	                              MotherBox,                     //its mother  volume
-							 	                              false,                 //no boolean operation
-							 	                              ObjectNumber,                     //copy number
-							 	                              OverlapCheck_Cmd);		//overlaps checking      
-
-		    //Visualization attributes
-		    Visualization(Object, G4Colour::White());
-
-		    //Let the runManager know the geometry has changed between runs
-		    G4RunManager::GetRunManager()->GeometryHasBeenModified();
-	    }
-	}
-}
+//=================================================================================================
+//  CREATE A LOGICAL VOLUME AND ASSIGNING IT A MATERIAL
+//  ADD ITS POSITION TO AN OBJECT
+//  ADD ITS ROTATION TO AN OBJECT
 
 G4Material* TargetConstruction::FindMaterial(G4String MaterialName)
 {
@@ -347,31 +261,153 @@ G4Material* TargetConstruction::FindMaterial(G4String MaterialName)
 	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
 }
 
-G4ThreeVector TargetConstruction::OffSetRotation(G4int ObjectNumber, G4ThreeVector CurrentPosition, G4double Radius, G4double Angle)
+void TargetConstruction::AddMaterial(G4String Name, G4String Material)
 {
-	//If the object number is the master, it rotates around centre with radius
-	if (ObjectNumber == MasterVolume)
-	{
-		if (TotalImages > 1 && Radius != 0)
+    bool Success = false;
+    
+    for (int n = 0 ; n < ObjectDatabase.size() ; n++)
+    {   if (ObjectDatabase[n].Name == Name)
+        {   ObjectDatabase[n].Material = Material;
+            ObjectDatabase[n].WorldPlacement = true;
+        
+            G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, true); 
+		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + Name);
+		    
+		    Success = true;
+		    
+            G4cout << "\nMaterial \"" << ObjectDatabase[n].Material << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
+            break;
+        }
+    }
+    if (Success = false)
+    {   G4cout << "ERROR: couldn't find object \"" << Name << "\" in the database to add its material \"" << Material << "\"" << G4endl;
+        exit(0);
+    }
+} 
+
+void TargetConstruction::AddPosition(G4String Name, G4ThreeVector Position)
+{
+    bool Success = false;
+    
+    for (int n = 0 ; n < ObjectDatabase.size() ; n++)
+    {   if (ObjectDatabase[n].Name == Name)
+        {   
+            ObjectDatabase[n].StartingPosition = Position;
+            ObjectDatabase[n].Position = Position;
+		    
+		    Success = true;
+		    
+            G4cout << "\nPosition \"" << ObjectDatabase[n].Position << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
+            break;
+        }
+    }
+    if (Success = false)
+    {   G4cout << "ERROR: couldn't find object \"" << Name << "\" in the database to add its position \"" << Position << "\"" << G4endl;
+        exit(0);
+    }
+}
+
+void TargetConstruction::AddRotation(G4String Name, G4ThreeVector Rotation)
+{
+    bool Success = false;
+    
+    for (int n = 0 ; n < ObjectDatabase.size() ; n++)
+    {   if (ObjectDatabase[n].Name == Name)
+        {   
+            ObjectDatabase[n].StartingRotation = Rotation;
+            ObjectDatabase[n].Rotation = Rotation;
+		    
+		    Success = true;
+		    
+            G4cout << "\nRotation \"" << ObjectDatabase[n].Rotation << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
+            break;
+        }
+    }
+    if (Success = false)
+    {   G4cout << "ERROR: couldn't find object \"" << Name << "\" in the database to add its rotation \"" << Rotation << "\"" << G4endl;
+        exit(0);
+    }
+}
+
+
+//=================================================================================================
+//  BUILD THE GEOMETRY IN THE WORLD VOLUME
+
+void TargetConstruction::AddPhysicalVolume(CustomObject &object, G4LogicalVolume* MotherBox)
+{
+    if (SimMode == "Simulating")
+    {
+        if (MasterCheck == false)
 		{
-			G4double NewX = Centre_Cmd.x() + cos(Angle)*Radius;
-			G4double NewZ = Centre_Cmd.z() + sin(Angle)*Radius;
+			MasterVolume = object.Number;
+			MasterCheck = true;
+		}
 
-			SetVectorPosition(ObjectNumber, G4ThreeVector(NewX,Centre_Cmd.y()+StartingPositions[ObjectNumber].y(),NewZ));
+        G4String Name = object.Name;
+		//Finds the right logic volume
+		G4LogicalVolume* LVObject = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ Name, true);
 
-			return G4ThreeVector(NewX, Centre_Cmd.y()+StartingPositions[ObjectNumber].y() ,NewZ);
+		//Get its starting rotation angle
+	    G4ThreeVector StartingRotation = object.Rotation;
+		
+		//Calculate how much the object rotates between each image
+		G4double DeltaAngle = RotateObject();
+
+		//Updates the rotation of the object
+		G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+		RotateObjectAngle->rotateX(object.StartingRotation.x());
+		RotateObjectAngle->rotateY(object.StartingRotation.y());
+		RotateObjectAngle->rotateZ(DeltaAngle + object.StartingRotation.z());
+
+		//Offsets the rotation
+		G4ThreeVector NewTargetPosition = OffSetRotation2(object, DeltaAngle);
+
+		//Create the target physical volume
+		G4VPhysicalVolume* physObject = new G4PVPlacement(RotateObjectAngle,            
+							 	                          NewTargetPosition,    
+							  	                          LVObject,           //its logical volume
+							  	                          "phy" + object.Name,               //its name
+							  	                          MotherBox,                     //its mother  volume
+							 	                          false,                 //no boolean operation
+							 	                          object.Number,                     //copy number
+							 	                          OverlapCheck_Cmd);		//overlaps checking      
+							 	                          
+							 	           
+
+		//Visualization attributes
+		Visualization(LVObject, G4Colour::White());
+
+		//Let the runManager know the geometry has changed between runs
+		G4RunManager::GetRunManager()->GeometryHasBeenModified();
+	}
+}
+
+G4ThreeVector TargetConstruction::OffSetRotation2(CustomObject &object, G4double deltaAngle)
+{
+    //If the object number is the master, it rotates around centre with radius
+	if (object.Number == MasterVolume)
+	{
+		if (TotalImages > 1 && OffSetRadius_Cmd != 0)
+		{
+			G4double NewX = Centre_Cmd.x() + cos(deltaAngle)*OffSetRadius_Cmd;
+			G4double NewZ = Centre_Cmd.z() + sin(deltaAngle)*OffSetRadius_Cmd;
+
+			G4ThreeVector NewPosition = G4ThreeVector(NewX, Centre_Cmd.y() + object.StartingPosition.y(), NewZ);
+			object.Position = NewPosition;
+
+			return NewPosition;
 		}
 		else 
-			{return Positions[ObjectNumber];}
+			{return object.Position;}
 	}
-	//If object number is greater than 0, it will rotate around the master volume
+	//If object number is greater not the master volume, it will rotate around the master volume
 	else 
 	{
-		G4double NewX = Positions[MasterVolume].x() + (cos(Angle) * CurrentPosition.x()) + (-sin(Angle) * CurrentPosition.z());
-		G4double NewZ = Positions[MasterVolume].z() + (sin(Angle) * CurrentPosition.x()) + (cos(Angle) * CurrentPosition.z());
+        G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.z());
+        G4double NewZ = object.Position.z() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.z()); 
 
-		return G4ThreeVector(NewX, StartingPositions[ObjectNumber].y() ,NewZ);
-}
+		return G4ThreeVector(NewX, object.StartingPosition.y(), NewZ);
+    }
 }
 
 void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
@@ -385,136 +421,5 @@ void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 
 void TargetConstruction::ReadOutInfo()
 {
-	/*G4cout << "\n--------------------------------------------------------------------"
-		  "\nTHE GEOMETRY SETUP: " << G4endl;
- 
-	//Loop through the number of objects there are to be created
-	for(G4int n = 0; n < TypeOfObjects.size(); n++)
-	{
-		int N = n + 1;
-		if(TypeOfObjects[n] == "Cube")
-		{
-			G4cout << "\nCube" << N << ": " 
-			          "\n  - Dimensions: x = " << G4BestUnit(Dimensions[n][0], "Length") 
-					       << ", y = " << G4BestUnit(Dimensions[n][1], "Length")
-					       << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
 
-			       << "\n  - Material: " << Materials[n]
-			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
-		}
-		else if(TypeOfObjects[n] == "HollowCube")
-		{	
-			G4cout << "\nHollowCube" << N << ": "
-			          "\n  - Dimensions: outer cube: x = " << G4BestUnit(Dimensions[n][0], "Length") 
-							   << ", y = " << G4BestUnit(Dimensions[n][1], "Length") 
-							   << ", z = " << G4BestUnit(Dimensions[n][2], "Length") 
-			       << "\n                inner cube: x = " << G4BestUnit(Dimensions[n][3], "Length") 
-							   << ", y = " << G4BestUnit(Dimensions[n][4], "Length") 
-							   << ", z = " << G4BestUnit(Dimensions[n][5], "Length")
-
-			       << "\n  - Material: " << Materials[n]
-			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
-		}
-		else if(TypeOfObjects[n] == "Sphere")
-		{
-			G4cout << "\nSphere" << N << ": "
-                               << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
-					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
-                               << "\n                inner phi = " << G4BestUnit(Dimensions[n][2], "Angle")
-					       << ", outer phi = " << G4BestUnit(Dimensions[n][3], "Angle") << ", "
-			       << "\n                inner theta = " << G4BestUnit(Dimensions[n][4], "Angle")
-					       << ", outer theta = " << G4BestUnit(Dimensions[n][5], "Angle")   
-
-			       << "\n  - Material: " << Materials[n]
-			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
-		}
-		else if(TypeOfObjects[n] == "Cylinder")
-		{	
-			G4cout << "\nCylinder" << N << ": "
-			       << "\n  - Dimensions: inner radius = " << G4BestUnit(Dimensions[n][0], "Length")
-					       << ", outer radius = " << G4BestUnit(Dimensions[n][1], "Length") << ", "
-			       << "\n                height = " << G4BestUnit(Dimensions[n][2], "Length") << ", "
-			       << "\n                inner phi = " << G4BestUnit(Dimensions[n][3], "Angle")
-					       << ", outer phi = " << G4BestUnit(Dimensions[n][4], "Angle") 
-
-			       << "\n  - Material: " << Materials[n]
-			       << "\n  - Initial position: " << G4BestUnit(StartingPositions[n], "Length") << G4endl;
-		}*/
-
-		/*else if(TypeOfObjects[n] == "Trapezoid") 
-			{Trapezoid(n);}
-
-		else if(TypeOfObjects[n] == "Ellipsoid")
-			{Ellipsoid(n);}
-
-		else if(TypeOfObjects[n] == "SubtractSolid")
-			{SubtractSolid(n);}*/
-	//}
-
-}
-
-void TargetConstruction::DefineMaterial()
-{
-	/*//Single elements
-	G4double atomicWeight = 39.95*g/mole;
-	G4double density = 1.390*g/cm3;
-	G4int z = 18;
-	G4String Name = "liquidArgon";
-	G4Material* lAr = new G4Material(Name, z, atomicWeight, density);
-
-	return lAr;*/
-
-//=======================================================================
-
-	/*//Molecules
-	G4String name = "Hydrogen";
-	G4String symbol = "H";
-	G4int z = 1;
-	G4double a = 1.01*g/mole;	
-	G4Element* hydrogen = new G4Element(name, symbol, z, a); 
-
-	name = "Oxygen";
-	symbol = "O";
-	z = 8;
-	a = 16.00*g/mole; 
-	G4Element* oxygen = new G4Element(name, symbol, z, a);
-
-	name = "Water";
-	G4double density = 1.000*g/cm3;
-	G4int n_components = 2;
-	G4Material* H2O = new G4Material(name, density, n_components);
-
-	H2O -> AddElement(hydrogen, 2);
-	H2O -> AddElement(oxygen, 1);
-
-	return H2O;*/
-
-//=====================================================================
-
-	//Isotopes
-	/*G4int z = 92;
-	G4int A = 235;
-	G4double a = 235.044*g/mole;
-	G4String name = "U235";
-	G4Isotope* isoU235 = new G4Isotope(name, z, A, a);
-
-	z = 92;
-	A = 238;
-	a = 238.051*g/mole;
-	name = "U238";
-	G4Isotope* isoU238 = new G4Isotope(name, z, A, a);
-
-	name = "enr. U";
-	G4String symbol = "U";
-	G4int nComponents = 2;
-	G4Element* enrichedU = new G4Element(name, symbol, nComponents);
-
-	enrichedU -> AddIsotope(isoU235, 80.*perCent);
-	enrichedU -> AddIsotope(isoU238, 20.*perCent);
-
-	G4double density = 19.1*g/cm3;
-	nComponents = 1;
-	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
-	G4int fraction_mass = 1;
-	mat_enrichedU -> AddElement(enrichedU, fraction_mass);*/
 }

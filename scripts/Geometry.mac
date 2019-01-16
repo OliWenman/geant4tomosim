@@ -1,44 +1,29 @@
 #/Materials/Define/Element liquidAr 18 39.95 g/mole 1.390 g/cm3
-#
-/Target/CheckAllOverlaps false
-/Target/TotalRotationAngle 180 deg
-#
-/Target/OffSet/Radius 0.2 mm			
-/Target/OffSet/Centre 0.0 0.0 0.0 mm
-#
-#/Target/Cube/Dimensions 0.6 0.6 0.6 mm
-#/Target/Material/Database G4_Al
-#/Target/Position 0.0 0.0 0.0 m
-#/Target/Rotation 0.0 0.0 0.0 deg
-#
-/Target/Cube/Dimensions 0.6 0.6 0.6 mm
-/Target/Sphere/Dimensions 0.0 0.45 mm 0 360 0 360 deg 
-/Target/SubtractSolid Cube1 Sphere2 0.0 0.0 0.0 mm 0.0 0.0 0.0 deg	
-/Target/Cylinder/Dimensions 0.0 0.2 0.8 mm 0.0 360 deg
-/Target/SubtractSolid SubtractSolid3 Cylinder4 0.0 0.0 0.0 mm 0.0 0.0 0.0 deg
-/Target/Position 0.0 0.0 0.0 mm		
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Ti
-#
-/Target/Sphere/Dimensions 0.0 0.45 mm 0 360 0 360 deg 
-/Target/SubtractSolid Sphere6 Cylinder4 0.0 0.0 0.0 mm 0.0 0.0 0.0 deg
-/Target/Position 0.0 0.0 0.0 mm
-/Target/Rotation 0.0 0.0 0.0 deg
-/Target/Material/Database G4_Ag
-#
-#/Target/Trapezoid/Dimensions 0.1 0.05 0.3 0.2 0.2 mm
-#/Target/Position 0.0 0.0 0.0 mm		
-#/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Al
-#
-#/Target/Ellipsoid/Dimensions 0.1 0.2 0.1 0.00 0 mm
-#/Target/Position 0.0 0.0 0.0 mm		
-#/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Al
 
-#/Target/Cube/Dimensions 0.6 0.6 0.6 mm
-#/Target/Sphere/Dimensions 0.0 0.45 mm 0 360 0 360 deg 
-#/Target/SubtractSolid Cube1 Sphere2 0.0 0.0 0.0 mm 0.0 0.0 0.0 deg	
-#/Target/Position 0.0 0.0 0.0 mm
-#/Target/Rotation 0.0 0.0 0.0 deg
-#/Target/Material/Database G4_Ag
+#Base of the object is a cube
+/Target/Cube/Dimensions Base 0.6 0.6 0.6 mm
+#/Target/Cube/Dimensions Base Test 0 0 mm
+
+#Create the cylinder that will be used to cut out part of the base
+/Target/Cylinder/Dimensions HoleCut 0.0 0.3 0.8 mm 1 360 deg
+
+#Create the sphere that will cut out the base
+/Target/Sphere/Dimensions SphereCut 0 0.4 mm 0 360 0 360 deg
+
+#Subtract the cylinder from the base
+/Target/SubtractSolid CubeHole Base HoleCut 0 0 0 mm 0 0 0 deg
+
+#Subtract the sphere from the base
+/Target/SubtractSolid ComplexObject CubeHole SphereCut 0 0 0 m 0 0 0 deg
+
+#Add the attributes to the object
+/Target/Material ComplexObject G4_Al
+/Target/Position ComplexObject 0 0 0 mm
+/Target/Rotation ComplexObject 0 0 0 deg
+
+#================================================
+
+#/Target/Cube/Dimensions test 0.6 0.6 0.6 mm
+#/Target/Material test G4_Al
+#/Target/Position test 0.0 0.0 0.0 mm
+#/Target/Rotation test 0.0 0.0 0.0 deg

@@ -128,7 +128,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
     //Apply the commands from the macro files to fill the values
-	G4cout << G4endl << "Reading Geometry.mac... ";
+	G4cout << "\nReading Geometry.mac... " << G4endl;
 	
 	//UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
