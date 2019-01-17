@@ -82,7 +82,7 @@ void Simulation::Setup()
   	UImanager = G4UImanager::GetUIpointer();
 	UImanager -> ApplyCommand("/tracking/verbose 0");	//Gives information about particle
 	UImanager -> ApplyCommand("/control/verbose 0");	
-	UImanager -> ApplyCommand("/hits/verbose 0");
+	UImanager -> ApplyCommand("/hits/erbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -111,6 +111,9 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
+    //Used to check if nDetectors are over graphics limit if graphics turned on. Readjusts them if they are
+    //std::vector<int> nDetectors = LimitGraphics(nDetectorsY, nDetectorsZ);
+
 	PathToScripts = "./../scripts/";
 
 	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
@@ -166,8 +169,6 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 
     UImanager -> ApplyCommand("/run/initialize");	
 
-	Visualisation();
-
 	Ready = true;
 }
 
@@ -178,6 +179,8 @@ void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4Str
 
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double TotalAngle, int Image, int NumberOfImages, std::string Mode)
 {
+    TotalParticles = LimitGraphics(TotalParticles, Image, Mode);
+
 	//Checks to see if simulation is ready (if pyInitialise has been used before)
 	if (Ready == true)
 	{
@@ -194,7 +197,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			
 		    if (Mode == "Calibrating")
 	        { 
-
                 std::ofstream SaveToFile;
     
                 //Open the file within the path set
@@ -203,7 +205,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                 //Output error if can't open file
                 if( !SaveToFile ) 
                 { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
-              	exit(1);
+              	    exit(1);
            	    }
     
                 SettingsLog log(SaveToFile, G4cout);
@@ -214,17 +216,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 	            PL -> ReadOutInfo(SaveLogPath);
 
 			    log << "\n--------------------------------------------------------------------"
-			           "\nMETA DATA: \n"
-
-			        << "\n- The seed used: " << seedCmd
-			        << "\n- Number of projections being processed: " << NumberOfImages
-                    << "\n- Number of photons per image: " << TotalParticles
-                    << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
-                 
-                    << "\n\n--------------------------------------------------------------------"
-                 
-                    << "\nCommands used for target geometry: \n" << G4endl;
+                       "\nSETTINGS COMMANDS USED: \n" << G4endl;
 
                 std::ifstream ReadFile;
                 std::string Line;
@@ -237,16 +229,16 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                     exit(1); 
                 }
              
-                log << "\n--------------------------------------------------------------------"
-                 
-                    << "\nCommands used for settings: \n" << G4endl;
-             
                  while ((std::getline(ReadFile, Line))) 
                 {
                     if (Line.find('#') == std::string::npos)
                         log << Line << G4endl;
                 }
                 ReadFile.close();
+                
+                log << "\n--------------------------------------------------------------------"
+                 
+                    << "\nGEOMETRY COMMANDS USED: \n" << G4endl;
                 
                 ScriptName = "Geometry.mac";
                 ReadFile.open(PathToScripts+ScriptName);
@@ -258,9 +250,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
             
                 while ((std::getline(ReadFile, Line))) 
                 {
-                    if (Line.find('#') == std::string::npos)
+                    //if (Line.find('#') == std::string::npos)
                         log << Line << G4endl;
                 }
+                
+                log << G4endl;
 
                 ReadFile.close();
              
@@ -268,6 +262,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			    time_t now = time(0);
 			    //Convert now to tm struct for local timezone
 			    tm* localtm = localtime(&now);
+
+                Visualisation();
 
 			    G4cout << "\n--------------------------------------------------------------------"
 			              "\nStarting simulation... \n";
@@ -279,6 +275,35 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 		                  "\n                                 Geant4 info"
 	                      "\n================================================================================" << G4endl;
 		    } 
+		    else if (Mode == "Simulating")
+		    {
+		        std::ofstream SaveToFile;
+    
+                //Open the file within the path set
+                SaveToFile.open(SaveLogPath, std::fstream::app); 
+   	
+                //Output error if can't open file
+                if( !SaveToFile ) 
+                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+              	exit(1);
+           	    }
+    
+                SettingsLog log(SaveToFile, G4cout);
+
+			    log << "\n--------------------------------------------------------------------"
+			           "\nMETA DATA: \n"
+
+			        << "\n- The seed used: " << seedCmd
+			        << "\n- Number of projections being processed: " << NumberOfImages
+                    << "\n- Number of photons per image: " << TotalParticles
+                    << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
+			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
+                 
+                    << "\n\n--------------------------------------------------------------------" << G4endl;
+                    
+                    
+                 SaveToFile.close();
+		    }
 		}
 		PGA -> ResetEvents(Image + 1);
 
@@ -333,13 +358,10 @@ void Simulation::Visualisation()
 	{	
 		visManager = new G4VisExecutive("quiet");
 
-		//Prints a warning incase user forgot to turn off visualization as will heavily affect simulation time. Use only to check geometry position
-		G4cout << "\n\n////////////////////////////////////////////////////////////////////////////////\n"
-		          "\n     WARNING: GRAPHICS SYSTEM ENABLED - Will increase computational time.\n" 
-		          "\n////////////////////////////////////////////////////////////////////////////////\n" << G4endl;
-
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");
+		
+		PGA -> SetProgressBar(false);
 	}
 }
 
@@ -406,4 +428,21 @@ void Simulation::BeamOn(unsigned long long int nParticles)
 	{	//If the inputted number of particles is within the limit, fire that number of particles
 		runManager -> BeamOn(nParticles);
 	}
+}
+
+unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticles, int nImage, std::string Mode)
+{
+    if (DC -> GetVisualization() == true && nParticles > 5000)
+    {   
+        if (Mode == "Calibrating" && nImage == 0)
+        {
+            G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
+                      "\n         WARNING: " << nParticles << " PARTICLES IS TOO MANY TOO SIMULATE WITH GRAPHICS"
+                      "\n                    Reducing the number of particles to 1\n"
+                      "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;;         
+        }
+        nParticles = 1;     
+    }
+    
+    return nParticles;
 }

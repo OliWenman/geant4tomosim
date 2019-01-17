@@ -9,10 +9,11 @@
 #include "G4VSolid.hh"
 #include "G4Tubs.hh"
 #include "G4Box.hh"
-#include "G4SubtractionSolid.hh"
 #include "G4Sphere.hh"
 #include "G4Trd.hh"
 #include "G4Ellipsoid.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4UnionSolid.hh"
 #include "G4SolidStore.hh"
 
 //Logical volume
@@ -81,11 +82,6 @@ void TargetConstruction::Box(G4String Name, std::vector<double> Dimensions)
 	G4Box* Box = new G4Box(Name, Dimensions[0], Dimensions[1], Dimensions[2]);
 	
 	G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, true); 
-	
-	if (Solid)
-	    G4cout << "\nSolid added successfully " << Solid -> GetName() << G4endl;
-	else
-	    G4cout << "\nERROR: Solid not added " << G4endl;
 }
 
 void TargetConstruction::Cylinder(G4String Name, std::vector<double> Dimensions)
@@ -108,11 +104,6 @@ void TargetConstruction::Cylinder(G4String Name, std::vector<double> Dimensions)
 
 void TargetConstruction::Sphere(G4String Name, std::vector<double> Dimensions)
 {
-    G4cout << "\nSphere dimensions ";
-    for (int n = 0 ; n < Dimensions.size() ; n++)
-        G4cout << Dimensions[n] << " ";
-    G4cout << G4endl;
-
 	//Get the dimensions of the sphere
 	G4double innerRadius = Dimensions[0];
 	G4double outerRadius = Dimensions[1];
@@ -190,6 +181,10 @@ void TargetConstruction::CreateObject(G4String Name, G4String Type, std::vector<
         Trapezoid(Name, Dimensions);
     else if (Type == "Ellipsoid")
         Ellipsoid(Name, Dimensions);
+    else
+    {   G4cout << "\nERROR: Solid \n" << Type << "\" is of unknown type! " << G4endl;
+        exit(1);
+    }
 }
 
 //Create complex objects by combining or subtracting components from objects
@@ -217,6 +212,10 @@ void TargetConstruction::CreateObject(G4String Name, G4String ComponentName1, G4
     {
         SubtractSolid(newObject);
     }
+    else if (Type == "UnionSolid")
+    {
+        UnionSolid(newObject);
+    }
 }
 
 //=================================================================================================
@@ -240,14 +239,26 @@ void TargetConstruction::SubtractSolid(ComplexObject &complexObject)
 							                              InnerSolid, 
 							                              RotateInnerObject, 
 							                              complexObject.InsidePosition);
-	
-	G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(complexObject.Name, true); 
-	
-	if (Solid)
-	    G4cout << "\nSolid added successfully " << Solid -> GetName() << G4endl;
-	else
-	    G4cout << "\nERROR: Solid not added " << G4endl;
-	
+}
+
+void TargetConstruction::UnionSolid(ComplexObject &complexObject)
+{
+    //Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
+	G4RotationMatrix* RotateInnerObject = new G4RotationMatrix();
+	RotateInnerObject -> rotateX(complexObject.InsideRotation.x());
+	RotateInnerObject -> rotateY(complexObject.InsideRotation.y());
+	RotateInnerObject -> rotateZ(complexObject.InsideRotation.z());	
+
+	//Find the correct solids with the name of the objects inputted
+	G4VSolid* OuterSolid = G4SolidStore::GetInstance() -> GetSolid(complexObject.ComponentName1, true); 
+	G4VSolid* InnerSolid = G4SolidStore::GetInstance() -> GetSolid(complexObject.ComponentName2, true); 
+
+	//Create the new solid from 
+	G4UnionSolid *NewSolid = new G4UnionSolid(complexObject.Name, 
+							                  OuterSolid, 
+							                  InnerSolid, 
+					                          RotateInnerObject, 
+				                              complexObject.InsidePosition);
 }
 
 //=================================================================================================
@@ -270,7 +281,8 @@ void TargetConstruction::AddMaterial(G4String Name, G4String Material)
         {   ObjectDatabase[n].Material = Material;
             ObjectDatabase[n].WorldPlacement = true;
         
-            G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, true); 
+            G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, false); 
+            
 		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + Name);
 		    
 		    Success = true;
@@ -295,8 +307,7 @@ void TargetConstruction::AddPosition(G4String Name, G4ThreeVector Position)
             ObjectDatabase[n].Position = Position;
 		    
 		    Success = true;
-		    
-            G4cout << "\nPosition \"" << ObjectDatabase[n].Position << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
+		  
             break;
         }
     }
@@ -318,7 +329,6 @@ void TargetConstruction::AddRotation(G4String Name, G4ThreeVector Rotation)
 		    
 		    Success = true;
 		    
-            G4cout << "\nRotation \"" << ObjectDatabase[n].Rotation << "\" added to object \"" << ObjectDatabase[n].Name << "\" " << G4endl;
             break;
         }
     }

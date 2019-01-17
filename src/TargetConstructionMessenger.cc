@@ -56,7 +56,11 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 	//Command to set the dimensions of subtraction solid
 	SubtractionSolid_Cmd = new G4UIcmdWithAString("/Target/SubtractSolid", this);
 	SubtractionSolid_Cmd -> SetGuidance("Choose two solids to be subtracted to create a new shape: \n"
-	                                    "Name ComponenentName1 ComponenetName2 x y z lengthUnit xTheta yTheta zTheta");
+	                                    "Name ComponenentName1 ComponenetName2 x y z lengthUnit xTheta yTheta zTheta angleUnit");
+	                                    
+    UnionSolid_Cmd = new G4UIcmdWithAString("/Target/UnionSolid", this);
+    UnionSolid_Cmd -> SetGuidance("Choose two solids to be joinded together to create a new shape: \n"
+	                              "Name ComponenentName1 ComponenetName2 x y z lengthUnit xTheta yTheta zTheta angleUnit");
 
 //=================================================================================================
 //  POSITION, ROTATION AND MATERIAL COMMANDS	
@@ -133,9 +137,10 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete CubeDimensions_Cmd;
 	delete SphereDimensions_Cmd;
 	delete CylinderDimensions_Cmd;
-	delete SubtractionSolid_Cmd;
 	delete TrapezoidDimensions_Cmd;
 	delete EllipsoidDimensions_Cmd;
+	delete SubtractionSolid_Cmd;
+	delete UnionSolid_Cmd;
 
 	delete TargetPosition_Cmd;
 	delete TargetRotation_Cmd;
@@ -319,6 +324,37 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	    
 	    TC -> CreateObject(Name, OuterObject, InnerObject, type, innerPosition, innerRotation);
 	}
+	else if(command == UnionSolid_Cmd)
+	{
+	    G4String type = "UnionSolid";
+	    
+		//From the string, be able to take the needed paramenters out as seperate variables
+	    G4Tokenizer next(newValue);
+    
+        G4String Name = CheckName(next, command, newValue);
+    
+	    //Names of the two objects being used
+	    G4String OuterObject = next();
+	    G4String InnerObject= next();
+    
+	    //Find the positions of the inner object inside the string 
+	    G4double x = ConvertToDouble(next, newValue, command);
+	    G4double y = ConvertToDouble(next, newValue, command);
+	    G4double z = ConvertToDouble(next, newValue, command);
+	    G4double LengthUnit = CheckUnits(next, command, newValue, "Length");
+	    x = x * LengthUnit; y = y * LengthUnit; z = z * LengthUnit;
+	    G4ThreeVector innerPosition = G4ThreeVector(x, y, z); 
+
+	    //Find the rotation of the inner object insde the string
+	    G4double Rotx = ConvertToDouble(next, newValue, command); 
+	    G4double Roty = ConvertToDouble(next, newValue, command);; 
+	    G4double Rotz = ConvertToDouble(next, newValue, command);;
+	    G4double AngleUnit = CheckUnits(next, command, newValue, "Angle");
+	    Rotx = Rotx * AngleUnit; Roty = Roty * AngleUnit; Rotz = Rotz * AngleUnit;
+	    G4ThreeVector innerRotation = G4ThreeVector(Rotx, Roty, Rotz);
+	    
+	    TC -> CreateObject(Name, OuterObject, InnerObject, type, innerPosition, innerRotation);
+	} 
 	else if(command == TargetPosition_Cmd)
 	{
 		G4Tokenizer next(newValue);
@@ -377,6 +413,11 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	else if( command == CalibrationImages_Cmd)
 	{
 	    TC -> SetCalibrationImages(CalibrationImages_Cmd -> GetNewIntValue(newValue));
+	}
+	else
+	{
+	    G4cout << "\nError: command not found!" << G4endl;
+	    exit(1);
 	}
 }
 

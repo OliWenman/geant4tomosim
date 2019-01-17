@@ -32,8 +32,8 @@ cdef class PySim:
     def __cinit__(self):
         self.Ready = False
         self.FFF = False
-        self.FFM = True
-        self.BE = False
+        self.FFM = False
+        self.BE = True
         self.thisptr = new Simulation()
 
     #Delete the C++ class
@@ -53,14 +53,14 @@ cdef class PySim:
     def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 2000):
         if nDetY >= 1 and nDetZ >= 1:
 
-           #Make the number of detectors availiable for the Python class
-           self.nDetectorsY = nDetY
-           self.nDetectorsZ = nDetZ
-
            self.Bins = nBins
 
            #Call the C++ function
-           self.thisptr.pyInitialise(self.nDetectorsY, self.nDetectorsZ, DetectorDimensions, self.Bins)
+           self.thisptr.pyInitialise(nDetY, nDetZ, DetectorDimensions, self.Bins)
+           
+           #Make the number of detectors availiable for the Python class
+           self.nDetectorsY = nDetY
+           self.nDetectorsZ = nDetZ
 
            self.Ready = True
 
@@ -84,6 +84,10 @@ cdef class PySim:
                      obj.close()
                   except:
                      pass # Was already closed
+                     
+           rotationArray = np.linspace(start = 0, stop = dTheta, num = NumberOfImages) 
+           calibrationLine = np.zeros(nCalibrations*2)
+           rotationArray = np.concatenate([calibrationLine, rotationArray])
 
            #Create a h5 file to view the data after the simulation is complete
            h5file1 = h5py.File(Path + 'SimulationData.nxs', 'w')
@@ -111,14 +115,19 @@ cdef class PySim:
            data.attrs['NX_class'] = 'NXdata'
            data.attrs['defination'] = 'NXtomo'
 
+           #/entry/entry1/tomo_entry/data/Images
+           imageSet = data.create_dataset('Images', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
+
+           #/entry/entry1/tomo_entry/data/rotation_angle
+           rotation_angle = data.create_dataset('rotation_angle', data = rotationArray)
+           rotation_angle.attrs['axis'] = '1'
+           rotation_angle.attrs['label'] = '1'
+           rotation_angle.attrs['units'] = 'radians'
+
            WorkingDirectory = os.path.dirname(os.getcwd())
            BuildDirectory = "/Output/HDF5/"
            FullPath = WorkingDirectory + BuildDirectory
            print "\nThe data will be saved in:", FullPath
-
-           imageGroup = data.create_group('Projections')
-           imageGroup.attrs['NX_class'] = 'NXdata'
-           imageSet = imageGroup.create_dataset('Images', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
 
            print("The simulation will record the following data: ")
            print("- Transmission")

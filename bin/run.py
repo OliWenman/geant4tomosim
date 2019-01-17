@@ -7,14 +7,14 @@ sys.path.insert(0, './../src')
 import G4Units as G4
 import sim
 
-nDetY = 25
-nDetZ = 21
-DetectorDimensions = [0.01, 0.05, 0.05]*G4.mm
+nDetY = 250
+nDetZ = 210
+DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
-nBins = 100
-NumberOfImages = 5
+nBins = 1000
+NumberOfImages = 10
 TotalRotation = 180*G4.deg
-nParticles = 10
+nParticles = 100000
 
 fluoreFF = False
 fluoreFM = False

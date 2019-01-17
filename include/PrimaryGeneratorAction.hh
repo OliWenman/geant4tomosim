@@ -43,6 +43,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void ResetEvents(int nImage){CurrentEvent = 0; ImageProgressCheck = TotalProgressCheck = -1; CurrentImage = nImage;}
 		
 		void SetSavingTime(double value){SavingTime = value;}
+		
+		void SetProgressBar(bool value){ShowProgressBar = value;}
 
 		//Get methods
 		//G4ParticleGun* GetParticleGun() {return ParticleGun;}
@@ -106,6 +108,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		double remainingTime;
 		bool timeCheck;
 		G4String SimMode;
+		
+		bool ShowProgressBar;
 };
 
 #endif

@@ -50,6 +50,8 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 
 	nImage = 0;
 	WorldMaterial_Cmd = "G4_AIR";
+	
+	WarningChecked = false;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -117,17 +119,43 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 	//Create the world physical volume. The world is the only physical volume with no mother volume.
 	G4VPhysicalVolume* physWorld = new G4PVPlacement(0,            //no rotation
-							 G4ThreeVector(),       //at (0,0,0)
-							 logicWorld,            //its logical volume
-							 "World",               //its name
-							 0,                     //its mother  volume
-							 false,                 //no boolean operation
-							 0,                     //copy number
-							 true);		//overlaps checking                     
+							                         G4ThreeVector(),       //at (0,0,0)
+							                         logicWorld,            //its logical volume
+							                         "World",               //its name
+							                         0,                     //its mother  volume
+							                         false,                 //no boolean operation
+							                         0,                     //copy number
+							                         true);		//overlaps checking                     
 
 	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
-	PVDetectors(logicWorld);
+	
+	//G4ocu
+	
+	//Don't place the detectors if over the limit for visualization as will be used to test geometry placement
+	if (Visualization_Cmd == true)
+	{
+	    int limit = 1000;    
+	    
+	    int nDetectors = NoDetectorsY_Cmd*NoDetectorsZ_Cmd;
+	    
+	    if (nDetectors > limit && WarningChecked == false)   
+	    {   
+	        
+	            G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
+	                      "\n                                 WARNING:"
+	                      "\n                      TOO MANY DETECTORS TO VISUALISE!"
+	                      "\n              The limit is " << limit << ". You attempted to place " << nDetectors << 
+	                      ".\n                  Aborting the placement of the detectors.\n"
+	                      "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
+	                      
+	            WarningChecked = true;
+	    } 
+	    else if (nDetectors < limit)
+	        PVDetectors(logicWorld);
+	}
+	else 
+	    PVDetectors(logicWorld);
 	
 	
 	TC -> Construct(logicWorld);
@@ -177,9 +205,9 @@ void DetectorConstruction::SolidDetectors()
 	if (FluorescenceDet == true)
 	{
 		SolidFluoDet = new G4Box("FluorescenceDetector",
-			         	 FluorDetSize_Cmd.x(),
-					 FluorDetSize_Cmd.y(),
-					 FluorDetSize_Cmd.z());
+			         	         FluorDetSize_Cmd.x(),
+					             FluorDetSize_Cmd.y(),
+					             FluorDetSize_Cmd.z());
 	}
 }
 
@@ -217,8 +245,16 @@ void DetectorConstruction::LVDetectors()
 	//Make the detectors sensitive to hits
 	AttachSensitiveDetector(PhantomBoxes_logic, "TomographyDetector");
 
-	Visualization(container_logic, G4Colour::Red());
+    Visualization(container_logic, G4Colour::Red());
 	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
+
+    if (NoDetectorsY_Cmd > 30 || NoDetectorsZ_Cmd > 30)
+    {
+	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
+  		//LV -> SetVisAttributes(ObjectColour);
+	    VisAttributes -> SetVisibility(false);
+	    PhantomBoxes_logic -> SetVisAttributes(VisAttributes);
+    }
 
 //------------------------------------------------------------------
 	//FLUORESCENCE DETECTOR
@@ -239,24 +275,24 @@ void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
 	G4int NumberOfVoxels = NoDetectorsY_Cmd * NoDetectorsZ_Cmd;
 
 	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
-            						      G4ThreeVector(DetectorPosX,0,0),                   // translation
-           						      container_logic,            // logical volume
-            						      "PhantomContainer",    // name
-            						      logicMotherBox,           // mother volume
-            						      false,                 // No op. bool.
-           						      0,			//copy number
-							      false);                    //overlap checking
+            						                      G4ThreeVector(DetectorPosX,0,0),                   // translation
+           						                          container_logic,            // logical volume
+            						                      "PhantomContainer",    // name
+            						                      logicMotherBox,           // mother volume
+            						                      false,                 // No op. bool.
+           						                          0,			//copy number
+							                              false);                    //overlap checking
 
 	//Build the phantom container
 	param -> BuildContainerSolid(container_phys);
 
 	//
 	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
-                       						     PhantomBoxes_logic,           // logical volume
-                        					     container_logic,              // mother volume
-           							     kUndefined,                  // optimisation hint
-                       						     NumberOfVoxels, 		// number of voxels
-                       						     param);                  // parameterisation
+                       						                     PhantomBoxes_logic,           // logical volume
+                        					                     container_logic,              // mother volume
+           							                             kUndefined,                  // optimisation hint
+                       						                     NumberOfVoxels, 		// number of voxels
+                       						                     param);                  // parameterisation
 
 	//Gives warning messages when set to 1?
 	PhantomBoxes_phys->SetRegularStructureId(1);
@@ -266,13 +302,13 @@ void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
 	if (FluorescenceDet == true)
 	{
 		G4VPhysicalVolume* phyFluoDetector = new G4PVPlacement(0,
-							       	       FluorDetPos_Cmd,
-							               FluoDet_logic,
-							               "Fluorecense detector",
-							               logicMotherBox,
-							               false,
-							               0,
-							               false);
+							       	                           FluorDetPos_Cmd,
+							                                   FluoDet_logic,
+							                                   "Fluorecense detector",
+							                                   logicMotherBox,
+							                                   false,
+							                                   0,
+							                                   false);
 	}
 }
 
@@ -335,12 +371,8 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4St
 
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-	//Set a visualization setting only if the setting is turned on
-	if (Visualization_Cmd == true)
-	{
-		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
-  		LV -> SetVisAttributes(ObjectColour);
-	}
+    G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
+  	LV -> SetVisAttributes(ObjectColour);
 }
 
 void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle )

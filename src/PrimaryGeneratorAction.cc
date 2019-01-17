@@ -36,6 +36,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	BeamData = false;
 	timeCheck = false;
 	
+	ShowProgressBar = true;
+	
 	//Defualt values
 	EnergyDistTypeCmd = "Mono";
 	energyCmd = 30*keV;
@@ -112,6 +114,8 @@ void PrimaryGeneratorAction::PrintTime(double time)
 
 void PrimaryGeneratorAction::PrintProgress()
 {
+    if (ShowProgressBar == true)
+    {
 	++CurrentEvent;
 
 	//Works out the percentage of how many events it has completed
@@ -170,6 +174,7 @@ void PrimaryGeneratorAction::PrintProgress()
 		G4cout << G4endl;
 		Timer.Stop();
 	}
+	}
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -213,7 +218,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		++BeamEnergyFreq[bin];
 	}
 
-	PrintProgress();
+    if (ShowProgressBar ==  true)
+	    PrintProgress();
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)

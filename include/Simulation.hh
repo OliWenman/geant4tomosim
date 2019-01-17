@@ -46,6 +46,7 @@ class Simulation
 		void Setup();
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
+		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);
 		
 		//Pointers to different classes
 		SimulationMessenger* simMessenger;

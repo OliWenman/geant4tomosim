@@ -53,6 +53,7 @@ class TargetConstructionMessenger: public G4UImessenger
 		G4UIcmdWithAString *EllipsoidDimensions_Cmd;
 		
 		G4UIcmdWithAString *SubtractionSolid_Cmd;
+		G4UIcmdWithAString *UnionSolid_Cmd;
 
 		//Object attributes
 		G4UIcmdWithAString *TargetPosition_Cmd;

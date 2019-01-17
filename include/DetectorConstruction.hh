@@ -115,6 +115,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4int nImage;
 
 		bool FluorescenceDet;
+		
+		bool WarningChecked;
 };
 
 #endif

@@ -50,7 +50,6 @@ class TargetConstruction
 		
 		std::vector<CustomObject> GetObjectDatabase(){return ObjectDatabase;}
 		
-		
 		//Create objects from TCMessenger
 		void CreateObject(G4String Name, G4String Type, std::vector<double> dimensions);
 		void CreateObject(G4String Name, G4String ComponentName1, G4String ComponentName2, G4String Type, G4ThreeVector innerPosition, G4ThreeVector innerRotation);
@@ -74,6 +73,7 @@ class TargetConstruction
 		void Ellipsoid(G4String Name, std::vector<double> dimensions);
 		//Complex objects
 		void SubtractSolid(ComplexObject &complexObject);
+		void UnionSolid(ComplexObject &complexObject);
 
         //Positioning functions
         G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
