@@ -22,6 +22,8 @@ struct CustomObject
     
     G4ThreeVector StartingRotation;
     G4ThreeVector Rotation;
+    
+    G4String Colour;
 };
 
 struct ComplexObject : CustomObject

@@ -60,6 +60,8 @@ class TargetConstruction
 		void AddPosition(G4String Name, G4ThreeVector Position);
 		void AddRotation(G4String Name, G4ThreeVector Rotation);
 		
+		void AddColour(G4String Name, G4String Material);
+		
 		//Info
 		void ReadOutInfo();
 

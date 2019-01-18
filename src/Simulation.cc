@@ -268,7 +268,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			    G4cout << "\n--------------------------------------------------------------------"
 			              "\nStarting simulation... \n";
 			          
-			    log << "\n" << asctime(localtm);
+			    G4cout << "\n" << asctime(localtm);
+			    
 			    SaveToFile.close();
 
 			    G4cout << "\n================================================================================"
@@ -305,7 +306,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                  SaveToFile.close();
 		    }
 		}
-		PGA -> ResetEvents(Image + 1);
+
+        PGA -> ResetEvents(Image + 1);
 
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
@@ -323,7 +325,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 		if (WriteToTextCmd == true)
 			{data -> WriteToTextFile(Image);}
 
-		if (Image == 0)
+		if (Image == 0 && Mode == "Simulating")
 			{PGA -> SetBeamCheck(true);}
 
 		if (Image + 1 == NumberOfImages)
@@ -356,7 +358,7 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		visManager = new G4VisExecutive("quiet");
+		visManager = new G4VisExecutive();
 
 		visManager -> Initialize();
 		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");

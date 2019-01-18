@@ -141,13 +141,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	    
 	    if (nDetectors > limit && WarningChecked == false)   
 	    {   
-	        
-	            G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
-	                      "\n                                 WARNING:"
-	                      "\n                      TOO MANY DETECTORS TO VISUALISE!"
-	                      "\n              The limit is " << limit << ". You attempted to place " << nDetectors << 
-	                      ".\n                  Aborting the placement of the detectors.\n"
-	                      "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
+	           G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
+	                     "\n                                 WARNING:"
+	                     "\n                      TOO MANY DETECTORS TO VISUALISE!"
+	                     "\n              The limit is " << limit << ". You attempted to place " << nDetectors << 
+	                     ".\n                  Aborting the placement of the detectors.\n"
+	                     "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
 	                      
 	            WarningChecked = true;
 	    } 

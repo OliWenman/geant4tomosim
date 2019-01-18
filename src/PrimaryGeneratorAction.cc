@@ -114,8 +114,6 @@ void PrimaryGeneratorAction::PrintTime(double time)
 
 void PrimaryGeneratorAction::PrintProgress()
 {
-    if (ShowProgressBar == true)
-    {
 	++CurrentEvent;
 
 	//Works out the percentage of how many events it has completed
@@ -174,7 +172,6 @@ void PrimaryGeneratorAction::PrintProgress()
 		G4cout << G4endl;
 		Timer.Stop();
 	}
-	}
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -191,7 +188,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Generate the particle in the event
       	fastParticleGun -> GeneratePrimaryVertex(anEvent);
       	
-      	if (FluoreFM == true)
+      	if (FluoreFM == true && SimMode == "Simulating")
         		data -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
     }
 	else
@@ -199,21 +196,21 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Generate the particle in the event
         ParticleGun -> GeneratePrimaryVertex(anEvent);
          
-        if (FluoreFM == true)
+        if (FluoreFM == true && SimMode == "Simulating")
        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
     }
 
-	if (BeamCheck == false && BeamData == true)
+	if (BeamCheck == false && BeamData == true && SimMode == "Simulating")
 	{	//Save beam energy data for the first image
-        	int bin;
+       	int bin;
         	
-        	if (EnergyDistTypeCmd == "Mono")
+        if (EnergyDistTypeCmd == "Mono")
              bin = floor(energyCmd*1000/(eMax/Bins)) -1;
         else
              bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;
 		
 		if (bin < 0)
-        		bin = 0;
+       		bin = 0;
 
 		++BeamEnergyFreq[bin];
 	}

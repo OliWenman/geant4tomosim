@@ -83,6 +83,10 @@ TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Tar
 //=================================================================================================
 //  OVERLAP CHECKING COMMAND
 
+    ColourAttribute_Cmd = new G4UIcmdWithAString("/Target/Colour", this);
+    ColourAttribute_Cmd -> SetGuidance("Set the visualization attribute of the target (if graphics are turned on): \n"
+                                       "Name Colour"); 
+
 	//Command to set any boolean operaions for the object
 	BooleanOp_Cmd = new G4UIcmdWithABool("/Target/VolumeExclusion", this);
 	BooleanOp_Cmd -> SetGuidance("Set the boolean operation for the physical volume of the object");
@@ -145,6 +149,7 @@ TargetConstructionMessenger::~TargetConstructionMessenger()
 	delete TargetPosition_Cmd;
 	delete TargetRotation_Cmd;
 
+    delete ColourAttribute_Cmd;
 	delete TargetMaterial_Cmd;
 	delete BooleanOp_Cmd;
 	delete OverlapCheck_Cmd;
@@ -390,6 +395,15 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	    G4String Material = next();
 	    
 	    TC -> AddMaterial(Name, Material);
+	}
+	else if(command == ColourAttribute_Cmd)
+	{
+	    G4Tokenizer next(newValue);
+	    
+	    G4String Name = next();
+	    G4String Colour = next();
+	    
+	    TC -> AddColour(Name, Colour);
 	}
 	else if(command == OverlapCheck_Cmd)
 	{

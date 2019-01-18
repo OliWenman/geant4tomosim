@@ -384,7 +384,8 @@ void TargetConstruction::AddPhysicalVolume(CustomObject &object, G4LogicalVolume
 							 	           
 
 		//Visualization attributes
-		Visualization(LVObject, G4Colour::White());
+		//if (object.Colour == "Red")
+		//    Visualization(LVObject, G4Colour::Red());
 
 		//Let the runManager know the geometry has changed between runs
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
@@ -421,14 +422,48 @@ G4ThreeVector TargetConstruction::OffSetRotation2(CustomObject &object, G4double
 
 void TargetConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-	if (VisualizationValue == true)
-	{
-		G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
-  		LV -> SetVisAttributes(ObjectColour);
-	}
+	G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
+  	LV -> SetVisAttributes(ObjectColour);
 }
 
 void TargetConstruction::ReadOutInfo()
 {
 
+}
+
+void TargetConstruction::AddColour(G4String Name, G4String Colour)
+{
+    //Finds the right logic volume
+	G4LogicalVolume* LV = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ Name, true);
+	if (Colour == "Red")
+        LV -> SetVisAttributes(G4Colour::Red());
+    
+    else if (Colour == "Blue")
+        LV -> SetVisAttributes(G4Colour::Blue());
+        
+    else if (Colour == "Green")
+        LV -> SetVisAttributes(G4Colour::Green()); 
+        
+    else if (Colour == "White")
+        LV -> SetVisAttributes(G4Colour::White()); 
+        
+    
+    /*bool Success = false;
+
+    G4cout << "Adding colour "<< G4endl;
+	
+	for (int n = 0 ; n < ObjectDatabase.size() ; n++)
+    {   if (ObjectDatabase[n].Name == Name)
+        {   
+            ObjectDatabase[n].Colour = Colour;
+		    
+		    Success = true;
+		    
+            break;
+        }
+    }
+    if (Success = false)
+    {   G4cout << "ERROR: couldn't find object \"" << Name << "\" in the database to add its colour \"" << Colour << "\"" << G4endl;
+        exit(0);
+    }*/
 }

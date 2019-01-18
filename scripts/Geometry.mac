@@ -2,33 +2,67 @@
 #OBJECT A
 
 #Base of the object
-/Target/Cube/Dimensions Base 0.5 0.5 0.35 mm
+/Target/Cube/Dimensions BaseA 0.5 0.5 0.35 mm
 
 #Inside of the box cut out
-/Target/Cube/Dimensions HollowCutout 0.4 0.4 0.35 mm
-/Target/SubtractSolid NewSolid Base HollowCutout 0 0 0.3 mm 0 0 0 rad
+/Target/Cube/Dimensions HollowCutoutA 0.4 0.4 0.35 mm
+/Target/SubtractSolid NewSolidA BaseA HollowCutoutA 0 0 0.3 mm 0 0 0 rad
 
 #Create the top part to join on
-/Target/Cube/Dimensions TopPart 0.2 0.2 0.4 mm
-/Target/Cube/Dimensions InsideTopPart 0.1 0.1 0.4 mm
-/Target/SubtractSolid HollowTop TopPart InsideTopPart 0 0 0 mm 0 0 0 deg
-/Target/UnionSolid NewBase HollowTop NewSolid 0 0 -0.05 mm 0 0 0 deg
+/Target/Cube/Dimensions TopPartA 0.2 0.2 0.4 mm
+/Target/Cube/Dimensions InsideTopPartA 0.1 0.1 0.4 mm
+/Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 mm 0 0 0 deg
+/Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 mm 0 0 0 deg
 
 #Cut out the first side
-/Target/Cube/Dimensions SideCutout 0.2 0.2 0.2 mm
-/Target/SubtractSolid SideCutout1 NewBase SideCutout 0.4 0.2 0.1 mm 0 0 0 rad
+/Target/Cube/Dimensions SideCutoutA 0.2 0.2 0.2 mm
+/Target/SubtractSolid SideCutout1A NewBaseA SideCutoutA 0.4 0.2 0.1 mm 0 0 0 rad
 
 #Cut out the second side
-/Target/SubtractSolid SideCutout2 SideCutout1 SideCutout -0.4 -0.2 0.1 mm 0 0 0 rad
+/Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 mm 0 0 0 rad
 
 #Cut out the third side
-/Target/SubtractSolid SideCutout3 SideCutout2 SideCutout -0.2 0.4 0.1 mm 0 0 0 rad
+/Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 mm 0 0 0 rad
 
 #Cut out the fourth side
-/Target/SubtractSolid ObjectA SideCutout3 SideCutout 0.2 -0.4 0.1 mm 0 0 0 rad
+/Target/SubtractSolid ObjectA SideCutout3A SideCutoutA 0.2 -0.4 0.1 mm 0 0 0 rad
 
-/Target/Material ObjectA G4_Al
-/Target/Position ObjectA 0 0 0 mm
-/Target/Rotation ObjectA 0 0 0 deg
 #===============================================
 #Object B
+
+#Zigzag
+/Target/Cube/Dimensions SmallSideB 0.15 0.125 0.2 mm
+/Target/Cube/Dimensions CubeCutoutB 0.15 0.125 0.3 mm
+/Target/SubtractSolid LShapeB SmallSideB CubeCutoutB 0.15 0.1 0 mm 0 0 0 deg
+/Target/Cube/Dimensions StraightB 0.2 0.05 0.2 mm
+/Target/UnionSolid zB LShapeB StraightB -0.275 0.075 0 mm 0 0 0 deg
+ 
+#Attach the objects to the Base
+/Target/Cube/Dimensions BaseB 0.5 0.5 0.15 mm
+/Target/UnionSolid Zjoin1B BaseB zB 0.175 -0.375 -0.35 mm 0 0 0 deg
+/Target/UnionSolid Zjoin2B Zjoin1B zB -0.175 0.375 -0.35 mm 0 0 180 deg
+/Target/UnionSolid Zjoin3B Zjoin2B zB -0.375 -0.175 -0.35 mm 0 0 90 deg 
+/Target/UnionSolid Zjoin4B Zjoin3B zB 0.375 0.175 -0.35 mm 0 0 -90 deg
+
+#Cut out the indent in the middle
+/Target/Cube/Dimensions IndentB 0.25 0.25 0.05 mm
+/Target/SubtractSolid SubtractObjectB Zjoin4B IndentB 0 0 -0.1 mm 0 0 0 deg 
+
+#Attach the pole to the object
+/Target/Cube/Dimensions Pole 0.05 0.05 0.3 mm
+/Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 mm 0 0 0 deg
+
+#=============================================
+#Position the objects
+/Target/Material ObjectA G4_Al
+/Target/Colour ObjectA Blue
+/Target/Position ObjectA 0 0 0 mm
+/Target/Rotation ObjectA 0 0 0 deg
+
+/Target/Material ObjectB G4_Ti
+/Target/Colour ObjectB Red
+/Target/Position ObjectB 0 0 0.275 mm
+/Target/Rotation ObjectB 0 0 0 deg
+
+
+
