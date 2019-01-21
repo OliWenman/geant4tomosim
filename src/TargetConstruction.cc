@@ -352,12 +352,23 @@ void TargetConstruction::AddPhysicalVolume(CustomObject &object, G4LogicalVolume
 			MasterCheck = true;
 		}
 
-        G4String Name = object.Name;
 		//Finds the right logic volume
-		G4LogicalVolume* LVObject = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ Name, true);
-
+		G4LogicalVolume* LVObject = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ object.Name, true);
+		
+		if (object.Colour == "Red")
+            LVObject -> SetVisAttributes(G4Colour::Red());
+    
+        else if (object.Colour == "Blue")
+            LVObject -> SetVisAttributes(G4Colour::Blue());
+        
+        else if (object.Colour == "Green")
+            LVObject -> SetVisAttributes(G4Colour::Green()); 
+        
+        else if (object.Colour == "White")
+            LVObject -> SetVisAttributes(G4Colour::White());
+		
 		//Get its starting rotation angle
-	    G4ThreeVector StartingRotation = object.Rotation;
+	    //G4ThreeVector StartingRotation = object.Rotation;
 		
 		//Calculate how much the object rotates between each image
 		G4double DeltaAngle = RotateObject();
@@ -400,9 +411,9 @@ G4ThreeVector TargetConstruction::OffSetRotation2(CustomObject &object, G4double
 		if (TotalImages > 1 && OffSetRadius_Cmd != 0)
 		{
 			G4double NewX = Centre_Cmd.x() + cos(deltaAngle)*OffSetRadius_Cmd;
-			G4double NewZ = Centre_Cmd.z() + sin(deltaAngle)*OffSetRadius_Cmd;
+			G4double NewY = Centre_Cmd.y() + sin(deltaAngle)*OffSetRadius_Cmd;
 
-			G4ThreeVector NewPosition = G4ThreeVector(NewX, Centre_Cmd.y() + object.StartingPosition.y(), NewZ);
+			G4ThreeVector NewPosition = G4ThreeVector(NewX, NewY, Centre_Cmd.z() + object.StartingPosition.z());
 			object.Position = NewPosition;
 
 			return NewPosition;
@@ -413,10 +424,14 @@ G4ThreeVector TargetConstruction::OffSetRotation2(CustomObject &object, G4double
 	//If object number is greater not the master volume, it will rotate around the master volume
 	else 
 	{
-        G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.z());
-        G4double NewZ = object.Position.z() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.z()); 
+        //G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.z());
+        //G4double NewZ = object.Position.z() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.z()); 
+        G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.y());
+        G4double NewY = object.Position.y() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.y()); 
+        
+        
 
-		return G4ThreeVector(NewX, object.StartingPosition.y(), NewZ);
+		return G4ThreeVector(NewX, NewY, object.StartingPosition.z());
     }
 }
 
@@ -433,7 +448,7 @@ void TargetConstruction::ReadOutInfo()
 
 void TargetConstruction::AddColour(G4String Name, G4String Colour)
 {
-    //Finds the right logic volume
+    /*//Finds the right logic volume
 	G4LogicalVolume* LV = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ Name, true);
 	if (Colour == "Red")
         LV -> SetVisAttributes(G4Colour::Red());
@@ -445,12 +460,11 @@ void TargetConstruction::AddColour(G4String Name, G4String Colour)
         LV -> SetVisAttributes(G4Colour::Green()); 
         
     else if (Colour == "White")
-        LV -> SetVisAttributes(G4Colour::White()); 
-        
+        LV -> SetVisAttributes(G4Colour::White());*/       
     
-    /*bool Success = false;
+    bool Success = false;
 
-    G4cout << "Adding colour "<< G4endl;
+    //G4cout << "Adding colour "<< G4endl;
 	
 	for (int n = 0 ; n < ObjectDatabase.size() ; n++)
     {   if (ObjectDatabase[n].Name == Name)
@@ -465,5 +479,5 @@ void TargetConstruction::AddColour(G4String Name, G4String Colour)
     if (Success = false)
     {   G4cout << "ERROR: couldn't find object \"" << Name << "\" in the database to add its colour \"" << Colour << "\"" << G4endl;
         exit(0);
-    }*/
+    }
 }

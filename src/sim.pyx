@@ -27,6 +27,8 @@ cdef class PySim:
 
     #Boolean if simulation is ready to go
     cdef public bint Ready
+    
+    cdef public str SaveFilePath
   
     #Constructor, create an instance of the C++ class
     def __cinit__(self):
@@ -34,6 +36,12 @@ cdef class PySim:
         self.FFF = False
         self.FFM = False
         self.BE = True
+       
+        #Creates the default path to save file 
+        WorkingDirectory = os.path.dirname(os.getcwd())
+        BuildDirectory = "/Output/HDF5/"
+        self.SaveFilePath = WorkingDirectory + BuildDirectory
+        
         self.thisptr = new Simulation()
 
     #Delete the C++ class
@@ -84,10 +92,6 @@ cdef class PySim:
                      obj.close()
                   except:
                      pass # Was already closed
-                     
-           rotationArray = np.linspace(start = 0, stop = dTheta, num = NumberOfImages) 
-           calibrationLine = np.zeros(nCalibrations*2)
-           rotationArray = np.concatenate([calibrationLine, rotationArray])
 
            #Create a h5 file to view the data after the simulation is complete
            h5file1 = h5py.File(Path + 'SimulationData.nxs', 'w')
@@ -100,34 +104,74 @@ cdef class PySim:
            nxentry.attrs['NX_class'] = 'NXentry'
            nxentry.attrs['default'] = 'data'
            
+           #/entry/entry1/features
+           features = h5file1.create_group('features')
+           features.attrs['NX_class'] = 'features'
+           #detector.create_dataset('data', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
+           
            #/entry/entry1/tomo_entry
            tomo_entry = nxentry.create_group('tomo_entry')
            tomo_entry.attrs['NX_class'] = 'NXsubentry'
-           
            
            #/entry/entry1/tomo_entry/user
            user = tomo_entry.create_group('user')
            user.attrs['NX_class'] = 'NXuser'
            user.create_dataset('username', data = getpass.getuser())
            
+           #entry/entry1/tomo_entry/data/instrument
+           instrument = tomo_entry.create_group('instrument')
+           instrument.attrs['NX_class'] = 'NXinstrument'
+           
+           #entry/entry1/tomo_entry/data/instrument/detector
+           detector = instrument.create_group('detector')
+           detector.attrs['NX_class'] = 'NXdetector'
+           
+           #entry/entry1/tomo_entry/data/instrument/detector/data
+           detectordata = detector.create_dataset('data', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
+           
+           #entry/entry1/tomo_entry/data/instrument/detector/image_key
+           darkKey = np.full(shape = (nCalibrations,), fill_value = 2)
+           lightKey = np.full(shape = (nCalibrations,), fill_value = 1)
+           dataKey = np.zeros(NumberOfImages)
+           image_key = detector.create_dataset('image_key', data = np.concatenate((darkKey, lightKey, dataKey)))
+           
+           #/entry/entry1/tomo_entry/sample
+           sample = tomo_entry.create_group('sample')
+           sample.attrs['NX_class'] = 'NXsample'
+           
+           #/entry/entry1/tomo_entry/sample/rotation_angle
+           rotationArray = np.linspace(start = 0, stop = dTheta, num = NumberOfImages) 
+           calibrationLine = np.zeros(nCalibrations*2)
+           rotationArray = np.concatenate([calibrationLine, rotationArray])
+           rotation_angle = sample.create_dataset('rotation_angle', data = rotationArray)
+           rotation_angle.attrs['axis'] = '1'
+           rotation_angle.attrs['label'] = '1'
+           rotation_angle.attrs['units'] = 'radians'
+           
            #/entry/entry1/tomo_entry/data
            data = tomo_entry.create_group('data')
            data.attrs['NX_class'] = 'NXdata'
            data.attrs['defination'] = 'NXtomo'
 
-           #/entry/entry1/tomo_entry/data/Images
-           imageSet = data.create_dataset('Images', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
+           #/entry/entry1/tomo_entry/data/data
+           imageSet = data.create_group('data')
+           imageSet.attrs['NX_class'] = 'NXdata'
+           
+           source_addr = "/entry1/tomo_entry/instrument/detector/data"
+           target_addr = "/entry/entry1/tomo_entry/data/data"
+           imageSet.attrs['target'] = source_addr
+           #h5file1[target_addr] = h5file1[source_addr]
+           
+           
+           rotation_angleData = data.create_group('rotation_angle')
+           source_addr = "/entry1/tomo_entry/sample/rotation_angle"
+           target_addr = "/entry/entry1/tomo_entry/data/rotation_angle"
+           #h5file1[target_addr] = h5file1[source_addr]
+           rotation_angleData.attrs['target'] = source_addr
+           
+           #/entry/entry1
 
-           #/entry/entry1/tomo_entry/data/rotation_angle
-           rotation_angle = data.create_dataset('rotation_angle', data = rotationArray)
-           rotation_angle.attrs['axis'] = '1'
-           rotation_angle.attrs['label'] = '1'
-           rotation_angle.attrs['units'] = 'radians'
-
-           WorkingDirectory = os.path.dirname(os.getcwd())
-           BuildDirectory = "/Output/HDF5/"
-           FullPath = WorkingDirectory + BuildDirectory
-           print "\nThe data will be saved in:", FullPath
+           print "\nThe data will be saved in:", self.SaveFilePath
 
            print("The simulation will record the following data: ")
            print("- Transmission")
@@ -143,8 +187,6 @@ cdef class PySim:
               fluorescenceGroup.attrs['NX_class'] = 'NXdata'
 
               fluorescenceGroup.attrs['axes'] = xLabel         # X axis of default plot
-              #fluorescenceGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              #fluorescenceGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
               fluorescenceGroup.attrs[yLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
 
               fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
@@ -160,7 +202,6 @@ cdef class PySim:
               fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
 
               fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
-              #fluorescenceFMGroup.attrs['signal'] = yLabel      # Y axis of default plot
               fluorescenceFMGroup.attrs[xLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
 
               fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
@@ -194,7 +235,7 @@ cdef class PySim:
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                calibrationOutPut = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, nCalibrations, Mode), (-1, self.nDetectorsY))  
                #Append the 2D Data to a 3D data set
-               imageSet[nCalibrations + nImage, :, :] = calibrationOutPut[:, :]     
+               detectordata[nCalibrations + nImage, :, :] = calibrationOutPut[:, :]     
            
            #Run the simulation for the number of images that are required
            for nImage in range(NumberOfImages):
@@ -204,7 +245,7 @@ cdef class PySim:
                simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, NumberOfImages, Mode), (-1, self.nDetectorsY))  
                
                #Append the 2D Data to a 3D data set
-               imageSet[nImage + (nCalibrations*2), :, :] = simOutput[:, :]
+               detectordata[nImage + (nCalibrations*2), :, :] = simOutput[:, :]
                #print("\nTransmission data saved")
                iSavingTime = time.time()
                if nImage == 0:
@@ -267,3 +308,6 @@ cdef class PySim:
 
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
+        
+    def setFilePath(self, FilePath):
+        self.SaveFilePath = FilePath

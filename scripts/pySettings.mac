@@ -13,7 +13,7 @@
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
 /world/material G4_Galactic
-/world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/world/visualization true	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings		
 /detector/material G4_AIR	#(Set the material of the detectors)

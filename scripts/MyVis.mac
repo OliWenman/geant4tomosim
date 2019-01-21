@@ -1,5 +1,5 @@
 #Macro file for the visualization setting for the initialization phase of the simulation when running in interactive mode
-#/run/initialize
+/run/initialize
 /vis/verbose 0 #errors
 
 #Use this open statement to create a .heprep file suitable for viewing in HepRApp:
@@ -8,7 +8,7 @@
 /vis/heprep/setFileName X-RayData
 
 #Disable auto refresh and quieten vis messages whilst scene and trajectories are established:
-/vis/viewer/set/autoRefresh false
+/vis/viewer/set/autoRefresh true
 
 #Draw geometry:
 /vis/drawVolume
@@ -60,7 +60,7 @@
 /vis/scene/endOfEventAction accumulate 200
 
 #Re-establish auto refreshing and verbosity:
-/vis/viewer/set/autoRefresh false
+/vis/viewer/set/autoRefresh true
 
 # For file-based drivers, use this to create an empty detector view:
 #/vis/viewer/flush

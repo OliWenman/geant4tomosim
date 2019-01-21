@@ -13,18 +13,13 @@
 /Target/Cube/Dimensions InsideTopPartA 0.1 0.1 0.4 mm
 /Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 mm 0 0 0 deg
 /Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 mm 0 0 0 deg
+/Target/SubtractSolid NewBaseATest NewBaseA InsideTopPartA 0 0 0.2 mm 0 0 0 deg
 
-#Cut out the first side
+#Cut out the sides
 /Target/Cube/Dimensions SideCutoutA 0.2 0.2 0.2 mm
-/Target/SubtractSolid SideCutout1A NewBaseA SideCutoutA 0.4 0.2 0.1 mm 0 0 0 rad
-
-#Cut out the second side
+/Target/SubtractSolid SideCutout1A NewBaseATest SideCutoutA 0.4 0.2 0.1 mm 0 0 0 rad
 /Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 mm 0 0 0 rad
-
-#Cut out the third side
 /Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 mm 0 0 0 rad
-
-#Cut out the fourth side
 /Target/SubtractSolid ObjectA SideCutout3A SideCutoutA 0.2 -0.4 0.1 mm 0 0 0 rad
 
 #===============================================
@@ -54,6 +49,7 @@
 
 #=============================================
 #Position the objects
+
 /Target/Material ObjectA G4_Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
@@ -61,7 +57,7 @@
 
 /Target/Material ObjectB G4_Ti
 /Target/Colour ObjectB Red
-/Target/Position ObjectB 0 0 0.275 mm
+/Target/Position ObjectB 0 0 0.45 mm
 /Target/Rotation ObjectB 0 0 0 deg
 
 
