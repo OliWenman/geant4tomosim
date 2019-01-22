@@ -1,3 +1,12 @@
+#==============================================
+#/Materials/Define/Molecule Blah 1 kg/m3 3
+#/Materials/AddTo/Molecule Blah G4_O 1
+#/Materials/AddTo/Molecule Blah G4_H 2
+
+/Materials/Define/Compound Bronze 2 8800 kg/m3 
+/Materials/AddTo/Compound Bronze Cu 90 %
+/Materials/AddTo/Compound Bronze Zn 10 %
+
 #================================================
 #OBJECT A
 
@@ -50,7 +59,7 @@
 #=============================================
 #Position the objects
 
-/Target/Material ObjectA G4_Al
+/Target/Material ObjectA Bronze
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
 /Target/Rotation ObjectA 0 0 0 deg
@@ -59,6 +68,4 @@
 /Target/Colour ObjectB Red
 /Target/Position ObjectB 0 0 0.45 mm
 /Target/Rotation ObjectB 0 0 0 deg
-
-
 

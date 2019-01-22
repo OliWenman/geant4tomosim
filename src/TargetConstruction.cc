@@ -266,10 +266,19 @@ void TargetConstruction::UnionSolid(ComplexObject &complexObject)
 //  ADD ITS POSITION TO AN OBJECT
 //  ADD ITS ROTATION TO AN OBJECT
 
-G4Material* TargetConstruction::FindMaterial(G4String MaterialName)
+G4Material* TargetConstruction::FindMaterial(G4String MaterialName, G4String ObjectName)
 {
 	//Obtain pointer to NIST material manager to find the build materials 
-	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
+	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
+	if (material)
+	{
+	    return material;
+	}
+	else 
+	{
+	    G4cout << "\nERROR: material \"" << MaterialName << "\" not found for object \"" << ObjectName << "\"! " << G4endl;
+	    exit(0);
+	}
 }
 
 void TargetConstruction::AddMaterial(G4String Name, G4String Material)
@@ -283,7 +292,7 @@ void TargetConstruction::AddMaterial(G4String Name, G4String Material)
         
             G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, false); 
             
-		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material), "LV" + Name);
+		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material, Name), "LV" + Name);
 		    
 		    Success = true;
 		    

@@ -13,7 +13,7 @@
 #World Settings
 /world/size 20 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
 /world/material G4_Galactic
-/world/visualization true	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings		
 /detector/material G4_AIR	#(Set the material of the detectors)
@@ -21,9 +21,9 @@
 /detector/fluorescence/dimensions 2 0.01 1 mm
 
 #Beam Settings
-/beam/energy/type Gauss
+/beam/energy/type Mono
 /beam/energy/mono 20 keV
-/beam/energy/sigma 5 keV
+/beam/energy/sigma 10 keV
 /beam/position/halfx 1.05 mm
 /beam/position/halfy 1.25 mm
 

@@ -111,9 +111,6 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
-    //Used to check if nDetectors are over graphics limit if graphics turned on. Readjusts them if they are
-    //std::vector<int> nDetectors = LimitGraphics(nDetectorsY, nDetectorsZ);
-
 	PathToScripts = "./../scripts/";
 
 	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);

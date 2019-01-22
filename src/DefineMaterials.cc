@@ -3,6 +3,7 @@
 
 #include "G4Material.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4NistManager.hh"
 
 DefineMaterials::DefineMaterials()
 {
@@ -24,15 +25,64 @@ void DefineMaterials::DefineIsotope(G4String name, G4int z, G4int A, G4double at
 	G4Isotope* newIsotope = new G4Isotope(name, z, A, atomicWeight);
 }
 
-void DefineMaterials::DefineMolecules()
+void DefineMaterials::DefineMolecule(G4String Name, G4double density, G4int n_components)
 {
-
+    G4Material* newMaterial = new G4Material(Name, density, n_components);
 }
 
-void DefineMaterials::DefineCompounds()
+void DefineMaterials::AddElementToMolecule(G4String MoleculeName, G4String ElementName, G4int NumberOfAtoms)
 {
-
+    G4Material* Molecule = FindMaterial(MoleculeName);
+    G4Element* Element = FindElement(ElementName);
+    
+    if (Element && Molecule)
+        Molecule -> AddElement(Element, NumberOfAtoms);
+    else
+    {
+        if(!Element)
+            G4cout << "ERROR: Couldn't find element \"" << ElementName << "\" to add to molecule \"" << MoleculeName << "\"" << G4endl;
+        if (!Molecule)
+            G4cout << "ERROR: Couldn't find compound \"" << MoleculeName << "\" " << G4endl;
+        
+        exit(1);
+    }
 }
+
+void DefineMaterials::DefineCompound(G4String Name, G4double density, G4int n_components)
+{
+    G4Material* newCompound = new G4Material(Name, density, n_components);
+}
+
+void DefineMaterials::AddElementToCompound(G4String CompoundName, G4String ElementName, G4double FractionalMass)
+{
+    G4Material* Compound = FindMaterial(CompoundName);
+    G4Element* Element = FindElement(ElementName);
+    
+    if (Element && Compound)
+        Compound -> AddElement(Element, FractionalMass);
+    else
+    {
+        if(!Element)
+            G4cout << "ERROR: Couldn't find element \"" << ElementName << "\" to add to element \"" << CompoundName << "\"" << G4endl;
+        if (!Compound)
+            G4cout << "ERROR: Couldn't find compound \"" << CompoundName << "\" " << G4endl;
+        
+        exit(1);
+    }
+}
+
+G4Material* DefineMaterials::FindMaterial(G4String MaterialName)
+{
+	//Obtain pointer to NIST material manager to find the build materials 
+	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
+}
+
+G4Element* DefineMaterials::FindElement(G4String ElementName)
+{
+    //Obtain pointer to NIST material manager to find the element
+	return G4NistManager::Instance() -> FindOrBuildElement(ElementName, false);
+}
+
 
 //=======================================================================
 

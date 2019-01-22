@@ -12,12 +12,12 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 nBins = 1000
-NumberOfImages = 5
+NumberOfImages = 1
 TotalRotation = 180*G4.deg
 nParticles = 20000000
 
 fluoreFF = False
-fluoreFM = False
+fluoreFM = True
 beamEnergy = False
 
 Sim = sim.PySim()
@@ -27,7 +27,7 @@ Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
 Sim.setFilePath("/home/xol73553/Documents/NeXusTesting")
 
-Sim.run(nParticles, TotalRotation, NumberOfImages)
+#Sim.run(nParticles, TotalRotation, NumberOfImages)
 
 #print "Photon transmission = ", Sim.photonTransmission()
 

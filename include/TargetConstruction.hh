@@ -82,7 +82,7 @@ class TargetConstruction
 		G4ThreeVector OffSetRotation2(CustomObject &object, G4double deltaAngle);
 
 		//Functions for finding materials and adding visualization
-		G4Material* FindMaterial(G4String MaterialName);
+		G4Material* FindMaterial(G4String MaterialName, G4String ObjectName);
 		void Visualization(G4LogicalVolume*, G4Colour);
 		
 		//Pointer to its messenger class

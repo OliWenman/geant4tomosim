@@ -94,7 +94,7 @@ cdef class PySim:
                      pass # Was already closed
 
            #Create a h5 file to view the data after the simulation is complete
-           h5file1 = h5py.File(Path + 'SimulationData.nxs', 'w')
+           h5file1 = h5py.File(self.SaveFilePath + 'SimulationData.nxs', 'w')
            #Create a h5 file to view the data after the simulation is complete
 
            h5file1.attrs['default'] = 'entry'

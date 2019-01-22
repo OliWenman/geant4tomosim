@@ -4,6 +4,8 @@
 #include "globals.hh"
 #include <map>
 #include "G4UImessenger.hh"
+#include "G4Tokenizer.hh"
+#include "G4UIcommand.hh"
 
 class DefineMaterials;
 
@@ -29,13 +31,24 @@ class DefineMaterialsMessenger: public G4UImessenger
 		//Methods
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 	private:
+	    G4double CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit);
+	    template <typename T> T ConvertToNumber(G4Tokenizer &next, G4String input, G4UIcommand* command);
+	
 		DefineMaterials *materials;		
 
 		G4UIdirectory *MaterialsDirectory;
 
 		G4UIcmdWithAString *DefElement;
 		G4UIcmdWithAString *DefIsotope;
+		
+		G4UIcmdWithAString *DefMolecule;
+		G4UIcmdWithAString *AddElementToMolecule;
+		
+		G4UIcmdWithAString *DefCompound;
+	    G4UIcmdWithAString *AddElementToCompound;	
 
-		std::map<std::string, double> UnitDict;
+		std::map<std::string, double> densityUnits;
+		std::map<std::string, double> atomicWeightUnits;
+	    std::map<std::string, double> percentageUnit;	
 };
 #endif
