@@ -1,7 +1,18 @@
 #==============================================
-#/Materials/Define/Molecule Blah 1 kg/m3 3
-#/Materials/AddTo/Molecule Blah G4_O 1
-#/Materials/AddTo/Molecule Blah G4_H 2
+#CREATE CUSTOM MATERIALS
+
+#/Materials/Define/Molecule H2O 3 1 kg/m3 
+#/Materials/AddTo/Molecule H2O O 1
+#/Materials/AddTo/Molecule H2O H 2
+
+#/Materials/Define/Isotope U235 92 235 235.055 g/mole
+#/Materials/Define/Isotope U238 92 238 238.051 g/mole
+#/Materials/Define/IsotopeMix Enr.U U 2
+#/Materials/AddTo/IsotopeMix Enr.U U235 80 %
+#/Materials/AddTo/IsotopeMix Enr.U U238 20 %
+#/Materials/AddDensity/IsotopeMix Enr.U 10.5 g/cm3
+
+
 
 /Materials/Define/Compound Bronze 2 8800 kg/m3 
 /Materials/AddTo/Compound Bronze Cu 90 %
@@ -57,7 +68,7 @@
 /Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 mm 0 0 0 deg
 
 #=============================================
-#Position the objects
+#Place the objects
 
 /Target/Material ObjectA Bronze
 /Target/Colour ObjectA Blue

@@ -2,7 +2,9 @@
 #include "DefineMaterialsMessenger.hh"
 
 #include "G4Material.hh"
+#include "G4Isotope.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 #include "G4NistManager.hh"
 
 DefineMaterials::DefineMaterials()
@@ -11,18 +13,104 @@ DefineMaterials::DefineMaterials()
 }
 
 DefineMaterials::~DefineMaterials()
-{
-	delete materialsMessenger;
+{	
+    //Free up memory of stored custom G4Elements and G4Isotopes
+    for (int i =0; i< ElementList.size();i++)
+        delete (ElementList[i]);
+   
+    for (int i =0; i< IsotopeList.size();i++)
+        delete (IsotopeList[i]); 
+    
+    ElementList.clear();
+    IsotopeList.clear();
+    
+    delete materialsMessenger;
 }
 
 void DefineMaterials::DefineElement(G4String name, G4int z, G4double a, G4double density)
 {
-	G4Material* newMaterial = new G4Material(name, z, a, density);
+	G4Material* newElement = new G4Material(name, z, a, density);
 }
 
 void DefineMaterials::DefineIsotope(G4String name, G4int z, G4int A, G4double atomicWeight)
 {
 	G4Isotope* newIsotope = new G4Isotope(name, z, A, atomicWeight);
+	IsotopeList.push_back(newIsotope);
+}
+
+void DefineMaterials::DefineIsotopeMix(G4String name, G4String symbol, G4int nComponents)
+{
+    G4Element* newIsotopeMix = new G4Element(name, symbol, nComponents);
+    ElementList.push_back(newIsotopeMix);
+}
+
+void DefineMaterials::AddToIsoMix(G4String IsotopeMixName, G4String IsotopeName, G4double Abundance)
+{
+    int IsoNumber;
+    int IsoMixNumber;
+    bool IsoFound = false;
+    bool IsoMixFound = false;
+    
+    for(int n = 0 ; n < IsotopeList.size() ; n++)
+    {
+        if (IsotopeList[n] -> GetName() == IsotopeName)
+        {    
+            IsoNumber = n;
+            IsoFound = true;
+            break;
+        } 
+    } 
+    
+    for(int n = 0 ; n < ElementList.size() ; n++)
+    {
+        if (ElementList[n] -> GetName() == IsotopeMixName)
+        {    
+            IsoMixNumber = n;
+            IsoMixFound = true;
+            G4cout << "\nIsotopeMix nComp = " << ElementList[n] -> GetNumberOfIsotopes() << G4endl;
+            break;
+        } 
+    } 
+    
+    if(IsoMixFound == true && IsoFound == true)
+    {
+        ElementList[IsoMixNumber] -> AddIsotope(IsotopeList[IsoNumber], Abundance);
+    }
+    else
+    {
+        if(IsoMixFound == false)
+            G4cout << "ERROR: Couldn't find isotope mix \"" << IsotopeMixName << "\" to add the isotope \"" << IsotopeName << "\"" << G4endl;
+        if (IsoFound == false)
+            G4cout << "ERROR: Couldn't find isotope \"" << IsotopeName << "\" " << G4endl;
+        
+        exit(1);
+    }   
+}
+
+void DefineMaterials::AddIsoMixDensity(G4String IsotopeMixName, G4double Density)
+{
+    int IsoMixNumber;
+    bool IsoMixFound = false;
+    
+    for(int n = 0 ; n < ElementList.size() ; n++)
+    {
+        if (ElementList[n] -> GetName() == IsotopeMixName)
+        {    
+            IsoMixNumber = n;
+            IsoMixFound = true;
+            break;
+        } 
+    } 
+    
+    if(IsoMixFound == true )
+    {
+        G4Material* newMaterial = new G4Material(IsotopeMixName, Density, 1);
+        newMaterial -> AddElement(ElementList[IsoMixNumber], 1);
+    }
+    else
+    {
+        G4cout << "ERROR: Couldn't find isotope mix \"" << IsotopeMixName << "\" to add the density \"" << G4BestUnit(Density, "Density") << "\"" << G4endl;
+    }
 }
 
 void DefineMaterials::DefineMolecule(G4String Name, G4double density, G4int n_components)
@@ -71,6 +159,34 @@ void DefineMaterials::AddElementToCompound(G4String CompoundName, G4String Eleme
     }
 }
 
+void DefineMaterials::DefineMixture(G4String Name, G4double density, G4int n_components)
+{
+    G4Material* newMaterial = new G4Material(Name, density, n_components);
+}
+
+void DefineMaterials::AddMaterialToMixture(G4String MixtureName, G4String MaterialName, G4double FractionalMass)
+{
+    G4Material* Mixture = FindMaterial(MixtureName);
+    G4Material* AddMaterial = FindMaterial(MaterialName);
+    G4Element* AddElement = FindElement(MaterialName);
+    
+    if (Mixture && AddMaterial)
+        Mixture -> AddMaterial(AddMaterial, FractionalMass);
+        
+    else if (Mixture && AddElement)
+        Mixture -> AddElement(AddElement, FractionalMass);
+        
+    else
+    {
+        if(!Mixture)
+            G4cout << "ERROR: Couldn't find compound \"" << MixtureName << "\" " << G4endl;
+        if (!AddElement && !AddMaterial)
+             G4cout << "ERROR: Couldn't find \"" << MaterialName << "\" to add to mixture \"" << MixtureName << "\"" << G4endl;
+        
+        exit(1);
+    }
+}
+
 G4Material* DefineMaterials::FindMaterial(G4String MaterialName)
 {
 	//Obtain pointer to NIST material manager to find the build materials 
@@ -80,61 +196,21 @@ G4Material* DefineMaterials::FindMaterial(G4String MaterialName)
 G4Element* DefineMaterials::FindElement(G4String ElementName)
 {
     //Obtain pointer to NIST material manager to find the element
-	return G4NistManager::Instance() -> FindOrBuildElement(ElementName, false);
+	G4Element* element = G4NistManager::Instance() -> FindOrBuildElement(ElementName, false);
+	
+	//If can't find element in NIST database, try the custom ones
+	if (!element)
+	{
+	    for(int n = 0 ; n < ElementList.size() ; n++)
+        {
+            if (ElementList[n] -> GetName() == ElementName)
+            {    
+                element = ElementList[n];
+                break;
+            } 
+        } 
+	}
+	
+	return element;
+	
 }
-
-
-//=======================================================================
-
-	/*//Molecules
-	G4String name = "Hydrogen";
-	G4String symbol = "H";
-	G4int z = 1;
-	G4double a = 1.01*g/mole;	
-	G4Element* hydrogen = new G4Element(name, symbol, z, a); 
-
-	name = "Oxygen";
-	symbol = "O";
-	z = 8;
-	a = 16.00*g/mole; 
-	G4Element* oxygen = new G4Element(name, symbol, z, a);
-
-	name = "Water";
-	G4double density = 1.000*g/cm3;
-	G4int n_components = 2;
-	G4Material* H2O = new G4Material(name, density, n_components);
-
-	H2O -> AddElement(hydrogen, 2);
-	H2O -> AddElement(oxygen, 1);
-
-	return H2O;
-
-//=====================================================================
-
-	//Isotopes
-	G4int z = 92;
-	G4int A = 235;
-	G4double a = 235.044*g/mole;
-	G4String name = "U235";
-	G4Isotope* isoU235 = new G4Isotope(name, z, A, a);
-
-	z = 92;
-	A = 238;
-	a = 238.051*g/mole;
-	name = "U238";
-	G4Isotope* isoU238 = new G4Isotope(name, z, A, a);
-
-	name = "enr. U";
-	G4String symbol = "U";
-	G4int nComponents = 2;
-	G4Element* enrichedU = new G4Element(name, symbol, nComponents);
-
-	enrichedU -> AddIsotope(isoU235, 80.*perCent);
-	enrichedU -> AddIsotope(isoU238, 20.*perCent);
-
-	G4double density = 19.1*g/cm3;
-	nComponents = 1;
-	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
-	G4int fraction_mass = 1;
-	mat_enrichedU -> AddElement(enrichedU, fraction_mass);
-*/

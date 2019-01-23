@@ -228,7 +228,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
              
                  while ((std::getline(ReadFile, Line))) 
                 {
-                    if (Line.find('#') == std::string::npos)
+                    //if (Line.find('#') == std::string::npos)
+                    if(Line[1] != '/')
                         log << Line << G4endl;
                 }
                 ReadFile.close();
@@ -247,8 +248,10 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
             
                 while ((std::getline(ReadFile, Line))) 
                 {
-                    //if (Line.find('#') == std::string::npos)
+                    //if (Line.find("#/") == std::string::npos)
+                    if(Line[1] != '/')
                         log << Line << G4endl;
+                    
                 }
                 
                 log << G4endl;
@@ -262,16 +265,12 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 
                 Visualisation();
 
-			    G4cout << "\n--------------------------------------------------------------------"
+			    G4cout << "--------------------------------------------------------------------"
 			              "\nStarting simulation... \n";
 			          
 			    G4cout << "\n" << asctime(localtm);
 			    
 			    SaveToFile.close();
-
-			    G4cout << "\n================================================================================"
-		                  "\n                                 Geant4 info"
-	                      "\n================================================================================" << G4endl;
 		    } 
 		    else if (Mode == "Simulating")
 		    {
@@ -302,6 +301,13 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                     
                  SaveToFile.close();
 		    }
+		    
+		    if (TotalParticles > 0)
+                {
+			    G4cout << "\n================================================================================"
+		                  "\n                                 Geant4 info"
+	                      "\n================================================================================" << G4endl;
+	            }
 		}
 
         PGA -> ResetEvents(Image + 1);

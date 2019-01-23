@@ -20,24 +20,48 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	MaterialsDirectory -> SetGuidance("Directory to define new materials to be used");
 
 	DefElement = new G4UIcmdWithAString("/Materials/Define/Element", this);
-	DefElement -> SetGuidance("Define an element with input of it's name, z number, atomicweight, unit, density, unit");
+	DefElement -> SetGuidance("Define an element"
+	                          "Element_name Z_number Atomic_weight Unit Density Unit");
 
 	DefIsotope = new G4UIcmdWithAString("/Materials/Define/Isotope", this);
-	DefIsotope -> SetGuidance("Define an isotope with input of its name, z number, nucleon number, and atomic weight");
+	DefIsotope -> SetGuidance("Define an isotope\n"
+	                          "Isotope_name, Z_number, Nucleon_number Atomic_weight Unit");
+	                          
+	IsotopeMix = new G4UIcmdWithAString("/Materials/Define/IsotopeMix", this);
+	IsotopeMix -> SetGuidance("Create an element with a certain mixture of isotopes\n"
+	                          "Isotope_mix_Name  Symbol Number_of_isotopes");
+	
+	AddTo_IsotopeMix = new G4UIcmdWithAString("/Materials/AddTo/IsotopeMix", this);
+	AddTo_IsotopeMix -> SetGuidance("Add specific isotopes of an element to the isotope mixture\n"
+	                                "Isotope_mixture_name Density Element_symbol Abundance Unit"); 
+	                                
+	Density_IsotopeMix = new G4UIcmdWithAString("/Materials/AddDensity/IsotopeMix", this);
+	Density_IsotopeMix -> SetGuidance("Add the density to the isotope mix\n"
+	                                  "Isotope_mixture_name Density Unit");
 	
 	DefMolecule = new G4UIcmdWithAString("/Materials/Define/Molecule", this);
-	DefMolecule -> SetGuidance("Define a new molecule\n");
+	DefMolecule -> SetGuidance("Define a new molecule\n"
+	                           "Molecule_name Number_of_atoms Density Unit");
 	
 	AddElementToMolecule = new G4UIcmdWithAString("/Materials/AddTo/Molecule", this);
-    AddElementToMolecule -> SetGuidance("Choose an element to be added to an existing molecule");
+    AddElementToMolecule -> SetGuidance("Choose an element to be added to an existing molecule\n"
+                                        "Molecule_name Elemenet_name Number_of_atoms");
     
     DefCompound = new G4UIcmdWithAString("/Materials/Define/Compound", this);
     DefCompound -> SetGuidance("Create a compound of elements\n"
-                               "CompoundName NumberOfElements density unit");
+                               "Compound_name Number_of_elements Density Unit");
     
     AddElementToCompound = new G4UIcmdWithAString("/Materials/AddTo/Compound", this);
     AddElementToCompound -> SetGuidance("Add elements to a custom compound\n"
-                                        "CompoundName ElementName FractionalMass Unit");
+                                        "Compound_name Element_name Fractional_mass Unit");
+                                        
+    DefMixture = new G4UIcmdWithAString("/Materials/Define/Mixture", this);
+    DefMixture -> SetGuidance("Create a material made from a mixture of elements and materials\n"
+                              "Mixture_name Number_of_componenets Density Unit");
+                              
+    AddMaterialToMixture = new G4UIcmdWithAString("Materials/AddTo/Mixture", this);
+    AddMaterialToMixture -> SetGuidance("Add materials/elements to a mixture\n"
+                                        "Mixture_name Material/Element_name Fractional_mass Unit");                          
 	
 	densityUnits.insert(std::make_pair("g/cm3", g/cm3));
 	densityUnits.insert(std::make_pair("kg/cm3", kg/cm3));
@@ -55,12 +79,18 @@ DefineMaterialsMessenger::~DefineMaterialsMessenger()
 
 	delete DefElement;
 	delete DefIsotope;
+	delete IsotopeMix;
+	delete AddTo_IsotopeMix;
+	delete Density_IsotopeMix;
 	
 	delete DefMolecule;
     delete AddElementToMolecule;
     
     delete DefCompound;
     delete AddElementToCompound;
+    
+    delete DefMixture;
+    delete AddMaterialToMixture;
 }
 
 void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -93,15 +123,46 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
 
 		materials -> DefineIsotope(name, z, A, atomicWeight*unit);
     }
+    else if(command == IsotopeMix)
+    {
+        G4Tokenizer next(newValue);
+		G4String Name = next();
+		G4String Symbol = next();
+		
+		G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+
+        materials -> DefineIsotopeMix(Name, Symbol, nComponents);
+    }
+    else if(command == AddTo_IsotopeMix)
+    {
+        G4Tokenizer next(newValue);
+		G4String IsotopeMixName = next();
+		G4String IsotopeName = next();
+		
+		G4int Abundance = ConvertToNumber<int> (next, newValue, command);
+		G4double AbUnit = CheckUnits(next, command, newValue, "Percentage");
+		
+		materials -> AddToIsoMix(IsotopeMixName, IsotopeName, Abundance*AbUnit);
+    }
+    else if(command == Density_IsotopeMix)
+    {
+        G4Tokenizer next(newValue);
+		G4String IsotopeMixName = next();
+		
+		G4double Density = ConvertToNumber<double> (next, newValue, command);
+		G4double denUnit = CheckUnits(next, command, newValue, "Density");
+		
+		materials -> AddIsoMixDensity(IsotopeMixName, Density*denUnit);
+    }
     else if (command == DefMolecule)
     {
         G4Tokenizer next(newValue);     
         G4String Name = next();
         
+        G4int nComponents = std::stoi(next());
+        
         G4double density = ConvertToNumber<double> (next, newValue, command);
         G4double unit = CheckUnits(next, command, newValue, "Density");
-        
-        G4int nComponents = std::stoi(next());
         
         materials -> DefineMolecule(Name, density*unit, nComponents);
     }
@@ -138,93 +199,98 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
         
         materials -> AddElementToCompound(NameCompound, NameElement, fractionalMass*unit);
     }
-		
-		/*//Isotopes
-	G4int z = 92;
-	G4int A = 235;
-	G4double a = 235.044*g/mole;
-	G4String name = "U235";
-	G4Isotope* isoU235 = new G4Isotope(name, z, A, a);
-
-	z = 92;
-	A = 238;
-	a = 238.051*g/mole;
-	name = "U238";
-	G4Isotope* isoU238 = new G4Isotope(name, z, A, a);
-
-	name = "enr. U";
-	G4String symbol = "U";
-	G4int nComponents = 2;
-	G4Element* enrichedU = new G4Element(name, symbol, nComponents);
-
-	enrichedU -> AddIsotope(isoU235, 80.*perCent);
-	enrichedU -> AddIsotope(isoU238, 20.*perCent);
-
-	G4double density = 19.1*g/cm3;
-	nComponents = 1;
-	G4Material* mat_enrichedU = new G4Material("enr. U", density, nComponents);
-	G4int fraction_mass = 1;
-	mat_enrichedU -> AddElement(enrichedU, fraction_mass);*/
+	else if (command == DefMixture)
+	{
+	    G4Tokenizer next(newValue);
+        G4String NameMixture = next();
+        
+        G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+        
+        G4double density = ConvertToNumber<double> (next, newValue, command);
+        G4double unit = CheckUnits(next, command, newValue, "Density");
+        
+        materials -> DefineMixture(NameMixture, density*unit, nComponents);
+	}
+	else if (command == AddMaterialToMixture)
+	{
+	    G4Tokenizer next(newValue);
+        G4String NameMixture = next();
+        G4String NameMaterial = next();
+        
+        G4double fractionalMass = ConvertToNumber<double> (next, newValue, command);
+        G4double unit = CheckUnits(next, command, newValue, "Percentage");
+        
+        materials -> AddMaterialToMixture(NameMixture, NameMaterial, fractionalMass*unit);
+	}
 }
 
 G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit)
 {
     G4String UnitString = next();
+    G4bool Success;
     
     if (TypeOfUnit == "Density")
     {
         bool denUnit = densityUnits.count(UnitString);
         
         if (denUnit == false)
-        {
-            G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid denisty unit!\nGuidance: "
-                   << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-                   
-            for (std::map<std::string, double>::iterator it = densityUnits.begin(); it != densityUnits.end(); ++it)
-                G4cout << it -> first << " ";
-                
-            G4cout << G4endl;
-            
-            exit(0);
-        }
+            Success = false;
         else 
+        {
+            Success = true;
             return densityUnits[UnitString];    
+        }
     }
-    if (TypeOfUnit == "AtomicWeight")
+    else if (TypeOfUnit == "AtomicWeight")
     {
         bool awUnit = atomicWeightUnits.count(UnitString);
+       
         if (awUnit == false)
+            Success = false;
+        else 
         {
-            G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid atomic weight unit!\nGuidance: "
-                   << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-                   
-            for (std::map<std::string, double>::iterator it = atomicWeightUnits.begin(); it != atomicWeightUnits.end(); ++it)
-                G4cout << it -> first << " ";
-        
-            G4cout << G4endl;
-            
-            exit(0);
-        }
-        else
+            Success = true;
             return atomicWeightUnits[UnitString];   
+        }
     }
-    if (TypeOfUnit == "Percentage")
+    else if (TypeOfUnit == "Percentage")
     {
         bool perUnit = percentageUnit.count(UnitString);
+        
         if (perUnit == false)
+            Success == true;
+        else
         {
-            G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid %\ unit!\nGuidance: "
-                   << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-                   
+            Success = true;
+            return percentageUnit[UnitString];   
+        }
+    }
+    
+    if (Success == false)
+    {
+        G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid ";
+        
+        if (TypeOfUnit == "Density")
+        {
+            G4cout << "denisty unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";   
+            for (std::map<std::string, double>::iterator it = densityUnits.begin(); it != densityUnits.end(); ++it)
+                G4cout << it -> first << " ";
+        }
+        else if (TypeOfUnit == "AtomicWeight")
+        {
+            G4cout << "atomic weight unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
+            for (std::map<std::string, double>::iterator it = atomicWeightUnits.begin(); it != atomicWeightUnits.end(); ++it)
+                G4cout << it -> first << " ";
+        }
+        else if (TypeOfUnit == "Percentage")
+        {
+            G4cout << "percentage unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
             for (std::map<std::string, double>::iterator it = percentageUnit.begin(); it != percentageUnit.end(); ++it)
                 G4cout << it -> first << " ";
-        
-            G4cout << G4endl;
-            
-            exit(0);
         }
-        else
-            return percentageUnit[UnitString];   
+          
+        G4cout << G4endl; 
+        exit(0);
     }
 }
 		

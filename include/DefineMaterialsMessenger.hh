@@ -40,12 +40,18 @@ class DefineMaterialsMessenger: public G4UImessenger
 
 		G4UIcmdWithAString *DefElement;
 		G4UIcmdWithAString *DefIsotope;
+		G4UIcmdWithAString *IsotopeMix;
+		G4UIcmdWithAString *AddTo_IsotopeMix;
+		G4UIcmdWithAString *Density_IsotopeMix;
 		
 		G4UIcmdWithAString *DefMolecule;
 		G4UIcmdWithAString *AddElementToMolecule;
 		
 		G4UIcmdWithAString *DefCompound;
 	    G4UIcmdWithAString *AddElementToCompound;	
+	    
+	    G4UIcmdWithAString *DefMixture;
+	    G4UIcmdWithAString *AddMaterialToMixture;
 
 		std::map<std::string, double> densityUnits;
 		std::map<std::string, double> atomicWeightUnits;
