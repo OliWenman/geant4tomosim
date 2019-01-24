@@ -14,6 +14,7 @@ Simulation of tomography data using the Geant4 toolkit. Wrapped in Cython to be 
 - In the terminal where the code is saved:
   - $ mkdir build
   - $ cd build
+  - $ module python 
   - $ module load geant4/10.04
   - $ cmake /path/to/source/code/
   - $ make
