@@ -62,7 +62,13 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 
 void Data::SaveEnergyFreq(double E)//
 {
-	++EnergyFreq[floor(E*1000/(MaxE/NoBins_Cmd))];
+    int bin = floor(E*1000/(MaxE/NoBins_Cmd));
+    if (bin < 0)
+        bin = 0;
+    else if (bin > EnergyFreq.size())
+        bin = EnergyFreq.size();
+
+	++EnergyFreq[bin];
 }
 
 void Data::SaveFullMapping(double E)
@@ -71,6 +77,10 @@ void Data::SaveFullMapping(double E)
 	G4int zBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
 
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
+	if (eBin < 0)
+	    eBin = 0;
+    else if (eBin > fullMappingFluore.size())
+        eBin = fullMappingFluore.size();
 
 	++fullMappingFluore[eBin][yBin][zBin];
 }

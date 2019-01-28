@@ -14,11 +14,11 @@ DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 nBins = 1000
 NumberOfImages = 1
 TotalRotation = 180*G4.deg
-nParticles = 10000000
+nParticles = 20000000
 
 fluoreFF = False
-fluoreFM = False
-beamEnergy = False
+fluoreFM = True
+beamEnergy = True
 
 Sim = sim.PySim()
 

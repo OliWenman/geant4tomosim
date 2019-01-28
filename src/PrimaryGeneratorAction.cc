@@ -211,6 +211,8 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		
 		if (bin < 0)
        		bin = 0;
+        else if (bin > BeamEnergyFreq.size())
+            bin = BeamEnergyFreq.size();
 
 		++BeamEnergyFreq[bin];
 	}
