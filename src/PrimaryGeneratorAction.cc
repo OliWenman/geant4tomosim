@@ -79,7 +79,7 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
 		if (timeCheck == false){
 			Timer.Stop();	
 
-			remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + SavingTime;
+			remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + (SavingTime * (NumberOfRuns - CurrentImage));
 	
 			PrintTime(remainingTime);
 
@@ -100,16 +100,18 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
 
 void PrimaryGeneratorAction::PrintTime(double time)
 {
+    G4cout <<  "\rEstimated time remaining: ";
+
 	//Prints out the sustiable units for the estimated time 
 	if (time > 60)
 	{
 		if(time > 60*60)
-			G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";
+			G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";
 		else
-			G4cout <<  "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
+			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
 	}
 	else
-		G4cout << "\rEstimated time remaining: " << std::setw(4) << std::setprecision(2) << int(time) << " s        ";
+		G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";
 }
 
 void PrimaryGeneratorAction::PrintProgress()
@@ -154,7 +156,13 @@ void PrimaryGeneratorAction::PrintProgress()
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << std::setw(3) << ImageProgress << "%\ complete\n";
+		G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << std::setw(3) << ImageProgress << "%\ complete ";
+		if (ImageProgress == 100)
+		    G4cout << "-> Saving data...\n";
+		else if (ImageProgress == 0)
+		    G4cout << "                 \n";
+		else 
+		    G4cout << "\n";
 
 		if(TotalProgress != TotalProgressCheck)
 		{	G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
@@ -166,7 +174,7 @@ void PrimaryGeneratorAction::PrintProgress()
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete\n"  
+	{	G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete                  \n"  
                                               "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
 		EstimatedTime(100);
 		G4cout << G4endl;
