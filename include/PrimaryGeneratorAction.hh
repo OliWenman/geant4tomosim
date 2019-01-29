@@ -4,6 +4,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4Timer.hh"
+#include "ProgressTracker.hh"
 #include "globals.hh"
 #include <vector>
 
@@ -15,7 +16,7 @@ class G4SPSPosDistribution;
 class G4SPSAngDistribution;
 class G4SPSEneDistribution;
 class G4Timer;
-
+class ProgressTracker;
 class G4GeneralParticleSource;
 //It defines a single particle which hits the detectors perpendicular to the input face
 
@@ -66,6 +67,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		Data* data;
 
 		G4Timer Timer;
+		//ProgressTracker progress;
 
 		//Pointer to PrimaryGeneratorActionMessenger
 		PrimaryGeneratorActionMessenger* gunMessenger;

@@ -24,3 +24,5 @@ cdef extern from "Simulation.hh":
       int GetNumberCalibrations()
       
       void SetSavingTime(double)
+      
+      void SetSaveLogPath(string)

@@ -70,6 +70,7 @@ void Simulation::Setup()
 	PL = new PhysicsList();
 	materials = new DefineMaterials(); 
 	visManager = 0;
+	SaveLogPath = "./../Output/HDF5/";
 
 	//Setup the Geant4 user and action intialization	
 	runManager -> SetUserInitialization(DC);
@@ -132,15 +133,13 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	
 	//UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
-
+	
     //UImanager -> ApplyCommand("/control/verbose 0");
 	G4cout << "\nReading pySettings.mac..." << G4endl;
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
 
 	if (PL -> GetFluorescence() == false)
 		{runManager -> SetUserAction(new StackingAction());}
-
-	SaveLogPath = "./../Output/HDF5/SimulationLog.txt";
 
     //Keeps the seed (broken)?
 	if (seedCmd != 0)	
@@ -194,6 +193,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			
 		    if (Mode == "Calibrating")
 	        { 
+	            std::string FileName = "SimulationLog.txt";
+	            SaveLogPath = SaveLogPath + FileName;
+	        
                 std::ofstream SaveToFile;
     
                 //Open the file within the path set
@@ -201,7 +203,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
    	
                 //Output error if can't open file
                 if( !SaveToFile ) 
-                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. Mode = " << Mode << "\n" << std::endl;
               	    exit(1);
            	    }
     
@@ -281,8 +283,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
    	
                 //Output error if can't open file
                 if( !SaveToFile ) 
-                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
-              	exit(1);
+                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. Mode = " << Mode << "\n" << std::endl;
+              	    exit(1);
            	    }
     
                 SettingsLog log(SaveToFile, G4cout);
@@ -336,7 +338,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 		    if (Mode == "Simulating" && NumberOfImages != 0)
 		    {
 			    G4cout << "\n================================================================================"
-	                      "\n                        The simulation is finihsed! "
+	                      "\n                        The simulation is finished! "
 	                      "\n================================================================================" << G4endl;
 	        }
 	        else if (Mode == "Calibrating")

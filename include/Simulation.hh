@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "globals.hh"
+#include <string>
 
 class SimulationMessenger;
 class Data;
@@ -37,6 +38,8 @@ class Simulation
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
 		int GetNumberCalibrations();
 		void SetSavingTime(double Time);
+		
+		void SetSaveLogPath(std::string path){SaveLogPath = path;}
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}

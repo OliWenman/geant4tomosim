@@ -6,10 +6,14 @@ import os
 import gc
 import getpass
 
+import NexusFormatter
+
 cdef class PySim:
 
     #Hold a C++ instance which we're wrapping
     cdef Simulation *thisptr     
+    
+    cdef public nexusfile
 
     #Makes the following available in Python-space:
     #Detector variables
@@ -85,148 +89,29 @@ cdef class PySim:
            nCalibrations = self.thisptr.GetNumberCalibrations()
            TotalNumberOfProjections = NumberOfImages + (nCalibrations*2)
 
-           #Check to see if file is open
-           for obj in gc.get_objects():   # Browse through ALL objects
-               if isinstance(obj, h5py.File):   # Just HDF5 files
-                  try:
-                     obj.close()
-                  except:
-                     pass # Was already closed
-
-           #Create a h5 file to view the data after the simulation is complete
-           h5file1 = h5py.File(self.SaveFilePath + 'SimulationData.nxs', 'w')
-           #Create a h5 file to view the data after the simulation is complete
-
-           h5file1.attrs['default'] = 'entry'
-
-           #/entry/entry1
-           nxentry = h5file1.create_group('entry1')
-           nxentry.attrs['NX_class'] = 'NXentry'
-           nxentry.attrs['default'] = 'data'
+           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
+           self.nexusfile.CreateProjectionFolder(nCalibrations, TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY)
+           self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
            
-           #/entry/entry1/features
-           features = h5file1.create_group('features')
-           features.attrs['NX_class'] = 'features'
-           #detector.create_dataset('data', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
+           print "The simulation will record the following data: "
+           print "- Transmission"
            
-           #/entry/entry1/tomo_entry
-           tomo_entry = nxentry.create_group('tomo_entry')
-           tomo_entry.attrs['NX_class'] = 'NXsubentry'
-           
-           #/entry/entry1/tomo_entry/user
-           user = tomo_entry.create_group('user')
-           user.attrs['NX_class'] = 'NXuser'
-           user.create_dataset('username', data = getpass.getuser())
-           
-           #entry/entry1/tomo_entry/data/instrument
-           instrument = tomo_entry.create_group('instrument')
-           instrument.attrs['NX_class'] = 'NXinstrument'
-           
-           #entry/entry1/tomo_entry/data/instrument/detector
-           detector = instrument.create_group('detector')
-           detector.attrs['NX_class'] = 'NXdetector'
-           
-           #entry/entry1/tomo_entry/data/instrument/detector/data
-           detectordata = detector.create_dataset('data', shape=(TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY), dtype = 'i4')
-           
-           #entry/entry1/tomo_entry/data/instrument/detector/image_key
-           darkKey = np.full(shape = (nCalibrations,), fill_value = 2)
-           lightKey = np.full(shape = (nCalibrations,), fill_value = 1)
-           dataKey = np.zeros(NumberOfImages)
-           image_key = detector.create_dataset('image_key', data = np.concatenate((darkKey, lightKey, dataKey)))
-           
-           #/entry/entry1/tomo_entry/sample
-           sample = tomo_entry.create_group('sample')
-           sample.attrs['NX_class'] = 'NXsample'
-           
-           #/entry/entry1/tomo_entry/sample/rotation_angle
-           rotationArray = np.linspace(start = 0, stop = dTheta, num = NumberOfImages) 
-           calibrationLine = np.zeros(nCalibrations*2)
-           rotationArray = np.concatenate([calibrationLine, rotationArray])
-           rotation_angle = sample.create_dataset('rotation_angle', data = rotationArray)
-           rotation_angle.attrs['axis'] = '1'
-           rotation_angle.attrs['label'] = '1'
-           rotation_angle.attrs['units'] = 'radians'
-           
-           #/entry/entry1/tomo_entry/data
-           data = tomo_entry.create_group('data')
-           data.attrs['NX_class'] = 'NXdata'
-           data.attrs['defination'] = 'NXtomo'
-
-           #/entry/entry1/tomo_entry/data/data
-           imageSet = data.create_group('data')
-           imageSet.attrs['NX_class'] = 'NXdata'
-           
-           source_addr = "/entry1/tomo_entry/instrument/detector/data"
-           target_addr = "/entry/entry1/tomo_entry/data/data"
-           imageSet.attrs['target'] = source_addr
-           #h5file1[target_addr] = h5file1[source_addr]
-           
-           
-           rotation_angleData = data.create_group('rotation_angle')
-           source_addr = "/entry1/tomo_entry/sample/rotation_angle"
-           target_addr = "/entry/entry1/tomo_entry/data/rotation_angle"
-           #h5file1[target_addr] = h5file1[source_addr]
-           rotation_angleData.attrs['target'] = source_addr
-           
-           #/entry/entry1
-
-           print "\nThe data will be saved in:", self.SaveFilePath
-
-           print("The simulation will record the following data: ")
-           print("- Transmission")
-           
-           #If the energy data is to be recored, setup the h5file
            if self.FFF == True:
-
-              print("- Full field fluorescence")     
-              #Fluorescence data
-              xLabel = "Energy(keV)"
-              yLabel = "Photons"
-              fluorescenceGroup = data.create_group('Fluorescence')
-              fluorescenceGroup.attrs['NX_class'] = 'NXdata'
-
-              fluorescenceGroup.attrs['axes'] = xLabel         # X axis of default plot
-              fluorescenceGroup.attrs[yLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
-
-              fluorescenceSet = fluorescenceGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
-              fluorPhotonSet = fluorescenceGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins ), dtype = 'i4')  # Y axis data
-
-           if self.FFM == True:
-
-              print("- Full mapping fluorescence")
-              #Fluorescence data
-              xLabel = "Energy(keV)"
-              yLabel = "Photons"
-              fluorescenceFMGroup = data.create_group('FluorescenceFM')
-              fluorescenceFMGroup.attrs['NX_class'] = 'NXdata'
-
-              fluorescenceFMGroup.attrs['axes'] = xLabel         # X axis of default plot
-              fluorescenceFMGroup.attrs[xLabel + '_indices'] = [1,]   # use "mr" as the first dimension of I00
-
-              fluorescenceFMSet = fluorescenceFMGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')  # X axis data
+              self.nexusfile.CreateDataGroup("Fluorescence", nImages = NumberOfImages, eBins = self.Bins)
+              print "- Fluorescence"
               
-              fluorPhotonFMSet = fluorescenceFMGroup.create_dataset(yLabel, shape = (NumberOfImages, self.Bins, self.nDetectorsY, self.nDetectorsZ), dtype = 'i4')  # Y axis data           
-
+           if self.FFM == True:
+              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = NumberOfImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
+              print "- Full mapping fluorescence"
+           
            if self.BE == True:
-
-              print("- Beam energy")
-              #Beam energy data
-              xLabel = "Energy(keV)"
-              yLabel = "Photons"
-              beamGroup = data.create_group('BeamEnergy')
-              beamGroup.attrs['NX_class'] = 'NXdata'
-
-              beamGroup.attrs['axes'] = xLabel         # X axis of default plot
-              beamGroup.attrs['signal'] = yLabel      # Y axis of default plot
-              beamGroup.attrs[xLabel + '_indices'] = [0,]   # use "mr" as the first dimension of I00
-
-              energybeamSet = beamGroup.create_dataset(xLabel, shape = (self.Bins,), dtype = 'f8')
-              energyphotonSet = beamGroup.create_dataset(yLabel, shape = (self.Bins,), dtype = 'i4')
-
+              self.nexusfile.CreateDataGroup("Beam_Energy", eBins = self.Bins)
+              print "- The beam energy"
+           
            iTime = time.time()
            
            Mode = "Calibrating"
+           
            if nCalibrations == 0:
                self.thisptr.pyRun(0, dTheta, 0, nCalibrations, Mode), (-1, self.nDetectorsY)
            
@@ -234,46 +119,40 @@ cdef class PySim:
            for nImage in range(nCalibrations):
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                calibrationOutPut = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, nCalibrations, Mode), (-1, self.nDetectorsY))  
-               #Append the 2D Data to a 3D data set
-               detectordata[nCalibrations + nImage, :, :] = calibrationOutPut[:, :]     
-           
-           #Run the simulation for the number of images that are required
+               self.nexusfile.AddProjectionData(calibrationOutPut, nCalibrations + nImage)
+
            for nImage in range(NumberOfImages):
 
                Mode = "Simulating"
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, NumberOfImages, Mode), (-1, self.nDetectorsY))  
                
-               #Append the 2D Data to a 3D data set
-               detectordata[nImage + (nCalibrations*2), :, :] = simOutput[:, :]
-               #print("\nTransmission data saved")
                iSavingTime = time.time()
+               
+               self.nexusfile.AddProjectionData(simOutput, nImage + (nCalibrations*2))
+               
                if nImage == 0:
                   energyBins = self.lastEnergyBins()
+                  
                   if self.FFF == True:
-                     fluorescenceSet[:] = energyBins
-
+                     self.nexusfile.AddxAxis("Fluorescence", energyBins)
+                     
                   if self.FFM == True:
-                     fluorescenceFMSet[:] = energyBins
-
+                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
+                     
                   if self.BE == True:
-                     energybeamSet[:] = energyBins
-                     energyphotonSet[:] = self.beamEnergy()
-
+                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
+                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())                 
+               
                if self.FFF == True:
-                  #Append the energy frequency to the 2D data
-                  fluorPhotonSet[nImage, :] = self.lastEnergyFreq()
-                  #print("Full field fluorescence data saved")
-
+                  self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = nImage)
+                  
                if self.FFM == True:
-                  fluorPhotonFMSet[nImage, :, :, :] = self.fullMapping()
+                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = nImage)
                   
                eSavingTime = time.time()
                SavingTime  = eSavingTime - iSavingTime
                self.thisptr.SetSavingTime(SavingTime)
-                  
-           #Close the files
-           h5file1.close()
 
            #Ouput the time in the appropriate units
            eTime = time.time()
@@ -311,3 +190,7 @@ cdef class PySim:
         
     def setFilePath(self, FilePath):
         self.SaveFilePath = FilePath
+        self.thisptr.SetSaveLogPath(FilePath)
+        
+    def printNexusTree(self):
+        self.nexusfile.DisplayTree()
