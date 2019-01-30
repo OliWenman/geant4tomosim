@@ -11,7 +11,7 @@ class NexusFormatter:
     h5file1 = None
     
     fileOpen = False
-    data = None
+    #data = None
     
     #When class is created
     def __init__(self, SaveFilePath):
@@ -38,7 +38,7 @@ class NexusFormatter:
                 
                     if answer == 'y' or answer == 'yes':
                         contin = True                      
-                    elif answer == 'no' or answer == 'n':
+                    elif answer == 'n' or answer == 'no':
                         contin = True
                         sys.exit()                      
                     else:
@@ -47,7 +47,7 @@ class NexusFormatter:
                 
                 print "\n"
         
-        #Try to open file, delete file if can't open it        
+        #Try to open file, delete file if can't open it as it's going to override it anyway       
         try:     
             self.h5file1 = h5py.File(SaveFilePath + FileName, 'w')
         
@@ -58,6 +58,8 @@ class NexusFormatter:
         self.fileOpen = True
         
         self.h5file1.attrs['default'] = 'entry'
+
+        #Create the different groups to conform to the NXtomo format
 
         #/entry/entry1
         nxentry = self.h5file1.create_group('entry1')
@@ -98,7 +100,7 @@ class NexusFormatter:
         imageSet = data.create_group('data')
         imageSet.attrs['NX_class'] = 'NXdata'
         
-    #When class is destroyed
+    #When class is destroyed, close the file if it isn't already closed
     def __del__(self):
         
         if self.fileOpen == True:
@@ -106,6 +108,7 @@ class NexusFormatter:
             self.h5file1.close()
             print "File closed!"
         
+    #The dataset that stores the information to do with the transmission data
     def CreateProjectionFolder(self, nCalibrations, NumberOfImages, nDetectorsZ, nDetectorsY):
         
         #entry/entry1/tomo_entry/data/instrument/detector/data
@@ -127,11 +130,13 @@ class NexusFormatter:
         #target_addr = "/entry/entry1/tomo_entry/data/data"
         #imageSet.attrs['target'] = source_addr
         
+    #Appened to the transmission data
     def AddProjectionData(self, theData, nImage):
         
         dataSet = self.h5file1['/entry1/tomo_entry/data/instrument/detector/data']
         dataSet[nImage, :, :] = theData[:, :]
-        
+     
+    #Create the rotation angles    
     def CreateRotationAngleData(self, Theta, NumberOfImages, nCalibrations):
         
         #/entry/entry1/tomo_entry/sample/rotation_angle
@@ -149,6 +154,7 @@ class NexusFormatter:
         rotation_angle.attrs['label'] = '1'
         rotation_angle.attrs['units'] = 'radians'
   
+    #Function to create the data for the beam energy, fluorescence or full mapping fluorescence
     def CreateDataGroup(self, dataType, nImages = 1, eBins = 1, xBins = 1, yBins = 1):
         
         DataPath = '/entry1/tomo_entry/data/'
@@ -170,14 +176,20 @@ class NexusFormatter:
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, eBins), dtype = 'i4')  # Y axis data  
             
         elif dataType == "Full_Mapping_Fluorescence":
-            dataGroup.attrs[xLabel + '_indices'] = [1,] 
-            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, eBins, xBins, yBins))  # Y axis data  
+            dataGroup.attrs[xLabel + '_indices'] = [3] 
+            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, xBins, yBins, eBins), dtype = 'i4')  # Y axis data
         
+        else:
+            print "Unrecognised dataType", dataType,"using CreateDataGroup."
+            sys.exit()  
+     
+    #Function to add the x axis to the data   
     def AddxAxis(self, dataType, data):
         
         dataSet = self.h5file1['/entry1/tomo_entry/data/'+ dataType +'/energy']
         dataSet[:] = data
         
+    #Function to appened the data
     def AddData(self, dataType, data, nImage = 1):
         
         dataSet = self.h5file1['/entry1/tomo_entry/data/'+ dataType +'/photons']
@@ -190,10 +202,17 @@ class NexusFormatter:
             
         elif dataType == "Full_Mapping_Fluorescence":
             dataSet[nImage, :, :, :] = data
-            
+        
+        else:
+            print "Unrecognised dataType", dataType,"using AddData."
+            sys.exit()  
+          
+    #Display the tree of the nexus file  
     def DisplayTree(self):
+    
         def printname(name):
             print name
-        
+    
+        print "The nexus file layout: "    
         self.h5file1.visit(printname)
         

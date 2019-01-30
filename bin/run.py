@@ -13,24 +13,25 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 nBins = 1000
-NumberOfImages = 1
+NumberOfImages = 100
 TotalRotation = 180*G4.deg
-nParticles = 100000
+nParticles = 100000000
 
-fluoreFF = True
+fluoreFF = False
 fluoreFM = True
 beamEnergy = True
 
 Sim = sim.PySim()
 
-#Sim.dataPaths("sdfjkjksdfa", "ajsdb", "ksdbjsd")
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
-Sim.setFilePath("/home/xol73553/Documents/NeXusTesting/")
+#Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V2/")
 
 Sim.run(nParticles, TotalRotation, NumberOfImages)
 
-Sim.printNexusTree()
+#Sim.printNexusTree()
+#Sim.plotBeamEnergy()
+#Sim.plotFinalFluorescence()
 
 #print "Photon transmission = ", Sim.photonTransmission()
 

@@ -12,6 +12,7 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake )
 # Instruction for use can be found at the top of cmake/UseCython.cmake.
 include( UseCython )
 
+#Find the Geant4 library and display it's info
 find_package(Geant4 REQUIRED)
 if(Geant4_FOUND)
   	message(STATUS "Geant4 version " ${Geant4_VERSION})
@@ -21,15 +22,21 @@ else()
   	message(STATUS "Couldnt find Geant4!")
 endif()
 
+
 find_package(PythonInterp)
 find_package(PythonLibs)
 if (PYTHONINTERP_FOUND)
-  message(STATUS "Found PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
-  message(STATUS "Python version ${PYTHON_VERSION_STRING}")
+    message(STATUS "Python version ${PYTHON_VERSION_STRING}")
+    message(STATUS "Found PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
+else()
+    message(STATUS "Couldn't find PythonInterpreter!") 
 endif()
+
 if (PYTHONLIBS_FOUND)
-  message(STATUS "Found PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS}")
-  message(STATUS "Found PYTHON_LIBRARIES=${PYTHON_LIBRARIES}")
+    message(STATUS "Found PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS}")
+    message(STATUS "Found PYTHON_LIBRARIES=${PYTHON_LIBRARIES}")
+else()
+    message(STATUS "Couldn't find Python libraries!") 
 endif()
 
 # With CMake, a clean separation can be made between the source tree and the

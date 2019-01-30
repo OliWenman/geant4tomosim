@@ -16,9 +16,13 @@
 
 DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials): materials(DefMaterials)
 {
+//=================================================================================================
 	MaterialsDirectory = new G4UIdirectory("/Materials/", this);
 	MaterialsDirectory -> SetGuidance("Directory to define new materials to be used");
 
+//=================================================================================================
+    //DEFINING ELEMENTS/ISOTOPES
+    
 	DefElement = new G4UIcmdWithAString("/Materials/Define/Element", this);
 	DefElement -> SetGuidance("Define an element"
 	                          "Element_name Z_number Atomic_weight Unit Density Unit");
@@ -38,7 +42,9 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	Density_IsotopeMix = new G4UIcmdWithAString("/Materials/AddDensity/IsotopeMix", this);
 	Density_IsotopeMix -> SetGuidance("Add the density to the isotope mix\n"
 	                                  "Isotope_mixture_name Density Unit");
-	
+
+//=================================================================================================
+    //DEFINING A NEW MOLECULE
 	DefMolecule = new G4UIcmdWithAString("/Materials/Define/Molecule", this);
 	DefMolecule -> SetGuidance("Define a new molecule\n"
 	                           "Molecule_name Number_of_atoms Density Unit");
@@ -46,6 +52,9 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	AddElementToMolecule = new G4UIcmdWithAString("/Materials/AddTo/Molecule", this);
     AddElementToMolecule -> SetGuidance("Choose an element to be added to an existing molecule\n"
                                         "Molecule_name Elemenet_name Number_of_atoms");
+                                        
+//=================================================================================================
+    //DEFINING A NEW COMPOUND (PERCENTAGE OF DIFFERENT ELEMENTS, FOR EXAMPLE ALLOYS)                                       
     
     DefCompound = new G4UIcmdWithAString("/Materials/Define/Compound", this);
     DefCompound -> SetGuidance("Create a compound of elements\n"
@@ -55,6 +64,9 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
     AddElementToCompound -> SetGuidance("Add elements to a custom compound\n"
                                         "Compound_name Element_name Fractional_mass Unit");
                                         
+//=================================================================================================
+    //DEFINING A NEW MIXTURE (MADE UP OF A PERCENTAGE OF DIFFERENT ELEMENTS OR MATERIALS) 
+                                        
     DefMixture = new G4UIcmdWithAString("/Materials/Define/Mixture", this);
     DefMixture -> SetGuidance("Create a material made from a mixture of elements and materials\n"
                               "Mixture_name Number_of_componenets Density Unit");
@@ -62,7 +74,10 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
     AddMaterialToMixture = new G4UIcmdWithAString("Materials/AddTo/Mixture", this);
     AddMaterialToMixture -> SetGuidance("Add materials/elements to a mixture\n"
                                         "Mixture_name Material/Element_name Fractional_mass Unit");                          
-	
+                                        
+//=================================================================================================                                        
+    //DEFINING UNITS THAT A USER CAN USE WHEN USING THESE COMMANDS
+                                        
 	densityUnits.insert(std::make_pair("g/cm3", g/cm3));
 	densityUnits.insert(std::make_pair("kg/cm3", kg/cm3));
 	densityUnits.insert(std::make_pair("kg/m3", kg/m3));
@@ -71,6 +86,8 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	atomicWeightUnits.insert(std::make_pair("kg/mole", kg/mole));
 	
 	percentageUnit.insert(std::make_pair("%", perCent));
+	
+//=================================================================================================
 }
 
 DefineMaterialsMessenger::~DefineMaterialsMessenger()
@@ -229,11 +246,10 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
     G4String UnitString = next();
     G4bool Success;
     
+    //Checks to see if unit exists depending on which type of unit it is. If it does, it will return it
     if (TypeOfUnit == "Density")
     {
-        bool denUnit = densityUnits.count(UnitString);
-        
-        if (denUnit == false)
+        if (densityUnits.count(UnitString) == false)
             Success = false;
         else 
         {
@@ -242,10 +258,8 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
         }
     }
     else if (TypeOfUnit == "AtomicWeight")
-    {
-        bool awUnit = atomicWeightUnits.count(UnitString);
-       
-        if (awUnit == false)
+    {    
+        if (atomicWeightUnits.count(UnitString) == false)
             Success = false;
         else 
         {
@@ -254,10 +268,8 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
         }
     }
     else if (TypeOfUnit == "Percentage")
-    {
-        bool perUnit = percentageUnit.count(UnitString);
-        
-        if (perUnit == false)
+    {  
+        if (percentageUnit.count(UnitString) == false)
             Success == true;
         else
         {
@@ -266,6 +278,7 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
         }
     }
     
+    //If Success is false, then output reason for error and stop the programm
     if (Success == false)
     {
         G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid ";
@@ -294,7 +307,7 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
     }
 }
 		
-		
+//Function to convert string input to the type of number you need	
 template <typename T> T DefineMaterialsMessenger::ConvertToNumber(G4Tokenizer &next, G4String input, G4UIcommand* command)
 {
     try

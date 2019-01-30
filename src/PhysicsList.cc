@@ -172,6 +172,13 @@ void PhysicsList::ConstructEM()
 
 void PhysicsList::SetCuts()
 {	
+    G4double aCut = 0.1*mm; 
+
+    SetCutValue(aCut, "gamma");
+    SetCutValue(aCut, "e-");
+    SetCutValue(aCut, "e+");
+    SetCutValue(aCut, "proton");
+
   	/*// default production thresholds for the world volume
   	SetCutsWithDefault();
 

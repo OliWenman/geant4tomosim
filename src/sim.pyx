@@ -5,6 +5,7 @@ import time
 import os
 import gc
 import getpass
+import matplotlib.pyplot as plt
 
 import NexusFormatter
 
@@ -50,6 +51,7 @@ cdef class PySim:
 
     #Delete the C++ class
     def __dealloc__(self):
+        del self.nexusfile
         del self.thisptr
 
     def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = True, bint beamEnergy = False):
@@ -194,3 +196,17 @@ cdef class PySim:
         
     def printNexusTree(self):
         self.nexusfile.DisplayTree()
+        
+    def plotBeamEnergy(self):
+        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetBeamEnergyFreq())
+        plt.title("Beam energy distrubution")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Photons")
+        plt.show()
+        
+    def plotFinalFluorescence(self):
+        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetEnergyFreq())
+        plt.title("Fluorescence")
+        plt.xlabel("Energy (keV)")
+        plt.ylabel("Photons")
+        plt.show()

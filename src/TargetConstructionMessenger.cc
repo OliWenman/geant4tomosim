@@ -18,6 +18,7 @@
 
 TargetConstructionMessenger::TargetConstructionMessenger(TargetConstruction* Target): G4UImessenger(), TC(Target)
 {	
+//=================================================================================================
 	//Directory
 	TargetDirectory = new G4UIdirectory("/Target/");
 	TargetDirectory -> SetGuidance("Commands to build your sample. ");
@@ -454,7 +455,7 @@ G4double TargetConstructionMessenger::ConvertToDouble(G4Tokenizer &next, G4Strin
 
 G4double TargetConstructionMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit)
 {
-    G4String UnitString = next();
+    /*G4String UnitString = next();
     
     bool LengthUnit = MapLengthUnits.count(UnitString);
     bool AngleUnit = MapAngleUnits.count(UnitString); 
@@ -486,7 +487,55 @@ G4double TargetConstructionMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand*
         return MapLengthUnits[UnitString];
 
     else if (AngleUnit == true)
-        return MapAngleUnits[UnitString];
+        return MapAngleUnits[UnitString];*/
+        
+    G4String UnitString = next();
+    G4bool Success;
+    
+    if (TypeOfUnit == "Length")
+    {
+        bool LenUnit = MapLengthUnits.count(UnitString);
+        
+        if (LenUnit == false)
+            Success = false;
+        else 
+        {
+            Success = true;
+            return MapLengthUnits[UnitString];    
+        }
+    }
+    else if (TypeOfUnit == "Angle")
+    {
+        bool AngleUnit = MapAngleUnits.count(UnitString);
+       
+        if (AngleUnit == false)
+            Success = false;
+        else 
+        {
+            Success = true;
+            return MapAngleUnits[UnitString];   
+        }
+    }
+    
+    if (Success == false)
+    {
+        G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid ";
+        
+        if (TypeOfUnit == "Length")
+        {
+            G4cout << "length unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";   
+            for (std::map<std::string, double>::iterator it = MapLengthUnits.begin(); it != MapLengthUnits.end(); ++it)
+                G4cout << it -> first << " ";
+        }
+        else if (TypeOfUnit == "Angle")
+        {
+            G4cout << "angle unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
+            for (std::map<std::string, double>::iterator it = MapAngleUnits.begin(); it != MapAngleUnits.end(); ++it)
+                G4cout << it -> first << " ";
+        }         
+        G4cout << G4endl; 
+        exit(0);
+    }
 }
 
 G4String TargetConstructionMessenger::CheckName(G4Tokenizer &next, G4UIcommand* command, G4String newValue)

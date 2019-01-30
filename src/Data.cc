@@ -27,7 +27,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 			}
 			if (fluoreFullMapping == true)
 			{
-				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (NoBins_Cmd, std::vector<std::vector<int> >(nDetectorsY, std::vector<int>(nDetectorsZ)));
+				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >(nDetectorsZ, std::vector<int>(NoBins_Cmd)));
 				fullMappingFluore = ifullMappingFluore;
 			}
 
@@ -56,7 +56,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);
 
 		if (fluoreFullMapping == true)
-			std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsY, std::vector<int>(nDetectorsZ)));
+			std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));
 	}
 }
 
@@ -73,8 +73,8 @@ void Data::SaveEnergyFreq(double E)//
 
 void Data::SaveFullMapping(double E)
 {	
-	G4int yBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2) + 0.5*rows);
-	G4int zBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
+	G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2) + 0.5*rows);
+	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
 
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
 	if (eBin < 0)
@@ -82,7 +82,7 @@ void Data::SaveFullMapping(double E)
     else if (eBin > fullMappingFluore.size())
         eBin = fullMappingFluore.size();
 
-	++fullMappingFluore[eBin][yBin][zBin];
+	++fullMappingFluore[xBin][yBin][eBin];
 }
 
 void Data::MakeSpaces(int nSpaces, std::ofstream &outdata)
