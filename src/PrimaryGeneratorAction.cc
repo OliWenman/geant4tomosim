@@ -279,7 +279,7 @@ void PrimaryGeneratorAction::ProgressBar(int Percent)
 	int dProgress = 100/intervals;
 
 	G4cout << " (";
-	for (int nbar = -1; nbar < intervals ; ++nbar)
+	for (int nbar = 0; nbar < intervals ; ++nbar)
 	{
 		if (nbar*dProgress < Percent)
 			G4cout << "|";
@@ -291,29 +291,19 @@ void PrimaryGeneratorAction::ProgressBar(int Percent)
 
 void PrimaryGeneratorAction::EstimatedTime(int Percent)
 {
-	int interval = 2;
-
-	if (Percent % interval == 0 && Percent != 0)
-	{
-		if (timeCheck == false){
-			Timer.Stop();	
-
-			remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + (SavingTime * (NumberOfRuns - CurrentImage));
+    if (Percent != 0)
+    {
+		Timer.Stop();	
+		
+		remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + (SavingTime * (NumberOfRuns - CurrentImage));
 	
-			PrintTime(remainingTime);
+		PrintTime(remainingTime);
 
-			timeCheck = true;}
-
+		//timeCheck = true;
 	}
-	else if (Percent % interval != 0 && Percent != 0)
-	{	
-		timeCheck = false;
-	} 
-
 	else
 	{
-		if (Percent < interval)
-			G4cout << "\rEstimated time remaining: calculating... ";
+		G4cout << "\rEstimated time remaining: calculating... ";
 	}
 }
 

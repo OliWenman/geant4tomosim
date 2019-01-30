@@ -78,6 +78,10 @@ void Simulation::Setup()
 
 	PGA = new PrimaryGeneratorAction(data);
 	runManager -> SetUserAction(PGA);
+	
+	particleManager = new StackingAction();
+	runManager -> SetUserAction(particleManager);
+	particleManager -> SetKillElectrons(true);
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();
@@ -138,8 +142,8 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	G4cout << "\nReading pySettings.mac..." << G4endl;
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
 
-	if (PL -> GetFluorescence() == false)
-		{runManager -> SetUserAction(new StackingAction());}
+	//if (PL -> GetFluorescence() == false)
+	//	{runManager -> SetUserAction(new StackingAction());}
 
     //Keeps the seed (broken)?
 	if (seedCmd != 0)	
@@ -283,8 +287,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
    	
                 //Output error if can't open file
                 if( !SaveToFile ) 
-                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. Mode = " << Mode << "\n" << std::endl;
-              	    exit(1);
+                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+              	exit(1);
            	    }
     
                 SettingsLog log(SaveToFile, G4cout);

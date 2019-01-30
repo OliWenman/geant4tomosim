@@ -17,7 +17,7 @@ NumberOfImages = 1
 TotalRotation = 180*G4.deg
 nParticles = 10000000
 
-fluoreFF = True
+fluoreFF = False
 fluoreFM = True
 beamEnergy = True
 

@@ -15,19 +15,22 @@ StackingAction::~StackingAction(){ }
 G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrack)
 {
   	G4ClassificationOfNewTrack status = fUrgent;
-
   	const G4ParticleDefinition* particle = aTrack->GetDefinition();
-
-  	//Stack or delete secondaries
-  	if(aTrack->GetTrackID() > 1) 
-	{  
-    		if (fKillSecondary || fParticle == particle) 
-			{status = fKill; }
+  	
+  	//Kill secondaries
+  	if(fKillSecondary && aTrack->GetTrackID() > 1) 
+  	{
+  	    //Kill all secondary electrons
+  	    if (killElectrons && particle -> GetParticleName() == "e-" )
+  	        {status = fKill;}
+  	        
+  	    //Kill all photons that aren't going to hit the fluorescence detector in the positive y direction    
+  	    if (aTrack -> GetMomentumDirection().y() < 0)
+  	        {status = fKill;}    
   	}
 
   	return status;
 }
-
 
 void StackingAction::SetKillStatus(G4bool value)    
 	{fKillSecondary = value;}

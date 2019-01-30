@@ -174,10 +174,10 @@ void PhysicsList::SetCuts()
 {	
     G4double aCut = 0.1*mm; 
 
-    SetCutValue(0.2*mm, "gamma");
-    SetCutValue(10*mm, "e-");
-    SetCutValue(100*mm, "e+");
-    SetCutValue(100*mm, "proton");
+    SetCutValue(0.05*mm, "gamma");
+    SetCutValue(1000*mm, "e-");
+    SetCutValue(1000*mm, "e+");
+    SetCutValue(1000*mm, "proton");
 
   	/*// default production thresholds for the world volume
   	SetCutsWithDefault();

@@ -11,6 +11,7 @@ class DefineMaterials;
 class DetectorConstruction;
 class PhysicsList;
 class PrimaryGeneratorAction;
+class StackingAction;
 
 class G4RunManager;
 class G4VisManager;
@@ -61,6 +62,7 @@ class Simulation
 		DetectorConstruction* DC;
 		PhysicsList* PL;
 		PrimaryGeneratorAction* PGA;
+		StackingAction* particleManager;
 
 		bool Reset;
 		bool Ready;

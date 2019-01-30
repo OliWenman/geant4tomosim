@@ -13,13 +13,18 @@ class StackingAction : public G4UserStackingAction
 	public:
   		StackingAction();
   		~StackingAction();
+  		
   		void SetKillStatus(G4bool value);
   		void SetKill(const G4String& name);
   		G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track*);
+  		
+  		void SetKillElectrons(bool value){killElectrons = value;}
     
 	private:
   		G4bool fKillSecondary;
  		const G4ParticleDefinition* fParticle;
+ 		
+ 		bool killElectrons;
 };
 
 #endif
