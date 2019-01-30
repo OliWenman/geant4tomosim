@@ -1,7 +1,7 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
 /data/Seed 0
-/data/CalibrateImages 5
+/data/CalibrateImages 0
 
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
@@ -23,7 +23,7 @@
 #Beam Settings
 /beam/energy/type Gauss
 /beam/energy/mono 20 keV
-/beam/energy/sigma 8 keV
+/beam/energy/sigma 20 keV
 /beam/position/halfx 1.05 mm
 /beam/position/halfy 1.25 mm
 

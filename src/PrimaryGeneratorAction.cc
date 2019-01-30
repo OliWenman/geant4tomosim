@@ -86,39 +86,39 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Generate the particle in the event
       	fastParticleGun -> GeneratePrimaryVertex(anEvent);
       	
-      	if (FluoreFM == true && SimMode == "Simulating")
-        		data -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));
+      	if (FluoreFM == true && SimMode == "Simulating"){
+        		data -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));}
     }
 	else
     {
         //Generate the particle in the event
         ParticleGun -> GeneratePrimaryVertex(anEvent);
          
-        if (FluoreFM == true && SimMode == "Simulating")
-       		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());
+        if (FluoreFM == true && SimMode == "Simulating"){
+       		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());}
     }
 
 	if (CurrentImage == 1 && BeamData == true && SimMode == "Simulating")
 	{	//Save beam energy data for the first image
        	int bin;
         	
-        if (EnergyDistTypeCmd == "Mono")
-             bin = floor(energyCmd*1000/(eMax/Bins)) -1;
-        else
-             bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;
+        if (EnergyDistTypeCmd == "Mono"){
+             bin = floor(energyCmd*1000/(eMax/Bins)) -1;}
+        else {
+             bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;}
 		
-		if (bin < 0)
-       		bin = 0;
-        else if (bin > BeamEnergyFreq.size())
-            bin = BeamEnergyFreq.size();
+		if (bin < 0){
+       		bin = 0;}
+        else if (bin > BeamEnergyFreq.size()){
+            bin = BeamEnergyFreq.size();}
 
 		++BeamEnergyFreq[bin];
 	}
     
     ++CurrentEvent;
     
-    if (ShowProgressBar == true && CurrentEvent > 1)
-        PrintProgress();
+    if (ShowProgressBar == true && CurrentEvent > 1){
+        PrintProgress();}
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)

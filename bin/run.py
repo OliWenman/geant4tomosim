@@ -13,11 +13,11 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 nBins = 1000
-NumberOfImages = 100
+NumberOfImages = 1
 TotalRotation = 180*G4.deg
-nParticles = 100000000
+nParticles = 10000000
 
-fluoreFF = False
+fluoreFF = True
 fluoreFM = True
 beamEnergy = True
 
