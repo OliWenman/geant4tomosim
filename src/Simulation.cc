@@ -45,7 +45,7 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-	G4cout << "\nDeleting simulation... \n";
+	G4cout << "\nClosing simulation...";
 
 	delete simMessenger;
 
@@ -55,7 +55,7 @@ Simulation::~Simulation()
 	delete data;
 	delete materials;
 
-	G4cout << "\nSimulation deleted! \n" << G4endl;
+	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 
 void Simulation::Setup()
@@ -142,9 +142,6 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	G4cout << "\nReading pySettings.mac..." << G4endl;
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
 
-	//if (PL -> GetFluorescence() == false)
-	//	{runManager -> SetUserAction(new StackingAction());}
-
     //Keeps the seed (broken)?
 	if (seedCmd != 0)	
 		{CLHEP::HepRandom::setTheSeed(seedCmd);}
@@ -203,7 +200,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                 std::ofstream SaveToFile;
     
                 //Open the file within the path set
-                SaveToFile.open(SaveLogPath, std::fstream::app); 
+                SaveToFile.open(SaveLogPath); 
    	
                 //Output error if can't open file
                 if( !SaveToFile ) 
@@ -212,11 +209,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
            	    }
     
                 SettingsLog log(SaveToFile, G4cout);
-            
-                //Readout the inputs from the user and save to a file
-	            DC -> ReadOutInfo(SaveLogPath);
-	            PGA -> ReadOutInfo(SaveLogPath);
-	            PL -> ReadOutInfo(SaveLogPath);
 
 			    log << "\n--------------------------------------------------------------------"
                        "\nSETTINGS COMMANDS USED: \n" << G4endl;
@@ -263,6 +255,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                 log << G4endl;
 
                 ReadFile.close();
+
+                //Readout the inputs from the user and save to a file
+	            DC -> ReadOutInfo(SaveLogPath);
+	            PGA -> ReadOutInfo(SaveLogPath);
+	            PL -> ReadOutInfo(SaveLogPath);
              
                 //Prints the time and date of the local time that the simulation started
 			    time_t now = time(0);

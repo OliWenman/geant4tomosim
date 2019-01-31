@@ -108,7 +108,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		int TotalProgressCheck;
 
 		double remainingTime;
-		bool timeCheck;
+		//bool timeCheck;
 		G4String SimMode;
 		
 		bool ShowProgressBar;

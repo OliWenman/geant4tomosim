@@ -389,7 +389,7 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
     std::ofstream SaveToFile;
     
     //Open the file within the path set
-	SaveToFile.open(SaveFilePath); 
+	SaveToFile.open(SaveFilePath, std::fstream::app); 
    	
 	//Output error if can't open file
 	if( !SaveToFile ) 

@@ -157,23 +157,18 @@ void PhysicsList::ConstructEM()
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 				PhysicProcesses.push_back ("Fluorescence");
 
-				G4eIonisation* i = new G4eIonisation();
-				i -> SetEmModel(new G4LivermoreIonisationModel());
-				pmanager -> AddDiscreteProcess(i);
+				//G4eIonisation* i = new G4eIonisation();
+				//i -> SetEmModel(new G4LivermoreIonisationModel());
+				//pmanager -> AddDiscreteProcess(i);
 			}
 		}
 	}
 
-	//SetCuts();
 	G4cout << G4endl;
-
-	//SetCutValue(cutForElectron, "electron");
 }
 
 void PhysicsList::SetCuts()
 {	
-    G4double aCut = 0.1*mm; 
-
     SetCutValue(0.05*mm, "gamma");
     SetCutValue(1000*mm, "e-");
     SetCutValue(1000*mm, "e+");

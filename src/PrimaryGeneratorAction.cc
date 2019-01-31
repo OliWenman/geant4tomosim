@@ -34,7 +34,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 
 	BeamCheck = false;
 	BeamData = false;
-	timeCheck = false;
 	
 	ShowProgressBar = true;
 	
@@ -247,7 +246,7 @@ void PrimaryGeneratorAction::PrintProgress()
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << std::setw(3) << ImageProgress << "%\ complete ";
+		G4cout << "\033[2A" "\033[K" "\r" "Processing image " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
 		if (ImageProgress == 100)
 		    G4cout << "- Saving data...\n";
 		else if (ImageProgress == 0)
@@ -258,15 +257,20 @@ void PrimaryGeneratorAction::PrintProgress()
 		if(TotalProgress != TotalProgressCheck)
 		{	G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
 			EstimatedTime(TotalProgress);
+			TotalProgressCheck = TotalProgress;
 		}
+		else {
+		    G4cout << "\n" "\033[40C";}
 
 		G4cout << std::flush;
 	}
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete                  \n"  
-                                              "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
+	{	//G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete                  \n"  
+                                              //"\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
+        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " images are completed!              \n"
+        "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
 		EstimatedTime(100);
 		G4cout << G4endl;
 		Timer.Stop();
@@ -295,11 +299,13 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
     {
 		Timer.Stop();	
 		
-		remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + (SavingTime * (NumberOfRuns - CurrentImage));
+		float currentTime = Timer.GetRealElapsed();
+		
+		remainingTime = ((currentTime*(100./Percent)) - currentTime) + (SavingTime * (NumberOfRuns - CurrentImage));
 	
+	    G4cout <<  "\rEstimated time remaining: ";
 		PrintTime(remainingTime);
 
-		//timeCheck = true;
 	}
 	else
 	{
@@ -309,8 +315,6 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
 
 void PrimaryGeneratorAction::PrintTime(double time)
 {
-    G4cout <<  "\rEstimated time remaining: ";
-
 	//Prints out the sustiable units for the estimated time 
 	if (time > 60)
 	{
@@ -319,6 +323,6 @@ void PrimaryGeneratorAction::PrintTime(double time)
 		else
 			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
 	}
-	else
-		G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";
+	else {
+        G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}
 }

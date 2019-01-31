@@ -21,6 +21,7 @@ cdef class PySim:
     cdef public int nDetectorsY
     cdef public int nDetectorsZ
     cdef public int Bins
+    cdef public list DetDimensions
 
     #Output options for the simulation
     cdef public bint FFF 
@@ -68,6 +69,7 @@ cdef class PySim:
         if nDetY >= 1 and nDetZ >= 1:
 
            self.Bins = nBins
+           self.DetDimensions = DetectorDimensions
 
            #Call the C++ function
            self.thisptr.pyInitialise(nDetY, nDetZ, DetectorDimensions, self.Bins)
@@ -92,7 +94,7 @@ cdef class PySim:
            TotalNumberOfProjections = NumberOfImages + (nCalibrations*2)
 
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
-           self.nexusfile.CreateProjectionFolder(nCalibrations, TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY)
+           self.nexusfile.CreateProjectionFolder(nCalibrations, TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions)
            self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
            
            print "The simulation will record the following data: "
@@ -136,22 +138,23 @@ cdef class PySim:
                if nImage == 0:
                   energyBins = self.lastEnergyBins()
                   
+                  if self.BE == True:
+                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
+                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())     
+                  
                   if self.FFF == True:
                      self.nexusfile.AddxAxis("Fluorescence", energyBins)
                      
                   if self.FFM == True:
+                     #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                      
-                  if self.BE == True:
-                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
-                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())                 
-               
                if self.FFF == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = nImage)
                   
                if self.FFM == True:
                   self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = nImage)
-                  
+               
                eSavingTime = time.time()
                SavingTime  = eSavingTime - iSavingTime
                self.thisptr.SetSavingTime(SavingTime)
@@ -159,6 +162,8 @@ cdef class PySim:
            #Ouput the time in the appropriate units
            eTime = time.time()
            self.SimTime = eTime -iTime
+           
+           self.nexusfile.LinkData()   
 
            message = "The total simulation time is"
            if self.SimTime < 60:
