@@ -170,25 +170,42 @@ class NexusFormatter:
     #Function to create the data for the beam energy, fluorescence or full mapping fluorescence
     def CreateDataGroup(self, dataType, nImages = 1, eBins = 1, xBins = 1, yBins = 1):
         
-        DataPath = '/entry1/tomo_entry/data/'
+        #DataPath = '/entry1/tomo_entry/data/'
         xLabel = "energy"
         yLabel = "photons"
         
-        dataGroup = self.h5file1.create_group(DataPath + dataType)
-        dataGroup.attrs['NX_class'] = 'NXdata'
-        dataGroup.attrs['axes'] = xLabel         # X axis of default plot
-        xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+        #entry/entry1/tomo_entry/data/instrument/
+        
+        DataPath = 'entry1/tomo_entry/instrument/'
         
         if dataType == "Beam_Energy":
+        
+            dataGroup = self.h5file1.create_group(DataPath +'detector_BE/')
+            dataGroup.attrs['NX_class'] = 'NXdata'
+            dataGroup.attrs['axes'] = xLabel         # X axis of default plot
+            xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+        
             dataGroup.attrs['signal'] = yLabel      # Y axis of default plot
             dataGroup.attrs[xLabel + '_indices'] = [0,] 
             dataSet = dataGroup.create_dataset(yLabel, shape = (eBins,), dtype = 'i4')  # Y axis data 
                     
         elif dataType == "Fluorescence":
+        
+            dataGroup = self.h5file1.create_group(DataPath +'detector_Fluor/')
+            dataGroup.attrs['NX_class'] = 'NXdata'
+            dataGroup.attrs['axes'] = xLabel         # X axis of default plot
+            xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+        
             dataGroup.attrs[xLabel + '_indices'] = [1,] 
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, eBins), dtype = 'i4')  # Y axis data  
             
         elif dataType == "Full_Mapping_Fluorescence":
+            
+            dataGroup = self.h5file1.create_group(DataPath +'detector_FluorFM/')
+            dataGroup.attrs['NX_class'] = 'NXdata'
+            dataGroup.attrs['axes'] = xLabel         # X axis of default plot
+            xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+            
             dataGroup.attrs[xLabel + '_indices'] = [3,] 
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, xBins, yBins, eBins), dtype = 'i4')  # Y axis data
         
@@ -199,7 +216,18 @@ class NexusFormatter:
     #Function to add the x axis to the data   
     def AddxAxis(self, dataType, data):
         
-        dataSet = self.h5file1['/entry1/tomo_entry/data/'+ dataType +'/energy']
+        DataPath = 'entry1/tomo_entry/instrument/detector'
+        
+        if dataType == 'Fluorescence':
+            DataPath = DataPath + '_Fluor/'
+            
+        elif dataType == 'Full_Mapping_Fluorescence':
+            DataPath = DataPath + '_FluorFM/'
+            
+        elif dataType == 'Beam_Energy':
+            DataPath = DataPath + '_BE'
+        
+        dataSet = self.h5file1[DataPath + '/energy']
         dataSet[:] = data
         
     def AddxAxisTest(self, dataType):
@@ -211,15 +239,18 @@ class NexusFormatter:
     #Function to appened the data
     def AddData(self, dataType, data, nImage = 1):
         
-        dataSet = self.h5file1['/entry1/tomo_entry/data/'+ dataType +'/photons']
+        #dataSet = self.h5file1['/entry1/tomo_entry/data/'+ dataType +'/photons']
         
         if dataType == "Beam_Energy":
+            dataSet = self.h5file1['entry1/tomo_entry/instrument/detector_BE/photons']
             dataSet[:] = data
             
         elif dataType == "Fluorescence":
+            dataSet = self.h5file1['entry1/tomo_entry/instrument/detector_Fluor/photons']
             dataSet[nImage, :] = data
             
         elif dataType == "Full_Mapping_Fluorescence":
+            dataSet = self.h5file1['entry1/tomo_entry/instrument/detector_FluorFM/photons']
             dataSet[nImage, :, :, :] = data
         
         else:
