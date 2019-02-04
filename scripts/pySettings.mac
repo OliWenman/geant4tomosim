@@ -1,14 +1,14 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
 /data/Seed 0
-/data/CalibrateImages 0
+/data/CalibrateImages 1
 
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true	
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false	
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 
 #World Settings
 /world/size 15 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
@@ -21,7 +21,7 @@
 /detector/fluorescence/dimensions 2 0.01 1 mm
 
 #Beam Settings
-/beam/energy/type Gauss
+/beam/energy/type Mono
 /beam/energy/mono 25 keV
 /beam/energy/sigma 8 keV
 /beam/position/halfx 1.05 mm

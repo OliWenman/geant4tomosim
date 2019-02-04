@@ -12,16 +12,15 @@ DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 nBins = 1000
 NumberOfImages = 1
 TotalRotation = 180*G4.deg
-nParticles = 1000000
+nParticles = 10000000
 
-fluoreFF = True
-fluoreFM = True
-beamEnergy = True
+fluoreFF = False
+fluoreFM = False
 
 Sim = sim.PySim()
 
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
-Sim.outputOptions(fluoreFF, fluoreFM, beamEnergy)
+Sim.outputOptions(fluoreFF, fluoreFM)
 #Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V3/")
 #Sim.setFilePath("/home/xol73553/Documents/NeXusTesting/")
 Sim.run(nParticles, TotalRotation, NumberOfImages)

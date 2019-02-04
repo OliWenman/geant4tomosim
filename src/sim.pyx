@@ -55,10 +55,10 @@ cdef class PySim:
         del self.nexusfile
         del self.thisptr
 
-    def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = True, bint beamEnergy = False):
+    def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
         self.FFF = fluoreFullField
         self.FFM = fluoreFullMapping
-        self.BE = beamEnergy
+        self.BE = True
         self.thisptr.pyOutputOptions(self.FFF, self.FFM, self.BE)
 
     def dataPaths(self, a, b, c):
