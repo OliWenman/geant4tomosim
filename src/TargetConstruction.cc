@@ -272,6 +272,7 @@ G4Material* TargetConstruction::FindMaterial(G4String MaterialName, G4String Obj
 	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
 	if (material)
 	{
+	    //material -> GetMaterialPropertiesTable() -> DumpTable();
 	    return material;
 	}
 	else 

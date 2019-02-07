@@ -94,7 +94,7 @@ cdef class PySim:
            TotalNumberOfProjections = NumberOfImages + (nCalibrations*2)
 
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
-           self.nexusfile.CreateProjectionFolder(nCalibrations, TotalNumberOfProjections, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions)
+           self.nexusfile.CreateProjectionFolder(nCalibrations, NumberOfImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions)
            self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
            
            print "The simulation will record the following data: "

@@ -41,6 +41,7 @@
 
 #include "G4RegionStore.hh"
 
+#include "G4OpticalPhysics.hh"
 
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
@@ -67,6 +68,8 @@ void PhysicsList::ConstructParticle()
 	G4Proton::ProtonDefinition();
 	G4MuonPlus::MuonPlusDefinition();
   	G4MuonMinus::MuonMinusDefinition();
+  	
+  	G4OpticalPhoton::OpticalPhotonDefinition();
 }
 
 void PhysicsList::ConstructProcess()
@@ -160,9 +163,51 @@ void PhysicsList::ConstructEM()
 				//G4eIonisation* i = new G4eIonisation();
 				//i -> SetEmModel(new G4LivermoreIonisationModel());
 				//pmanager -> AddDiscreteProcess(i);
+				
+				G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+	            //RegisterPhysics(opticalPhysics);
+		        //pmanager->AddContinuousProcess(opticalPhysics);
+				
 			}
 		}
+		/*if(particleName == "gamma")
+		{
+	        // Get pointer to G4PhysicsListHelper
+            G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
+
+            //  Get pointer to gamma
+            //G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
+
+            G4PhotoElectricEffect* photoElectricEffect = new G4PhotoElectricEffect();
+            photoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
+            ph->RegisterProcess(photoElectricEffect, particle);
+            
+            G4ComptonScattering* comptonScattering = new G4ComptonScattering();
+			comptonScattering->SetEmModel(new G4LivermoreComptonModel());
+            ph->RegisterProcess(comptonScattering, particle);
+            
+            G4RayleighScattering* rayleighScattering = new G4RayleighScattering();
+			rayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
+            ph->RegisterProcess(rayleighScattering, particle);	
+        }*/
 	}
+    
+    /*fWLSProcess = new G4OpWLS();
+
+    fScintProcess = new G4Scintillation();
+    fScintProcess->SetScintillationYieldFactor(1.);
+    fScintProcess->SetTrackSecondariesFirst(true);
+
+    fCerenkovProcess = new G4Cerenkov();
+    fCerenkovProcess->SetMaxNumPhotonsPerStep(300);
+    fCerenkovProcess->SetTrackSecondariesFirst(true);
+
+    fAbsorptionProcess      = new G4OpAbsorption();
+    fRayleighScattering     = new G4OpRayleigh();
+    fMieHGScatteringProcess = new G4OpMieHG();
+    fBoundaryProcess        = new G4OpBoundaryProcess();
+    
+    G4ProcessManager* pManager = G4OpticalPhoton::OpticalPhoton()->GetProcessManager();*/	
 
 	G4cout << G4endl;
 }
@@ -174,69 +219,18 @@ void PhysicsList::SetCuts()
     SetCutValue(1000*mm, "e+");
     SetCutValue(1000*mm, "proton");
 
-  	/*// default production thresholds for the world volume
-  	SetCutsWithDefault();
-
-  	// Production thresholds for detector regions
-  	G4Region* region;
-  	G4String regName;
-  	G4ProductionCuts* cuts;
-
- 	regName = "targetRegion";
-  	region = G4RegionStore::GetInstance()->GetRegion(regName);
-  	cuts = new G4ProductionCuts;
-  	cuts->SetProductionCut(0.0001*mm, G4ProductionCuts::GetIndex("e-")); // same cuts for gamma, e- and e+
-  	region->SetProductionCuts(cuts);
-
-  	//regName = "calorimeter";
-  	//region = G4RegionStore::GetInstance()->GetRegion(regName);
-  	//cuts = new G4ProductionCuts;
-  	//cuts->SetProductionCut(0.01*mm,G4ProductionCuts::GetIndex("gamma"));
-  	//cuts->SetProductionCut(0.1*mm,G4ProductionCuts::GetIndex("e-"));
-  	//cuts->SetProductionCut(0.1*mm,G4ProductionCuts::GetIndex("e+"));
-  	//region->SetProductionCuts(cuts);*/
-
-	//SetCutValue(cutForElectron, "electron");
-
-	//G4cout << "Cuts for electrons: " << cutForElectron << G4endl;
-
-	//G4VUserPhysicsList::SetCuts();
-
 }
 
-void PhysicsList::ReadOutInfo(G4String SaveFilePath)
+void PhysicsList::ReadOutInfo(SettingsLog& log)
 {
-	 std::ofstream SaveToFile;
-    
-    	//Open the file within the path set
-	SaveToFile.open(SaveFilePath, std::fstream::app); 
-   	
-	//Output error if can't open file
-	if( !SaveToFile ) 
-	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PhysicsList.\n" << std::endl;
-      		exit(1);
-   	}
-    
-    SettingsLog log(SaveToFile, G4cout);
-
 	log << "\n--------------------------------------------------------------------"
       	   "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
 	    << PhysicsPackageCmd << ":";
 
-	for (int element = 0 ; element < PhysicProcesses.size() ; element++)
-	{
+	for (int element = 0 ; element < PhysicProcesses.size() ; element++){
 		log << "\n- " << PhysicProcesses[element];
-	}	 
+	}	
 	
-	if (FluorescenceCmd == true)
-	{
-		log << "\n\nTracking primary and secondary particles." << G4endl;
-	}
-	else
-	{
-		log << "\n\nSecondary particles will be killed to help save computational time." << G4endl;
-	}
-
-	SaveToFile.close();
+	log << G4endl; 
 }
 

@@ -30,10 +30,12 @@ class SimulationMessenger: public G4UImessenger
 
 		//Pointers to different commands
 		G4UIdirectory* SimulationDirectory;
-    		G4UIcmdWithABool* WriteToTextCmd;
+    	G4UIcmdWithABool* WriteToTextCmd;
 		G4UIcmdWithAnInteger *NoImages_Cmd;
 		G4UIcmdWithAString *NoPhotons_Cmd;
 		G4UIcmdWithAnInteger *seedCmd;
+		G4UIcmdWithAnInteger *verboseCmd;
 };
+
 
 #endif 

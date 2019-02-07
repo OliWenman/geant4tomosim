@@ -380,24 +380,11 @@ void DetectorConstruction::RelayToTC(int NumberOfImages, double TotalAngle )
 	TC -> SetTotalImages(NumberOfImages);
 }
 
-void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
+void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 {
 	TC -> ReadOutInfo();
 
 	G4ThreeVector FullDetDimensions = G4ThreeVector(DetectorSize_Cmd.x()*1, DetectorSize_Cmd.y()*NoDetectorsY_Cmd, DetectorSize_Cmd.z()*NoDetectorsZ_Cmd);
-
-    std::ofstream SaveToFile;
-    
-    //Open the file within the path set
-	SaveToFile.open(SaveFilePath, std::fstream::app); 
-   	
-	//Output error if can't open file
-	if( !SaveToFile ) 
-	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from DetectorConstruction.\n" << std::endl;
-      	exit(1);
-   	}
-    
-    SettingsLog log(SaveToFile, G4cout);
 
 	log << "\n--------------------------------------------------------------------"
 		   "\nWORLD SETUP: \n"
@@ -412,23 +399,20 @@ void DetectorConstruction::ReadOutInfo(G4String SaveFilePath)
 	    << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
 	    << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
 
-	if (FluorescenceDet == true)
-	{
+	if (FluorescenceDet == true){
+	
 		log << "\nFluorescence detector: "
 		       "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
 		    << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
 	        << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
 	}
-	if (DetectorEfficiency_Cmd == false)
-	{	
+	if (DetectorEfficiency_Cmd == false){	
 		log << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
 	}
-	else
-	{	
+	else{	
 		log << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
 	}
 	
-	SaveToFile.close();
 }
 
 TargetConstruction* DetectorConstruction::GetTargetConstruction()

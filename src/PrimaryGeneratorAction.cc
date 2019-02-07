@@ -120,22 +120,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         PrintProgress();}
 } 
 
-void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
+void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 {
 	G4ThreeVector BeamDimensions = G4ThreeVector(0, BeamWidthY_Cmd, BeamHeightZ_Cmd);
-
-    std::ofstream SaveToFile;
-    
-    //Open the file within the path set
-	SaveToFile.open(SaveFilePath, std::fstream::app); 
-   	
-	//Output error if can't open file
-	if( !SaveToFile ) 
-	{ 	std::cerr << "\nError: " << SaveFilePath << " file could not be opened from PrimaryGeneratorAction.\n" << std::endl;
-      	exit(1);
-   	}
-    
-    SettingsLog log(SaveToFile, G4cout);
 
 	log << "\n--------------------------------------------------------------------"
 	       "\nBEAM INFORMATION: \n"
@@ -150,9 +137,6 @@ void PrimaryGeneratorAction::ReadOutInfo(G4String SaveFilePath)
         log << "\n- Energy of the monochomatic beam: " << G4BestUnit(energyCmd, "Energy");
 	       
 	log << "\n- Half beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
-
-    SaveToFile.close();
-    
 }
 
 void PrimaryGeneratorAction::SetValues(int nBins, double Position)

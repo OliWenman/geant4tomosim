@@ -2,6 +2,7 @@
 #Seed settings
 /data/Seed 0
 /data/CalibrateImages 1
+/data/verbose 1
 
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
@@ -11,7 +12,7 @@
 /physics/EM/Fluorescence false
 
 #World Settings
-/world/size 15 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
+/world/size 10 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
 /world/material G4_Galactic
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
@@ -21,9 +22,9 @@
 /detector/fluorescence/dimensions 2 0.01 1 mm
 
 #Beam Settings
-/beam/energy/type Mono
-/beam/energy/mono 25 keV
-/beam/energy/sigma 8 keV
+/beam/energy/type Gauss
+/beam/energy/mono 20 keV
+/beam/energy/sigma 3 keV
 /beam/position/halfx 1.05 mm
 /beam/position/halfy 1.25 mm
 

@@ -3,6 +3,7 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "G4ThreeVector.hh"
+#include "SettingsLog.hh"
 
 //My own classes
 class DetectorConstructionMessenger;
@@ -28,11 +29,11 @@ class G4Colour;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
-    		DetectorConstruction(Data *data);
-    		~DetectorConstruction();
+        DetectorConstruction(Data *data);
+    	~DetectorConstruction();
 
 		//Base class method
-    		G4VPhysicalVolume* Construct();
+    	G4VPhysicalVolume* Construct();
 		
 		//Set methods
 		void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
@@ -61,7 +62,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		void RelayToTC(int NumberOfImages, double TotalAngle);
 	
-		void ReadOutInfo(G4String SaveFilePath);
+		void ReadOutInfo(SettingsLog& log);
 		
 		TargetConstruction *GetTargetConstruction();
 

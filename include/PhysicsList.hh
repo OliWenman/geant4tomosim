@@ -1,9 +1,18 @@
 #ifndef PhysicsList_h
 #define PhysicsList_h 1
 
+#include "SettingsLog.hh"
 #include "G4VModularPhysicsList.hh"
 #include "G4EmConfigurator.hh"
 #include "globals.hh"
+
+#include "G4Cerenkov.hh"
+#include "G4Scintillation.hh"
+
+#include "G4OpMieHG.hh"
+#include "G4OpRayleigh.hh"
+#include "G4OpAbsorption.hh"
+#include "G4OpBoundaryProcess.hh""
 
 class G4VPhysicsConstructor;
 class PhysicsListMessenger;
@@ -33,7 +42,7 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetCuts();
 
 		//Read and save info user has inputted
-		void ReadOutInfo(G4String SaveFilePath);
+		void ReadOutInfo(SettingsLog& log);
 
 	private:
 		//Pointer to its messenger class
@@ -55,6 +64,16 @@ class PhysicsList: public G4VModularPhysicsList
 
 		//G4EmConfigurator em_config;
   		//G4VPhysicsConstructor* emPhysicsList;
+  		
+  		 /*G4OpWLS*             fWLSProcess;
+         G4Cerenkov*          fCerenkovProcess;
+         G4Scintillation*     fScintProcess;
+         G4OpAbsorption*      fAbsorptionProcess;
+         G4OpRayleigh*        fRayleighScattering;
+         G4OpMieHG*           fMieHGScatteringProcess;
+         G4OpBoundaryProcess* fBoundaryProcess;
+ 
+         G4bool fAbsorptionOn;*/
 };
 
 #endif

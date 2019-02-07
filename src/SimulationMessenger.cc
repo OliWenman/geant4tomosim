@@ -34,6 +34,10 @@ SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 	seedCmd -> SetGuidance("Enter a seed for the simulation. Input 0 for a random seed ");
 	seedCmd -> SetParameterName("seed", true);
 	seedCmd -> SetRange("seed > -1");
+	
+	verboseCmd = new G4UIcmdWithAnInteger("/data/verbose", this);
+	verboseCmd -> SetParameterName("verbose", true);
+	verboseCmd -> SetRange("verbose > -1");
 }
 
 SimulationMessenger::~SimulationMessenger()
@@ -43,24 +47,24 @@ SimulationMessenger::~SimulationMessenger()
 	delete NoImages_Cmd;
 	delete NoPhotons_Cmd;
 	delete seedCmd;
+	delete verboseCmd;
 }
 
 void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == WriteToTextCmd )
-  	{ 
+	if( command == WriteToTextCmd ){ 
 		sim -> SetWriteToText(WriteToTextCmd -> GetNewBoolValue(newValue));
 	}	
-	else if( command == NoImages_Cmd )
-	{
+	else if( command == NoImages_Cmd ){
 		//input -> SetNoImages(NoImages_Cmd -> GetNewIntValue(newValue));	
 	}
-	else if( command == NoPhotons_Cmd )
-	{
+	else if( command == NoPhotons_Cmd ){
 		//input -> SetNoPhotons(newValue);
 	}
-	else if( command == seedCmd )
-	{
+	else if( command == seedCmd ){
 		sim -> SetSeed(seedCmd -> GetNewIntValue(newValue));	
+	}
+	else if( command == verboseCmd){
+	    sim -> SetVerboseLevel(seedCmd -> GetNewIntValue(newValue));	
 	}
 }

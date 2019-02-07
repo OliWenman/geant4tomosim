@@ -35,6 +35,7 @@ Simulation::Simulation()
 	Ready = false;
 
 	WriteToTextCmd = false;
+	verboseLevel = 1;
 	
 	//SimMode = "Calibrating";
 
@@ -133,7 +134,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
     //Apply the commands from the macro files to fill the values
-	G4cout << "\nReading Geometry.mac... " << G4endl;
+	G4cout << "\nReading Geometry.mac... ";
 	
 	//UImanager -> ApplyCommand("/control/verbose 2");
 	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
@@ -160,8 +161,7 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	//Tell the data class what the max energy is
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
 
-    G4cout << "\n--------------------------------------------------------------------"
-	          "\nCommands successfully added\n"
+    G4cout << "\nCommands successfully added\n"
 	          "\nSimulation Ready!" << G4endl;
 
     UImanager -> ApplyCommand("/run/initialize");	
@@ -189,78 +189,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			
 			DC -> GetTargetConstruction() -> SetSimMode(Mode);
 		    PGA -> SetSimMode(Mode);
-		    
-		    UImanager -> ApplyCommand("/control/verbose 0");
 			
 		    if (Mode == "Calibrating")
-	        { 
-	            std::string FileName = "SimulationLog.txt";
-	            SaveLogPath = SaveLogPath + FileName;
-	        
-                std::ofstream SaveToFile;
-    
-                //Open the file within the path set
-                SaveToFile.open(SaveLogPath); 
-   	
-                //Output error if can't open file
-                if( !SaveToFile ) 
-                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. Mode = " << Mode << "\n" << std::endl;
-              	    exit(1);
-           	    }
-    
-                SettingsLog log(SaveToFile, G4cout);
-
-			    log << "\n--------------------------------------------------------------------"
-                       "\nSETTINGS COMMANDS USED: \n" << G4endl;
-
-                std::ifstream ReadFile;
-                std::string Line;
-             
-                G4String ScriptName = "pySettings.mac";
-                ReadFile.open(PathToScripts+ScriptName);
-                if (!ReadFile) 
-                {
-                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
-                    exit(1); 
-                }
-             
-                 while ((std::getline(ReadFile, Line))) 
-                {
-                    //if (Line.find('#') == std::string::npos)
-                    if(Line[1] != '/')
-                        log << Line << G4endl;
-                }
-                ReadFile.close();
-                
-                log << "\n--------------------------------------------------------------------"
-                 
-                    << "\nGEOMETRY COMMANDS USED: \n" << G4endl;
-                
-                ScriptName = "Geometry.mac";
-                ReadFile.open(PathToScripts+ScriptName);
-                if (!ReadFile) 
-                {
-                    G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
-                    exit(1); 
-                }
-            
-                while ((std::getline(ReadFile, Line))) 
-                {
-                    //if (Line.find("#/") == std::string::npos)
-                    if(Line[1] != '/')
-                        log << Line << G4endl;
-                    
-                }
-                
-                log << G4endl;
-
-                ReadFile.close();
-
-                //Readout the inputs from the user and save to a file
-	            DC -> ReadOutInfo(SaveLogPath);
-	            PGA -> ReadOutInfo(SaveLogPath);
-	            PL -> ReadOutInfo(SaveLogPath);
-             
+	        {    
+	            OutInfo(verboseLevel);
+	     
                 //Prints the time and date of the local time that the simulation started
 			    time_t now = time(0);
 			    //Convert now to tm struct for local timezone
@@ -268,27 +201,26 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 
                 Visualisation();
 
-			    G4cout << "--------------------------------------------------------------------"
+			    G4cout << "\n--------------------------------------------------------------------"
 			              "\nStarting simulation... \n";
 			          
 			    G4cout << "\n" << asctime(localtm);
 			    
-			    SaveToFile.close();
+			    //SaveToFile.close();
 		    } 
 		    else if (Mode == "Simulating")
 		    {
+		        //Open the file within the path set
 		        std::ofstream SaveToFile;
-    
-                //Open the file within the path set
                 SaveToFile.open(SaveLogPath, std::fstream::app); 
    	
                 //Output error if can't open file
-                if( !SaveToFile ) 
-                { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
-              	exit(1);
+                if( !SaveToFile ){ 	
+                    std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+              	    exit(1);
            	    }
     
-                SettingsLog log(SaveToFile, G4cout);
+                SettingsLog log(SaveToFile);
 
 			    log << "\n--------------------------------------------------------------------"
 			           "\nMETA DATA: \n"
@@ -297,12 +229,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			        << "\n- Number of projections being processed: " << NumberOfImages
                     << "\n- Number of photons per image: " << TotalParticles
                     << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") 
-                 
-                    << "\n\n--------------------------------------------------------------------" << G4endl;
+			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << G4endl;
                     
-                    
-                 SaveToFile.close();
+                SaveToFile.close();
 		    }
 		    
 		    if (TotalParticles > 0)
@@ -353,8 +282,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 		return data -> GetHitData();
 	}
 	
-	else if (Ready == false)
-	{
+	else if (Ready == false){
 		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
 	}
 }
@@ -453,4 +381,86 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
     }
     
     return nParticles;
+}
+
+void Simulation::OutInfo(int verbose)
+{
+    //UImanager -> ApplyCommand("/control/verbose 0");
+	        
+	std::string FileName = "SimulationLog.txt";
+	SaveLogPath = SaveLogPath + FileName;
+	     
+	//Open the file within the path set   
+    std::ofstream SaveToFile;
+    SaveToFile.open(SaveLogPath); 
+    if( !SaveToFile ) 
+    { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
+        exit(1);
+    }
+    
+    SettingsLog log(SaveToFile);
+    
+    //If the verbose has been set >= 2 output info to terminal. Will always output to textfile though
+    if (verbose >= 2){
+        log.terminalOn = true;
+    }
+    else{
+        log.terminalOn = false;
+    }
+   
+	log << "\n--------------------------------------------------------------------"
+           "\nSETTINGS COMMANDS USED: \n" << G4endl;
+
+    std::ifstream ReadFile;  
+    G4String ScriptName = "pySettings.mac";
+    ReadFile.open(PathToScripts+ScriptName);
+    if (!ReadFile) 
+    {
+        G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
+        exit(1); 
+    }
+             
+    std::string Line;    
+    while ((std::getline(ReadFile, Line))) 
+    {
+        //if (Line.find('#') == std::string::npos)
+        if(Line[1] != '/'){
+            log << Line << G4endl;}
+    }
+    ReadFile.close();
+                
+    log << "\n--------------------------------------------------------------------"            
+        << "\nGEOMETRY COMMANDS USED: \n" << G4endl;
+                
+     ScriptName = "Geometry.mac";
+     ReadFile.open(PathToScripts+ScriptName);
+     if (!ReadFile) 
+     {
+         G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
+         exit(1); 
+     }
+            
+     while ((std::getline(ReadFile, Line))) 
+     {
+        //if (Line.find("#/") == std::string::npos)
+        if(Line[1] != '/'){
+            log << Line << G4endl;}        
+     }                
+     log << G4endl;
+
+     ReadFile.close();
+     
+     //If the verbose has been set >= 1 output info to terminal. Will always output to textfile though
+     if (verbose >= 1){
+        log.terminalOn = true;
+     }
+     else {
+        log.terminalOn = false;
+     }
+     
+	 DC -> ReadOutInfo(log);
+	 PGA -> ReadOutInfo(log);
+	 PL -> ReadOutInfo(log);
+	 
+	 SaveToFile.close();
 }

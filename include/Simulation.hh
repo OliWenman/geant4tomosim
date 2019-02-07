@@ -43,11 +43,13 @@ class Simulation
 		void SetSaveLogPath(std::string path){SaveLogPath = path;}
 
 		void SetSeed(long int value){seedCmd = value;}
+		void SetVerboseLevel(int value){verboseLevel = value;}
 		void SetWriteToText(bool value){WriteToTextCmd = value;}
 
 	private:
 		//It's own private functions to be called by the public functions
 		void Setup();
+		void OutInfo(int verbose);
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
 		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);
@@ -72,6 +74,8 @@ class Simulation
 
 		G4String SaveLogPath;
 		G4String PathToScripts;
+		
+		int verboseLevel;
 };
 
 #endif

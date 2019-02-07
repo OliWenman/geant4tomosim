@@ -7,6 +7,7 @@
 #include "ProgressTracker.hh"
 #include "globals.hh"
 #include <vector>
+#include "SettingsLog.hh"
 
 class Data;
 class G4Event;
@@ -26,7 +27,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     	PrimaryGeneratorAction(Data *data);    
     	~PrimaryGeneratorAction();
    		void GeneratePrimaries(G4Event* );
-		void ReadOutInfo(G4String SaveFilePath);
 
 		//Set methods
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
@@ -56,6 +56,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		std::vector<int> GetBeamEnergyFreq(){return BeamEnergyFreq;}
 		
 		void SetSimMode(G4String value){SimMode = value; CurrentEvent = 0;}
+		void ReadOutInfo(SettingsLog& log);
 
   	private:
 		//Pointers to the particle source

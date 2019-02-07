@@ -115,7 +115,7 @@ class NexusFormatter:
         DetectorPath = '/entry1/tomo_entry/instrument/detector/'
         #detector = self.h5file1[DetectorPath]
                
-        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages, nDetectorsZ, nDetectorsY), dtype = 'i4')
+        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages + (nCalibrations*2), nDetectorsZ, nDetectorsY), dtype = 'i4')
         
         #entry/entry1/tomo_entry/data/instrument/detector/image_key
         darkKey = np.full(shape = (nCalibrations,), fill_value = 2)
@@ -124,25 +124,13 @@ class NexusFormatter:
         
         self.image_key = self.h5file1.create_dataset(DetectorPath + 'image_key', data = np.concatenate((darkKey, lightKey, dataKey)))
         
-        #DataPath = '/entry1/tomo_entry/data'
-        #dataGroup = self.h5file1[DataPath]
+        x_pixel_sizeN = detectorDimensions[1]
+        y_pixel_sizeN = detectorDimensions[2]
         
-        #data = dataGroup.create_group('data')
-        #data.attrs['NX_class'] = 'NXdata'
+        x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_sizeN)
+        y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_sizeN)
         
-        """
-        xlabel = 'x_pixel_size'
-        ylabel = 'y_pixel_size'
-
-        detectordata.attrs[xlabel + '_indices'] = [1,] 
-        detectordata.attrs[ylabel + '_indices'] = [2,]
-        
-        x_pixel_size_array = np.around(np.linspace(start = 0, stop = nDetectorsY*detectorDimensions[1]*2, num = nDetectorsY), 3)
-        y_pixel_size_array = np.around(np.linspace(start = 0, stop = nDetectorsZ*detectorDimensions[2]*2, num = nDetectorsZ), 3)
-        
-        x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_size_array)
-        y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_size_array)
-        """
+       
     #Appened to the transmission data
     def AddProjectionData(self, theData, nImage):
         
@@ -162,10 +150,10 @@ class NexusFormatter:
         
         sample = self.h5file1[PathToData]
         
-        self.rotation_angle = sample.create_dataset('rotation_angle', data = rotationArray)
+        self.rotation_angle = sample.create_dataset('rotation_angle', data = np.rad2deg(rotationArray))
         self.rotation_angle.attrs['axis'] = '1'
         self.rotation_angle.attrs['label'] = '1'
-        self.rotation_angle.attrs['units'] = 'radians'
+        self.rotation_angle.attrs['units'] = 'degrees'
   
     #Function to create the data for the beam energy, fluorescence or full mapping fluorescence
     def CreateDataGroup(self, dataType, nImages = 1, eBins = 1, xBins = 1, yBins = 1):

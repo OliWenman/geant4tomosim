@@ -3,27 +3,38 @@
 
 #include <iostream>
 #include <fstream>
+#include "globals.hh"
 
-//Structure to output to two streams at the same time. Used for outputting to terminal and writing to file at the same time
+//Structure to output to filestream and terminal at the same time
 struct SettingsLog
-{
-    SettingsLog(std::ostream& out1, std::ostream& out2) : out1_(out1), out2_(out2){}
-    std::ostream& out1_;
-    std::ostream& out2_;
+{ 
+    //By defualt streaming to terminal and file are on
+    SettingsLog(std::ostream& fileStream) : fileStream_(fileStream) {terminalOn = true; fileOn = true;}
+    std::ostream& fileStream_;
+    bool terminalOn;
+    bool fileOn;
 };
 
-template <typename T> SettingsLog& operator << (SettingsLog& h, T const& t)
+template <typename T> SettingsLog& operator << (SettingsLog& log, T const& outputStream)
 {
-   h.out1_ << t;
-   h.out2_ << t;
-   return h;
+    if (log.fileOn){
+        log.fileStream_ << outputStream;}
+     
+    if (log.terminalOn){
+        G4cout << outputStream;}
+    
+    return log;
 }
 
-inline SettingsLog& operator << (SettingsLog& h, std::ostream&(*f)(std::ostream&))
+inline SettingsLog& operator << (SettingsLog& log, std::ostream&(*outputStream)(std::ostream&))
 {
-   h.out1_ << f;
-   h.out2_ << f;
-   return h;
+    if(log.fileOn){
+        log.fileStream_ << outputStream;}
+   
+    if (log.terminalOn){
+        G4cout << outputStream;}
+        
+    return log;
 }
 
 #endif
