@@ -30,20 +30,15 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >(nDetectorsZ, std::vector<int>(NoBins_Cmd)));
 				fullMappingFluore = ifullMappingFluore;
 			}
-
-			//Setups the energy bins if any of the energy options are wanted
-			if (fluoreFullField == true || fluoreFullMapping == true || beamEnergy == true)
-			{ 
-				std::vector<double> iEnergyBins (NoBins_Cmd, 0);
-				int Energy = 0;
-				for (int ele = 0 ; ele < NoBins_Cmd ; ele++)
-				{
-					++Energy;
-					iEnergyBins[ele] = (MaxE/NoBins_Cmd)*Energy;
-				}
-
-				EnergyBins = iEnergyBins;
+			std::vector<double> iEnergyBins (NoBins_Cmd, 0);
+			int Energy = 0;
+			for (int ele = 0 ; ele < NoBins_Cmd ; ele++)
+			{
+				++Energy;
+				iEnergyBins[ele] = (MaxE/NoBins_Cmd)*Energy;
 			}
+
+			EnergyBins = iEnergyBins;
 		}
 	}
 	else 

@@ -47,6 +47,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
 		void SetFluorescenceDet(G4bool value){FluorescenceDet = value;}
 		void SetFluorDetSize(G4ThreeVector value){FluorDetSize_Cmd = value;}
+		
+		void SetCurrentImage(int value){nImage = value;}
 
 		//Get methods
 		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
@@ -66,7 +68,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		
 		TargetConstruction *GetTargetConstruction();
 
-  	protected:
+  	private:
 
 		//Own class functions
 		void SolidDetectors();
@@ -118,6 +120,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		bool FluorescenceDet;
 		
 		bool WarningChecked;
+		
+		
 };
 
 #endif

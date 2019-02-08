@@ -97,7 +97,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());}
     }
 
-	if (CurrentImage == 1 && BeamData == true && SimMode == "Simulating")
+	if (CurrentImage == 1 && SimMode == "Simulating")
 	{	//Save beam energy data for the first image
        	int bin;
         	

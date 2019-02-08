@@ -16,6 +16,22 @@
 /Materials/AddTo/Compound TC4 O 0.2 %
 /Materials/AddTo/Compound TC4 Ti 89.375 %
 
+/Materials/Define/Compound MS1 6 8.05 g/cm3
+/Materials/AddTo/Compound MS1 Ni 18 %
+/Materials/AddTo/Compound MS1 Co 9 %
+/Materials/AddTo/Compound MS1 Mo 4.85 %
+/Materials/AddTo/Compound MS1 Ti 0.7 %
+/Materials/AddTo/Compound MS1 Al 0.1 %
+/Materials/AddTo/Compound MS1 Fe 67.35 %
+
+/Materials/Define/Compound IN625 6 8.5 g/cm3
+/Materials/AddTo/Compound IN625 Cr 21.5 %
+/Materials/AddTo/Compound IN625 Mo 9 %
+/Materials/AddTo/Compound IN625 Nb 18 %
+/Materials/AddTo/Compound IN625 Fe 5 %
+/Materials/AddTo/Compound IN625 Ti 0.4 %
+/Materials/AddTo/Compound IN625 Ni 53.9 %
+
 #================================================
 #OBJECT A
 
@@ -68,12 +84,12 @@
 #=============================================
 #Place the objects
 
-/Target/Material ObjectA G4_Al
+/Target/Material ObjectA IN625
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
 /Target/Rotation ObjectA 0 0 0 deg
 
-/Target/Material ObjectB G4_Fe
+/Target/Material ObjectB MS1
 /Target/Colour ObjectB Red
 /Target/Position ObjectB 0 0 0.45 mm
 /Target/Rotation ObjectB 0 0 0 deg

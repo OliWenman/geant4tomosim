@@ -10,9 +10,9 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 nBins = 1000
-NumberOfImages = 1
+NumberOfImages = 100
 TotalRotation = 180*G4.deg
-nParticles = 10000000
+nParticles = 500000000
 
 fluoreFF = False
 fluoreFM = False
@@ -21,8 +21,11 @@ Sim = sim.PySim()
 
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM)
-#Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V3/")
+#Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V4/")
 #Sim.setFilePath("/home/xol73553/Documents/NeXusTesting/")
+#Sim.setFilePath('/scratch/Data/Complex Object/ObjectAB/Daniil/')
+#Sim.setFilePath("/scratch/Data/Complex Object/MultiSimTest/1/")
+Sim.setFilePath('/scratch/Data/Complex_Object/ObjectAB/IN625_MS1/V1/')
 Sim.run(nParticles, TotalRotation, NumberOfImages)
 
 #Sim.printNexusTree()

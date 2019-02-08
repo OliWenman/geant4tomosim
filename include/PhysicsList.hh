@@ -6,17 +6,16 @@
 #include "G4EmConfigurator.hh"
 #include "globals.hh"
 
-#include "G4Cerenkov.hh"
-#include "G4Scintillation.hh"
-
-#include "G4OpMieHG.hh"
-#include "G4OpRayleigh.hh"
-#include "G4OpAbsorption.hh"
-#include "G4OpBoundaryProcess.hh""
-
 class G4VPhysicsConstructor;
 class PhysicsListMessenger;
 class G4StepLimiter;
+
+class G4Cerenkov;
+class G4Scintillation;
+class G4OpAbsorption;
+class G4OpRayleigh;
+class G4OpMieHG;
+class G4OpBoundaryProcess;
 
 class PhysicsList: public G4VModularPhysicsList
 {
@@ -37,6 +36,7 @@ class PhysicsList: public G4VModularPhysicsList
 
 		//Construct the particles and processes
 		void ConstructEM();
+		void ConstructOP();
   		void ConstructParticle();
   		void ConstructProcess();
 		void SetCuts();
@@ -62,18 +62,12 @@ class PhysicsList: public G4VModularPhysicsList
 		//Vector used to read out the physics processes used
 		std::vector<G4String> PhysicProcesses;
 
-		//G4EmConfigurator em_config;
-  		//G4VPhysicsConstructor* emPhysicsList;
-  		
-  		 /*G4OpWLS*             fWLSProcess;
-         G4Cerenkov*          fCerenkovProcess;
-         G4Scintillation*     fScintProcess;
-         G4OpAbsorption*      fAbsorptionProcess;
-         G4OpRayleigh*        fRayleighScattering;
-         G4OpMieHG*           fMieHGScatteringProcess;
-         G4OpBoundaryProcess* fBoundaryProcess;
- 
-         G4bool fAbsorptionOn;*/
+		G4Cerenkov* fCerenkovProcess;
+        G4Scintillation* fScintillationProcess;
+        G4OpAbsorption* fAbsorptionProcess;
+        G4OpRayleigh* fRayleighScatteringProcess;
+        G4OpMieHG* fMieHGScatteringProcess;
+        G4OpBoundaryProcess* fBoundaryProcess;
 };
 
 #endif

@@ -43,6 +43,15 @@
 
 #include "G4OpticalPhysics.hh"
 
+#include "G4ProcessManager.hh"
+
+#include "G4Cerenkov.hh"
+#include "G4Scintillation.hh"
+#include "G4OpAbsorption.hh"
+#include "G4OpRayleigh.hh"
+#include "G4OpMieHG.hh"
+#include "G4OpBoundaryProcess.hh"
+
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
 	//Creates the messenger class
@@ -78,6 +87,7 @@ void PhysicsList::ConstructProcess()
 	AddTransportation();
 	//Call the method that picks the physics used
 	ConstructEM();
+	ConstructOP();
 }
 void PhysicsList::ConstructEM()
 {
@@ -159,62 +169,42 @@ void PhysicsList::ConstructEM()
   				de->SetPIXE(true);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 				PhysicProcesses.push_back ("Fluorescence");
-
-				//G4eIonisation* i = new G4eIonisation();
-				//i -> SetEmModel(new G4LivermoreIonisationModel());
-				//pmanager -> AddDiscreteProcess(i);
-				
-				G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-	            //RegisterPhysics(opticalPhysics);
-		        //pmanager->AddContinuousProcess(opticalPhysics);
-				
 			}
 		}
-		/*if(particleName == "gamma")
-		{
-	        // Get pointer to G4PhysicsListHelper
-            G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();
-
-            //  Get pointer to gamma
-            //G4ParticleDefinition* particle = G4Gamma::GammaDefinition();
-
-            G4PhotoElectricEffect* photoElectricEffect = new G4PhotoElectricEffect();
-            photoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
-            ph->RegisterProcess(photoElectricEffect, particle);
-            
-            G4ComptonScattering* comptonScattering = new G4ComptonScattering();
-			comptonScattering->SetEmModel(new G4LivermoreComptonModel());
-            ph->RegisterProcess(comptonScattering, particle);
-            
-            G4RayleighScattering* rayleighScattering = new G4RayleighScattering();
-			rayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
-            ph->RegisterProcess(rayleighScattering, particle);	
-        }*/
 	}
-    
-    /*fWLSProcess = new G4OpWLS();
-
-    fScintProcess = new G4Scintillation();
-    fScintProcess->SetScintillationYieldFactor(1.);
-    fScintProcess->SetTrackSecondariesFirst(true);
-
-    fCerenkovProcess = new G4Cerenkov();
-    fCerenkovProcess->SetMaxNumPhotonsPerStep(300);
-    fCerenkovProcess->SetTrackSecondariesFirst(true);
-
-    fAbsorptionProcess      = new G4OpAbsorption();
-    fRayleighScattering     = new G4OpRayleigh();
-    fMieHGScatteringProcess = new G4OpMieHG();
-    fBoundaryProcess        = new G4OpBoundaryProcess();
-    
-    G4ProcessManager* pManager = G4OpticalPhoton::OpticalPhoton()->GetProcessManager();*/	
 
 	G4cout << G4endl;
 }
 
+void PhysicsList::ConstructOP()
+{
+    fAbsorptionProcess = new G4OpAbsorption();
+    fRayleighScatteringProcess = new G4OpRayleigh();
+    fMieHGScatteringProcess = new G4OpMieHG();
+    fBoundaryProcess = new G4OpBoundaryProcess();
+    
+    auto particleIterator=GetParticleIterator();
+    particleIterator->reset();
+    while( (*particleIterator)() ){
+        G4ParticleDefinition* particle = particleIterator->value();
+        G4ProcessManager* pmanager = particle->GetProcessManager();
+        G4String particleName = particle->GetParticleName();
+       
+        if (particleName == "opticalphoton") {
+            pmanager->AddDiscreteProcess(fAbsorptionProcess);
+            pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
+            pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
+            pmanager->AddDiscreteProcess(fBoundaryProcess);
+            PhysicProcesses.push_back ("Refraction");
+        }
+    }
+    
+    fBoundaryProcess->SetVerboseLevel(2);
+}
+
 void PhysicsList::SetCuts()
 {	
-    SetCutValue(0.05*mm, "gamma");
+    SetCutValue(0.1*mm, "gamma");
     SetCutValue(1000*mm, "e-");
     SetCutValue(1000*mm, "e+");
     SetCutValue(1000*mm, "proton");

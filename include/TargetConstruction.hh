@@ -39,6 +39,7 @@ class TargetConstruction
 
 		//Other set functions
 		void SetTotalImages(G4int value){TotalImages = value;}
+		void SetCurrentImage(int value){nImage = value;}
 		void SetOverlapCheck(G4bool value){OverlapCheck_Cmd = value;}
 		void SetVisualization(G4bool value){VisualizationValue = value;}
 		

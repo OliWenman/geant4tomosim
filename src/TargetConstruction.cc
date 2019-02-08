@@ -171,16 +171,16 @@ void TargetConstruction::CreateObject(G4String Name, G4String Type, std::vector<
     
     ObjectDatabase.push_back (newObject);
     
-    if (Type == "Cube")
-        Box(Name, Dimensions);
-    else if (Type == "Sphere")
-        Sphere(Name, Dimensions);
-    else if (Type == "Cylinder")
-        Cylinder(Name, Dimensions);
-    else if (Type == "Trapezoid")
-        Trapezoid(Name, Dimensions);
-    else if (Type == "Ellipsoid")
-        Ellipsoid(Name, Dimensions);
+    if (Type == "Cube"){
+        Box(Name, Dimensions);}
+    else if (Type == "Sphere"){
+        Sphere(Name, Dimensions);}
+    else if (Type == "Cylinder"){
+        Cylinder(Name, Dimensions);}
+    else if (Type == "Trapezoid"){
+        Trapezoid(Name, Dimensions);}
+    else if (Type == "Ellipsoid"){
+        Ellipsoid(Name, Dimensions);}
     else
     {   G4cout << "\nERROR: Solid \n" << Type << "\" is of unknown type! " << G4endl;
         exit(1);
@@ -270,9 +270,7 @@ G4Material* TargetConstruction::FindMaterial(G4String MaterialName, G4String Obj
 {
 	//Obtain pointer to NIST material manager to find the build materials 
 	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
-	if (material)
-	{
-	    //material -> GetMaterialPropertiesTable() -> DumpTable();
+	if (material){   
 	    return material;
 	}
 	else 
@@ -402,12 +400,6 @@ void TargetConstruction::AddPhysicalVolume(CustomObject &object, G4LogicalVolume
 							 	                          object.Number,                     //copy number
 							 	                          OverlapCheck_Cmd);		//overlaps checking      
 							 	                          
-							 	           
-
-		//Visualization attributes
-		//if (object.Colour == "Red")
-		//    Visualization(LVObject, G4Colour::Red());
-
 		//Let the runManager know the geometry has changed between runs
 		G4RunManager::GetRunManager()->GeometryHasBeenModified();
 	}
@@ -434,13 +426,9 @@ G4ThreeVector TargetConstruction::OffSetRotation2(CustomObject &object, G4double
 	//If object number is greater not the master volume, it will rotate around the master volume
 	else 
 	{
-        //G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.z());
-        //G4double NewZ = object.Position.z() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.z()); 
         G4double NewX = object.Position.x() + (cos(deltaAngle) * object.Position.x()) + (-sin(deltaAngle) * object.Position.y());
         G4double NewY = object.Position.y() + (sin(deltaAngle) * object.Position.x()) + (cos(deltaAngle) * object.Position.y()); 
-        
-        
-
+ 
 		return G4ThreeVector(NewX, NewY, object.StartingPosition.z());
     }
 }
@@ -457,25 +445,9 @@ void TargetConstruction::ReadOutInfo()
 }
 
 void TargetConstruction::AddColour(G4String Name, G4String Colour)
-{
-    /*//Finds the right logic volume
-	G4LogicalVolume* LV = G4LogicalVolumeStore::GetInstance() -> GetVolume("LV"+ Name, true);
-	if (Colour == "Red")
-        LV -> SetVisAttributes(G4Colour::Red());
-    
-    else if (Colour == "Blue")
-        LV -> SetVisAttributes(G4Colour::Blue());
-        
-    else if (Colour == "Green")
-        LV -> SetVisAttributes(G4Colour::Green()); 
-        
-    else if (Colour == "White")
-        LV -> SetVisAttributes(G4Colour::White());*/       
-    
+{  
     bool Success = false;
 
-    //G4cout << "Adding colour "<< G4endl;
-	
 	for (int n = 0 ; n < ObjectDatabase.size() ; n++)
     {   if (ObjectDatabase[n].Name == Name)
         {   

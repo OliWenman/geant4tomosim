@@ -182,8 +182,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 	if (Ready == true)
 	{
         if(Image == 0)
-		{
-		
+		{		
 		    DC -> RelayToTC(NumberOfImages, TotalAngle);
 			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
 			
@@ -205,8 +204,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			              "\nStarting simulation... \n";
 			          
 			    G4cout << "\n" << asctime(localtm);
-			    
-			    //SaveToFile.close();
 		    } 
 		    else if (Mode == "Simulating")
 		    {
@@ -234,12 +231,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
                 SaveToFile.close();
 		    }
 		    
-		    if (TotalParticles > 0)
-                {
+		    if (TotalParticles > 0){
 			    G4cout << "\n================================================================================"
 		                  "\n                                 Geant4 info"
 	                      "\n================================================================================" << G4endl;
-	            }
+	        }
 		}
 
         PGA -> ResetEvents(Image + 1);
@@ -253,9 +249,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 		}
 		
 		//Prepare for next run that geometry has changed
-		G4RunManager::GetRunManager() -> ReinitializeGeometry();
-
-		//G4cout << "\n\nRun finished " << G4endl;
+		runManager -> ReinitializeGeometry();
 
 		if (WriteToTextCmd == true)
 			{data -> WriteToTextFile(Image);}
@@ -270,6 +264,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 			    G4cout << "\n================================================================================"
 	                      "\n                        The simulation is finished! "
 	                      "\n================================================================================" << G4endl;
+	            
+	            TargetConstruction* TC = DC -> GetTargetConstruction();         
+	            TC -> SetCurrentImage(0);
+	            DC -> SetCurrentImage(0);
+	            PGA -> ResetEvents(0);
 	        }
 	        else if (Mode == "Calibrating")
 	        {
@@ -322,14 +321,12 @@ std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
 	return data -> GetFullMapping();
 }
 
-int Simulation::GetNumberCalibrations()
-{
+int Simulation::GetNumberCalibrations(){
     TargetConstruction* TempTC = DC -> GetTargetConstruction();
     return TempTC -> GetCalibrationImages();
 }
 
-void Simulation::SetSavingTime(double Time)
-{
+void Simulation::SetSavingTime(double Time){
     PGA -> SetSavingTime(Time);
 }
 

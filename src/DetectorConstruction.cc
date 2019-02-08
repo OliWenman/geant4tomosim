@@ -396,8 +396,8 @@ void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 
 	       "\nTransmission detectors: "
 	       "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	    << "\n- Individual detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
-	    << "\n- Full detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
+	    << "\n- Individual half detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
+	    << "\n- Half detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
 
 	if (FluorescenceDet == true){
 	

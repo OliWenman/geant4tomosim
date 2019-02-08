@@ -214,3 +214,8 @@ G4Element* DefineMaterials::FindElement(G4String ElementName)
 	return element;
 	
 }
+
+/*void AddRefractiveIndex(G4String MaterialName, G4double refractiveIndex, G4double energy)
+{
+
+}*/
