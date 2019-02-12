@@ -59,8 +59,7 @@ cdef class PySim:
     def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
         self.FFF = fluoreFullField
         self.FFM = fluoreFullMapping
-        self.BE = True
-        self.thisptr.pyOutputOptions(self.FFF, self.FFM, self.BE)
+        self.thisptr.pyOutputOptions(self.FFF, self.FFM)
 
     def dataPaths(self, a, b, c):
         self.thisptr.pyDataPaths(a, b, c)
@@ -107,9 +106,8 @@ cdef class PySim:
               self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
               print "- Full mapping fluorescence"
            
-           if self.BE == True:
-              self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
-              print "- The beam energy"
+           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
+           print "- The beam energy"
            
            iTime = time.time()
            
@@ -137,8 +135,7 @@ cdef class PySim:
                if CurrentImage == 0:
                   energyBins = self.lastEnergyBins()
                   
-                  if self.BE == True:
-                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
+                  self.nexusfile.AddxAxis("Beam_Energy", energyBins)
                   
                   if self.FFF == True:
                      self.nexusfile.AddxAxis("Fluorescence", energyBins)
@@ -147,8 +144,7 @@ cdef class PySim:
                      #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
-               if self.BE == True:
-                  self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
+               self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
                   #self.nexusfile.AddxAxis("Beam_Energy", energyBins, nImage = CurrentImage) 
                
                if self.FFF == True:

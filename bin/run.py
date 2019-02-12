@@ -17,7 +17,7 @@ DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 #IMAGE VARIABLES
 
 NumberOfImages = 10
-nDarkFlatFields = 0
+nDarkFlatFields = 2
 nParticles = 1000000
 
 TotalRotation = 180*G4.deg
@@ -36,16 +36,16 @@ minEnergy = 25*G4.keV
 maxEnergy = 25*G4.keV
 minSigmaEnergy = 0.5*G4.keV
 maxSigmaEnergy = 5*G4.keV
-Gun = "Gauss"
+Gun = "Mono"
 nBins = 1000
 
 energyArray = []
-monoEnergies = np.linspace(start = minEnergy, stop = maxEnergy, num = NumberOfImages, endpoint = True)
+monoEnergies = np.linspace(start = minEnergy, stop = maxEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
 energyArray.append(monoEnergies)
-sigmaEnergies = np.linspace(start = minSigmaEnergy, stop = maxSigmaEnergy, num = NumberOfImages, endpoint = True)
+sigmaEnergies = np.linspace(start = minSigmaEnergy, stop = maxSigmaEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
 energyArray.append(sigmaEnergies)
 gunTypes = []
-for e in range(NumberOfImages):
+for e in range(NumberOfImages + nDarkFlatFields):
     gunTypes.append(Gun)
 energyArray.append(gunTypes)
 

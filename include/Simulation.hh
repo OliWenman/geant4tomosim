@@ -25,10 +25,9 @@ class Simulation
 
 		//Methods
 		//To be called from Python
-		void pyOutputOptions(bool FFF, bool FFM, bool BM);
+		void pyOutputOptions(bool FFF, bool FFM);
 		void pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
-		//std::vector<int> pyRun(unsigned long long int TotalParticles, int nImages, double rotation_angles, int CurrentImage, int nDarkFlatFields);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
 
 		//Python or C++

@@ -16,23 +16,18 @@ class Data
 		
 		//Class methods
 		//inline G4int Quotient(int dividend, int divisor ) {return dividend / divisor;}
-		inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
+		//inline G4int Remainder(int dividend, int divisor) {return dividend % divisor;}
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
 		void SaveEnergyFreq(double E);		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
-
 		void SaveFullMapping(double E);
-
-		void WriteToTextFile(int nImage);
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
-
-		std::vector<double> GetEnergyBins(){return EnergyBins;}//
-		std::vector<int> GetEnergyFreq(){return EnergyFreq;}//
-
+		std::vector<double> GetEnergyBins(){return EnergyBins;}
+		std::vector<int> GetEnergyFreq(){return EnergyFreq;}
 		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
@@ -50,10 +45,8 @@ class Data
 
 		void SetFFF(bool value){fluoreFullField = value;}
 		void SetFFM(bool value){fluoreFullMapping = value;}
-		void SetBE(bool value){beamEnergy = value;}
 
 	private:	
-		void MakeSpaces(int nSpaces, std::ofstream &outdata);
 
 		//Data members
 		std::vector<int> HitDataArray;
@@ -64,8 +57,6 @@ class Data
 		G4int rows;
 		G4int columns;	
 
-		G4bool TextFileCmd;
-
 		G4int NoBins_Cmd;
 		G4double MaxE;
 
@@ -74,7 +65,6 @@ class Data
 
 		bool fluoreFullField;
 		bool fluoreFullMapping;
-		bool beamEnergy;
 };
 
 #endif

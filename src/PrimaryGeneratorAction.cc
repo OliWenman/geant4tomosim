@@ -32,8 +32,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 
-	BeamCheck = false;
-	BeamData = false;
 	gunExists = false;
 	
 	ShowProgressBar = true;
@@ -82,7 +80,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Generate the particle in the event
       	fastParticleGun -> GeneratePrimaryVertex(anEvent);
       	
-      	if (FluoreFM == true && SimMode == "Simulating"){
+      	if (FluoreFM == true){
         		data -> SetParticlePosition(G4ThreeVector(StartingPosition, y0, z0));}
     }
 	else
@@ -90,7 +88,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Generate the particle in the event
         ParticleGun -> GeneratePrimaryVertex(anEvent);
          
-        if (FluoreFM == true && SimMode == "Simulating"){
+        if (FluoreFM == true){
        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());}
     }
 	
@@ -138,8 +136,6 @@ void PrimaryGeneratorAction::SetValues(int nBins, double Position)
 {
     StartingPosition = -Position;   
     Bins = nBins;
-
-    //SetupGun(EnergyDistTypeCmd, energyCmd, EnergySigmaCmd);
 }
 
 void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
@@ -252,7 +248,6 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
         {
             if (GunType == EDistTypeOptions[0]){
                 fastParticleGun -> SetParticleEnergy(monoEnergy);
-                 //G4cout << "\nOption 2: energy = " << monoEnergy <<"\n\n\n\n\n" << G4endl;
             } 
             //Switch to the other particleGun and delete the current one if that option is selected
             else if (GunType == EDistTypeOptions[1] || EDistTypeOptions[2]){

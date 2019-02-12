@@ -96,16 +96,14 @@ void Simulation::Setup()
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 }
 
-void Simulation::pyOutputOptions(bool FFF, bool FFM, bool BE)
+void Simulation::pyOutputOptions(bool FFF, bool FFM)
 {
 	//Tell the PrimaryGeneratorAction class what data to record
-	PGA -> SetBeamData(BE);
 	PGA -> SetFluoreFM(FFM);
 
 	//Tell the Data class what data to record
 	data -> SetFFF(FFF);
 	data -> SetFFM(FFM);
-	data -> SetBE(BE);
 
 	//Tell the FluorescencSD class what data to record
 	FluorescenceSD* fluorescenceDetector = DC -> GetFluoreDetector();
@@ -194,8 +192,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     TargetConstruction* TC = DC -> GetTargetConstruction();
     TC -> SetSimMode(Mode);
     TC -> SetRotationAngle(rotation_angle);
-    
-    //PGA -> SetParticleEnergy(energy);
        
 	//Checks to see if simulation is ready (if pyInitialise has been used before)
 	if (Ready == true)
@@ -207,8 +203,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		
 		    DC -> RelayToTC(NumberOfImages, rotation_angle);
 			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
-			
-		    PGA -> SetSimMode(Mode);
 			
 	        OutInfo(verboseLevel);
 	     
@@ -267,13 +261,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		
 	    //Beam on to start the simulation
 	    BeamOn(TotalParticles);
-		
-		if (WriteToTextCmd == true){
-		    data -> WriteToTextFile(Image);
-		}
-	    
-	    if (Image == 0){
-			PGA -> SetBeamCheck(true);}
 
 		if (Image + 1 == NumberOfImages)
 		{
