@@ -57,8 +57,14 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		
 		void SetSimMode(G4String value){SimMode = value; CurrentEvent = 0;}
 		void ReadOutInfo(SettingsLog& log);
+		
+		void SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnegy);
 
   	private:
+  	
+  	    void SetupFastParticleGun(G4double monoEnergy);
+  	    void SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy);
+  	
 		//Pointers to the particle source
     	G4ParticleGun* fastParticleGun;
 		G4GeneralParticleSource* ParticleGun;
@@ -77,6 +83,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double energyCmd;
 		G4String EnergyDistTypeCmd;
     	G4double EnergySigmaCmd;
+    	bool gunExists;
 		
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;

@@ -1,7 +1,7 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
 /data/Seed 0
-/data/CalibrateImages 10
+#/data/CalibrateImages 10
 /data/verbose 1
 
 #Physics processes

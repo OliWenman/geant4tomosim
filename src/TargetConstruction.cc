@@ -379,7 +379,9 @@ void TargetConstruction::AddPhysicalVolume(CustomObject &object, G4LogicalVolume
 	    //G4ThreeVector StartingRotation = object.Rotation;
 		
 		//Calculate how much the object rotates between each image
-		G4double DeltaAngle = RotateObject();
+		//G4double DeltaAngle = RotateObject();
+
+        G4double DeltaAngle = rotation_angle;
 
 		//Updates the rotation of the object
 		G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();

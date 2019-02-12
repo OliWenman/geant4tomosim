@@ -34,6 +34,7 @@ class TargetConstruction
 
 		//Set functions to do with setting the offset of rotation
 		void SetFullRotationAngle(G4double value){FullRotationAngle_Cmd = value;}
+		void SetRotationAngles(std::vector<double> value){rotation_angles = value;}
 		void SetOffSetRadius(G4double value){OffSetRadius_Cmd = value;}
 		void SetCentrePosition(G4ThreeVector value){Centre_Cmd = value;}
 
@@ -65,6 +66,8 @@ class TargetConstruction
 		
 		//Info
 		void ReadOutInfo();
+		
+		void SetRotationAngle(G4double value){rotation_angle = value;}
 
 	private:
 
@@ -80,6 +83,7 @@ class TargetConstruction
 
         //Positioning functions
         G4double RotateObject(){return (FullRotationAngle_Cmd/TotalImages)*nImage;}
+        G4double ApplyRotation(int image){return rotation_angles[image];}
 		G4ThreeVector OffSetRotation2(CustomObject &object, G4double deltaAngle);
 
 		//Functions for finding materials and adding visualization
@@ -99,6 +103,8 @@ class TargetConstruction
 
 		//Commands to do with the rotation of the object between images
 		G4double FullRotationAngle_Cmd;
+		G4double rotation_angle;
+		std::vector<double> rotation_angles;
 		G4double OffSetRadius_Cmd;
 		G4ThreeVector Centre_Cmd;
 

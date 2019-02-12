@@ -6,6 +6,7 @@ import os
 import gc
 import getpass
 import matplotlib.pyplot as plt
+import sys
 
 import NexusFormatter
 
@@ -175,6 +176,94 @@ cdef class PySim:
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
+           
+           
+    def runTest(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray):
+        
+        if TotalParticles >= 1 and self.Ready == True:
+
+           Path = './../Output/HDF5/'
+           
+           TotalImages = len(rotation_angles) + nDarkFlatFields
+
+           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
+           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
+           #self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
+           
+           print "The simulation will record the following data: "
+           print "- Transmission"
+           
+           if self.FFF == True:
+              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = self.Bins)
+              print "- Fluorescence"
+              
+           if self.FFM == True:
+              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
+              print "- Full mapping fluorescence"
+           
+           if self.BE == True:
+              self.nexusfile.CreateDataGroup("Beam_Energy", eBins = self.Bins)
+              print "- The beam energy"
+           
+           iTime = time.time()
+           
+           for CurrentImage in range(TotalImages):
+           
+               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
+               if CurrentImage < TotalImages - nDarkFlatFields:
+                  rotation_angle = rotation_angles[CurrentImage]
+                  
+               elif CurrentImage >= TotalImages - nDarkFlatFields:
+                  rotation_angle = 0
+                            
+               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
+               simOutput = np.reshape(self.thisptr.pyRunTest(TotalParticles, TotalImages, rotation_angle, CurrentImage, nDarkFlatFields), (-1, self.nDetectorsY))  
+               
+               iSavingTime = time.time()
+               
+               self.nexusfile.AddProjectionData(simOutput, CurrentImage)
+               
+               if CurrentImage == 0:
+                  energyBins = self.lastEnergyBins()
+                  
+                  if self.BE == True:
+                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
+                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())     
+                  
+                  if self.FFF == True:
+                     self.nexusfile.AddxAxis("Fluorescence", energyBins)
+                     
+                  if self.FFM == True:
+                     #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
+                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
+                     
+               if self.FFF == True:
+                  self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
+                  
+               if self.FFM == True:
+                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = CurrentImage)
+               
+               eSavingTime = time.time()
+               SavingTime  = eSavingTime - iSavingTime
+               self.thisptr.SetSavingTime(SavingTime)
+
+           #Ouput the time in the appropriate units
+           eTime = time.time()
+           self.SimTime = eTime -iTime
+           
+           self.nexusfile.LinkData()   
+
+           message = "The total simulation time is"
+           if self.SimTime < 60:
+              print message, round(self.SimTime, 3), "seconds. "
+           elif self.SimTime < 60*60:
+              print message, round(self.SimTime/60, 3), "minutes. "
+           else:
+              print message, round(self.SimTime/(60*60), 3), "hours. "
+            
+        else:
+           print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
+        
 
     #Return the image data from the simulation
     def lastImage(self):

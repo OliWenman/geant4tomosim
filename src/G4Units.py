@@ -15,7 +15,7 @@ deg = (3.14159265358979323846/180.0)*rad
 #Energy
 MeV = 1
 eV = 1.e-6*MeV
-KeV = 1.e-3*MeV
+keV = 1.e-3*MeV
 GeV = 1.e3*MeV
 TeV = 1.e6*MeV
 PeV = 1.e9*MeV

@@ -52,6 +52,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Get methods
 		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
+		G4LogicalVolume* GetWorldLV() {return logicWorld;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
 
 		G4int GetNoDetectorsY(){return NoDetectorsY_Cmd;}

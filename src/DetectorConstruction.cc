@@ -130,8 +130,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
 	
-	//G4ocu
-	
 	//Don't place the detectors if over the limit for visualization as will be used to test geometry placement
 	if (Visualization_Cmd == true)
 	{

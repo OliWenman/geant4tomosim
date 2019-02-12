@@ -8,11 +8,6 @@ import sys
 
 class NexusFormatter:
     
-    #h5file1 = None
-    
-    #fileOpen = False
-    #data = None
-    
     #When class is created
     def __init__(self, SaveFilePath):
         
@@ -95,10 +90,6 @@ class NexusFormatter:
         data = tomo_entry.create_group('data')
         data.attrs['NX_class'] = 'NXdata'
         data.attrs['defination'] = 'NXtomo'
-
-        #/entry/entry1/tomo_entry/data/data
-        #imageSet = data.create_group('data')
-        #imageSet.attrs['NX_class'] = 'NXdata'
         
     #When class is destroyed, close the file if it isn't already closed
     def __del__(self):
@@ -109,26 +100,35 @@ class NexusFormatter:
             print "File closed!"
         
     #The dataset that stores the information to do with the transmission data
-    def CreateProjectionFolder(self, nCalibrations, NumberOfImages, nDetectorsZ, nDetectorsY, detectorDimensions):
+    def CreateProjectionFolder(self, nCalibrations, NumberOfImages, nDetectorsZ, nDetectorsY, detectorDimensions, rotation):
         
         #entry/entry1/tomo_entry/data/instrument/detector/data
         DetectorPath = '/entry1/tomo_entry/instrument/detector/'
         #detector = self.h5file1[DetectorPath]
                
-        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages + (nCalibrations*2), nDetectorsZ, nDetectorsY), dtype = 'i4')
+        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages + (nCalibrations), nDetectorsZ, nDetectorsY), dtype = 'i4')
         
         #entry/entry1/tomo_entry/data/instrument/detector/image_key
-        darkKey = np.full(shape = (nCalibrations,), fill_value = 2)
-        lightKey = np.full(shape = (nCalibrations,), fill_value = 1)
-        dataKey = np.zeros(NumberOfImages)
+        darkFieldKey = np.full(shape = (nCalibrations,), fill_value = 2)
+        flatFieldKey = np.full(shape = (nCalibrations,), fill_value = 1)
+        dataKey = np.zeros(NumberOfImages - nCalibrations)
         
-        self.image_key = self.h5file1.create_dataset(DetectorPath + 'image_key', data = np.concatenate((darkKey, lightKey, dataKey)))
+        self.image_key = self.h5file1.create_dataset(DetectorPath + 'image_key', data = np.concatenate((dataKey, flatFieldKey, darkFieldKey)))
         
         x_pixel_sizeN = detectorDimensions[1]
         y_pixel_sizeN = detectorDimensions[2]
         
         x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_sizeN)
         y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_sizeN)
+        
+        rotation = np.concatenate([rotation, np.full(nCalibrations*2, rotation[NumberOfImages - nCalibrations - 1])])
+        
+        sample = self.h5file1['/entry1/tomo_entry/sample/']
+        
+        self.rotation_angle = sample.create_dataset('rotation_angle', data = np.rad2deg(rotation))
+        self.rotation_angle.attrs['axis'] = '1'
+        self.rotation_angle.attrs['label'] = '1'
+        self.rotation_angle.attrs['units'] = 'degrees'
         
        
     #Appened to the transmission data

@@ -34,6 +34,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 
 	BeamCheck = false;
 	BeamData = false;
+	gunExists = false;
 	
 	ShowProgressBar = true;
 	
@@ -47,8 +48,9 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 {
   	//delete ParticleGun;
 	delete gunMessenger;
-	delete ParticleGun;
-	delete fastParticleGun;
+	
+	if (ParticleGun){delete ParticleGun;}
+	if (fastParticleGun){delete fastParticleGun;}
 
 	//G4RunManager will delete gamma
 }
@@ -57,20 +59,11 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
     //Prints only at the start of the simulation
 	if(CurrentEvent == 1 && CurrentImage == 1)
-	{	Timer.Start();	
-		
-		if (SimMode == "Calibrating")
-		{
-		    G4cout << "\n================================================================================"
-		              "\n                               Calibrating..."
-	                  "\n================================================================================\n\n\n\n";
-		}
-		else if (SimMode == "Simulating")
-		{
-		    G4cout << "\n================================================================================"
-		              "\n                            SIMULATION RUNNING..."
-	                  "\n================================================================================\n\n\n\n";
-	     }
+	{	
+	    Timer.Start();	
+		G4cout << "\n================================================================================"
+		          "\n                            SIMULATION RUNNING..."
+	              "\n================================================================================\n\n\n\n";
 	}
 
     if (EnergyDistTypeCmd == "Mono")
@@ -141,75 +134,135 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 
 void PrimaryGeneratorAction::SetValues(int nBins, double Position)
 {
+    StartingPosition = -Position;   
+    Bins = nBins;
+
+    SetupGun(EnergyDistTypeCmd, energyCmd, EnergySigmaCmd);
+}
+
+void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
+{
+     //Setup which particle is used and its starting conidiions
+     gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
+
+     fastParticleGun = new G4ParticleGun(1);
+        
+     fastParticleGun -> SetParticleDefinition(gamma);
+        
+     fastParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+        
+     fastParticleGun -> SetParticleEnergy(monoEnergy);
+        
+     EnergySigmaCmd = 0*keV;
+     energyCmd = monoEnergy;
+}
+
+void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
+{
     //Setup which particle is used and its starting conidiions
-   gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-   
-   //A list of available options for a user to pick from
-   std::vector<G4String> EDistTypeOptions = {"Mono", "Mono(GPS)", "Gauss"};
+    gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
-    //If option picked is "Mono"
-    if (EnergyDistTypeCmd == EDistTypeOptions[0])
+    ParticleGun = new G4GeneralParticleSource();
+
+    ParticleGun -> SetParticleDefinition(gamma);
+
+    //Automatically set the gun position to the end of the world volume
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(StartingPosition, 0, 0));
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfX(BeamWidthY_Cmd);
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfY(BeamHeightZ_Cmd);
+    //Automatically set the correct rotation
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot1(G4ThreeVector(0, 0, 1));
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot2(G4ThreeVector(0, 1, 0));
+    //Automatically select the shape and type
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisType("Plane");
+    ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisShape("Square");
+
+    //Automatically set the gun momentum in the positive x direction
+    ParticleGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
+
+    if (GunType == "Mono(GPS)")
     {
-        fastParticleGun = new G4ParticleGun(1);
-        
-        fastParticleGun -> SetParticleDefinition(gamma);
-        
-        fastParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
-        
-        fastParticleGun -> SetParticleEnergy(energyCmd);
-        
-        EnergySigmaCmd = 0*keV;
-        
-        StartingPosition = -Position;
+        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");
+        sigmaEnergy = 0*keV;
     }
-    //If option picked is "Mono(GPS)" or "Gauss"
-    else if (EnergyDistTypeCmd == EDistTypeOptions[1] || EnergyDistTypeCmd == EDistTypeOptions[2] )
+    else {
+        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");}
+        
+    ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(monoEnergy);
+    ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(sigmaEnergy);
+        
+    energyCmd = monoEnergy;
+    EnergySigmaCmd = sigmaEnergy; 
+}
+
+
+void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
+{  
+    //A list of available options for a user to pick from
+    std::vector<G4String> EDistTypeOptions = {"Mono", "Mono(GPS)", "Gauss"};
+    
+    //Checks to see if a gun exists first
+    if (!gunExists)
     {
-        ParticleGun = new G4GeneralParticleSource();
-
-        ParticleGun -> SetParticleDefinition(gamma);
-
-        //Automatically set the gun position to the end of the world volume
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(-Position, 0, 0));
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfX(BeamWidthY_Cmd);
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetHalfY(BeamHeightZ_Cmd);
-        //Automatically set the correct rotation
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot1(G4ThreeVector(0, 0, 1));
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot2(G4ThreeVector(0, 1, 0));
-        //Automatically select the shape and type
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisType("Plane");
-        ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisShape("Square");
-
-        //Automatically set the gun momentum in the positive x direction
-        ParticleGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
-
-        if (EnergyDistTypeCmd == EDistTypeOptions[1])
-        {
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");
-            EnergySigmaCmd = 0*keV;
+        //If option picked is "Mono"
+        if (GunType == EDistTypeOptions[0]){
+            SetupFastParticleGun(monoEnergy);
+            gunExists = true;
         }
-        else 
-            ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");
-        
-        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(energyCmd);
-        ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(EnergySigmaCmd);
+        //If option picked is "Mono(GPS)" or "Gauss"
+        else if (GunType == EDistTypeOptions[1] || GunType == EDistTypeOptions[2] ){
+            SetupParticleGun(GunType, monoEnergy, sigmaEnergy);
+            gunExists = true;
+        }
+        else
+        {
+            G4cout << "\nYou have not selected an available option for the command \"/beam/energy/type\". You can pick from: \n";
+            for (int ele = 0; ele < EDistTypeOptions.size(); ele++){
+                G4cout << EDistTypeOptions[ele] << " ";}
+            G4cout << G4endl;
+            exit(0);
+        }
     }
-    else
+    //If a ParticleGun already exists, modify the energy values or switch particle gun between images
+    if (gunExists)
     {
-        G4cout << "\nYou have not selected an available option for the command \"/beam/energy/type\". You can pick from: \n";
-        for (int ele = 0; ele < EDistTypeOptions.size(); ele++)
-            G4cout << EDistTypeOptions[ele] << " ";
-        G4cout << G4endl;
-        exit(0);
+        if (ParticleGun)
+        {
+            if (GunType == EDistTypeOptions[1]) {   
+                ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(monoEnergy);
+            }
+            else if (GunType == EDistTypeOptions[2]){              
+                ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(monoEnergy);
+                ParticleGun -> GetCurrentSource() -> GetEneDist() -> SetBeamSigmaInE(sigmaEnergy);
+            }
+            //If the particle gun needs to change to a fast one, delete the current one and setup new one
+            else if (GunType == EDistTypeOptions[0]){
+                delete ParticleGun;
+                SetupFastParticleGun(monoEnergy);
+                EnergyDistTypeCmd = GunType;
+            }
+        }       
+        //If fastParticleGun exists, modiy it's energy or switch particleGun
+        else if (fastParticleGun)
+        {
+            if (GunType == EDistTypeOptions[0]){
+                fastParticleGun -> SetParticleEnergy(monoEnergy);
+            } 
+            //Switch to the other particleGun and delete the current one if that option is selected
+            else if (GunType == EDistTypeOptions[1] || EDistTypeOptions[2]){
+                
+                delete fastParticleGun;
+                SetupParticleGun(GunType, monoEnergy, sigmaEnergy);
+                EnergyDistTypeCmd = GunType;
+            }
+        }  
     }
     
-    	//Set the max energy value (in keV)
+    //Set the max energy value (in keV)
     eMax = (energyCmd + EnergySigmaCmd)*2*1000;
 
-    std::vector<int> iBeamEnergyFreq(nBins, 0);
+    std::vector<int> iBeamEnergyFreq(Bins, 0);
    	BeamEnergyFreq = iBeamEnergyFreq;
-
-    Bins = nBins;
 }
 
 //========================================================================================================================

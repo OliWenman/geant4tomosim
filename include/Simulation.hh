@@ -29,6 +29,7 @@ class Simulation
 		void pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
 		std::vector<int> pyRun(unsigned long long int TotalParticles, double dTheta, int Image, int NumberOfImages, std::string Mode);
+		std::vector<int> pyRunTest(unsigned long long int TotalParticles, int nImages, double rotation_angles, int CurrentImage, int nDarkFlatFields);
 
 		//Python or C++
 		std::vector<int> GetLastImage();

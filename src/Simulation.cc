@@ -27,6 +27,8 @@
 #include "G4UnitsTable.hh"
 #include "G4ThreeVector.hh"
 
+#include <list>
+
 Simulation::Simulation()
 {	
 	simMessenger = new SimulationMessenger(this);
@@ -155,18 +157,15 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 		CLHEP::HepRandom::setTheSeed(seedCmd);
 	}
 
-	//Let the PrimaryGeneratorAction class know where to position the start of the beam
-	PGA-> SetValues(nBins, DC -> GetWorldSize().x());
-
 	//Tell the data class what the max energy is
 	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
 
     G4cout << "\nCommands successfully added\n"
 	          "\nSimulation Ready!" << G4endl;
 
-    UImanager -> ApplyCommand("/run/initialize");	
-
 	Ready = true;
+	
+	runManager -> Initialize();
 }
 
 void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
@@ -286,6 +285,127 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double
 	}
 }
 
+std::vector<int> Simulation::pyRunTest(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
+{   
+    //runManager -> Initialize();
+
+    G4String Mode;
+    if (Image < NumberOfImages - nDarkFlatFields){
+        Mode = "Simulating";
+    }
+    else if (Image >= NumberOfImages - nDarkFlatFields){
+        Mode = "Calibrating";
+    }
+ 
+    TargetConstruction* TC = DC -> GetTargetConstruction();
+    TC -> SetSimMode(Mode);
+    TC -> SetRotationAngle(rotation_angle);
+    
+    //PGA -> SetParticleEnergy(energy);
+       
+	//Checks to see if simulation is ready (if pyInitialise has been used before)
+	if (Ready == true)
+	{
+        if(Image == 0)
+		{		
+		    //Let the PrimaryGeneratorAction class know where to position the start of the beam
+	        PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
+		
+		    DC -> RelayToTC(NumberOfImages, rotation_angle);
+			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
+			
+		    PGA -> SetSimMode(Mode);
+			
+	        OutInfo(verboseLevel);
+	     
+            //Prints the time and date of the local time that the simulation started
+			time_t now = time(0);
+			//Convert now to tm struct for local timezone
+			tm* localtm = localtime(&now);
+
+            Visualisation();
+		 
+		    //Open the file within the path set
+		    std::ofstream SaveToFile;
+            SaveToFile.open(SaveLogPath, std::fstream::app); 
+   	
+            //Output error if can't open file
+            if( !SaveToFile ){ 	
+                std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+              	exit(1);
+           	}
+    
+            SettingsLog log(SaveToFile);
+
+			log << "\n--------------------------------------------------------------------"
+			       "\nMETA DATA: \n"
+
+			    << "\n- The seed used: " << seedCmd
+			    << "\n- Total number of projections being processed: " << NumberOfImages
+			    << "\n  - Dark fields: " << nDarkFlatFields
+			    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
+                << "\n- Number of photons per image: " << TotalParticles
+                << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
+                    
+            SaveToFile.close();
+                
+            G4cout << "\n--------------------------------------------------------------------"
+			          "\nStarting simulation... \n";
+			          
+			G4cout << "\n" << asctime(localtm);
+		    
+		    if (TotalParticles > 0){
+			    G4cout << "\n================================================================================"
+		                  "\n                                 Geant4 info"
+	                      "\n================================================================================" << G4endl;
+	        }
+		}
+
+        //Prepare for next run that geometry has changed
+		runManager -> ReinitializeGeometry();
+
+        PGA -> ResetEvents(Image + 1);
+
+		//Creates the arrays for the data, wipes them after each image
+		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
+		
+		if (NumberOfImages != 0 || TotalParticles != 0)
+		{   //Beam on to start the simulation
+		    BeamOn(TotalParticles);
+		}
+
+		if (WriteToTextCmd == true)
+		{
+		    data -> WriteToTextFile(Image);
+		}
+
+		//if (Image == 0 && Mode == "Simulating")
+	    //{
+	    
+	    if (Image == 0){
+			PGA -> SetBeamCheck(true);}
+	    //}
+
+		if (Image + 1 == NumberOfImages)
+		{
+			    G4cout << "\n================================================================================"
+	                      "\n                        The simulation is finished! "
+	                      "\n================================================================================" << G4endl;
+	            
+	            TargetConstruction* TC = DC -> GetTargetConstruction();         
+	            TC -> SetCurrentImage(0);
+	            DC -> SetCurrentImage(0);
+	            PGA -> ResetEvents(0);
+		}
+	
+		return data -> GetHitData();
+	}
+	
+	else if (Ready == false){
+		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
+	}
+}
+
 void Simulation::Visualisation()
 {
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
@@ -367,7 +487,7 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 {
     if (DC -> GetVisualization() == true && nParticles > 5000)
     {   
-        if (Mode == "Calibrating" && nImage == 0)
+        if (nImage == 0)
         {
             G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
                       "\n         WARNING: " << nParticles << " PARTICLES IS TOO MANY TOO SIMULATE WITH GRAPHICS"
