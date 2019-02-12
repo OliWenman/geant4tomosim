@@ -173,121 +173,15 @@ void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4Str
 	G4cout << "\nsettingsPath = " << settingsPath;
 }
 
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, double TotalAngle, int Image, int NumberOfImages, std::string Mode)
-{
-    TotalParticles = LimitGraphics(TotalParticles, Image, Mode);
-
-	//Checks to see if simulation is ready (if pyInitialise has been used before)
-	if (Ready == true)
-	{
-        if(Image == 0)
-		{		
-		    DC -> RelayToTC(NumberOfImages, TotalAngle);
-			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
-			
-			DC -> GetTargetConstruction() -> SetSimMode(Mode);
-		    PGA -> SetSimMode(Mode);
-			
-		    if (Mode == "Calibrating")
-	        {    
-	            OutInfo(verboseLevel);
-	     
-                //Prints the time and date of the local time that the simulation started
-			    time_t now = time(0);
-			    //Convert now to tm struct for local timezone
-			    tm* localtm = localtime(&now);
-
-                Visualisation();
-
-			    G4cout << "\n--------------------------------------------------------------------"
-			              "\nStarting simulation... \n";
-			          
-			    G4cout << "\n" << asctime(localtm);
-		    } 
-		    else if (Mode == "Simulating")
-		    {
-		        //Open the file within the path set
-		        std::ofstream SaveToFile;
-                SaveToFile.open(SaveLogPath, std::fstream::app); 
-   	
-                //Output error if can't open file
-                if( !SaveToFile ){ 	
-                    std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
-              	    exit(1);
-           	    }
-    
-                SettingsLog log(SaveToFile);
-
-			    log << "\n--------------------------------------------------------------------"
-			           "\nMETA DATA: \n"
-
-			        << "\n- The seed used: " << seedCmd
-			        << "\n- Number of projections being processed: " << NumberOfImages
-                    << "\n- Number of photons per image: " << TotalParticles
-                    << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ())
-			        << "\n- Full rotation angle: " << G4BestUnit(TotalAngle, "Angle") << G4endl;
-                    
-                SaveToFile.close();
-		    }
-		    
-		    if (TotalParticles > 0){
-			    G4cout << "\n================================================================================"
-		                  "\n                                 Geant4 info"
-	                      "\n================================================================================" << G4endl;
-	        }
-		}
-
-        PGA -> ResetEvents(Image + 1);
-
-		//Creates the arrays for the data, wipes them after each image
-		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
-		
-		if (NumberOfImages != 0 || TotalParticles != 0)
-		{   //Beam on to start the simulation
-		    BeamOn(TotalParticles);
-		}
-		
-		//Prepare for next run that geometry has changed
-		runManager -> ReinitializeGeometry();
-
-		if (WriteToTextCmd == true)
-			{data -> WriteToTextFile(Image);}
-
-		if (Image == 0 && Mode == "Simulating")
-			{PGA -> SetBeamCheck(true);}
-
-		if (Image + 1 == NumberOfImages)
-		{
-		    if (Mode == "Simulating" && NumberOfImages != 0)
-		    {
-			    G4cout << "\n================================================================================"
-	                      "\n                        The simulation is finished! "
-	                      "\n================================================================================" << G4endl;
-	            
-	            TargetConstruction* TC = DC -> GetTargetConstruction();         
-	            TC -> SetCurrentImage(0);
-	            DC -> SetCurrentImage(0);
-	            PGA -> ResetEvents(0);
-	        }
-	        else if (Mode == "Calibrating")
-	        {
-	            G4cout << "\n================================================================================"
-	                      "\n                 Calibration finished, simulating sample... "
-	                      "\n================================================================================" << G4endl;
-	        }
-		}
-	
-		return data -> GetHitData();
-	}
-	
-	else if (Ready == false){
-		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
-	}
-}
-
-std::vector<int> Simulation::pyRunTest(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
+//std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
 {   
-    //runManager -> Initialize();
+    int Image = ImageInfo[0];
+    int nDarkFlatFields = ImageInfo[1];
+    int NumberOfImages = ImageInfo[2];
+    
+    double monoEnergy = gunEnergy[0];
+    double sigmaEnergy = gunEnergy[1];
 
     G4String Mode;
     if (Image < NumberOfImages - nDarkFlatFields){
@@ -365,6 +259,8 @@ std::vector<int> Simulation::pyRunTest(unsigned long long int TotalParticles, in
 		runManager -> ReinitializeGeometry();
 
         PGA -> ResetEvents(Image + 1);
+        
+        PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
 
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);

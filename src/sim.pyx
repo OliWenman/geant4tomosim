@@ -84,101 +84,7 @@ cdef class PySim:
         else:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
 
-    #Start the simulation
-    def run(self, int TotalParticles, dTheta, int NumberOfImages):
-
-        if TotalParticles >= 1 and NumberOfImages >= 1 and self.Ready == True:
-
-           Path = './../Output/HDF5/'
-           
-           nCalibrations = self.thisptr.GetNumberCalibrations()
-           TotalNumberOfProjections = NumberOfImages + (nCalibrations*2)
-
-           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
-           self.nexusfile.CreateProjectionFolder(nCalibrations, NumberOfImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions)
-           self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
-           
-           print "The simulation will record the following data: "
-           print "- Transmission"
-           
-           if self.FFF == True:
-              self.nexusfile.CreateDataGroup("Fluorescence", nImages = NumberOfImages, eBins = self.Bins)
-              print "- Fluorescence"
-              
-           if self.FFM == True:
-              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = NumberOfImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
-              print "- Full mapping fluorescence"
-           
-           if self.BE == True:
-              self.nexusfile.CreateDataGroup("Beam_Energy", eBins = self.Bins)
-              print "- The beam energy"
-           
-           iTime = time.time()
-           
-           Mode = "Calibrating"
-           
-           if nCalibrations == 0:
-               self.thisptr.pyRun(0, dTheta, 0, nCalibrations, Mode), (-1, self.nDetectorsY)
-           
-           #Do flat field images
-           for nImage in range(nCalibrations):
-               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               calibrationOutPut = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, nCalibrations, Mode), (-1, self.nDetectorsY))  
-               self.nexusfile.AddProjectionData(calibrationOutPut, nCalibrations + nImage)
-
-           for nImage in range(NumberOfImages):
-
-               Mode = "Simulating"
-               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, dTheta, nImage, NumberOfImages, Mode), (-1, self.nDetectorsY))  
-               
-               iSavingTime = time.time()
-               
-               self.nexusfile.AddProjectionData(simOutput, nImage + (nCalibrations*2))
-               
-               if nImage == 0:
-                  energyBins = self.lastEnergyBins()
-                  
-                  if self.BE == True:
-                     self.nexusfile.AddxAxis("Beam_Energy", energyBins)
-                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())     
-                  
-                  if self.FFF == True:
-                     self.nexusfile.AddxAxis("Fluorescence", energyBins)
-                     
-                  if self.FFM == True:
-                     #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
-                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
-                     
-               if self.FFF == True:
-                  self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = nImage)
-                  
-               if self.FFM == True:
-                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = nImage)
-               
-               eSavingTime = time.time()
-               SavingTime  = eSavingTime - iSavingTime
-               self.thisptr.SetSavingTime(SavingTime)
-
-           #Ouput the time in the appropriate units
-           eTime = time.time()
-           self.SimTime = eTime -iTime
-           
-           self.nexusfile.LinkData()   
-
-           message = "The total simulation time is"
-           if self.SimTime < 60:
-              print message, round(self.SimTime, 3), "seconds. "
-           elif self.SimTime < 60*60:
-              print message, round(self.SimTime/60, 3), "minutes. "
-           else:
-              print message, round(self.SimTime/(60*60), 3), "hours. "
-            
-        else:
-           print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
-           
-           
-    def runTest(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray):
+    def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray):
         
         if TotalParticles >= 1 and self.Ready == True:
 
@@ -202,7 +108,7 @@ cdef class PySim:
               print "- Full mapping fluorescence"
            
            if self.BE == True:
-              self.nexusfile.CreateDataGroup("Beam_Energy", eBins = self.Bins)
+              self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
               print "- The beam energy"
            
            iTime = time.time()
@@ -215,9 +121,14 @@ cdef class PySim:
                   
                elif CurrentImage >= TotalImages - nDarkFlatFields:
                   rotation_angle = 0
+               
+               imageInfo = [CurrentImage, nDarkFlatFields, TotalImages]
+               
+               energyInfo = [energyArray[0][CurrentImage], energyArray[1][CurrentImage]]
+               gunType = energyArray[2][CurrentImage]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = np.reshape(self.thisptr.pyRunTest(TotalParticles, TotalImages, rotation_angle, CurrentImage, nDarkFlatFields), (-1, self.nDetectorsY))  
+               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType), (-1, self.nDetectorsY))  
                
                iSavingTime = time.time()
                
@@ -228,7 +139,6 @@ cdef class PySim:
                   
                   if self.BE == True:
                      self.nexusfile.AddxAxis("Beam_Energy", energyBins)
-                     self.nexusfile.AddData("Beam_Energy", self.beamEnergy())     
                   
                   if self.FFF == True:
                      self.nexusfile.AddxAxis("Fluorescence", energyBins)
@@ -236,7 +146,11 @@ cdef class PySim:
                   if self.FFM == True:
                      #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
-                     
+               
+               if self.BE == True:
+                  self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
+                  #self.nexusfile.AddxAxis("Beam_Energy", energyBins, nImage = CurrentImage) 
+               
                if self.FFF == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
                   
@@ -263,6 +177,8 @@ cdef class PySim:
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
+    
+    #def createEnergyInfo(self, minEnergy, maxEnergy, minSigmaEnergy, maxSigmaEnergy, gunType):
         
 
     #Return the image data from the simulation

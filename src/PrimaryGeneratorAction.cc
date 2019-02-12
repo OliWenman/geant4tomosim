@@ -51,23 +51,27 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	
 	if (ParticleGun){delete ParticleGun;}
 	if (fastParticleGun){delete fastParticleGun;}
-
-	//G4RunManager will delete gamma
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-    //Prints only at the start of the simulation
-	if(CurrentEvent == 1 && CurrentImage == 1)
-	{	
-	    Timer.Start();	
-		G4cout << "\n================================================================================"
-		          "\n                            SIMULATION RUNNING..."
-	              "\n================================================================================\n\n\n\n";
-	}
+	if(CurrentEvent == 1)
+	{   
+	    //Cleans the beam energy data at the start of each run    
+	    memset(&BeamEnergyFreq[0], 0, sizeof(BeamEnergyFreq[0]) * Bins);
 
+        //Prints only at the start of the simulation	    
+	    if (CurrentImage == 1)
+	    {	
+	        Timer.Start();	
+		    G4cout << "\n================================================================================"
+		              "\n                            SIMULATION RUNNING..."
+	                  "\n================================================================================\n\n\n\n";
+	    }
+    }
+    
     if (EnergyDistTypeCmd == "Mono")
-    {
+    { 
         //Allow the particles to be fired randomly within the beam width
       	G4double y0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
       	G4double z0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
@@ -89,23 +93,21 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (FluoreFM == true && SimMode == "Simulating"){
        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());}
     }
-
-	if (CurrentImage == 1 && SimMode == "Simulating")
-	{	//Save beam energy data for the first image
-       	int bin;
+	
+    //Save beam energy data for the first image
+    int bin;
         	
-        if (EnergyDistTypeCmd == "Mono"){
-             bin = floor(energyCmd*1000/(eMax/Bins)) -1;}
-        else {
-             bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;}
+    if (EnergyDistTypeCmd == "Mono"){
+        bin = floor(fastParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) -1;}
+    else {
+        bin = floor(ParticleGun -> GetParticleEnergy()*1000/(eMax/Bins)) - 1;}
 		
-		if (bin < 0){
-       		bin = 0;}
-        else if (bin > BeamEnergyFreq.size()){
-            bin = BeamEnergyFreq.size();}
+    if (bin < 0){
+       	bin = 0;}
+    else if (bin > BeamEnergyFreq.size()){
+        bin = BeamEnergyFreq.size();}
 
-		++BeamEnergyFreq[bin];
-	}
+    ++BeamEnergyFreq[bin];
     
     ++CurrentEvent;
     
@@ -137,7 +139,7 @@ void PrimaryGeneratorAction::SetValues(int nBins, double Position)
     StartingPosition = -Position;   
     Bins = nBins;
 
-    SetupGun(EnergyDistTypeCmd, energyCmd, EnergySigmaCmd);
+    //SetupGun(EnergyDistTypeCmd, energyCmd, EnergySigmaCmd);
 }
 
 void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
@@ -193,6 +195,7 @@ void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEne
         
     energyCmd = monoEnergy;
     EnergySigmaCmd = sigmaEnergy; 
+    EnergyDistTypeCmd = GunType;
 }
 
 
@@ -208,11 +211,13 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
         if (GunType == EDistTypeOptions[0]){
             SetupFastParticleGun(monoEnergy);
             gunExists = true;
+            EnergyDistTypeCmd = GunType;
         }
         //If option picked is "Mono(GPS)" or "Gauss"
         else if (GunType == EDistTypeOptions[1] || GunType == EDistTypeOptions[2] ){
             SetupParticleGun(GunType, monoEnergy, sigmaEnergy);
             gunExists = true;
+            EnergyDistTypeCmd = GunType;
         }
         else
         {
@@ -247,6 +252,7 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
         {
             if (GunType == EDistTypeOptions[0]){
                 fastParticleGun -> SetParticleEnergy(monoEnergy);
+                 //G4cout << "\nOption 2: energy = " << monoEnergy <<"\n\n\n\n\n" << G4endl;
             } 
             //Switch to the other particleGun and delete the current one if that option is selected
             else if (GunType == EDistTypeOptions[1] || EDistTypeOptions[2]){
@@ -259,7 +265,7 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
     }
     
     //Set the max energy value (in keV)
-    eMax = (energyCmd + EnergySigmaCmd)*2*1000;
+    eMax = 175;
     
     data -> SetMaxEnergy(eMax);
 

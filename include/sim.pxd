@@ -10,8 +10,7 @@ cdef extern from "Simulation.hh":
       void pyOutputOptions(bint, bint, bint)
       void pyInitialise(int, int, vector[double], int)
       void pyDataPaths(string, string, string)
-      vector[int] pyRun(unsigned long long int, double, int, int, string)
-      vector[int] pyRunTest(unsigned long long int, int, double, int, int)
+      vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
 
       vector[int] GetLastImage()
 
