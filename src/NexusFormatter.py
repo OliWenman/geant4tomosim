@@ -104,7 +104,6 @@ class NexusFormatter:
         
         #entry/entry1/tomo_entry/data/instrument/detector/data
         DetectorPath = '/entry1/tomo_entry/instrument/detector/'
-        #detector = self.h5file1[DetectorPath]
                
         self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages + (nCalibrations), nDetectorsZ, nDetectorsY), dtype = 'i4')
         
@@ -136,7 +135,8 @@ class NexusFormatter:
         
         dataSet = self.h5file1['/entry1/tomo_entry/instrument/detector/data']
         dataSet[nImage, :, :] = theData[:, :]
-     
+    
+    """
     #Create the rotation angles    
     def CreateRotationAngleData(self, Theta, NumberOfImages, nCalibrations):
         
@@ -154,7 +154,7 @@ class NexusFormatter:
         self.rotation_angle.attrs['axis'] = '1'
         self.rotation_angle.attrs['label'] = '1'
         self.rotation_angle.attrs['units'] = 'degrees'
-  
+    """
     #Function to create the data for the beam energy, fluorescence or full mapping fluorescence
     def CreateDataGroup(self, dataType, nImages = 1, eBins = 1, xBins = 1, yBins = 1):
         

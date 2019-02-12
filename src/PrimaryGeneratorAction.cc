@@ -260,6 +260,8 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
     
     //Set the max energy value (in keV)
     eMax = (energyCmd + EnergySigmaCmd)*2*1000;
+    
+    data -> SetMaxEnergy(eMax);
 
     std::vector<int> iBeamEnergyFreq(Bins, 0);
    	BeamEnergyFreq = iBeamEnergyFreq;

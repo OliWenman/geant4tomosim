@@ -11,7 +11,7 @@ nDetZ = 210
 DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 NumberOfImages = 1
-nDarkFlatFields = 1
+nDarkFlatFields = 0
 TotalRotation = 180*G4.deg
 nParticles = 10000000
 

@@ -32,6 +32,9 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 			}
 			std::vector<double> iEnergyBins (NoBins_Cmd, 0);
 			int Energy = 0;
+			
+			G4cout << "\nMAXE = " << MaxE;
+			
 			for (int ele = 0 ; ele < NoBins_Cmd ; ele++)
 			{
 				++Energy;
@@ -46,12 +49,12 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		//Reset the data to zero ready for the next image
 		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns * rows);
 
-		if (fluoreFullField == true)
+		if (fluoreFullField == true){
 			//Resets the energy frequency to zero for the next image
-			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);
+			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);}
 
-		if (fluoreFullMapping == true)
-			{std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));}
+		if (fluoreFullMapping == true){
+		    std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));}
 	}
 }
 

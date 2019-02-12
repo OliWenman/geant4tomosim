@@ -369,33 +369,26 @@ std::vector<int> Simulation::pyRunTest(unsigned long long int TotalParticles, in
 		//Creates the arrays for the data, wipes them after each image
 		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
 		
-		if (NumberOfImages != 0 || TotalParticles != 0)
-		{   //Beam on to start the simulation
-		    BeamOn(TotalParticles);
-		}
-
-		if (WriteToTextCmd == true)
-		{
+	    //Beam on to start the simulation
+	    BeamOn(TotalParticles);
+		
+		if (WriteToTextCmd == true){
 		    data -> WriteToTextFile(Image);
 		}
-
-		//if (Image == 0 && Mode == "Simulating")
-	    //{
 	    
 	    if (Image == 0){
 			PGA -> SetBeamCheck(true);}
-	    //}
 
 		if (Image + 1 == NumberOfImages)
 		{
-			    G4cout << "\n================================================================================"
-	                      "\n                        The simulation is finished! "
-	                      "\n================================================================================" << G4endl;
+	        G4cout << "\n================================================================================"
+	                  "\n                        The simulation is finished! "
+	                  "\n================================================================================" << G4endl;
 	            
-	            TargetConstruction* TC = DC -> GetTargetConstruction();         
-	            TC -> SetCurrentImage(0);
-	            DC -> SetCurrentImage(0);
-	            PGA -> ResetEvents(0);
+	        TargetConstruction* TC = DC -> GetTargetConstruction();         
+	        TC -> SetCurrentImage(0);
+	        DC -> SetCurrentImage(0);
+	        PGA -> ResetEvents(0);
 		}
 	
 		return data -> GetHitData();
