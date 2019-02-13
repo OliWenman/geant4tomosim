@@ -56,7 +56,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	if(CurrentEvent == 1)
 	{   
 	    //Cleans the beam energy data at the start of each run    
-	    memset(&BeamEnergyFreq[0], 0, sizeof(BeamEnergyFreq[0]) * Bins);
+	    memset(&beamEnergy[0], 0, sizeof(beamEnergy[0]) * Bins);
 
         //Prints only at the start of the simulation	    
 	    if (CurrentImage == 1)
@@ -92,7 +92,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
        		data -> SetParticlePosition(ParticleGun -> GetParticlePosition());}
     }
 	
-    //Save beam energy data for the first image
+    //Save beam energy data
     int bin;
         	
     if (EnergyDistTypeCmd == "Mono"){
@@ -102,10 +102,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 		
     if (bin < 0){
        	bin = 0;}
-    else if (bin > BeamEnergyFreq.size()){
-        bin = BeamEnergyFreq.size();}
+    else if (bin > beamEnergy.size()){
+        bin = beamEnergy.size();}
 
-    ++BeamEnergyFreq[bin];
+    ++beamEnergy[bin];
     
     ++CurrentEvent;
     
@@ -264,8 +264,8 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
     
     data -> SetMaxEnergy(eMax);
 
-    std::vector<int> iBeamEnergyFreq(Bins, 0);
-   	BeamEnergyFreq = iBeamEnergyFreq;
+    std::vector<int> ibeamEnergy(Bins, 0);
+   	beamEnergy = ibeamEnergy;
 }
 
 //========================================================================================================================
@@ -307,8 +307,7 @@ void PrimaryGeneratorAction::PrintProgress()
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	//G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete                  \n"  
-                                              //"\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
+	{	
         G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " images are completed!              \n"
         "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
 		EstimatedTime(100);

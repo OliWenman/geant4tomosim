@@ -10,14 +10,15 @@ cdef extern from "Simulation.hh":
       void pyOutputOptions(bint, bint)
       void pyInitialise(int, int, vector[double], int)
       void pyDataPaths(string, string, string)
+      void pyAddMacros(vector[string])
       vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
 
       vector[int] GetLastImage()
 
-      vector[int] GetEnergyFreq()
+      vector[int] GetFluorescence()
       vector[double] GetEnergyBins()
 
-      vector[int] GetBeamEnergyFreq()
+      vector[int] GetBeamEnergy()
 
       vector[vector[vector[int]]] GetFullMapping()
       

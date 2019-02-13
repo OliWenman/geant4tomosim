@@ -82,6 +82,9 @@ cdef class PySim:
 
         else:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
+           
+    def addMacroFiles(self, macroFiles):
+        self.thisptr.pyAddMacros(macroFiles)
 
     def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray):
         
@@ -92,6 +95,10 @@ cdef class PySim:
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
+           
+           if self.nexusfile.SimReady == False:
+              sys.exit()
+           
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
            #self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
            
@@ -141,11 +148,9 @@ cdef class PySim:
                      self.nexusfile.AddxAxis("Fluorescence", energyBins)
                      
                   if self.FFM == True:
-                     #self.nexusfile.AddxAxisTest("Full_Mapping_Fluorescence")       
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
                self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
-                  #self.nexusfile.AddxAxis("Beam_Energy", energyBins, nImage = CurrentImage) 
                
                if self.FFF == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
@@ -188,10 +193,10 @@ cdef class PySim:
         return np.array(self.thisptr.GetEnergyBins())
 
     def lastEnergyFreq(self):
-        return np.array(self.thisptr.GetEnergyFreq())
+        return np.array(self.thisptr.GetFluorescence())
 
     def beamEnergy(self):
-        return np.array(self.thisptr.GetBeamEnergyFreq())  
+        return np.array(self.thisptr.GetBeamEnergy())  
 
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
@@ -204,14 +209,14 @@ cdef class PySim:
         self.nexusfile.DisplayTree()
         
     def plotBeamEnergy(self):
-        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetBeamEnergyFreq())
+        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetBeamEnergy())
         plt.title("Beam energy distrubution")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Photons")
         plt.show()
         
     def plotFinalFluorescence(self):
-        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetEnergyFreq())
+        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetFluorescence())
         plt.title("Fluorescence")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Photons")

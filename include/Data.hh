@@ -20,18 +20,21 @@ class Data
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
-		void SaveEnergyFreq(double E);		
+		void SaveFluorescence(double E);		
 		inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
 		void SaveFullMapping(double E);
 
 		//Get Methods
 		std::vector<int> GetHitData(){return HitDataArray;}
 		std::vector<double> GetEnergyBins(){return EnergyBins;}
-		std::vector<int> GetEnergyFreq(){return EnergyFreq;}
+		std::vector<int> GetFluorescence(){return fluorescence;}
 		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4double GetMaxEnergy(){return MaxE;}
+		
+		bool GetFullMapping_Option(){return fluoreFullMapping;}
+		bool GetFluorescence_Option(){return fluoreFullField;}
 
 		//Set Methods
 		void SetNumberRows(G4int value){rows = value;}
@@ -51,7 +54,7 @@ class Data
 		//Data members
 		std::vector<int> HitDataArray;
 		std::vector<double> EnergyBins;
-		std::vector<int> EnergyFreq;
+		std::vector<int> fluorescence;
 		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
 
 		G4int rows;

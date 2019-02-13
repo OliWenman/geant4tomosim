@@ -11,8 +11,8 @@ FluorescenceSD::FluorescenceSD(const G4String& name, Data* DataObject, const G4b
 	       : G4VSensitiveDetector(name), data(DataObject)
 {
 	DetectorEfficiency = DetEfficiency;
-	fluoreFullField = true;
-	fluoreFullMapping = false;
+	fluoreFullField = data -> GetFluorescence_Option();
+	fluoreFullMapping = data -> GetFullMapping_Option();
 }
 
 FluorescenceSD::~FluorescenceSD(){}
@@ -28,13 +28,11 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* )
 
 	G4double PhotonEnergy = aStep->GetPreStepPoint()->GetKineticEnergy();
 
-	if (fluoreFullMapping == true)
-	{
+	if (fluoreFullMapping == true){
 		data -> SaveFullMapping(PhotonEnergy);
 	}
-	if (fluoreFullField == true)
-	{
-		data -> SaveEnergyFreq(PhotonEnergy);
+	if (fluoreFullField == true){
+		data -> SaveFluorescence(PhotonEnergy);
 	}
 
 	return true;

@@ -49,7 +49,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double GetBeamHeightZ() {return BeamHeightZ_Cmd;}
 		G4double GetMaxEnergy(){return eMax;}
 
-		std::vector<int> GetBeamEnergyFreq(){return BeamEnergyFreq;}
+		std::vector<int> GetBeamEnergy(){return beamEnergy;}
 		
 		void ReadOutInfo(SettingsLog& log);
 		
@@ -84,8 +84,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double eMax;
 		G4double Bins;
 
-		//std::vector<double> BeamEnergyBins;
-		std::vector<int> BeamEnergyFreq;
+		std::vector<int> beamEnergy;
 
 		bool FluoreFM;
 

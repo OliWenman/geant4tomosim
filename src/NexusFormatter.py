@@ -5,6 +5,7 @@ import os
 import gc
 import getpass
 import sys
+import datetime
 
 class NexusFormatter:
     
@@ -12,6 +13,7 @@ class NexusFormatter:
     def __init__(self, SaveFilePath):
         
         self.fileOpen = False
+        self.SimReady = False
         
         FileName = 'SimulationData.nxs'
         
@@ -21,26 +23,43 @@ class NexusFormatter:
         if os.path.isfile(SaveFilePath+FileName):
         
             #If it exits, check it's size
-            fileInfo = os.stat(SaveFilePath+FileName)            
-            fileSize = fileInfo.st_size/(10**9) #In GB
-            
-            #If file size is over 1 GB, ask user if they are sure they want to override this data
-            if fileSize >= 1:
+            fileInfo = os.stat(SaveFilePath+FileName)
+            Modified_time = datetime.datetime.fromtimestamp(fileInfo.st_mtime)
+            fileSizeB  = fileInfo.st_size #In B 
+            fileSizeKB = fileInfo.st_size/(10**3) #In KB 
+            fileSizeMB = fileInfo.st_size/(10**6) #In MB           
+            fileSizeGB = fileInfo.st_size/(10**9) #In GB
                 
-                print "The file", FileName, "size is", fileSize, "GB. \nAre you sure you want to override this?\n"              
-                contin = False
-                
-                while contin != True:
-                    answer = raw_input('yes/no?\n')
-                
-                    if answer == 'y' or answer == 'yes':
-                        contin = True                      
-                    elif answer == 'n' or answer == 'no':
-                        contin = True
-                        sys.exit()                      
+            if fileSizeB > 10**3:
+                if fileSizeKB > 10**3:
+                    if fileSizeMB > 10**3: 
+                       fileSize = fileSizeGB
+                       Unit = "Gb"
                     else:
-                        print "Input yes or no to continue."
-                        contin = False
+                       fileSize = fileSizeMB
+                       Unit = "Mb"
+                else:
+                    fileSize = fileSizeKB
+                    Unit = "kb"
+            else:
+                fileSize = fileSizeB
+                Unit = "bytes"
+                
+            print "The file", FileName, "already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n"              
+            contin = False
+                
+            while contin != True:
+                answer = raw_input('yes/no?\n')
+                
+                if answer == 'y' or answer == 'yes':
+                   contin = True   
+                   self.SimReady = True                   
+                elif answer == 'n' or answer == 'no':
+                   contin = True
+                   return                
+                else:
+                   print "Input yes or no to continue."
+                   contin = False
                 
                 print "\n"
         

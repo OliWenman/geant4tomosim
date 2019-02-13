@@ -28,14 +28,15 @@ class Simulation
 		void pyOutputOptions(bool FFF, bool FFM);
 		void pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
+		void pyAddMacros(std::vector<std::string> macroFiles);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
 
 		//Python or C++
 		std::vector<int> GetLastImage();
 		std::vector<double> GetEnergyBins();//
-		std::vector<int> GetEnergyFreq();//
+		std::vector<int> GetFluorescence();//
 
-		std::vector<int> GetBeamEnergyFreq();
+		std::vector<int> GetBeamEnergy();
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
 		int GetNumberCalibrations();
 		void SetSavingTime(double Time);
@@ -76,6 +77,8 @@ class Simulation
 		G4String PathToScripts;
 		
 		int verboseLevel;
+		
+		std::vector<std::string> macrofiles;
 };
 
 #endif

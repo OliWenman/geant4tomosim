@@ -52,8 +52,8 @@ Simulation::~Simulation()
 
 	delete simMessenger;
 
-	delete runManager;
-	delete visManager;
+	if (runManager){delete runManager;}
+	if (visManager){delete visManager;}
 
 	delete data;
 	delete materials;
@@ -106,24 +106,24 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM)
 	data -> SetFFM(FFM);
 
 	//Tell the FluorescencSD class what data to record
-	FluorescenceSD* fluorescenceDetector = DC -> GetFluoreDetector();
+	/*FluorescenceSD* fluorescenceDetector = DC -> GetFluoreDetector();
 	
 	//Checks to see if it exists first
 	if(fluorescenceDetector)
 	{	fluorescenceDetector -> SetFFF(FFF);
 		fluorescenceDetector -> SetFFM(FFM);
-	}
+	}*/
 }
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
-	PathToScripts = "./../scripts/";
+    G4cout << "\nAdding detector variables...";
 
 	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
 
 	DC -> SetNoDetectorsY(nDetectorsY);
 	DC -> SetNoDetectorsZ(nDetectorsZ);
-	DC -> SetDetectorSize(G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2])); 
+	DC -> SetDetectorSize(halfDimensions); 
 
 	if (nBins > 0)
 		{DC -> SetFluorescenceDet(true);}
@@ -133,37 +133,25 @@ void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<doub
 	data -> SetNoBins(nBins);
 	data -> SetHalfDetectorDimensions(halfDimensions);	
 
-    //Apply the commands from the macro files to fill the values
-	G4cout << "\nReading Geometry.mac... ";
-	
-	//UImanager -> ApplyCommand("/control/verbose 2");
-	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "Geometry.mac");
-	
-    //UImanager -> ApplyCommand("/control/verbose 0");
-	G4cout << "\nReading pySettings.mac..." << G4endl;
-	UImanager -> ApplyCommand("/control/execute " + PathToScripts + "pySettings.mac");
-
-    //Keeps the seed (broken)?
-	if (seedCmd != 0)	
-		{CLHEP::HepRandom::setTheSeed(seedCmd);}
-
-	//Random seed
-	else if (seedCmd == 0)	
-	{
-		//set random seed with system time
-		seedCmd = time(NULL);
-		CLHEP::HepRandom::setTheSeed(seedCmd);
-	}
-
-	//Tell the data class what the max energy is
-	data -> SetMaxEnergy(PGA -> GetMaxEnergy());
-
-    G4cout << "\nCommands successfully added\n"
-	          "\nSimulation Ready!" << G4endl;
-
 	Ready = true;
 	
-	runManager -> Initialize();
+	G4cout << "\nSuccess!" << G4endl;
+}
+
+void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
+{
+    int nFiles = macroFiles.size();
+    
+    for (int n = 0; n < nFiles ; n++)
+    {
+        G4cout << "\nReading macro file " << n + 1 << ": " << macroFiles[n];
+        
+        UImanager -> ApplyCommand("/control/execute " + macroFiles[n]);
+        
+        G4cout << "\nSuccess!" << G4endl; 
+    }
+    
+    macrofiles = macroFiles;
 }
 
 void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
@@ -174,6 +162,10 @@ void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4Str
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
 {   
+    CLHEP::HepRandom::setTheSeed(seedCmd);
+
+    runManager -> Initialize();
+
     int Image = ImageInfo[0];
     int nDarkFlatFields = ImageInfo[1];
     int NumberOfImages = ImageInfo[2];
@@ -198,6 +190,12 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 	{
         if(Image == 0)
 		{		
+		    //Random seed
+	        if (seedCmd == 0){
+		        //set random seed with system time
+		        seedCmd = time(NULL);
+	        }
+		
 		    //Let the PrimaryGeneratorAction class know where to position the start of the beam
 	        PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
 		
@@ -301,16 +299,16 @@ std::vector<int> Simulation::GetLastImage(){
 	return data -> GetHitData();
 }
 
-std::vector<int> Simulation::GetEnergyFreq(){
-	return data -> GetEnergyFreq();
+std::vector<int> Simulation::GetFluorescence(){
+	return data -> GetFluorescence();
 }
 
 std::vector<double> Simulation::GetEnergyBins(){
 	return data -> GetEnergyBins();
 }
 
-std::vector<int> Simulation::GetBeamEnergyFreq(){
-	return PGA -> GetBeamEnergyFreq();
+std::vector<int> Simulation::GetBeamEnergy(){
+	return PGA -> GetBeamEnergy();
 }
 
 std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
@@ -377,22 +375,20 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 void Simulation::OutInfo(int verbose)
-{
-    //UImanager -> ApplyCommand("/control/verbose 0");
-	        
-	std::string FileName = "SimulationLog.txt";
-	SaveLogPath = SaveLogPath + FileName;
-	     
-	//Open the file within the path set   
+{   
     std::ofstream SaveToFile;
+    
+    std::string FileName = "SimulationLog.txt";
+	SaveLogPath = SaveLogPath + FileName;
+    
     SaveToFile.open(SaveLogPath); 
-    if( !SaveToFile ) 
-    { 	std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
+    if( !SaveToFile ) { 	
+        std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
         exit(1);
     }
-    
+        
     SettingsLog log(SaveToFile);
-    
+        
     //If the verbose has been set >= 2 output info to terminal. Will always output to textfile though
     if (verbose >= 2){
         log.terminalOn = true;
@@ -400,60 +396,39 @@ void Simulation::OutInfo(int verbose)
     else{
         log.terminalOn = false;
     }
-   
-	log << "\n--------------------------------------------------------------------"
-           "\nSETTINGS COMMANDS USED: \n" << G4endl;
-
-    std::ifstream ReadFile;  
-    G4String ScriptName = "pySettings.mac";
-    ReadFile.open(PathToScripts+ScriptName);
-    if (!ReadFile) 
-    {
-        G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
-        exit(1); 
+    
+    int nFiles = macrofiles.size();
+    for (int n = 0 ; n < nFiles ; n++)
+    {      
+        std::ifstream ReadFile;      
+        ReadFile.open(macrofiles[n]);
+        if (!ReadFile) {
+            G4cout << "\nERROR: Unable to open " << macrofiles[n] << " for log output. " << G4endl;
+            exit(1); 
+        }
+      
+        log << "\n--------------------------------------------------------------------"
+               "\nMacro file " << n +1 << ": " << macrofiles[n] << G4endl; 
+      
+        std::string Line;    
+        while ((std::getline(ReadFile, Line))) {
+            //if (Line.find('#') == std::string::npos)
+            if(Line[1] != '/'){
+                log << Line << G4endl;}
+        }
+        ReadFile.close();
     }
-             
-    std::string Line;    
-    while ((std::getline(ReadFile, Line))) 
-    {
-        //if (Line.find('#') == std::string::npos)
-        if(Line[1] != '/'){
-            log << Line << G4endl;}
-    }
-    ReadFile.close();
-                
-    log << "\n--------------------------------------------------------------------"            
-        << "\nGEOMETRY COMMANDS USED: \n" << G4endl;
-                
-     ScriptName = "Geometry.mac";
-     ReadFile.open(PathToScripts+ScriptName);
-     if (!ReadFile) 
-     {
-         G4cout << "\nERROR: Unable to open " << PathToScripts+ScriptName << " for log output. " << G4endl;
-         exit(1); 
-     }
-            
-     while ((std::getline(ReadFile, Line))) 
-     {
-        //if (Line.find("#/") == std::string::npos)
-        if(Line[1] != '/'){
-            log << Line << G4endl;}        
-     }                
-     log << G4endl;
-
-     ReadFile.close();
-     
-     //If the verbose has been set >= 1 output info to terminal. Will always output to textfile though
-     if (verbose >= 1){
+    
+    if (verbose >= 1){
         log.terminalOn = true;
-     }
-     else {
+    }
+    else{
         log.terminalOn = false;
-     }
-     
-	 DC -> ReadOutInfo(log);
-	 PGA -> ReadOutInfo(log);
-	 PL -> ReadOutInfo(log);
+    }
+    
+    DC -> ReadOutInfo(log);
+	PGA -> ReadOutInfo(log);
+	PL -> ReadOutInfo(log);
 	 
-	 SaveToFile.close();
+	SaveToFile.close();
 }

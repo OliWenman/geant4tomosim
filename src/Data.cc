@@ -22,8 +22,8 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		{
 			if (fluoreFullField == true)
 			{
-				std::vector<int> iEnergyFreq (NoBins_Cmd, 0);
-				EnergyFreq = iEnergyFreq;
+				std::vector<int> ifluorescence (NoBins_Cmd, 0);
+				fluorescence = ifluorescence;
 			}
 			if (fluoreFullMapping == true)
 			{
@@ -46,22 +46,21 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		//Reset the data to zero ready for the next image
 		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns * rows);
 
-		if (fluoreFullField == true)
-			//Resets the energy frequency to zero for the next image
-			memset(&EnergyFreq[0], 0, sizeof(EnergyFreq[0]) * NoBins_Cmd);
+		if (fluoreFullField == true){
+			memset(&fluorescence[0], 0, sizeof(fluorescence[0]) * NoBins_Cmd);}
 
 		if (fluoreFullMapping == true){
 		    std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));}
 	}
 }
 
-void Data::SaveEnergyFreq(double E)//
+void Data::SaveFluorescence(double E)//
 {
     int bin = floor(E*1000/(MaxE/NoBins_Cmd));
-    if (bin > NoBins_Cmd - 1)
-        bin = NoBins_Cmd -1;
+    if (bin > NoBins_Cmd - 1){
+        bin = NoBins_Cmd -1;}
 
-	++EnergyFreq[bin];
+	++fluorescence[bin];
 }
 
 void Data::SaveFullMapping(double E)
@@ -70,8 +69,8 @@ void Data::SaveFullMapping(double E)
 	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
 
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
-    if (eBin > NoBins_Cmd - 1)
-    {   eBin = NoBins_Cmd -1;}
+    if (eBin > NoBins_Cmd - 1){
+       eBin = NoBins_Cmd -1;}
 
 	++fullMappingFluore[xBin][yBin][eBin];
 }

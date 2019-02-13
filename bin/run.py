@@ -56,6 +56,7 @@ Sim = sim.PySim()
 
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM)
+Sim.addMacroFiles(["./../scripts/pySettings.mac", "./../scripts/Geometry.mac"])
 #Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V4/")
 #Sim.setFilePath("/home/xol73553/Documents/NeXusTesting/")
 #Sim.setFilePath('/scratch/Data/Complex Object/ObjectAB/Daniil/')
