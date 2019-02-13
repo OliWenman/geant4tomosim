@@ -52,6 +52,18 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 	WorldMaterial_Cmd = "G4_AIR";
 	
 	WarningChecked = false;
+	
+	param = NULL;
+	SolidContainer = NULL;
+	SolidPhantomBoxes = NULL;
+	container_logic = NULL;
+	PhantomBoxes_logic = NULL;
+	
+	SolidFluoDet = NULL;
+	FluoDet_logic = NULL;
+	
+	solidWorld = NULL;
+	logicWorld = NULL;
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -61,19 +73,19 @@ DetectorConstruction::~DetectorConstruction()
 	delete TC;
 
 	//Delete the transmission detectors
-	delete param;
-	delete SolidContainer;
-	delete SolidPhantomBoxes;
-	delete container_logic;
-	delete PhantomBoxes_logic;
+	if (param){delete param;}
+	if (SolidContainer){delete SolidContainer;}
+	if (SolidPhantomBoxes){delete SolidPhantomBoxes;}
+	if (container_logic){delete container_logic;}
+	if (PhantomBoxes_logic){delete PhantomBoxes_logic;}
 
 	//Delete the fluorescence detectors
-	delete SolidFluoDet;
-	delete FluoDet_logic; 
+	if (SolidFluoDet){delete SolidFluoDet;}
+	if (FluoDet_logic){delete FluoDet_logic;} 
 
 	//Delete the wolrd
-	delete solidWorld;
-	delete logicWorld;
+	if (solidWorld){delete solidWorld;}
+	if (logicWorld){delete logicWorld;}
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

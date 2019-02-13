@@ -34,6 +34,7 @@ class PhysicsListMessenger: public G4UImessenger
 		G4UIcmdWithABool* ComptonScatteringCmd;
 		G4UIcmdWithABool* RayleighScatteringCmd;
 		G4UIcmdWithABool* FluorescenceCmd;
+		G4UIcmdWithABool* RefractionCmd;
 };
 
 #endif 

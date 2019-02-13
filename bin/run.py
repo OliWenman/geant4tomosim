@@ -16,9 +16,9 @@ DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 #===================================================================
 #IMAGE VARIABLES
 
-NumberOfImages = 10
-nDarkFlatFields = 2
-nParticles = 1000000
+NumberOfImages = 1
+nDarkFlatFields = 0
+nParticles = 10000000
 
 TotalRotation = 180*G4.deg
 rotation_angles = np.linspace(start = 0, stop = TotalRotation, num = NumberOfImages, endpoint = False)
@@ -26,8 +26,8 @@ rotation_angles = np.linspace(start = 0, stop = TotalRotation, num = NumberOfIma
 #===================================================================
 #EXTRA DATA OPTIONS
 
-fluoreFF = True
-fluoreFM = True
+fluoreFF = False
+fluoreFM = False
 
 #===================================================================
 #ENERGY VARIABLES

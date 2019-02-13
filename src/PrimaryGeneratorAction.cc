@@ -161,7 +161,6 @@ void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEne
     gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
     ParticleGun = new G4GeneralParticleSource();
-
     ParticleGun -> SetParticleDefinition(gamma);
 
     //Automatically set the gun position to the end of the world volume

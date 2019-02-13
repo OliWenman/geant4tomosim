@@ -36,10 +36,7 @@ Simulation::Simulation()
 	Reset = false;
 	Ready = false;
 
-	WriteToTextCmd = false;
 	verboseLevel = 1;
-	
-	//SimMode = "Calibrating";
 
 	G4cout << "\nWelcome to the tomography data simulation!\n"; 
 
@@ -48,17 +45,19 @@ Simulation::Simulation()
 
 Simulation::~Simulation()
 {
-	G4cout << "\nClosing simulation...";
+	G4cout << "\nClosing simulation..." << G4endl;
 
 	delete simMessenger;
+
+    //runManager -> SetVerboseLevel(5);
 
 	if (runManager){delete runManager;}
 	if (visManager){delete visManager;}
 
-	delete data;
-	delete materials;
+	if (data){delete data;}
+	if (materials) {delete materials;}
 
-	G4cout << "\nSimulation closed! \n" << G4endl;
+	G4cout << "Simulation closed! \n" << G4endl;
 }
 
 void Simulation::Setup()
@@ -67,6 +66,7 @@ void Simulation::Setup()
 
 	//Create an instance of the classes
 	runManager = new G4RunManager();
+	runManager -> SetVerboseLevel(2);
 	//runManager -> SetVerboseLevel(1);
 	data = new Data();
 	DC = new DetectorConstruction(data); 
@@ -104,15 +104,6 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM)
 	//Tell the Data class what data to record
 	data -> SetFFF(FFF);
 	data -> SetFFM(FFM);
-
-	//Tell the FluorescencSD class what data to record
-	/*FluorescenceSD* fluorescenceDetector = DC -> GetFluoreDetector();
-	
-	//Checks to see if it exists first
-	if(fluorescenceDetector)
-	{	fluorescenceDetector -> SetFFF(FFF);
-		fluorescenceDetector -> SetFFM(FFM);
-	}*/
 }
 
 void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
@@ -144,19 +135,15 @@ void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
     
     for (int n = 0; n < nFiles ; n++)
     {
-        G4cout << "\nReading macro file " << n + 1 << ": " << macroFiles[n];
-        
-        UImanager -> ApplyCommand("/control/execute " + macroFiles[n]);
+        G4cout << "\nReading macro file " << n + 1 << ") " << macroFiles[n] << G4endl
+               << "Adding commands..." << G4endl;
+               
+        G4int Success = UImanager -> ApplyCommand("/control/execute " + macroFiles[n]);
         
         G4cout << "\nSuccess!" << G4endl; 
     }
     
     macrofiles = macroFiles;
-}
-
-void Simulation::pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath)
-{
-	G4cout << "\nsettingsPath = " << settingsPath;
 }
 
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
@@ -213,11 +200,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		 
 		    //Open the file within the path set
 		    std::ofstream SaveToFile;
-            SaveToFile.open(SaveLogPath, std::fstream::app); 
+            SaveToFile.open(SaveLogPath + LogName, std::fstream::app); 
    	
             //Output error if can't open file
             if( !SaveToFile ){ 	
-                std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+                std::cerr << "\nError: " << SaveLogPath + LogName << " file could not be opened from Simulation.\n" << std::endl;
               	exit(1);
            	}
     
@@ -378,15 +365,16 @@ void Simulation::OutInfo(int verbose)
 {   
     std::ofstream SaveToFile;
     
-    std::string FileName = "SimulationLog.txt";
-	SaveLogPath = SaveLogPath + FileName;
+    LogName = "SimLog.txt";
     
-    SaveToFile.open(SaveLogPath); 
+    //Try to open the file 
+    SaveToFile.open(SaveLogPath + LogName); 
     if( !SaveToFile ) { 	
-        std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
+        std::cerr << "\nError: " << SaveLogPath + LogName << " file could not be opened from Simulation. " << "\n" << std::endl;
         exit(1);
     }
-        
+    
+    //Create an instance of the log to output to terminal and file    
     SettingsLog log(SaveToFile);
         
     //If the verbose has been set >= 2 output info to terminal. Will always output to textfile though
@@ -397,10 +385,13 @@ void Simulation::OutInfo(int verbose)
         log.terminalOn = false;
     }
     
+    //Loop through the macro files
     int nFiles = macrofiles.size();
     for (int n = 0 ; n < nFiles ; n++)
     {      
-        std::ifstream ReadFile;      
+        std::ifstream ReadFile;
+        
+        //Try to open the macro file      
         ReadFile.open(macrofiles[n]);
         if (!ReadFile) {
             G4cout << "\nERROR: Unable to open " << macrofiles[n] << " for log output. " << G4endl;
@@ -408,8 +399,9 @@ void Simulation::OutInfo(int verbose)
         }
       
         log << "\n--------------------------------------------------------------------"
-               "\nMacro file " << n +1 << ": " << macrofiles[n] << G4endl; 
+               "\nMacro file " << n +1 << ": " << macrofiles[n] << "\n" << G4endl; 
       
+        //Read the file
         std::string Line;    
         while ((std::getline(ReadFile, Line))) {
             //if (Line.find('#') == std::string::npos)
@@ -426,6 +418,7 @@ void Simulation::OutInfo(int verbose)
         log.terminalOn = false;
     }
     
+    //Log the info from other classes
     DC -> ReadOutInfo(log);
 	PGA -> ReadOutInfo(log);
 	PL -> ReadOutInfo(log);

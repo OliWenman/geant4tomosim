@@ -31,12 +31,12 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetComptonScattering(G4bool value){ComptonScatteringCmd = value;}
 		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value;}
 		void SetFluorescence(G4bool value){FluorescenceCmd = value;}
+		void SetRefraction(G4bool value){RefractionCmd = value;}
 
 		G4bool GetFluorescence(){return FluorescenceCmd;}
 
 		//Construct the particles and processes
 		void ConstructEM();
-		void ConstructOP();
   		void ConstructParticle();
   		void ConstructProcess();
 		void SetCuts();
@@ -58,6 +58,7 @@ class PhysicsList: public G4VModularPhysicsList
 		G4bool ComptonScatteringCmd;
 		G4bool RayleighScatteringCmd;
 		G4bool FluorescenceCmd;
+		G4bool RefractionCmd;
 
 		//Vector used to read out the physics processes used
 		std::vector<G4String> PhysicProcesses;

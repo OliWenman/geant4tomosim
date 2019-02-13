@@ -26,7 +26,6 @@ class Simulation
 		//Methods
 		//To be called from Python
 		void pyOutputOptions(bool FFF, bool FFM);
-		void pyDataPaths(G4String settingsPath, G4String geometryPath, G4String h5OutputPath);
 		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
 		void pyAddMacros(std::vector<std::string> macroFiles);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
@@ -45,7 +44,6 @@ class Simulation
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetVerboseLevel(int value){verboseLevel = value;}
-		void SetWriteToText(bool value){WriteToTextCmd = value;}
 
 	private:
 		//It's own private functions to be called by the public functions
@@ -71,9 +69,9 @@ class Simulation
 		bool Ready;
 
 		long int seedCmd;
-		bool WriteToTextCmd;
 
 		G4String SaveLogPath;
+		G4String LogName;
 		G4String PathToScripts;
 		
 		int verboseLevel;

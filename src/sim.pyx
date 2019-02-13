@@ -61,9 +61,6 @@ cdef class PySim:
         self.FFM = fluoreFullMapping
         self.thisptr.pyOutputOptions(self.FFF, self.FFM)
 
-    def dataPaths(self, a, b, c):
-        self.thisptr.pyDataPaths(a, b, c)
-
     #Get needed information from textfiles pySettings.mac and Geometry.mac
     def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 2000):
         if nDetY >= 1 and nDetZ >= 1:
@@ -97,7 +94,7 @@ cdef class PySim:
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
            
            if self.nexusfile.SimReady == False:
-              sys.exit()
+              return 0
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
            #self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
@@ -178,8 +175,6 @@ cdef class PySim:
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
-    
-    #def createEnergyInfo(self, minEnergy, maxEnergy, minSigmaEnergy, maxSigmaEnergy, gunType):
         
 
     #Return the image data from the simulation

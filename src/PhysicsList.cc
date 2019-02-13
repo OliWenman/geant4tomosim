@@ -60,6 +60,12 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
 	//Sets the cutvalues
 	cutForGamma = 10*mm;
 	cutForElectron = 1*um;
+	
+	PhotoElectricCmd = true;
+	ComptonScatteringCmd = true;
+	RayleighScatteringCmd = true;
+	FluorescenceCmd = true;
+	RefractionCmd = false;
 }
 
 PhysicsList::~PhysicsList()
@@ -87,7 +93,6 @@ void PhysicsList::ConstructProcess()
 	AddTransportation();
 	//Call the method that picks the physics used
 	ConstructEM();
-	ConstructOP();
 }
 void PhysicsList::ConstructEM()
 {
@@ -171,35 +176,21 @@ void PhysicsList::ConstructEM()
 				PhysicProcesses.push_back ("Fluorescence");
 			}
 		}
-	}
-
-	G4cout << G4endl;
-}
-
-void PhysicsList::ConstructOP()
-{
-    fAbsorptionProcess = new G4OpAbsorption();
-    fRayleighScatteringProcess = new G4OpRayleigh();
-    fMieHGScatteringProcess = new G4OpMieHG();
-    fBoundaryProcess = new G4OpBoundaryProcess();
-    
-    auto particleIterator=GetParticleIterator();
-    particleIterator->reset();
-    while( (*particleIterator)() ){
-        G4ParticleDefinition* particle = particleIterator->value();
-        G4ProcessManager* pmanager = particle->GetProcessManager();
-        G4String particleName = particle->GetParticleName();
-       
-        if (particleName == "opticalphoton") {
-            pmanager->AddDiscreteProcess(fAbsorptionProcess);
+		else if (particleName == "opticalphoton" && RefractionCmd == true){
+	        fAbsorptionProcess = new G4OpAbsorption();
+            fRayleighScatteringProcess = new G4OpRayleigh();
+            fMieHGScatteringProcess = new G4OpMieHG();
+            fBoundaryProcess = new G4OpBoundaryProcess();
+	
+	        pmanager->AddDiscreteProcess(fAbsorptionProcess);
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
             pmanager->AddDiscreteProcess(fBoundaryProcess);
             PhysicProcesses.push_back ("Refraction");
-        }
-    }
-    
-    fBoundaryProcess->SetVerboseLevel(2);
+	    }
+	}
+
+	G4cout << G4endl;
 }
 
 void PhysicsList::SetCuts()
