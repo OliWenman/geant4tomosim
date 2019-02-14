@@ -36,7 +36,7 @@ Simulation::Simulation()
 	Reset = false;
 	Ready = false;
 
-	verboseLevel = 1;
+	verboseLevel = 2;
 
 	G4cout << "\nWelcome to the tomography data simulation!\n"; 
 
@@ -66,8 +66,11 @@ void Simulation::Setup()
 
 	//Create an instance of the classes
 	runManager = new G4RunManager();
-	runManager -> SetVerboseLevel(2);
-	//runManager -> SetVerboseLevel(1);
+	int verbose;
+	if (verboseLevel < 2){verbose = 0;}
+	else {verbose = verboseLevel - 2;}
+	runManager -> SetVerboseLevel(verbose);
+	
 	data = new Data();
 	DC = new DetectorConstruction(data); 
 	PL = new PhysicsList();
@@ -149,8 +152,6 @@ void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
 {   
-    CLHEP::HepRandom::setTheSeed(seedCmd);
-
     runManager -> Initialize();
 
     int Image = ImageInfo[0];
@@ -233,6 +234,13 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 	                      "\n================================================================================" << G4endl;
 	        }
 		}
+		
+		//The seed is the same every time except for the flat fields
+		if (Mode == "Calibraing"){
+		    seedCmd = time(NULL);
+		}
+		
+		CLHEP::HepRandom::setTheSeed(seedCmd);
 
         //Prepare for next run that geometry has changed
 		runManager -> ReinitializeGeometry();

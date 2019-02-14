@@ -93,7 +93,8 @@ cdef class PySim:
 
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
            
-           if self.nexusfile.SimReady == False:
+           if self.nexusfile.setupSuccess == False:
+              print "Aborting run" 
               return 0
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)

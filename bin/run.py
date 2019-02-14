@@ -18,22 +18,23 @@ DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 10000000
+nParticles = 1000000
 
+startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
-rotation_angles = np.linspace(start = 0, stop = TotalRotation, num = NumberOfImages, endpoint = False)
+rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num = NumberOfImages, endpoint = False)
 
 #===================================================================
 #EXTRA DATA OPTIONS
 
-fluoreFF = False
+fluoreFF = True
 fluoreFM = False
 
 #===================================================================
 #ENERGY VARIABLES
 
-minEnergy = 25*G4.keV
-maxEnergy = 25*G4.keV
+minEnergy = 70*G4.keV
+maxEnergy = 70*G4.keV
 minSigmaEnergy = 0.5*G4.keV
 maxSigmaEnergy = 5*G4.keV
 Gun = "Mono"
@@ -57,12 +58,7 @@ Sim = sim.PySim()
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fluoreFF, fluoreFM)
 Sim.addMacroFiles(["./../scripts/pySettings.mac", "./../scripts/Geometry.mac"])
-#Sim.setFilePath("/scratch/Data/Complex Object/ObjectAB/AlSi10Mg_TC4/V4/")
-#Sim.setFilePath("/home/xol73553/Documents/NeXusTesting/")
-#Sim.setFilePath('/scratch/Data/Complex Object/ObjectAB/Daniil/')
-#Sim.setFilePath("/scratch/Data/Complex Object/MultiSimTest/1/")
-#Sim.setFilePath('/scratch/Data/Complex_Object/ObjectAB/IN625_MS1/V1/')
-#Sim.run(nParticles, TotalRotation, NumberOfImages)
+Sim.setFilePath("/scratch/Data/Complex_Object/ObjectAB/Absorption_Test/V4/")
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray)
 
 #Sim.printNexusTree()

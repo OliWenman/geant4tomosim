@@ -14,6 +14,7 @@ class NexusFormatter:
         
         self.fileOpen = False
         self.SimReady = False
+        self.setupSuccess = False
         
         FileName = 'SimulationData.nxs'
         
@@ -53,9 +54,10 @@ class NexusFormatter:
                 
                 if answer == 'y' or answer == 'yes':
                    contin = True   
-                   self.SimReady = True                   
+                        
                 elif answer == 'n' or answer == 'no':
                    contin = True
+                   self.setupSuccess = False 
                    return                
                 else:
                    print "Input yes or no to continue."
@@ -107,6 +109,8 @@ class NexusFormatter:
         data = tomo_entry.create_group('data')
         data.attrs['NX_class'] = 'NXdata'
         data.attrs['defination'] = 'NXtomo'
+        
+        self.setupSuccess = True       
         
     #When class is destroyed, close the file if it isn't already closed
     def __del__(self):
