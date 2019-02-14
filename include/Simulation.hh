@@ -71,8 +71,6 @@ class Simulation
 		long int seedCmd;
 
 		G4String SaveLogPath;
-		G4String LogName;
-		G4String PathToScripts;
 		
 		int verboseLevel;
 		

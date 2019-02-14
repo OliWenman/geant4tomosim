@@ -1,14 +1,14 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
 /data/Seed 0
-/data/verbose 1
+/data/verbose 5
 
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
+/physics/EM/ComptonScattering false
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
 /physics/EM/Refraction false
 
 #World Settings

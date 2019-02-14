@@ -36,6 +36,8 @@ cdef class PySim:
     cdef public bint Ready
     
     cdef public str SaveFilePath
+    
+    cdef public str NexusName
   
     #Constructor, create an instance of the C++ class
     def __cinit__(self):
@@ -48,6 +50,7 @@ cdef class PySim:
         WorkingDirectory = os.path.dirname(os.getcwd())
         BuildDirectory = "/Output/HDF5/"
         self.SaveFilePath = WorkingDirectory + BuildDirectory
+        self.NexusName = "SimulationData.nxs"
         
         self.thisptr = new Simulation()
 
@@ -91,11 +94,11 @@ cdef class PySim:
            
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
-           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath)
+           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
            
            if self.nexusfile.setupSuccess == False:
-              print "Aborting run" 
-              return 0
+              print "\nAborting run." 
+              return 
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
            #self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
@@ -174,6 +177,8 @@ cdef class PySim:
            else:
               print message, round(self.SimTime/(60*60), 3), "hours. "
             
+           print "\nData was saved in", self.SaveFilePath 
+            
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
         
@@ -197,9 +202,10 @@ cdef class PySim:
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
         
-    def setFilePath(self, FilePath):
+    def setFilePath(self, FilePath, NexusName, logName):
         self.SaveFilePath = FilePath
-        self.thisptr.SetSaveLogPath(FilePath)
+        self.NexusName = NexusName
+        self.thisptr.SetSaveLogPath(FilePath+logName)
         
     def printNexusTree(self):
         self.nexusfile.DisplayTree()

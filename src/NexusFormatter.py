@@ -10,21 +10,19 @@ import datetime
 class NexusFormatter:
     
     #When class is created
-    def __init__(self, SaveFilePath):
+    def __init__(self, FilePath):
         
         self.fileOpen = False
         self.SimReady = False
         self.setupSuccess = False
         
-        FileName = 'SimulationData.nxs'
-        
-        print "\nOpening Nexus file:", SaveFilePath+FileName
+        print "\nOpening Nexus file:", FilePath
         
         #Check if file exists       
-        if os.path.isfile(SaveFilePath+FileName):
+        if os.path.isfile(FilePath):
         
             #If it exits, check it's size
-            fileInfo = os.stat(SaveFilePath+FileName)
+            fileInfo = os.stat(FilePath)
             Modified_time = datetime.datetime.fromtimestamp(fileInfo.st_mtime)
             fileSizeB  = fileInfo.st_size #In B 
             fileSizeKB = fileInfo.st_size/(10**3) #In KB 
@@ -46,7 +44,7 @@ class NexusFormatter:
                 fileSize = fileSizeB
                 Unit = "bytes"
                 
-            print "The file", FileName, "already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n"              
+            print "\nThis file already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n"              
             contin = False
                 
             while contin != True:
@@ -67,11 +65,11 @@ class NexusFormatter:
         
         #Try to open file, delete file if can't open it as it's going to override it anyway       
         try:     
-            self.h5file1 = h5py.File(SaveFilePath + FileName, 'w')
+            self.h5file1 = h5py.File(FilePath, 'w')
         
         except OSError:
-            os.remove(SaveFilePath + FileName)
-            self.h5file1 = h5py.File(SaveFilePath + FileName, 'w')
+            os.remove(FilePath)
+            self.h5file1 = h5py.File(FilePath, 'w')
         
         self.fileOpen = True
         

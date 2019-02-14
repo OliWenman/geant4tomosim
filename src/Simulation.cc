@@ -28,6 +28,8 @@
 #include "G4ThreeVector.hh"
 
 #include <list>
+#include <cstdlib>
+#include <ctime>
 
 Simulation::Simulation()
 {	
@@ -93,7 +95,7 @@ void Simulation::Setup()
   	UImanager = G4UImanager::GetUIpointer();
 	UImanager -> ApplyCommand("/tracking/verbose 0");	//Gives information about particle
 	UImanager -> ApplyCommand("/control/verbose 0");	
-	UImanager -> ApplyCommand("/hits/erbose 0");
+	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -181,7 +183,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		    //Random seed
 	        if (seedCmd == 0){
 		        //set random seed with system time
-		        seedCmd = time(NULL);
+		        seedCmd = rand();
+		        srand((int)time(0));
 	        }
 		
 		    //Let the PrimaryGeneratorAction class know where to position the start of the beam
@@ -201,11 +204,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		 
 		    //Open the file within the path set
 		    std::ofstream SaveToFile;
-            SaveToFile.open(SaveLogPath + LogName, std::fstream::app); 
+            SaveToFile.open(SaveLogPath, std::fstream::app); 
    	
             //Output error if can't open file
             if( !SaveToFile ){ 	
-                std::cerr << "\nError: " << SaveLogPath + LogName << " file could not be opened from Simulation.\n" << std::endl;
+                std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
               	exit(1);
            	}
     
@@ -236,8 +239,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		}
 		
 		//The seed is the same every time except for the flat fields
-		if (Mode == "Calibraing"){
-		    seedCmd = time(NULL);
+		if (Mode == "Calibrating"){
+		    seedCmd = rand();
 		}
 		
 		CLHEP::HepRandom::setTheSeed(seedCmd);
@@ -356,14 +359,16 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 {
     if (DC -> GetVisualization() == true && nParticles > 5000)
     {   
+        int limit = 100;
+        nParticles = limit;     
+            
         if (nImage == 0)
         {
             G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
                       "\n         WARNING: " << nParticles << " PARTICLES IS TOO MANY TOO SIMULATE WITH GRAPHICS"
-                      "\n                    Reducing the number of particles to 1\n"
+                      "\n                    Reducing the number of particles to " << limit << "\n"
                       "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;;         
         }
-        nParticles = 1;     
     }
     
     return nParticles;
@@ -373,12 +378,10 @@ void Simulation::OutInfo(int verbose)
 {   
     std::ofstream SaveToFile;
     
-    LogName = "SimLog.txt";
-    
     //Try to open the file 
-    SaveToFile.open(SaveLogPath + LogName); 
+    SaveToFile.open(SaveLogPath); 
     if( !SaveToFile ) { 	
-        std::cerr << "\nError: " << SaveLogPath + LogName << " file could not be opened from Simulation. " << "\n" << std::endl;
+        std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
         exit(1);
     }
     

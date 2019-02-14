@@ -84,14 +84,14 @@
 #=============================================
 #Place the objects
 
-#/Target/Material ObjectA IN625
-/Target/Material ObjectA G4_Al
+/Target/Material ObjectA IN625
+#/Target/Material ObjectA G4_Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
 /Target/Rotation ObjectA 0 0 0 deg
 
-#/Target/Material ObjectB MS1
-/Target/Material ObjectB G4_Al
+/Target/Material ObjectB MS1
+#/Target/Material ObjectB G4_Al
 /Target/Colour ObjectB Red
 /Target/Position ObjectB 0 0 0.45 mm
 /Target/Rotation ObjectB 0 0 0 deg
