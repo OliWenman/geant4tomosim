@@ -12,7 +12,7 @@ Simulation of tomography data using the C++ Geant4 toolkit. Wrapped in Python vi
 # Build instructions
 - Download the code in the directoy you want
   - $ cd path/to/source/code
-  - $ git clone git@github.com:OliWenman/geant4tomosim.git
+  - $ git clone link
   
 - Once downloaded, you can then create a build direcotry of your choosing and build the code using cmake
   - $ mkdir build
