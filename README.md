@@ -10,19 +10,19 @@ The simulation of tomography data using the C++ Geant4 toolkit. Wrapped in Pytho
 - h5py
 
 # Build instructions
-- Download the code in the directoy you want
-  - $ cd path/to/source/code
-  - $ git clone link
+Download the code in the directoy you want
+- $ cd path/to/source/code
+- $ git clone link
   
-- Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake.
-  - $ mkdir build
-  - $ cd build
-  - $ module load python/anaconda-savu 
-  - $ module load geant4/10.04
-  - $ cmake /path/to/source/code
-  - $ make -jN
+Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake.
+- $ mkdir build
+- $ cd build
+- $ module load python/anaconda-savu 
+- $ module load geant4/10.04
+- $ cmake /path/to/source/code
+- $ make -jN
   
-  Where N is the number of cores on your machine that you want to use. For example make -j4
+Where N is the number of cores on your machine that you want to use. For example make -j4.
   
 # How to use
 In the script directory is where the macro files are held. For this we only need to adjust the Geometry.mac and pySettings.mac. The pySettings contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one should contain commands to construct the sample(s) you want to simulate.
