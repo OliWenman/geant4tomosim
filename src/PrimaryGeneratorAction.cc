@@ -290,7 +290,7 @@ void PrimaryGeneratorAction::PrintProgress()
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\r" "Processing image " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
+		G4cout << "\033[2A" "\033[K" "\r" "Projection " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
 		if (ImageProgress == 100)
 		    G4cout << "- Saving data...\n";
 		else if (ImageProgress == 0)
@@ -312,7 +312,7 @@ void PrimaryGeneratorAction::PrintProgress()
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
 	{	
-        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " images are completed!              \n"
+        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " projections are complete!              \n"
         "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
 		EstimatedTime(100);
 		G4cout << G4endl;

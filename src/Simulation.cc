@@ -320,7 +320,7 @@ void Simulation::Visualisation()
 		UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
 		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
 		
-		G4cout << "\nGRAPHICS HAVE BEEN ENABLED! Saving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;
+		G4cout << "\nGRAPHICS HAVE BEEN ENABLED! \nSaving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;
 			
 		PGA -> SetProgressBar(false);
 	}

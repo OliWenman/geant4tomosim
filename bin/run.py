@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 10#375
-nDetZ = 10#315
+nDetY = 250
+nDetZ = 210
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
@@ -20,9 +20,9 @@ DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengt
 #-------------------------------------------------------------------
 #IMAGE VARIABLES
 
-NumberOfImages = 10
-nDarkFlatFields = 5
-nParticles = 10#5*10**8
+NumberOfImages = 1
+nDarkFlatFields = 0
+nParticles = 1*10**7
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -39,10 +39,17 @@ fullmapping_fluorescence = False
 
 minEnergy = 70*G4.keV
 maxEnergy = 70*G4.keV
-minSigmaEnergy = 0.5*G4.keV
-maxSigmaEnergy = 5*G4.keV
+minSigmaEnergy = 0*G4.keV
+maxSigmaEnergy = 0*G4.keV
 Gun = "Mono"
 nBins = 2000
+
+#-------------------------------------------------------------------
+#Macrofiles to add
+macrofile1 = "./../scripts/Settings.mac" 
+macrofile2 = "./../scripts/Geometry.mac"
+
+macrofiles = [macrofile1, macrofile2]
 
 #==================================================================
 import os
@@ -119,7 +126,7 @@ Sim = sim.PySim()
 
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
-Sim.addMacroFiles(["./../scripts/pySettings.mac", "./../scripts/Geometry.mac"])
+Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray)
 
