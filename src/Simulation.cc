@@ -40,38 +40,11 @@ Simulation::Simulation()
 
 	verboseLevel = 2;
 
-	G4cout << "\nWelcome to the tomography data simulation!\n"; 
-
-	Setup();
-}
-
-Simulation::~Simulation()
-{
-	G4cout << "\nClosing simulation..." << G4endl;
-
-	delete simMessenger;
-
-    //runManager -> SetVerboseLevel(5);
-
-	if (runManager){delete runManager;}
-	if (visManager){delete visManager;}
-
-	if (data){delete data;}
-	if (materials) {delete materials;}
-
-	G4cout << "Simulation closed! \n" << G4endl;
-}
-
-void Simulation::Setup()
-{ 
-	G4cout << "Setting up... \n";
+	G4cout << "\nWelcome to the tomography data simulation!"; 
+              "\nSetting up... \n";
 
 	//Create an instance of the classes
 	runManager = new G4RunManager();
-	int verbose;
-	if (verboseLevel < 2){verbose = 0;}
-	else {verbose = verboseLevel - 2;}
-	runManager -> SetVerboseLevel(verbose);
 	
 	data = new Data();
 	DC = new DetectorConstruction(data); 
@@ -99,6 +72,22 @@ void Simulation::Setup()
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+	seedCmd = 0;
+}
+
+Simulation::~Simulation()
+{
+	G4cout << "\nClosing simulation..." << G4endl;
+
+	delete simMessenger;
+
+	if (runManager){delete runManager;}
+	if (visManager){delete visManager;}
+
+	if (data){delete data;}
+	if (materials) {delete materials;}
+
+	G4cout << "Simulation closed! \n" << G4endl;
 }
 
 void Simulation::pyOutputOptions(bool FFF, bool FFM)
@@ -186,6 +175,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		        seedCmd = rand();
 		        srand((int)time(0));
 	        }
+	        
+	        int verbose;
+	        if (verboseLevel < 2){verbose = 0;}
+	        else {verbose = verboseLevel - 2;}
+	        runManager -> SetVerboseLevel(verbose);
 		
 		    //Let the PrimaryGeneratorAction class know where to position the start of the beam
 	        PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
@@ -204,11 +198,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		 
 		    //Open the file within the path set
 		    std::ofstream SaveToFile;
-            SaveToFile.open(SaveLogPath, std::fstream::app); 
+            SaveToFile.open(SaveLogPath + FileName, std::fstream::app); 
    	
             //Output error if can't open file
             if( !SaveToFile ){ 	
-                std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation.\n" << std::endl;
+                std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation.\n" << std::endl;
               	exit(1);
            	}
     
@@ -283,11 +277,51 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
-		visManager = new G4VisExecutive();
+		visManager = new G4VisExecutive("quiet");
 
 		visManager -> Initialize();
-		UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");
+
+        //Make the name of the file the same as the logname, remove the "_log.txt" at the end and replace with _vis
+        std::string visFileName = FileName.substr (0, FileName.length() - 8) + "_vis";    
+        
+        //Set the filepath to save it, if the defualt is used, save in the Visualization folder
+        std::string filePath;
+        std::string defaultPath = "./../Output/HDF5/";
+        if (SaveLogPath == defaultPath){
+            filePath = "./../Output/Visualization/";
+        }
+        else {
+            filePath = SaveLogPath;
+        }
 		
+		//UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");
+		//Setup the vis manager
+		UImanager -> ApplyCommand("/vis/open HepRepFile");
+		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + filePath);
+		UImanager -> ApplyCommand("/vis/heprep/setFileName " + visFileName);
+		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh false");
+		UImanager -> ApplyCommand("/vis/verbose errors");
+		UImanager -> ApplyCommand("/vis/viewer/flush");
+		UImanager -> ApplyCommand("/vis/drawVolume");
+		
+		//Set the draw options
+		UImanager -> ApplyCommand("/vis/viewer/set/style wireframe");
+		UImanager -> ApplyCommand("/vis/viewer/set/auxiliaryEdge true");
+		UImanager -> ApplyCommand("/vis/viewer/set/lineSegmentsPerCircle 100");
+		UImanager -> ApplyCommand("/vis/scene/add/trajectories smooth");
+		UImanager -> ApplyCommand("/vis/modeling/trajectories/create/drawByCharge");
+		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true");
+		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2");
+		
+		UImanager -> ApplyCommand("/vis/scene/add/axes 0 0 0 1 mm");
+		UImanager -> ApplyCommand("/vis/viewer/zoom 0.5 mm");
+		
+		UImanager -> ApplyCommand("/vis/scene/add/hits");
+		UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
+		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
+		
+		G4cout << "\nGRAPHICS HAVE BEEN ENABLED! Saving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;
+			
 		PGA -> SetProgressBar(false);
 	}
 }
@@ -379,9 +413,9 @@ void Simulation::OutInfo(int verbose)
     std::ofstream SaveToFile;
     
     //Try to open the file 
-    SaveToFile.open(SaveLogPath); 
+    SaveToFile.open(SaveLogPath + FileName); 
     if( !SaveToFile ) { 	
-        std::cerr << "\nError: " << SaveLogPath << " file could not be opened from Simulation. " << "\n" << std::endl;
+        std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << std::endl;
         exit(1);
     }
     

@@ -7,6 +7,8 @@
 #include "globals.hh"
 #include <vector>
 #include "SettingsLog.hh"
+#include "G4ParticleTable.hh"
+#include "G4ParticleDefinition.hh"
 
 class Data;
 class G4Event;
@@ -43,6 +45,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetSavingTime(double value){SavingTime = value;}
 		
 		void SetProgressBar(bool value){ShowProgressBar = value;}
+		
+		void SetParticleType(G4String type);
 
 		//Get methods
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
@@ -63,7 +67,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		//Pointers to the particle source
     	G4ParticleGun* fastParticleGun;
 		G4GeneralParticleSource* ParticleGun;
-		G4ParticleDefinition *gamma;
+		G4ParticleDefinition *particle;
 
 		Data* data;
 		G4Timer Timer;

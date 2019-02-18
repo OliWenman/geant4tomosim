@@ -39,6 +39,9 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	BeamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
 	BeamHalfYCmd -> SetParameterName("Height", true);
 	BeamHalfYCmd -> SetRange("Height > 0");
+	
+	particleCmd = new G4UIcmdWithAString("/beam/particle", this);
+	particleCmd -> SetGuidance("Set type of particle you want the beam to use");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -51,6 +54,8 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 
 	delete BeamHalfXCmd;
 	delete BeamHalfYCmd;
+	
+	delete particleCmd;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -77,5 +82,9 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
   	{ 
 		BeamHalfYCmd -> GetNewUnitValue(newValue);
 		PGAction -> SetBeamHeightZ(BeamHalfYCmd -> GetNewDoubleValue(newValue)); 
+	}
+	else if( command == particleCmd)
+	{
+	    PGAction -> SetParticleType(newValue);
 	}
 }

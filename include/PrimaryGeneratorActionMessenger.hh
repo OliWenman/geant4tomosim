@@ -28,12 +28,14 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 
 		G4UIdirectory *BeamDirectory;
 
-    		G4UIcmdWithADoubleAndUnit *EnergyCmd;  
+    	G4UIcmdWithADoubleAndUnit *EnergyCmd;  
 		G4UIcmdWithADoubleAndUnit *BeamHalfXCmd;
 		G4UIcmdWithADoubleAndUnit *BeamHalfYCmd;
 		
 		G4UIcmdWithAString *EnergyDisTypeCmd;
 		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;
+		
+		G4UIcmdWithAString *particleCmd;
 };
 
 #endif 

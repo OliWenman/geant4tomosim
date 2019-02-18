@@ -50,10 +50,10 @@ class NexusFormatter:
             while contin != True:
                 answer = raw_input('yes/no?\n')
                 
-                if answer == 'y' or answer == 'yes':
+                if answer == 'y' or answer == 'yes' or answer == 'Y':
                    contin = True   
                         
-                elif answer == 'n' or answer == 'no':
+                elif answer == 'n' or answer == 'no' or answer == 'N':
                    contin = True
                    self.setupSuccess = False 
                    return                

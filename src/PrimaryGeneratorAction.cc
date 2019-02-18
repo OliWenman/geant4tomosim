@@ -40,6 +40,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	EnergyDistTypeCmd = "Mono";
 	energyCmd = 30*keV;
 	EnergySigmaCmd = 0*keV;
+	SetParticleType("gamma");
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -49,6 +50,15 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	
 	if (ParticleGun){delete ParticleGun;}
 	if (fastParticleGun){delete fastParticleGun;}
+}
+
+void PrimaryGeneratorAction::SetParticleType(G4String type)
+{
+    particle = G4ParticleTable::GetParticleTable() -> FindParticle(type); 
+	if (!particle){
+	    G4cout << "\nINVALID PARTICLE: " << type << "\nSwitching to gamma." << G4endl;
+	    particle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
+	}
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -140,12 +150,9 @@ void PrimaryGeneratorAction::SetValues(int nBins, double Position)
 
 void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
 {
-     //Setup which particle is used and its starting conidiions
-     gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
-
      fastParticleGun = new G4ParticleGun(1);
         
-     fastParticleGun -> SetParticleDefinition(gamma);
+     fastParticleGun -> SetParticleDefinition(particle);
         
      fastParticleGun -> SetParticleMomentumDirection(G4ThreeVector(1, 0, 0));
         
@@ -157,11 +164,9 @@ void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
 
 void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
 {
-    //Setup which particle is used and its starting conidiions
-    gamma = G4ParticleTable::GetParticleTable() -> FindParticle("gamma");
 
     ParticleGun = new G4GeneralParticleSource();
-    ParticleGun -> SetParticleDefinition(gamma);
+    ParticleGun -> SetParticleDefinition(particle);
 
     //Automatically set the gun position to the end of the world volume
     ParticleGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(StartingPosition, 0, 0));
@@ -356,10 +361,10 @@ void PrimaryGeneratorAction::PrintTime(double time)
 	//Prints out the sustiable units for the estimated time 
 	if (time > 60)
 	{
-		if(time > 60*60)
-			G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";
-		else
-			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
+		if(time > 60*60){
+			G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";}
+		else{
+			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";}
 	}
 	else {
         G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}

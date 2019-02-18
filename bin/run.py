@@ -1,19 +1,60 @@
 # -*- coding: utf-8 -*-
-#Used to find the .so file built using CMake
 import sys
 sys.path.insert(0, './../src')
 import G4Units as G4
-import sim
 import numpy as np
+
+#VARIABLES TO CHANGE
+#===================================================================
+#DETECTOR VARIABLES
+
+nDetY = 10#375
+nDetZ = 10#315
+
+fullLengthDet_x = 1*G4.um
+fullLengthDet_y = 1.25*G4.mm
+fullLengthDet_z = 1.05*G4.mm
+
+DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengthDet_z/nDetZ])
+
+#-------------------------------------------------------------------
+#IMAGE VARIABLES
+
+NumberOfImages = 10
+nDarkFlatFields = 5
+nParticles = 10#5*10**8
+
+startRotation = 0*G4.deg
+TotalRotation = 180*G4.deg
+rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num = NumberOfImages, endpoint = False)
+
+#-------------------------------------------------------------------
+#RECORD EXTRA DATA
+
+fullfield_fluorescence = False 
+fullmapping_fluorescence = False
+
+#-------------------------------------------------------------------
+#ENERGY VARIABLES
+
+minEnergy = 70*G4.keV
+maxEnergy = 70*G4.keV
+minSigmaEnergy = 0.5*G4.keV
+maxSigmaEnergy = 5*G4.keV
+Gun = "Mono"
+nBins = 2000
+
+#==================================================================
 import os
 
-#Can optionally add a file path and name for the data to be saved when runninh script
+#Can optionally add a file path and name for the data to be saved when running script
 if __name__ == '__main__':
+    default = "./../Output/HDF5/SimulationData.nxs"
     #Input equals the option given or the default one  
     try:
         Input = sys.argv[1]
     except IndexError:
-        Input = "./../Output/HDF5/SimulationData.nxs"
+        Input = default
         print "\nSaving data in the default place", Input
 
     stringLength = len(Input)
@@ -39,10 +80,10 @@ if __name__ == '__main__':
         FileName = Input
         FilePath = os.getcwd() + '/'
     
-    extension = Input[-4:stringLength]
+    nexusExtension = Input[-4:stringLength]
     #If the file doesn't have the .nxs extension, ask for another input
-    if extension != '.nxs':
-        print "\nERROR: the extension", FileName,"is not valid. Please input the file with a \'.nxs\' extension. If no input given, will automatically save data as ./../Output/HDF5/SimulationData.nxs"
+    if nexusExtension != '.nxs':
+        print "\nERROR: the extension", FileName,"is not valid. Please input the file with a \'.nxs\' extension. If no input given, will automatically save data as", default
         success = False
     
     pathOkay =  os.path.isdir(FilePath)
@@ -56,40 +97,9 @@ if __name__ == '__main__':
     
     dotPosition = FileName.find('.')
     logName = FileName[0:dotPosition] + '_log.txt'
-    
-#===================================================================
-#DETECTOR VARIABLES
-
-nDetY = 250
-nDetZ = 210
-DetectorDimensions = [0.001, 0.005, 0.005]*G4.mm
 
 #===================================================================
-#IMAGE VARIABLES
-
-NumberOfImages = 10
-nDarkFlatFields = 5
-nParticles = 1000000
-
-startRotation = 180*G4.deg
-TotalRotation = 0*G4.deg
-rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num = NumberOfImages, endpoint = False)
-
-#===================================================================
-#EXTRA DATA OPTIONS
-
-fluoreFF = False
-fluoreFM = False
-
-#===================================================================
-#ENERGY VARIABLES
-
-minEnergy = 70*G4.keV
-maxEnergy = 70*G4.keV
-minSigmaEnergy = 0.5*G4.keV
-maxSigmaEnergy = 5*G4.keV
-Gun = "Mono"
-nBins = 1000
+#CREATE THE ENERGY ARRAY    
 
 energyArray = []
 monoEnergies = np.linspace(start = minEnergy, stop = maxEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
@@ -103,11 +113,12 @@ energyArray.append(gunTypes)
 
 #===================================================================
 #RUN THE SIMULATION
+import sim
 
 Sim = sim.PySim()
 
 Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
-Sim.outputOptions(fluoreFF, fluoreFM)
+Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(["./../scripts/pySettings.mac", "./../scripts/Geometry.mac"])
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray)

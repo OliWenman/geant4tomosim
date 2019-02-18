@@ -22,7 +22,7 @@ cdef class PySim:
     cdef public int nDetectorsY
     cdef public int nDetectorsZ
     cdef public int Bins
-    cdef public list DetDimensions
+    cdef public DetDimensions
 
     #Output options for the simulation
     cdef public bint FFF 
@@ -65,7 +65,7 @@ cdef class PySim:
         self.thisptr.pyOutputOptions(self.FFF, self.FFM)
 
     #Get needed information from textfiles pySettings.mac and Geometry.mac
-    def initialise(self, int nDetY, int nDetZ, list DetectorDimensions, int nBins = 2000):
+    def initialise(self, int nDetY, int nDetZ, DetectorDimensions, int nBins = 2000):
         if nDetY >= 1 and nDetZ >= 1:
 
            self.Bins = nBins
@@ -205,7 +205,7 @@ cdef class PySim:
     def setFilePath(self, FilePath, NexusName, logName):
         self.SaveFilePath = FilePath
         self.NexusName = NexusName
-        self.thisptr.SetSaveLogPath(FilePath+logName)
+        self.thisptr.SetSaveLogPath(FilePath, logName)
         
     def printNexusTree(self):
         self.nexusfile.DisplayTree()

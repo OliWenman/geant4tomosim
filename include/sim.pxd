@@ -23,4 +23,4 @@ cdef extern from "Simulation.hh":
       
       void SetSavingTime(double)
       
-      void SetSaveLogPath(string)
+      void SetSaveLogPath(string, string)
