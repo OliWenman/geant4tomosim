@@ -30,6 +30,8 @@
 #include <list>
 #include <cstdlib>
 #include <ctime>
+#include <sys/types.h>
+#include <dirent.h>
 
 Simulation::Simulation()
 {	
@@ -291,7 +293,22 @@ void Simulation::Visualisation()
             filePath = "./../Output/Visualization/";
         }
         else {
-            filePath = SaveLogPath;
+            //If a different path is used, create a folder to store the visualization data 
+            filePath = SaveLogPath + "Visualization/";
+            const char *filepath_char = filePath.c_str();
+            
+            //Check if the directory exists
+            DIR* Directory_exists = opendir(filepath_char);
+            
+            //If it doesn't exist, create it
+            if (!Directory_exists){
+                std::string mkdir = "mkdir " + filePath;
+                const char *mkdir_char = mkdir.c_str();
+                const int dir_err = system(mkdir_char);
+                delete mkdir_char;
+            }
+            //Make sure to delete pointers once done with them
+            if (Directory_exists){delete Directory_exists;}
         }
 		
 		//UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");

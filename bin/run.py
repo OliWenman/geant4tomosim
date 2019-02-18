@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 250
-nDetZ = 210
+nDetY = 25
+nDetZ = 21
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
