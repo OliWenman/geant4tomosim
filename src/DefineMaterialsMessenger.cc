@@ -87,7 +87,12 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	
 	percentageUnit.insert(std::make_pair("%", perCent));
 	
+	xraylibDensity.insert(std::make_pair("g/cm3", 1./1.));
+	xraylibDensity.insert(std::make_pair("kg/m3", 1000./(100.*100.*100.)));
+	xraylibDensity.insert(std::make_pair("kg/cm3", 1000./(1.*1.*1.)));
 //=================================================================================================
+
+    AddRefractiveIndex = new G4UIcmdWithAString("/Materials/RefractiveIndex", this);
 }
 
 DefineMaterialsMessenger::~DefineMaterialsMessenger()
@@ -108,6 +113,8 @@ DefineMaterialsMessenger::~DefineMaterialsMessenger()
     
     delete DefMixture;
     delete AddMaterialToMixture;
+    
+    delete AddRefractiveIndex;
 }
 
 void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -239,6 +246,26 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
         
         materials -> AddMaterialToMixture(NameMixture, NameMaterial, fractionalMass*unit);
 	}
+	else if (command == AddRefractiveIndex)
+	{
+	    G4Tokenizer next(newValue);
+	    
+	    std::string MaterialName = next();
+	    
+	    G4double density = ConvertToNumber<double> (next, newValue, command);
+	    G4double unit = CheckUnits(next, command, newValue, "xlibDensity");
+	    
+	    double startEnergy = ConvertToNumber<double> (next, newValue, command);
+	    double endEnergy = ConvertToNumber<double> (next, newValue, command);
+	    int numElements = ConvertToNumber<int> (next, newValue, command);
+	    double dStep = (endEnergy - startEnergy)/numElements;
+	    
+	    double energyValues[numElements];
+	    
+	    for (int i = 0; i < numElements ; i++){energyValues[i] = dStep * (i + 1);}
+	    
+	    materials -> AddRefractiveIndex(MaterialName, density*unit, energyValues, numElements);
+	}
 }
 
 G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit)
@@ -277,6 +304,17 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
             return percentageUnit[UnitString];   
         }
     }
+    else if (TypeOfUnit == "xlibDensity")
+    {
+        if (xraylibDensity.count(UnitString) == false)
+            Success = false;
+        else 
+        {
+            Success = true;
+            return xraylibDensity[UnitString];   
+        }
+    
+    }
     
     //If Success is false, then output reason for error and stop the programm
     if (Success == false)
@@ -286,22 +324,28 @@ G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* co
         if (TypeOfUnit == "Density")
         {
             G4cout << "denisty unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";   
-            for (std::map<std::string, double>::iterator it = densityUnits.begin(); it != densityUnits.end(); ++it)
-                G4cout << it -> first << " ";
+            for (std::map<std::string, double>::iterator it = densityUnits.begin(); it != densityUnits.end(); ++it){
+                G4cout << it -> first << " ";}
         }
         else if (TypeOfUnit == "AtomicWeight")
         {
             G4cout << "atomic weight unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-            for (std::map<std::string, double>::iterator it = atomicWeightUnits.begin(); it != atomicWeightUnits.end(); ++it)
-                G4cout << it -> first << " ";
+            for (std::map<std::string, double>::iterator it = atomicWeightUnits.begin(); it != atomicWeightUnits.end(); ++it){
+                G4cout << it -> first << " ";}
         }
         else if (TypeOfUnit == "Percentage")
         {
             G4cout << "percentage unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-            for (std::map<std::string, double>::iterator it = percentageUnit.begin(); it != percentageUnit.end(); ++it)
-                G4cout << it -> first << " ";
+            for (std::map<std::string, double>::iterator it = percentageUnit.begin(); it != percentageUnit.end(); ++it){
+                G4cout << it -> first << " ";}
         }
-          
+        else if (TypeOfUnit == "xlibDensity")
+        {
+            G4cout << "denisty unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";  
+         
+            for (std::map<std::string, double>::iterator it = xraylibDensity.begin(); it != xraylibDensity.end(); ++it){
+                G4cout << it -> first << " ";}
+        }  
         G4cout << G4endl; 
         exit(0);
     }

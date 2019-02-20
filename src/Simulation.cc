@@ -32,6 +32,7 @@
 #include <ctime>
 #include <sys/types.h>
 #include <dirent.h>
+#include <xraylib.h>
 
 Simulation::Simulation()
 {	
@@ -73,8 +74,10 @@ Simulation::Simulation()
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
+    //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 	seedCmd = 0;
+	
 }
 
 Simulation::~Simulation()
@@ -102,7 +105,7 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM)
 	data -> SetFFM(FFM);
 }
 
-void Simulation::pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
+void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
     G4cout << "\nAdding detector variables...";
 
@@ -166,112 +169,104 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     TC -> SetSimMode(Mode);
     TC -> SetRotationAngle(rotation_angle);
        
-	//Checks to see if simulation is ready (if pyInitialise has been used before)
-	if (Ready == true)
-	{
-        if(Image == 0)
-		{		
-		    //Random seed
-	        if (seedCmd == 0){
-		        //set random seed with system time
-		        seedCmd = rand();
-		        srand((int)time(0));
-	        }
+    if(Image == 0)
+    {		
+        //Random seed
+	    if (seedCmd == 0){
+            //set random seed with system time
+	        seedCmd = rand();
+	        srand((int)time(0));
+	    }
 	        
-	        int verbose;
-	        if (verboseLevel < 2){verbose = 0;}
-	        else {verbose = verboseLevel - 2;}
-	        runManager -> SetVerboseLevel(verbose);
+	    int verbose;    
+	    if (verboseLevel < 2){verbose = 0;}
+	    else {verbose = verboseLevel - 2;}
+	    runManager -> SetVerboseLevel(verbose);
 		
-		    //Let the PrimaryGeneratorAction class know where to position the start of the beam
-	        PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
+		//Let the PrimaryGeneratorAction class know where to position the start of the beam
+	    PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
 		
-		    DC -> RelayToTC(NumberOfImages, rotation_angle);
-			PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
+	    DC -> RelayToTC(NumberOfImages, rotation_angle);
+		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
 			
-	        OutInfo(verboseLevel);
+        OutInfo(verboseLevel);
 	     
-            //Prints the time and date of the local time that the simulation started
-			time_t now = time(0);
-			//Convert now to tm struct for local timezone
-			tm* localtm = localtime(&now);
+        //Prints the time and date of the local time that the simulation started
+		time_t now = time(0);
+		//Convert now to tm struct for local timezone
+		tm* localtm = localtime(&now);
 
-            Visualisation();
+        Visualisation();
 		 
-		    //Open the file within the path set
-		    std::ofstream SaveToFile;
-            SaveToFile.open(SaveLogPath + FileName, std::fstream::app); 
+	    //Open the file within the path set
+	    std::ofstream SaveToFile;
+        SaveToFile.open(SaveLogPath + FileName, std::fstream::app); 
    	
-            //Output error if can't open file
-            if( !SaveToFile ){ 	
-                std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation.\n" << std::endl;
-              	exit(1);
-           	}
+        //Output error if can't open file
+        if( !SaveToFile ){ 	
+            std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation.\n" << std::endl;
+          	exit(1);
+        }
     
-            SettingsLog log(SaveToFile);
+        SettingsLog log(SaveToFile);
 
-			log << "\n--------------------------------------------------------------------"
-			       "\nMETA DATA: \n"
+		log << "\n--------------------------------------------------------------------"
+		       "\nMETA DATA: \n"
 
-			    << "\n- The seed used: " << seedCmd
-			    << "\n- Total number of projections being processed: " << NumberOfImages
-			    << "\n  - Dark fields: " << nDarkFlatFields
-			    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
-                << "\n- Number of photons per image: " << TotalParticles
-                << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
+		    << "\n- The seed used: " << seedCmd
+		    << "\n- Total number of projections being processed: " << NumberOfImages
+		    << "\n  - Dark fields: " << nDarkFlatFields
+		    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
+            << "\n- Number of photons per image: " << TotalParticles
+            << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
                     
-            SaveToFile.close();
+        SaveToFile.close();
                 
-            G4cout << "\n--------------------------------------------------------------------"
-			          "\nStarting simulation... \n";
+        G4cout << "\n--------------------------------------------------------------------"
+	              "\nStarting simulation... \n";
 			          
-			G4cout << "\n" << asctime(localtm);
+	    G4cout << "\n" << asctime(localtm);
 		    
-		    if (TotalParticles > 0){
-			    G4cout << "\n================================================================================"
-		                  "\n                                 Geant4 info"
-	                      "\n================================================================================" << G4endl;
-	        }
-		}
-		
-		//The seed is the same every time except for the flat fields
-		if (Mode == "Calibrating"){
-		    seedCmd = rand();
-		}
-		
-		CLHEP::HepRandom::setTheSeed(seedCmd);
-
-        //Prepare for next run that geometry has changed
-		runManager -> ReinitializeGeometry();
-
-        PGA -> ResetEvents(Image + 1);
-        
-        PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
-
-		//Creates the arrays for the data, wipes them after each image
-		data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
-		
-	    //Beam on to start the simulation
-	    BeamOn(TotalParticles);
-
-		if (Image + 1 == NumberOfImages)
-		{
+		if (TotalParticles > 0){
 	        G4cout << "\n================================================================================"
-	                  "\n                        The simulation is finished! "
-	                  "\n================================================================================" << G4endl;
+	                  "\n                                 Geant4 info"
+                      "\n================================================================================" << G4endl;
+        }
+	}
+		
+	//The seed is the same every time except for the flat fields
+	if (Mode == "Calibrating"){
+	    seedCmd = rand();
+	}
+		
+	CLHEP::HepRandom::setTheSeed(seedCmd);
+
+    //Prepare for next run that geometry has changed
+	runManager -> ReinitializeGeometry();
+
+    PGA -> ResetEvents(Image + 1);
+        
+    PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
+
+	//Creates the arrays for the data, wipes them after each image
+	data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
+		
+    //Beam on to start the simulation
+    BeamOn(TotalParticles);
+
+	if (Image + 1 == NumberOfImages)
+	{
+       G4cout << "\n================================================================================"
+                 "\n                        The simulation is finished! "
+                 "\n================================================================================" << G4endl;
 	            
-	        TargetConstruction* TC = DC -> GetTargetConstruction();         
-	        TC -> SetCurrentImage(0);
-	        DC -> SetCurrentImage(0);
-	        PGA -> ResetEvents(0);
-		}
-	
-		return data -> GetHitData();
+        TargetConstruction* TC = DC -> GetTargetConstruction();         
+        TC -> SetCurrentImage(0);
+        DC -> SetCurrentImage(0);
+        PGA -> ResetEvents(0);
 	}
 	
-	else if (Ready == false){
-		G4cout << "\nSIMULATION IS NOT READY! Check the macro files and initialize the simulation first! \n";
-	}
+	return data -> GetHitData();
 }
 
 void Simulation::Visualisation()
@@ -304,14 +299,13 @@ void Simulation::Visualisation()
             if (!Directory_exists){
                 std::string mkdir = "mkdir " + filePath;
                 const char *mkdir_char = mkdir.c_str();
-                const int dir_err = system(mkdir_char);
+                system(mkdir_char);
                 delete mkdir_char;
             }
             //Make sure to delete pointers once done with them
             if (Directory_exists){delete Directory_exists;}
         }
 		
-		//UImanager -> ApplyCommand("/control/execute ./../scripts/MyVis.mac");
 		//Setup the vis manager
 		UImanager -> ApplyCommand("/vis/open HepRepFile");
 		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + filePath);
@@ -343,37 +337,32 @@ void Simulation::Visualisation()
 	}
 }
 
-//Functions to be wrapped by Cython
+//Returns the last image the simulate did
 std::vector<int> Simulation::GetLastImage(){
 	return data -> GetHitData();
 }
-
+//Returns the last fluorescence array
 std::vector<int> Simulation::GetFluorescence(){
 	return data -> GetFluorescence();
 }
-
+//Returns the x scale for the energy
 std::vector<double> Simulation::GetEnergyBins(){
 	return data -> GetEnergyBins();
 }
-
+//Gets the beam energy for the last image
 std::vector<int> Simulation::GetBeamEnergy(){
 	return PGA -> GetBeamEnergy();
 }
-
+//Gets the last full mapping fluorescence data
 std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
 	return data -> GetFullMapping();
 }
-
-int Simulation::GetNumberCalibrations(){
-    TargetConstruction* TempTC = DC -> GetTargetConstruction();
-    return TempTC -> GetCalibrationImages();
-}
-
+//Sets the saving time for the estimated time to take into account
 void Simulation::SetSavingTime(double Time){
     PGA -> SetSavingTime(Time);
 }
 
-//Private functions
+//Function to run the simulation, will repeat simulation if over max limit
 void Simulation::BeamOn(unsigned long long int nParticles)
 {
 	//Max limit for an integer (for Geant4 BeamOn), must be unsigned long long int as well to compare it if input is above limit.
@@ -406,6 +395,7 @@ void Simulation::BeamOn(unsigned long long int nParticles)
 	}
 }
 
+//Function to limit the number of particles if graphics is turned on
 unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticles, int nImage, std::string Mode)
 {
     if (DC -> GetVisualization() == true && nParticles > 5000)
@@ -425,6 +415,7 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
     return nParticles;
 }
 
+//Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
 void Simulation::OutInfo(int verbose)
 {   
     std::ofstream SaveToFile;

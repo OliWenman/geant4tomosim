@@ -59,6 +59,7 @@ void PrimaryGeneratorAction::SetParticleType(G4String type)
 	    G4cout << "\nINVALID PARTICLE: " << type << "\nSwitching to gamma." << G4endl;
 	    particle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
 	}
+	G4cout << "\nThe beam is made up of " << particle -> GetParticleName() << G4endl;
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)

@@ -1,19 +1,19 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
 /data/Seed 0
-/data/verbose 0
+/data/verbose 1
 
 #Physics processes
 /physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering false
-/physics/EM/RayleighScattering false
-/physics/EM/Fluorescence false
-/physics/EM/Refraction false
+/physics/EM/ComptonScattering true
+/physics/EM/RayleighScattering true
+/physics/EM/Fluorescence true
+/physics/EM/Refraction true
 
 #World Settings
 /world/size 10 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
-/world/material G4_Galactic
+/world/material G4_N
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings		

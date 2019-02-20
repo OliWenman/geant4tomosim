@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 25
-nDetZ = 21
+nDetY = 250
+nDetZ = 210
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
@@ -31,14 +31,14 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #-------------------------------------------------------------------
 #RECORD EXTRA DATA
 
-fullfield_fluorescence = False 
-fullmapping_fluorescence = False
+fullfield_fluorescence = True 
+fullmapping_fluorescence = True
 
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 70*G4.keV
-maxEnergy = 70*G4.keV
+minEnergy = 20*G4.keV
+maxEnergy = 20*G4.keV
 minSigmaEnergy = 0*G4.keV
 maxSigmaEnergy = 0*G4.keV
 Gun = "Mono"
@@ -124,7 +124,7 @@ import sim
 
 Sim = sim.PySim()
 
-Sim.initialise(nDetY, nDetZ, DetectorDimensions, nBins)
+Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)

@@ -9,12 +9,12 @@
 /Materials/AddTo/Compound AlSi10Mg Mn 0.45 %
 /Materials/AddTo/Compound AlSi10Mg Al 88.65 %
 
-/Materials/Define/Compound TC4 5 4.4705 g/cm3
-/Materials/AddTo/Compound TC4 V 4 %
-/Materials/AddTo/Compound TC4 Al 6.125 %
-/Materials/AddTo/Compound TC4 Fe 0.3 %
-/Materials/AddTo/Compound TC4 O 0.2 %
-/Materials/AddTo/Compound TC4 Ti 89.375 %
+/Materials/Define/Compound TI64 5 4.4705 g/cm3
+/Materials/AddTo/Compound TI64 V 4 %
+/Materials/AddTo/Compound TI64 Al 6.125 %
+/Materials/AddTo/Compound TI64 Fe 0.3 %
+/Materials/AddTo/Compound TI64 O 0.2 %
+/Materials/AddTo/Compound TI64 Ti 89.375 %
 
 /Materials/Define/Compound MS1 6 8.05 g/cm3
 /Materials/AddTo/Compound MS1 Ni 18 %
@@ -31,6 +31,9 @@
 /Materials/AddTo/Compound IN625 Fe 5 %
 /Materials/AddTo/Compound IN625 Ti 0.4 %
 /Materials/AddTo/Compound IN625 Ni 60.45 %
+
+#/Materials/RefractiveIndex Al 2.7 g/cm3 0 100 100
+#/Materials/RefractiveIndex N 1.165 kg/m3 0 100 100
 
 #================================================
 #OBJECT A
@@ -84,8 +87,7 @@
 #=============================================
 #Place the objects
 
-/Target/Material ObjectA IN625
-#/Target/Material ObjectA G4_Al
+/Target/Material ObjectA G4_Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
 /Target/Rotation ObjectA 0 0 0 deg

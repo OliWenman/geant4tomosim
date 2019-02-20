@@ -26,18 +26,17 @@ class Simulation
 		//Methods
 		//To be called from Python
 		void pyOutputOptions(bool FFF, bool FFM);
-		void pyInitialise(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
+		void pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
 		void pyAddMacros(std::vector<std::string> macroFiles);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
 
 		//Python or C++
 		std::vector<int> GetLastImage();
-		std::vector<double> GetEnergyBins();//
-		std::vector<int> GetFluorescence();//
+		std::vector<double> GetEnergyBins();
+		std::vector<int> GetFluorescence();
 
 		std::vector<int> GetBeamEnergy();
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
-		int GetNumberCalibrations();
 		void SetSavingTime(double Time);
 		
 		void SetSaveLogPath(std::string path, std::string fileName){SaveLogPath = path; FileName = fileName;}
@@ -47,7 +46,6 @@ class Simulation
 
 	private:
 		//It's own private functions to be called by the public functions
-		void Setup();
 		void OutInfo(int verbose);
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();

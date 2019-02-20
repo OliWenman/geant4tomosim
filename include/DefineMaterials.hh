@@ -3,6 +3,7 @@
 
 #include "globals.hh"
 #include <vector>
+#include <string>
 
 class DefineMaterialsMessenger;
 
@@ -30,6 +31,8 @@ class DefineMaterials
 		
         void DefineMixture(G4String Name, G4double density, G4int n_components);
 	    void AddMaterialToMixture(G4String MixtureName, G4String MaterialName, G4double FractionMass);
+	    
+	    void AddRefractiveIndex(std::string MaterialsName, G4double density, double energyValues[], int NumElements);
 	    
 	private:
 	

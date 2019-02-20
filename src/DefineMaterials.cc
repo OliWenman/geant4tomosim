@@ -6,6 +6,10 @@
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
 #include "G4NistManager.hh"
+#include "G4MaterialPropertiesTable.hh"
+//#include "G4UnitDefinition.hh"
+
+#include "xraylib.h"
 
 DefineMaterials::DefineMaterials()
 {
@@ -187,10 +191,33 @@ void DefineMaterials::AddMaterialToMixture(G4String MixtureName, G4String Materi
     }
 }
 
+void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double density, double energyValues[], int nSize)
+{   
+    G4Material* Material = FindMaterial(MaterialsName);
+    
+    double refractiveIndexes [nSize];
+    const char* materialNamec = MaterialsName.c_str();
+    
+    for (int i = 0 ; i < nSize ; i++){refractiveIndexes[i] = 0.8/*Refractive_Index_Re(materialNamec, energyValues[i], density)*/; energyValues[i] = energyValues[i]*keV;}
+    
+    G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
+    MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes, nSize); 
+    
+    G4cout << "\n" << MaterialsName << G4endl;
+    MPT -> DumpTable();
+   
+    Material -> SetMaterialPropertiesTable(MPT); 
+}
+
 G4Material* DefineMaterials::FindMaterial(G4String MaterialName)
 {
 	//Obtain pointer to NIST material manager to find the build materials 
-	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
+	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
+	
+	if (!material){material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_" + MaterialName);}
+	if (!material){G4cout << "\nERROR: material " << MaterialName << " not found " << G4endl;}
+	
+	return material;
 }
 
 G4Element* DefineMaterials::FindElement(G4String ElementName)

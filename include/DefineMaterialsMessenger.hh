@@ -52,9 +52,11 @@ class DefineMaterialsMessenger: public G4UImessenger
 	    
 	    G4UIcmdWithAString *DefMixture;
 	    G4UIcmdWithAString *AddMaterialToMixture;
+	    G4UIcmdWithAString *AddRefractiveIndex;
 
 		std::map<std::string, double> densityUnits;
 		std::map<std::string, double> atomicWeightUnits;
 	    std::map<std::string, double> percentageUnit;	
+	    std::map<std::string, double> xraylibDensity;
 };
 #endif

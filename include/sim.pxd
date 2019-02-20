@@ -8,7 +8,7 @@ cdef extern from "Simulation.hh":
       Simulation() except +
       
       void pyOutputOptions(bint, bint)
-      void pyInitialise(int, int, vector[double], int)
+      void pySetupDetectors(int, int, vector[double], int)
       void pyAddMacros(vector[string])
       vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
 
