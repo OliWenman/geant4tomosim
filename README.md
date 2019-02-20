@@ -22,13 +22,16 @@ Once downloaded, you can then create a build direcotry in a place of your choosi
 - $ cmake /path/to/source/code
 - $ make -jN
   
-Where N is the number of cores on your machine that you want to use. For example make -j4.
+Where N is the number of cores on your machine that you want to use. For example make -j4. 
+
+Once complete, your build directory should contain the folders bin, scripts, Output and src.
   
 # How to use
-The script directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
+The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
 
-In the Bin directory is where the run.py python script is loacted. To change variables for the simulation to do with the projections is within the run.py. This includes the energies of the beam for each image, the rotation angle, the number of projections, etc. Once you have adjusted everything to your simulations needs, you can then run the simulation by doing the following:
+In the bin directory is where the run.py python script is loacted. To change variables for the simulation to do with the projections is within the run.py. This includes the energies of the beam for each image, the rotation angle, the number of projections, etc. Once you have adjusted everything to your simulations needs, you can then run the simulation by doing the following from the bin directory:
 
+  - $ cd bin
   - $ python run.py /path/to/save/data/fileName.nxs
  
 If no arguments are supplied, it will save the data in the default place: /path/to/source/code/Output/HDF5/SimulationData.nxs
