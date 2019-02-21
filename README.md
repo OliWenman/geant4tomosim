@@ -3,6 +3,7 @@ The simulation of tomography data using the C++ Geant4 toolkit. Wrapped in Pytho
 
 # Required dependcies
 - Geant4 10.04
+- xraylib 3.30
 - GCC Compiler 8.0 or higher
 - Cmake 2.7 or higher
 - Cython 0.19.1
@@ -19,6 +20,7 @@ Once downloaded, you can then create a build direcotry in a place of your choosi
 - $ cd build
 - $ module load python/anaconda-savu 
 - $ module load geant4/10.04
+- $ module load xraylib 
 - $ cmake /path/to/source/code
 - $ make -jN
   
