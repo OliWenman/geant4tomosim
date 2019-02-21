@@ -347,8 +347,8 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4St
 			tomoVSD = new TomographyVSD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
 			SDmanager->AddNewDetector(tomoVSD);	// Store SD if built	
 
-			G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			tomoVSD -> SetFilter(gammaFilter);
+			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+			//tomoVSD -> SetFilter(gammaFilter);
 		}
 		else if (TypeDetector == "TomographyDetector")
 		{
@@ -356,8 +356,8 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4St
     			tomoSD = new TomographySD("TomographyDetector", data, DetectorEfficiency_Cmd);
 			SDmanager->AddNewDetector(tomoSD);	// Store SD if built	
 
-			G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			tomoSD -> SetFilter(gammaFilter);
+			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+			//tomoSD -> SetFilter(gammaFilter);
 		}	
 		else if (TypeDetector == "FluorescenceDetector")
 		{

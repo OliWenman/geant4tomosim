@@ -66,6 +66,7 @@ class Simulation
 		bool Reset;
 		bool Ready;
 
+        bool randseed;
 		long int seedCmd;
 
 		std::string SaveLogPath;

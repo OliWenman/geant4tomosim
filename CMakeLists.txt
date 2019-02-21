@@ -16,27 +16,43 @@ include( UseCython )
 find_package(Geant4 REQUIRED)
 if(Geant4_FOUND)
   	message(STATUS "Geant4 version " ${Geant4_VERSION})
-  	message(STATUS "Geant4_INCLUDE_DIRS=${Geant4_INCLUDE_DIRS}")
-  	message(STATUS "Found Geant4_LIBRARIES:\n ${Geant4_LIBRARIES}")
+  	message(STATUS "Geant4_include_dirs = ${Geant4_INCLUDE_DIRS}")
+  	#message(STATUS "Geant4_libraries:\n ${Geant4_LIBRARIES}")
 else()
-  	message(STATUS "Couldnt find Geant4!")
+  	message(STATUS "ERROR: Couldnt find Geant4")
 endif()
 
-
+#Find Python interpreter
 find_package(PythonInterp)
-find_package(PythonLibs)
 if (PYTHONINTERP_FOUND)
     message(STATUS "Python version ${PYTHON_VERSION_STRING}")
-    message(STATUS "Found PYTHON_EXECUTABLE=${PYTHON_EXECUTABLE}")
+    message(STATUS "Python_executable = ${PYTHON_EXECUTABLE}")
 else()
     message(STATUS "Couldn't find PythonInterpreter!") 
 endif()
 
+#Find Python libraries
+find_package(PythonLibs)
 if (PYTHONLIBS_FOUND)
-    message(STATUS "Found PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS}")
-    message(STATUS "Found PYTHON_LIBRARIES=${PYTHON_LIBRARIES}")
+    message(STATUS "Python_include_dirs = ${PYTHON_INCLUDE_DIRS}")
+    message(STATUS "Python_libraries = ${PYTHON_LIBRARIES}")
 else()
-    message(STATUS "Couldn't find Python libraries!") 
+    message(STATUS "ERROR: Couldn't find Python libraries!") 
+endif()
+
+#Find PkgConfig. If found, find xraylib libraries
+find_package(PkgConfig REQUIRED)
+if (PKGCONFIG_FOUND)
+    pkg_check_modules(LIBXRL REQUIRED IMPORTED_TARGET libxrl)
+    if (LIBXRL_FOUND)
+        message(STATUS "xraylib version ${LIBXRL_VERSION}")
+        message(STATUS "xraylib_include_dirs = ${LIBXRL_INCLUDE_DIRS}")
+    else()
+        message(STATUS "ERROR: Couldn't find xraylib!")
+    endif()
+else()
+    message(STATUS "ERROR: Couldn't find PkgConfig")
+    message(STATUS "ERROR: Couldn't find xraylib!")
 endif()
 
 # With CMake, a clean separation can be made between the source tree and the
@@ -65,4 +81,5 @@ file(COPY  ${CMAKE_CURRENT_SOURCE_DIR}/Output
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/scripts 
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
-message("-- Copied scripts")
+message(STATUS "Copied folders")
+

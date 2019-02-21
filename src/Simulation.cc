@@ -76,8 +76,9 @@ Simulation::Simulation()
 
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
-	seedCmd = 0;
 	
+	randseed = true;
+	seedCmd = 0;	
 }
 
 Simulation::~Simulation()
@@ -148,14 +149,29 @@ void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
 {   
-    runManager -> Initialize();
-
     int Image = ImageInfo[0];
     int nDarkFlatFields = ImageInfo[1];
     int NumberOfImages = ImageInfo[2];
     
     double monoEnergy = gunEnergy[0];
     double sigmaEnergy = gunEnergy[1];
+
+    if(Image == 0)
+    {		
+        if (seedCmd != 0){
+            //randseed = false;
+            //set random seed with system time
+            srand(seedCmd);	 
+        }
+        else {
+            seedCmd = time(0);
+            srand(seedCmd);	 
+            //randseed = true;
+        }
+    }  	    
+    
+    //Random seed
+	CLHEP::HepRandom::setTheSeed(rand());
 
     G4String Mode;
     if (Image < NumberOfImages - nDarkFlatFields){
@@ -169,15 +185,10 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     TC -> SetSimMode(Mode);
     TC -> SetRotationAngle(rotation_angle);
        
+    runManager -> Initialize(); 
+       
     if(Image == 0)
-    {		
-        //Random seed
-	    if (seedCmd == 0){
-            //set random seed with system time
-	        seedCmd = rand();
-	        srand((int)time(0));
-	    }
-	        
+    {		  	    
 	    int verbose;    
 	    if (verboseLevel < 2){verbose = 0;}
 	    else {verbose = verboseLevel - 2;}
@@ -233,13 +244,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
                       "\n================================================================================" << G4endl;
         }
 	}
-		
-	//The seed is the same every time except for the flat fields
-	if (Mode == "Calibrating"){
-	    seedCmd = rand();
-	}
-		
-	CLHEP::HepRandom::setTheSeed(seedCmd);
 
     //Prepare for next run that geometry has changed
 	runManager -> ReinitializeGeometry();

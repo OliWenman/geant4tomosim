@@ -198,7 +198,7 @@ void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double den
     double refractiveIndexes [nSize];
     const char* materialNamec = MaterialsName.c_str();
     
-    for (int i = 0 ; i < nSize ; i++){refractiveIndexes[i] = 0.8/*Refractive_Index_Re(materialNamec, energyValues[i], density)*/; energyValues[i] = energyValues[i]*keV;}
+    for (int i = 0 ; i < nSize ; i++){refractiveIndexes[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); energyValues[i] = energyValues[i]*keV;}
     
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
     MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes, nSize); 

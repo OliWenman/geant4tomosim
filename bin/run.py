@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 250
-nDetZ = 210
+nDetY = 375
+nDetZ = 315
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
@@ -20,9 +20,9 @@ DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengt
 #-------------------------------------------------------------------
 #IMAGE VARIABLES
 
-NumberOfImages = 1
+NumberOfImages = 5
 nDarkFlatFields = 0
-nParticles = 1*10**7
+nParticles = 10#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -31,17 +31,17 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #-------------------------------------------------------------------
 #RECORD EXTRA DATA
 
-fullfield_fluorescence = True 
-fullmapping_fluorescence = True
+fullfield_fluorescence = False 
+fullmapping_fluorescence = False
 
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
 minEnergy = 20*G4.keV
 maxEnergy = 20*G4.keV
-minSigmaEnergy = 0*G4.keV
-maxSigmaEnergy = 0*G4.keV
-Gun = "Mono"
+minSigmaEnergy = 8*G4.keV
+maxSigmaEnergy = 8*G4.keV
+Gun = "Gauss"
 nBins = 2000
 
 #-------------------------------------------------------------------
