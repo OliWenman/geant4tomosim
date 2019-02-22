@@ -28,7 +28,7 @@ if (PYTHONINTERP_FOUND)
     message(STATUS "Python version ${PYTHON_VERSION_STRING}")
     message(STATUS "Python_executable = ${PYTHON_EXECUTABLE}")
 else()
-    message(STATUS "Couldn't find PythonInterpreter!") 
+    message(STATUS "ERROR: Couldn't find PythonInterpreter!") 
 endif()
 
 #Find Python libraries

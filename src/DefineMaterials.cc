@@ -7,6 +7,7 @@
 #include "G4UnitsTable.hh"
 #include "G4NistManager.hh"
 #include "G4MaterialPropertiesTable.hh"
+#include "G4OpticalSurface.hh"
 //#include "G4UnitDefinition.hh"
 
 #include "xraylib.h"
@@ -195,16 +196,30 @@ void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double den
 {   
     G4Material* Material = FindMaterial(MaterialsName);
     
-    double refractiveIndexes [nSize];
+    double efficiency [nSize];
+    double refractiveIndexes_Re [nSize];
+    double refractiveIndexes_Im [nSize];
     const char* materialNamec = MaterialsName.c_str();
     
-    for (int i = 0 ; i < nSize ; i++){refractiveIndexes[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); energyValues[i] = energyValues[i]*keV;}
+    for (int i = 0 ; i < nSize ; i++)
+    {
+        efficiency[i] = 1;
+        refractiveIndexes_Re[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); 
+        refractiveIndexes_Im[i] = Refractive_Index_Im(materialNamec, energyValues[i], density); 
+        
+        energyValues[i] = energyValues[i]*keV;
+    }
     
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
-    MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes, nSize); 
+    MPT -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
+    MPT -> AddProperty("REALRINDEX", energyValues, refractiveIndexes_Re, nSize); 
+    MPT -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
+    //MPT -> AddProperty("ABSORPTION", photonEnergy, absorption, nEntries);
+    //MPT -> AddProperty("REALRINDEX", photonEnergy, refractiveIndex1, nEntries); 
+    //MPT -> AddProperty("IMAGINARYRINDEX", photonEnergy, refractiveIndexes_Im, nSize); 
     
     G4cout << "\n" << MaterialsName << G4endl;
-    MPT -> DumpTable();
+    //MPT -> DumpTable();
    
     Material -> SetMaterialPropertiesTable(MPT); 
 }

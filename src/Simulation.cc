@@ -77,7 +77,6 @@ Simulation::Simulation()
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 	
-	randseed = true;
 	seedCmd = 0;	
 }
 
@@ -92,6 +91,8 @@ Simulation::~Simulation()
 
 	if (data){delete data;}
 	if (materials) {delete materials;}
+	
+	delete CLHEP::HepRandom::getTheEngine();
 
 	G4cout << "Simulation closed! \n" << G4endl;
 }
@@ -149,6 +150,7 @@ void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
 std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
 {   
+    //Get the info from the vectors
     int Image = ImageInfo[0];
     int nDarkFlatFields = ImageInfo[1];
     int NumberOfImages = ImageInfo[2];
@@ -156,21 +158,21 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     double monoEnergy = gunEnergy[0];
     double sigmaEnergy = gunEnergy[1];
 
+    //Seed settings
     if(Image == 0)
     {		
         if (seedCmd != 0){
-            //randseed = false;
-            //set random seed with system time
+            //Set the seed sequence using inputted seed
             srand(seedCmd);	 
         }
         else {
+            //Set random seed sequence with system time
             seedCmd = time(0);
             srand(seedCmd);	 
-            //randseed = true;
         }
     }  	    
     
-    //Random seed
+    //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
 
     G4String Mode;
@@ -245,11 +247,11 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
         }
 	}
 
-    //Prepare for next run that geometry has changed
+    //Prepare for the run that geometry has changed
 	runManager -> ReinitializeGeometry();
-
-    PGA -> ResetEvents(Image + 1);
-        
+    
+    //Prepare for next run. Check if energy or gun has changed 
+    PGA -> ResetEvents(Image + 1);   
     PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
 
 	//Creates the arrays for the data, wipes them after each image

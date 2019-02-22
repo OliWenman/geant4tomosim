@@ -32,8 +32,8 @@
 /Materials/AddTo/Compound IN625 Ti 0.4 %
 /Materials/AddTo/Compound IN625 Ni 60.45 %
 
-/Materials/RefractiveIndex Al 2.7 g/cm3 0 100 100
-/Materials/RefractiveIndex N 1.165 kg/m3 0 100 100
+/Materials/RefractiveIndex Al 2.7 g/cm3 0 10 100
+/Materials/RefractiveIndex N 1.165 kg/m3 0 10 100
 
 #================================================
 #OBJECT A
@@ -87,14 +87,14 @@
 #=============================================
 #Place the objects
 
-/Target/Material ObjectA IN625
-#/Target/Material ObjectA G4_Al
-/Target/Colour ObjectA Blue
-/Target/Position ObjectA 0 0 0 mm
-/Target/Rotation ObjectA 0 0 0 deg
+#/Target/Material ObjectA IN625
+/Target/Material BaseA G4_WATER
+/Target/Colour BaseA Blue
+/Target/Position BaseA 0 0 0 mm
+/Target/Rotation BaseA 0 0 0 deg
 
-/Target/Material ObjectB MS1
+#/Target/Material ObjectB MS1
 #/Target/Material ObjectB G4_Al
-/Target/Colour ObjectB Red
-/Target/Position ObjectB 0 0 0.45 mm
-/Target/Rotation ObjectB 0 0 0 deg
+#/Target/Colour ObjectB Red
+#/Target/Position ObjectB 0 0 0.45 mm
+#/Target/Rotation ObjectB 0 0 0 deg

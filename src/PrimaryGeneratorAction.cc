@@ -81,6 +81,12 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     if (EnergyDistTypeCmd == "Mono")
     { 
+        if (particle -> GetParticleName() == "opticalphoton")
+        {
+            //G4cout << "\nBEING USED " << G4endl;
+            fastParticleGun -> SetParticlePolarization(G4ThreeVector(1,0,1));
+        }
+    
         //Allow the particles to be fired randomly within the beam width
       	G4double y0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
       	G4double z0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);

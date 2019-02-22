@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 375
-nDetZ = 315
+nDetY = 25
+nDetZ = 21
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
@@ -20,9 +20,9 @@ DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengt
 #-------------------------------------------------------------------
 #IMAGE VARIABLES
 
-NumberOfImages = 5
+NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 10#5*10**8
+nParticles = 100#1*10**7#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -37,11 +37,11 @@ fullmapping_fluorescence = False
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 20*G4.keV
-maxEnergy = 20*G4.keV
-minSigmaEnergy = 8*G4.keV
-maxSigmaEnergy = 8*G4.keV
-Gun = "Gauss"
+minEnergy = 3.102*G4.eV
+maxEnergy = 3.102*G4.eV
+minSigmaEnergy = 0*G4.keV
+maxSigmaEnergy = 0*G4.keV
+Gun = "Mono"
 nBins = 2000
 
 #-------------------------------------------------------------------
@@ -116,7 +116,7 @@ energyArray.append(sigmaEnergies)
 gunTypes = []
 for e in range(NumberOfImages + nDarkFlatFields):
     gunTypes.append(Gun)
-energyArray.append(gunTypes)
+#energyArray.append(gunTypes)
 
 #===================================================================
 #RUN THE SIMULATION
@@ -128,7 +128,7 @@ Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
-Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray)
+Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
 
 #Sim.printNexusTree()
 #Sim.plotBeamEnergy()

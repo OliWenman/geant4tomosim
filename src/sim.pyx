@@ -86,7 +86,7 @@ cdef class PySim:
     def addMacroFiles(self, macroFiles):
         self.thisptr.pyAddMacros(macroFiles)
 
-    def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray):
+    def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes):
         
         if TotalParticles >= 1 and self.Ready == True:
 
@@ -101,11 +101,30 @@ cdef class PySim:
               return 
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
-           #self.nexusfile.CreateRotationAngleData(dTheta, NumberOfImages, nCalibrations)
+           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
            
-           print "The simulation will record the following data: "
+           print "\nThe simulation will record the following data: "
            print "- Transmission"
+           print "- The beam energy"
+           monoEnergySet = len(set(energyArray[0][:]))
+           sigmaEnergySet = len(set(energyArray[:][1]))
            
+           if gunTypes[0] != "Gauss":
+              message = "  - Monochromatic energy:"
+           else:
+              message = "  - Polochromatic mean energy:"
+           
+           if monoEnergySet == 1:
+               print message, energyArray[0][0]*1000, "keV"
+           else:
+               print message, "(energy will change throughout run)", "min =", min(energyArray[0][:]*1000), "keV, max =", max(energyArray[0][:]*1000),"keV"
+               
+           if gunTypes[0] != "Mono":    
+              if sigmaEnergySet == 1:
+                 print "  - Sigma energy:", energyArray[1][0]*1000, "keV"
+              else:
+                 print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
+               
            if self.FFF == True:
               self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = self.Bins)
               print "- Fluorescence"
@@ -113,9 +132,6 @@ cdef class PySim:
            if self.FFM == True:
               self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
               print "- Full mapping fluorescence"
-           
-           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
-           print "- The beam energy"
            
            iTime = time.time()
            
@@ -131,7 +147,7 @@ cdef class PySim:
                imageInfo = [CurrentImage, nDarkFlatFields, TotalImages]
                
                energyInfo = [energyArray[0][CurrentImage], energyArray[1][CurrentImage]]
-               gunType = energyArray[2][CurrentImage]
+               gunType = gunTypes[CurrentImage]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType), (-1, self.nDetectorsY))  

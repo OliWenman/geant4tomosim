@@ -42,6 +42,10 @@
 
 #include "G4Region.hh"
 
+#include "G4OpticalSurface.hh"
+#include "G4MaterialPropertiesTable.hh"
+#include "G4LogicalSkinSurface.hh"
+
 //=================================================================================================
 //  CONSTRUCTORS/DESTRUCTORS
 
@@ -291,7 +295,24 @@ void TargetConstruction::AddMaterial(G4String Name, G4String Material)
         
             G4VSolid* Solid = G4SolidStore::GetInstance() -> GetSolid(Name, false); 
             
-		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, FindMaterial(Material, Name), "LV" + Name);
+            G4Material* material = FindMaterial(Material, Name);
+            
+		    G4LogicalVolume* logicObject = new G4LogicalVolume(Solid, material, "LV" + Name);
+		    
+		    G4cout << "\nBLAH BLAH BLAH" << G4endl;
+		    
+		    if (Material == "G4_Al")
+		    {
+		        G4cout << "\nAdding surface..." << G4endl;
+		        
+		        G4MaterialPropertiesTable* MPT = material -> GetMaterialPropertiesTable(); 
+		       
+		        G4OpticalSurface* opsurf = new G4OpticalSurface("photocath_opsurf",glisur,polished,dielectric_metal);
+                opsurf->SetMaterialPropertiesTable(MPT);
+                new G4LogicalSkinSurface("photocath_surf",logicObject, opsurf);
+                
+                MPT -> DumpTable();
+            }
 		    
 		    Success = true;
 		    
