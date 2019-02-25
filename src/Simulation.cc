@@ -257,6 +257,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 	//Creates the arrays for the data, wipes them after each image
 	data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
 		
+    //G4cout << "\n3.448*m = " << 3.448*m << G4endl;exit(0);
+		
     //Beam on to start the simulation
     BeamOn(TotalParticles);
 

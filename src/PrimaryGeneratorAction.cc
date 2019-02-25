@@ -84,7 +84,21 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         if (particle -> GetParticleName() == "opticalphoton")
         {
             //G4cout << "\nBEING USED " << G4endl;
-            fastParticleGun -> SetParticlePolarization(G4ThreeVector(1,0,1));
+            
+            G4double angle = G4UniformRand() * 360.0*deg;
+
+            G4ThreeVector normal (1., 0., 0.);
+            G4ThreeVector kphoton = fastParticleGun->GetParticleMomentumDirection();
+            G4ThreeVector product = normal.cross(kphoton);
+            G4double modul2       = product*product;
+ 
+            G4ThreeVector e_perpend (0., 0., 1.);
+            if (modul2 > 0.) e_perpend = (1./std::sqrt(modul2))*product;
+            G4ThreeVector e_paralle    = e_perpend.cross(kphoton);
+ 
+            G4ThreeVector polar = std::cos(angle)*e_paralle + std::sin(angle)*e_perpend;
+            
+            fastParticleGun -> SetParticlePolarization(polar);
         }
     
         //Allow the particles to be fired randomly within the beam width

@@ -63,13 +63,13 @@ class PhysicsList: public G4VModularPhysicsList
 		//Vector used to read out the physics processes used
 		std::vector<G4String> PhysicProcesses;
 
-		/*G4Cerenkov* fCerenkovProcess;
+		G4Cerenkov* fCerenkovProcess;
         G4Scintillation* fScintillationProcess;
         G4OpAbsorption* fAbsorptionProcess;
         G4OpRayleigh* fRayleighScatteringProcess;
         G4OpMieHG* fMieHGScatteringProcess;
         G4OpBoundaryProcess* fBoundaryProcess;
-        */
+        
 };
 
 #endif

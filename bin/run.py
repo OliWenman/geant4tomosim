@@ -8,8 +8,8 @@ import numpy as np
 #===================================================================
 #DETECTOR VARIABLES
 
-nDetY = 25
-nDetZ = 21
+nDetY = 375
+nDetZ = 315
 
 fullLengthDet_x = 1*G4.um
 fullLengthDet_y = 1.25*G4.mm
@@ -20,9 +20,9 @@ DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengt
 #-------------------------------------------------------------------
 #IMAGE VARIABLES
 
-NumberOfImages = 1
+NumberOfImages = 100
 nDarkFlatFields = 0
-nParticles = 100#1*10**7#5*10**8
+nParticles = 5*10**7#1*10**7#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -37,8 +37,8 @@ fullmapping_fluorescence = False
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 3.102*G4.eV
-maxEnergy = 3.102*G4.eV
+minEnergy = 5*G4.keV
+maxEnergy = 5*G4.keV
 minSigmaEnergy = 0*G4.keV
 maxSigmaEnergy = 0*G4.keV
 Gun = "Mono"

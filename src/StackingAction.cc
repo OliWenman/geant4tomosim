@@ -25,7 +25,7 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
   	        {status = fKill;}
   	        
   	    //Kill all photons that aren't going to hit the fluorescence detector located in the positive y direction    
-  	    if (aTrack -> GetMomentumDirection().y() < 0)
+  	    if (aTrack -> GetMomentumDirection().y() < 0 && particle -> GetParticleName() == "gamma" )
   	        {status = fKill;}    
   	}
 

@@ -42,6 +42,9 @@
 #include "G4StepLimiter.hh"
 #include "G4UserLimits.hh"
 
+#include "G4Element.hh"
+#include "G4MaterialPropertiesTable.hh"
+
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 	
 	//Create a messenger for this class
@@ -90,6 +93,8 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+    
+
 	//Setup needed paramenters and variables only on the first image
 	if (nImage == 0)
 	{
@@ -122,14 +127,126 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		//Set the position of the fluorescence detector a distance of 5% from the world boundary 
 		FluorDetPos_Cmd = G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0);
 	}
-
+	
+	G4Material* material = FindMaterial(WorldMaterial_Cmd);
+	
+	//G4cout << "\nmaterial -> GetName() = " << material -> GetName() << G4endl;
+	
+	//material -> GetMaterialPropertiesTable() -> DumpTable();
+	
 	//Create an instance of the logical volume and find the material
-	logicWorld = new G4LogicalVolume(solidWorld, FindMaterial(WorldMaterial_Cmd), "World");
+	logicWorld = new G4LogicalVolume(solidWorld, material, "World");
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//EXPERIMENTAL
+    //Create an instance of the world geometry
+	/*solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
 
-	//Visualization attributes
-	Visualization(logicWorld, G4Colour::White());
+    G4double a, z, density;
+    G4int nelements;
+    
+    //Air
+	G4Element* N = new G4Element("Nitrogen", "N", z=7 , a=14.01*g/mole);
+    G4Element* O = new G4Element("Oxygen"  , "O", z=8 , a=16.00*g/mole);
 
-	//Create the world physical volume. The world is the only physical volume with no mother volume.
+    G4Material* air = new G4Material("air", density=1.29*mg/cm3, nelements=2);
+    air->AddElement(N, 70.*perCent);
+    air->AddElement(O, 30.*perCent);
+    
+    G4double photonEnergy[] =
+            { 2.034*eV, 2.068*eV, 2.103*eV, 2.139*eV,
+              2.177*eV, 2.216*eV, 2.256*eV, 2.298*eV,
+              2.341*eV, 2.386*eV, 2.433*eV, 2.481*eV,
+              2.532*eV, 2.585*eV, 2.640*eV, 2.697*eV,
+              2.757*eV, 2.820*eV, 2.885*eV, 2.954*eV,
+              3.026*eV, 3.102*eV, 3.181*eV, 3.265*eV,
+              3.353*eV, 3.446*eV, 3.545*eV, 3.649*eV,
+              3.760*eV, 3.877*eV, 4.002*eV, 4.136*eV };
+
+    const G4int nEntries = sizeof(photonEnergy)/sizeof(G4double);
+    
+    G4double refractiveIndex2[] =
+            { 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+              1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+              1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+              1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+              1.00, 1.00, 1.00, 1.00 };
+
+    G4MaterialPropertiesTable* myMPT2 = new G4MaterialPropertiesTable();
+    myMPT2->AddProperty("RINDEX", photonEnergy, refractiveIndex2, nEntries);
+
+    //G4cout << "Air G4MaterialPropertiesTable" << G4endl;
+    //myMPT2->DumpTable();
+
+    air->SetMaterialPropertiesTable(myMPT2);
+    
+    logicWorld = new G4LogicalVolume(solidWorld, air, "World");
+    
+//---------------------------------------------------------------------------------------------------------------------------------------------	
+	//Water
+	G4Element* H = new G4Element("Hydrogen", "H", z=1 , a=1.01*g/mole);
+
+    G4Material* water = new G4Material("water", density= 1.0*g/cm3, nelements=2);
+    water->AddElement(H, 2);
+    water->AddElement(O, 1);
+            
+
+    G4Box* testSample = new G4Box("test", 0.5*m, 0.5*m, 0.5*m);
+    
+    G4LogicalVolume* testSample_logic = new G4LogicalVolume(testSample, water, "test_logic");
+    
+    G4double refractiveIndex1[] =
+            { 1.3435, 1.344,  1.3445, 1.345,  1.3455,
+              1.346,  1.3465, 1.347,  1.3475, 1.348,
+              1.3485, 1.3492, 1.35,   1.3505, 1.351,
+              1.3518, 1.3522, 1.3530, 1.3535, 1.354,
+              1.3545, 1.355,  1.3555, 1.356,  1.3568,
+              1.3572, 1.358,  1.3585, 1.359,  1.3595,
+              1.36,   1.3608};
+
+    assert(sizeof(refractiveIndex1) == sizeof(photonEnergy));
+
+    G4double absorption[] =
+           {3.448*m,  4.082*m,  6.329*m,  9.174*m, 12.346*m, 13.889*m,
+           15.152*m, 17.241*m, 18.868*m, 20.000*m, 26.316*m, 35.714*m,
+           45.455*m, 47.619*m, 52.632*m, 52.632*m, 55.556*m, 52.632*m,
+           52.632*m, 47.619*m, 45.455*m, 41.667*m, 37.037*m, 33.333*m,
+           30.000*m, 28.500*m, 27.000*m, 24.500*m, 22.000*m, 19.500*m,
+           17.500*m, 14.500*m };
+
+    assert(sizeof(absorption) == sizeof(photonEnergy));
+    
+    G4MaterialPropertiesTable* myMPT1 = new G4MaterialPropertiesTable();
+
+    myMPT1->AddProperty("RINDEX",       photonEnergy, refractiveIndex1,nEntries)
+        ->SetSpline(true);
+    myMPT1->AddProperty("ABSLENGTH",    photonEnergy, absorption,     nEntries)
+        ->SetSpline(true);
+        
+    water->SetMaterialPropertiesTable(myMPT1);
+    
+    G4RotationMatrix* RotateObjectAngle = new G4RotationMatrix();
+	RotateObjectAngle->rotateX(0);
+	RotateObjectAngle->rotateY(0);
+	RotateObjectAngle->rotateZ(10*deg);
+    
+    G4VPhysicalVolume* water_phys = new G4PVPlacement(RotateObjectAngle,                  // rotation
+            						                      G4ThreeVector(0,0,0),                   // translation
+           						                          testSample_logic,            // logical volume
+            						                      "PhantomContainer",    // name
+            						                      logicWorld,           // mother volume
+            						                      false,                 // No op. bool.
+           						                          0,			//copy number
+							                              false);                    //overlap checking
+    //G4cout << "Water G4MaterialPropertiesTable" << G4endl;
+    //myMPT1->DumpTable();*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    
+    //Visualization attributes
+	Visualization(logicWorld, G4Colour::White());     
+    
+    //Create the world physical volume. The world is the only physical volume with no mother volume.
 	G4VPhysicalVolume* physWorld = new G4PVPlacement(0,            //no rotation
 							                         G4ThreeVector(),       //at (0,0,0)
 							                         logicWorld,            //its logical volume
@@ -137,7 +254,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							                         0,                     //its mother  volume
 							                         false,                 //no boolean operation
 							                         0,                     //copy number
-							                         true);		//overlaps checking                     
+							                         true);		//overlaps checking    
 
 	//Creates the logic and physical volumes for the detectors each run
 	LVDetectors();
@@ -235,16 +352,25 @@ void DetectorConstruction::LVDetectors()
 	{	
 		DetMaterial = FindMaterial("G4_Galactic");
 	}
+	
+	G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+	
+	double energy[] = {0.2*keV};
+	double rindex[] = {1};
+	int size = 1;
+	
+	MPT -> AddProperty("RINDEX", energy, rindex, size);
+	DetMaterial -> SetMaterialPropertiesTable(MPT); 
 
 	//Creates the logical volume for the phantom container	
 	container_logic = new G4LogicalVolume(SolidContainer, 
-                					        DetMaterial, 
-                					       "LVPhantomContainer");
+                					      DetMaterial, 
+                					      "LVPhantomContainer");
 
 	//The parameterised volume which uses this parameterisation is placed in the container logical volume
 	PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
-                   				           DetMaterial,        // material is not relevant here...
-                   				           "LVPhantomBox");
+                   				             DetMaterial,        // material is not relevant here...
+                   				             "LVPhantomBox");
 
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;

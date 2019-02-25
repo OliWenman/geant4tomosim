@@ -196,9 +196,13 @@ void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double den
 {   
     G4Material* Material = FindMaterial(MaterialsName);
     
+    G4cout << "Material -> GetName = " << Material -> GetName() << G4endl;
+    
     double efficiency [nSize];
     double refractiveIndexes_Re [nSize];
     double refractiveIndexes_Im [nSize];
+    double absorption_length [nSize];
+    
     const char* materialNamec = MaterialsName.c_str();
     
     for (int i = 0 ; i < nSize ; i++)
@@ -207,19 +211,21 @@ void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double den
         refractiveIndexes_Re[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); 
         refractiveIndexes_Im[i] = Refractive_Index_Im(materialNamec, energyValues[i], density); 
         
+        double absorption_coefficient = (CS_Total(Material -> GetZ(), energyValues[i])*density);//cm-1
+        absorption_length[i] = (1./absorption_coefficient)*cm;
+        
         energyValues[i] = energyValues[i]*keV;
     }
     
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
     MPT -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
-    MPT -> AddProperty("REALRINDEX", energyValues, refractiveIndexes_Re, nSize); 
+    MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes_Re, nSize); 
     MPT -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
-    //MPT -> AddProperty("ABSORPTION", photonEnergy, absorption, nEntries);
-    //MPT -> AddProperty("REALRINDEX", photonEnergy, refractiveIndex1, nEntries); 
-    //MPT -> AddProperty("IMAGINARYRINDEX", photonEnergy, refractiveIndexes_Im, nSize); 
+    MPT -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);
+    
     
     G4cout << "\n" << MaterialsName << G4endl;
-    //MPT -> DumpTable();
+    MPT -> DumpTable();
    
     Material -> SetMaterialPropertiesTable(MPT); 
 }

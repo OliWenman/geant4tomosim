@@ -67,8 +67,8 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
 	FluorescenceCmd = true;
 	RefractionCmd = false;
 	
-	G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-    RegisterPhysics( opticalPhysics );    
+	//G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+    //RegisterPhysics( opticalPhysics );    
 }
 
 PhysicsList::~PhysicsList()
@@ -179,18 +179,20 @@ void PhysicsList::ConstructEM()
 				PhysicProcesses.push_back ("Fluorescence");
 			}
 		}
-		/*else if (particleName == "opticalphoton" && RefractionCmd == true){
-	        //fAbsorptionProcess = new G4OpAbsorption();
+		else if (particleName == "opticalphoton" && RefractionCmd == true){
+	        fAbsorptionProcess = new G4OpAbsorption();
             fRayleighScatteringProcess = new G4OpRayleigh();
             fMieHGScatteringProcess = new G4OpMieHG();
             fBoundaryProcess = new G4OpBoundaryProcess();
 	
-	        //pmanager->AddDiscreteProcess(fAbsorptionProcess);
+	        //fBoundaryProcess -> SetVerboseLevel(5);
+	
+	        pmanager->AddDiscreteProcess(fAbsorptionProcess);
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
             pmanager->AddDiscreteProcess(fBoundaryProcess);
             PhysicProcesses.push_back ("Refraction");
-	    }*/
+	    }
 	    
 	    if (RefractionCmd == true)
 	    {
@@ -203,12 +205,12 @@ void PhysicsList::ConstructEM()
 
 void PhysicsList::SetCuts()
 {	
-    SetCutValue(0.1*mm, "gamma");
-    SetCutValue(1000*mm, "e-");
-    SetCutValue(1000*mm, "e+");
-    SetCutValue(1000*mm, "proton");
+    //SetCutValue(0.1*mm, "gamma");
+    //SetCutValue(1000*mm, "e-");
+    //SetCutValue(1000*mm, "e+");
+    //SetCutValue(1000*mm, "proton");
     
-    DumpCutValuesTable();
+    //DumpCutValuesTable();
 
 }
 
