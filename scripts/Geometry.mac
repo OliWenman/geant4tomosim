@@ -32,35 +32,36 @@
 /Materials/AddTo/Compound IN625 Ti 0.4 %
 /Materials/AddTo/Compound IN625 Ni 60.45 %
 
-/Materials/Define/Element Al 13 26.98 g/mole 2.7 g/cm3
 /Materials/Define/Element N 7 28.014 g/mole 1.165 kg/m3
+/Materials/Define/Element Al 13 26.98 g/mole 2.7 g/cm3
+#/Materials/Define/Element name=Al z=13 Mr=26.98[g/mol] density=2.7[g/cm3] 
 
-/Materials/RefractiveIndex Al 2.7 g/cm3 0 20 100
-/Materials/RefractiveIndex N 1.165 kg/m3 0 20 100
-
+#/Materials/RefractiveIndex name=Al density=2.7[g/cm3] energy=linspace(0,20,100)[keV] #(13.334,2.5,33.4,4,5)#0 20 100
+/Materials/RefractiveIndex TI64 4.4705 g/cm3 0 20 10
+/Materials/RefractiveIndex N 1.165 kg/m3 0 20 10
 #================================================
 #OBJECT A
 
 #Base of the object
-/Target/Cube/Dimensions BaseA 0.5 0.5 0.35 mm
+/Target/Cube/Dimensions BaseA 0.5 0.5 0.35 cm
 
 #Inside of the box cut out
-/Target/Cube/Dimensions HollowCutoutA 0.4 0.4 0.35 mm
-/Target/SubtractSolid NewSolidA BaseA HollowCutoutA 0 0 0.3 mm 0 0 0 rad
+/Target/Cube/Dimensions HollowCutoutA 0.4 0.4 0.35 cm
+/Target/SubtractSolid NewSolidA BaseA HollowCutoutA 0 0 0.3 cm 0 0 0 rad
 
 #Create the top part to join on
-/Target/Cube/Dimensions TopPartA 0.2 0.2 0.4 mm
-/Target/Cube/Dimensions InsideTopPartA 0.1 0.1 0.4 mm
-/Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 mm 0 0 0 deg
-/Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 mm 0 0 0 deg
-/Target/SubtractSolid NewBaseATest NewBaseA InsideTopPartA 0 0 0.2 mm 0 0 0 deg
+/Target/Cube/Dimensions TopPartA 0.2 0.2 0.4 cm
+/Target/Cube/Dimensions InsideTopPartA 0.1 0.1 0.4 cm
+/Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 cm 0 0 0 deg
+/Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 cm 0 0 0 deg
+/Target/SubtractSolid NewBaseATest NewBaseA InsideTopPartA 0 0 0.2 cm 0 0 0 deg
 
 #Cut out the sides
-/Target/Cube/Dimensions SideCutoutA 0.2 0.2 0.2 mm
-/Target/SubtractSolid SideCutout1A NewBaseATest SideCutoutA 0.4 0.2 0.1 mm 0 0 0 rad
-/Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 mm 0 0 0 rad
-/Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 mm 0 0 0 rad
-/Target/SubtractSolid ObjectA SideCutout3A SideCutoutA 0.2 -0.4 0.1 mm 0 0 0 rad
+/Target/Cube/Dimensions SideCutoutA 0.2 0.2 0.2 cm
+/Target/SubtractSolid SideCutout1A NewBaseATest SideCutoutA 0.4 0.2 0.1 cm 0 0 0 rad
+/Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 cm 0 0 0 rad
+/Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 cm 0 0 0 rad
+/Target/SubtractSolid ObjectA SideCutout3A SideCutoutA 0.2 -0.4 0.1 cm 0 0 0 rad
 
 #===============================================
 #Object B
@@ -94,7 +95,7 @@
 /Target/Material ObjectA Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
-/Target/Rotation ObjectA 0 0 0 deg
+/Target/Rotation ObjectA 0 0 45 deg
 
 #/Target/Material ObjectB MS1
 #/Target/Material ObjectB G4_Al

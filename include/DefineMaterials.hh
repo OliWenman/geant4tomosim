@@ -45,4 +45,13 @@ class DefineMaterials
         std::vector<G4Isotope*> IsotopeList;
         std::vector<G4Element*> ElementList;
 };
+
+struct Ele_FracMass
+{
+    G4String name;
+    G4double frac_mass;
+    G4int Z;
+    G4double density;
+};
+
 #endif

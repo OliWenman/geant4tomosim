@@ -13,6 +13,7 @@
 
 #include "G4TwoVector.hh"
 #include "G4Tokenizer.hh"
+#include "Tokenizer.hh"
 
 DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials): materials(DefMaterials)
 {
@@ -90,6 +91,10 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	xraylibDensity.insert(std::make_pair("g/cm3", 1./1.));
 	xraylibDensity.insert(std::make_pair("kg/m3", 1000./(100.*100.*100.)));
 	xraylibDensity.insert(std::make_pair("kg/cm3", 1000./(1.*1.*1.)));
+	
+	xraylibEnergy.insert(std::make_pair("keV", 1.));
+	xraylibEnergy.insert(std::make_pair("eV", 1./1000.));
+	xraylibEnergy.insert(std::make_pair("MeV", 1.e3));
 //=================================================================================================
 
     AddRefractiveIndex = new G4UIcmdWithAString("/Materials/RefractiveIndex", this);
@@ -265,6 +270,29 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
 	    for (int i = 0; i < numElements ; i++){energyValues[i] = dStep * (i + 1);}
 	    
 	    materials -> AddRefractiveIndex(MaterialName, density*unit, energyValues, numElements);
+	    
+	    /*Tokenizer token(newValue, command);
+	    
+	    Flag namef("name");
+	    Flag densityf("density", xraylibDensity);
+	    Flag arrayf("energy", xraylibEnergy);
+	    
+	    std::vector<Flag> Flags = {namef, densityf};
+	    
+	    token.SetFlags(Flags);
+	    
+	    double density = token.FindDouble(densityf);
+	    std::vector<double> array = token.FindArray(arrayf);
+	    std::string element = token.FindString(namef);
+	    
+	    G4cout << "\ndensity = " << density;
+	    G4cout << "\nname = " << element;
+	     G4cout << "\narray = ";
+	    for (int i = 0; i < array.size(); i++)
+	    {
+	        G4cout << array[i] << " ";
+	    }*/
+	    
 	}
 }
 

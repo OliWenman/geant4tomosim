@@ -58,5 +58,6 @@ class DefineMaterialsMessenger: public G4UImessenger
 		std::map<std::string, double> atomicWeightUnits;
 	    std::map<std::string, double> percentageUnit;	
 	    std::map<std::string, double> xraylibDensity;
+	    std::map<std::string, double> xraylibEnergy;
 };
 #endif

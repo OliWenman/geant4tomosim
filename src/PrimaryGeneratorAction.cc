@@ -150,8 +150,9 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 
 	log << "\n--------------------------------------------------------------------"
 	       "\nBEAM INFORMATION: \n"
-		      
-           "\n- Beam type: " << EnergyDistTypeCmd;
+		   "\n- Particles: " << particle -> GetParticleName();   
+           /*"\n- Beam type: " << EnergyDistTypeCmd;
+           
     if (EnergyDistTypeCmd == "Gauss")
     {
         log << "\n- Mean energy: " << G4BestUnit(energyCmd, "Energy")
@@ -159,7 +160,7 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
     }
     else
         log << "\n- Energy of the monochomatic beam: " << G4BestUnit(energyCmd, "Energy");
-	       
+	*/       
 	log << "\n- Half beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
 }
 

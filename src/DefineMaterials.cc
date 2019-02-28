@@ -194,40 +194,116 @@ void DefineMaterials::AddMaterialToMixture(G4String MixtureName, G4String Materi
 
 void DefineMaterials::AddRefractiveIndex(std::string MaterialsName, G4double density, double energyValues[], int nSize)
 {   
-    G4Material* Material = FindMaterial(MaterialsName);
+    G4Material* MaterialFound = FindMaterial(MaterialsName);
     
-    G4cout << "Material -> GetName = " << Material -> GetName() << G4endl;
+    G4cout << "Material -> GetName = " << MaterialFound -> GetName() << G4endl;
     
-    double efficiency [nSize];
     double refractiveIndexes_Re [nSize];
     double refractiveIndexes_Im [nSize];
     double absorption_length [nSize];
     
-    const char* materialNamec = MaterialsName.c_str();
+    //const char* materialNamec = MaterialsName.c_str();
+//////////////////////////////////////////////////////////////////////////////////////////////////    
     
-    for (int i = 0 ; i < nSize ; i++)
+    std::vector<Ele_FracMass> elementTable;
+    
+    //If material is found, find it's element components
+    if (MaterialFound)
     {
-        efficiency[i] = 1;
-        refractiveIndexes_Re[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); 
-        refractiveIndexes_Im[i] = Refractive_Index_Im(materialNamec, energyValues[i], density); 
+        const G4ElementVector* Material_elements = MaterialFound -> GetElementVector();
+        const G4double* Material_fractional_mass = MaterialFound -> GetFractionVector(); 
+        const int nElements = Material_elements -> size();
         
-        double absorption_coefficient = (CS_Total(Material -> GetZ(), energyValues[i])*density);//cm-1
-        absorption_length[i] = (1./absorption_coefficient)*cm;
+        std::vector<Ele_FracMass> elementTableTemp (nElements);
         
-        energyValues[i] = energyValues[i]*keV;
+        G4cout << "\nMaterial: " << MaterialFound -> GetName()
+               << "\nMade up of the following elements\n" << std::flush;
+        
+        //Find the elements name, fractional mass, Z and density 
+        for (int i = 0; i < nElements; i++)
+        {
+            G4Element const* element = Material_elements[0][i];
+            G4String const eleName = element -> GetName();
+            elementTableTemp[i].name = eleName;
+            elementTableTemp[i].frac_mass = Material_fractional_mass[i];
+            elementTableTemp[i].Z = element -> GetZ();
+            elementTableTemp[i].density = ElementDensity(elementTableTemp[i].Z);
+            G4cout << "Element: " << elementTableTemp[i].name
+                   << " -> mass: " << elementTableTemp[i].frac_mass*100 << "%\ \n" << std::flush;
+        }
+        
+        elementTable = elementTableTemp;
     }
     
+    //TotalValues
+    double total_RI_Re = 0;
+    double total_RI_Im = 0;
+    double total_abs_len = 0;
+    
+    //Loop through the energy values
+    for (int energyValue = 0 ; energyValue < nSize ; energyValue++)
+    {
+        //Loop through the elements, find its refractive index and absoprtion length
+        for (int ele = 0; ele < elementTable.size() ; ele++)
+        { 
+            //Add to the total values the fractional values
+            total_RI_Re = total_RI_Re + (elementTable[ele].frac_mass * Refractive_Index_Re(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density)); 
+            total_RI_Im = total_RI_Im + (elementTable[ele].frac_mass * Refractive_Index_Im(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density)); 
+            double mass_absorption_coefficient = CS_Total(elementTable[ele].Z, energyValues[energyValue]); //[cm2/g]
+            total_abs_len = total_abs_len + (elementTable[ele].frac_mass *(1./(mass_absorption_coefficient*density))*cm); //[cm-1]=[cm2/g]*[g/cm3] => [cm]=1/[cm-1] 
+        }
+        
+        //Save the values in the arrays
+        double RI_Re = total_RI_Re;///elementTable.size();
+        double RI_Im = total_RI_Im;///elementTable.size();
+        double abs_len = total_abs_len;///elementTable.size();
+        
+        refractiveIndexes_Re[energyValue] = RI_Re; 
+        refractiveIndexes_Im[energyValue] = RI_Im; 
+        absorption_length[energyValue] = abs_len;
+        
+        //Convert the units of keV to Geant4 keV
+        energyValues[energyValue] = energyValues[energyValue]*keV;
+        
+        total_RI_Re = 0;
+        total_RI_Im = 0;
+        total_abs_len = 0;
+    }
+    
+    //Add the arrays to the properties table
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
-    MPT -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
     MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes_Re, nSize); 
     MPT -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
-    MPT -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);
-    
+    MPT -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);  
     
     G4cout << "\n" << MaterialsName << G4endl;
     MPT -> DumpTable();
    
-    Material -> SetMaterialPropertiesTable(MPT); 
+    MaterialFound -> SetMaterialPropertiesTable(MPT); 
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    /*for (int i = 0 ; i < nSize ; i++)
+    {
+        refractiveIndexes_Re[i] = Refractive_Index_Re(materialNamec, energyValues[i], density); 
+        refractiveIndexes_Im[i] = Refractive_Index_Im(materialNamec, energyValues[i], density); 
+        
+        double mass_absorption_coefficient = CS_Total(Material -> GetZ(), energyValues[i]);//[cm2/g]
+        double absorption_coefficient = mass_absorption_coefficient*density;//[cm-1]=[cm2/g]*[g/cm3]
+        absorption_length[i] = (1./absorption_coefficient)*cm;//[cm]=1/[cm-1]
+        
+        //Convert the units of keV to Geant4 keV
+        energyValues[i] = energyValues[i]*keV;
+    }
+    
+    G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();   
+    MPT -> AddProperty("RINDEX", energyValues, refractiveIndexes_Re, nSize); 
+    MPT -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
+    MPT -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);  
+    
+    G4cout << "\n" << MaterialsName << G4endl;
+    MPT -> DumpTable();
+   
+    Material -> SetMaterialPropertiesTable(MPT); */
 }
 
 G4Material* DefineMaterials::FindMaterial(G4String MaterialName)

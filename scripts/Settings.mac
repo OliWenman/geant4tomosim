@@ -12,9 +12,9 @@
 /physics/EM/Refraction true
 
 #World Settings
-/world/size 10 3.2 2.1 mm		#(Set the world size, everything must be inside of it)
+/world/size 500 3.2 2.1 cm		#(Set the world size, everything must be inside of it)
 #/world/size 10 5 5 m	
-/world/material N
+/world/material G4_Galactic
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings		
@@ -24,8 +24,8 @@
 
 #Beam Settings
 /beam/particle gamma
-/beam/position/halfx 1.05 mm
-/beam/position/halfy 1.25 mm
+/beam/position/halfx 1.05 cm
+/beam/position/halfy 1.25 cm
 
 /Target/CheckAllOverlaps false
 /Target/OffSet/Radius 0.0 mm			

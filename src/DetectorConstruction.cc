@@ -130,6 +130,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	
 	G4Material* material = FindMaterial(WorldMaterial_Cmd);
 	
+	G4MaterialPropertiesTable* MPT = material -> GetMaterialPropertiesTable();
+	
+	if (!MPT)
+	{
+	    MPT = new G4MaterialPropertiesTable();
+	    
+	    double energy[] = {0.2*keV};
+	    double rindex[] = {1};
+	    int size = 1;
+	    
+	    MPT -> AddProperty("RINDEX", energy, rindex, size);
+	    
+	    material -> SetMaterialPropertiesTable(MPT);
+	}
+	
 	//G4cout << "\nmaterial -> GetName() = " << material -> GetName() << G4endl;
 	
 	//material -> GetMaterialPropertiesTable() -> DumpTable();
@@ -139,6 +154,30 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //EXPERIMENTAL
+
+    /*G4Material* MaterialFound = FindMaterial("TI64");
+    
+    if (MaterialFound)
+    {
+        const G4ElementVector* Material_elements = MaterialFound -> GetElementVector();
+        const G4double* Material_fractional_mass = MaterialFound -> GetFractionVector(); 
+        const int nElements = Material_elements -> size();
+        
+        G4cout << "\nMaterial: " << MaterialFound -> GetName()
+               << "\nMade up of the following elements\n"; 
+        for (int i = 0; i < nElements; i++)
+        {
+            G4Element const* element = Material_elements[0][i];
+            G4String eleName = element -> GetName();
+            G4double eleDensity = element -> GetZ();
+            G4double f_mass = Material_fractional_mass[i];
+           
+            G4cout << "Element: " << eleName
+                   << " -> mass: " << f_mass*100 << "%\ \n"
+                   << " -> density: " << eleDensity;
+        }
+    }*/
+
     //Create an instance of the world geometry
 	/*solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
 
@@ -353,14 +392,19 @@ void DetectorConstruction::LVDetectors()
 		DetMaterial = FindMaterial("G4_Galactic");
 	}
 	
-	G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
-	
-	double energy[] = {0.2*keV};
-	double rindex[] = {1};
-	int size = 1;
-	
-	MPT -> AddProperty("RINDEX", energy, rindex, size);
-	DetMaterial -> SetMaterialPropertiesTable(MPT); 
+	G4MaterialPropertiesTable* MPT = DetMaterial -> GetMaterialPropertiesTable();
+	if (!MPT)
+	{
+	    MPT = new G4MaterialPropertiesTable();
+	    
+	    double energy[] = {0.2*keV};
+	    double rindex[] = {1};
+	    int size = 1;
+	    
+	    MPT -> AddProperty("RINDEX", energy, rindex, size);
+	    
+	    DetMaterial -> SetMaterialPropertiesTable(MPT);
+	}
 
 	//Creates the logical volume for the phantom container	
 	container_logic = new G4LogicalVolume(SolidContainer, 

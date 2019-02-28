@@ -194,10 +194,7 @@ void PhysicsList::ConstructEM()
             PhysicProcesses.push_back ("Refraction");
 	    }
 	    
-	    if (RefractionCmd == true)
-	    {
-	        
-	    }
+	    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 1*GeV);
 	}
 
 	G4cout << G4endl;
