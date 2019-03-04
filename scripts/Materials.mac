@@ -1,0 +1,50 @@
+#==============================================
+#CREATE CUSTOM MATERIALS
+
+/Materials/Define/Compound AlSi10Mg 5 2.67 g/cm3
+/Materials/AddTo/Compound AlSi10Mg Si 10 %
+/Materials/AddTo/Compound AlSi10Mg Mg 0.35 %
+/Materials/AddTo/Compound AlSi10Mg Fe 0.55 %
+/Materials/AddTo/Compound AlSi10Mg Mn 0.45 %
+/Materials/AddTo/Compound AlSi10Mg Al 88.65 %
+/Materials/AutoOpticalProperties name=AlSi10Mg energy=linspace(0,80,50)[keV]
+
+/Materials/Define/Compound TI64 5 4.4705 g/cm3
+/Materials/AddTo/Compound TI64 V 4 %
+/Materials/AddTo/Compound TI64 Al 6.125 %
+/Materials/AddTo/Compound TI64 Fe 0.3 %
+/Materials/AddTo/Compound TI64 O 0.2 %
+/Materials/AddTo/Compound TI64 Ti 89.375 %
+/Materials/AutoOpticalProperties name=TI64 energy=linspace(0,100,50)[keV]
+
+/Materials/Define/Compound MS1 6 8.05 g/cm3
+/Materials/AddTo/Compound MS1 Ni 18 %
+/Materials/AddTo/Compound MS1 Co 9 %
+/Materials/AddTo/Compound MS1 Mo 4.85 %
+/Materials/AddTo/Compound MS1 Ti 0.7 %
+/Materials/AddTo/Compound MS1 Al 0.1 %
+/Materials/AddTo/Compound MS1 Fe 67.35 %
+/Materials/AutoOpticalProperties name=MS1 energy=linspace(0,100,50)[keV]
+
+/Materials/Define/Compound IN625 6 8.5 g/cm3
+/Materials/AddTo/Compound IN625 Cr 21.5 %
+/Materials/AddTo/Compound IN625 Mo 9 %
+/Materials/AddTo/Compound IN625 Nb 3.65 %
+/Materials/AddTo/Compound IN625 Fe 5 %
+/Materials/AddTo/Compound IN625 Ti 0.4 %
+/Materials/AddTo/Compound IN625 Ni 60.45 %
+/Materials/AutoOpticalProperties name=IN625 energy=linspace(0,100,50)[keV]
+#/Materials/PrintMaterialPropertiesTable IN625
+
+/Materials/Define/Element N 7 28.014 g/mole 1.165 kg/m3
+/Materials/AutoOpticalProperties name=N energy=linspace(0,100,50)[keV]
+#/Materials/PrintMaterialPropertiesTable N
+
+/Materials/Define/Element Al 13 26.98 g/mole 2.7 g/cm3
+#/Materials/Define/Element name=Al z=13 Mr=26.98[g/mol] density=2.7[g/cm3] 
+/Materials/AutoOpticalProperties name=Al energy=linspace(0,100,50)[keV]
+#/Materials/AddRefractiveIndex name=Al energy=(05,06,07,08,09,10)[keV] rIndex=(1.05,1.05,1.05,1.05,1.05,1.05)
+#/Materials/AddAbsorptionLength name=Al energy=(05,06,07,08,09,10)[keV] absLength=(1,1,1,1,1,0.8)[mm]
+/Materials/PrintMaterialPropertiesTable Al
+
+#================================================

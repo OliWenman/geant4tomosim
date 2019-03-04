@@ -88,16 +88,40 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	
 	percentageUnit.insert(std::make_pair("%", perCent));
 	
-	xraylibDensity.insert(std::make_pair("g/cm3", 1./1.));
-	xraylibDensity.insert(std::make_pair("kg/m3", 1000./(100.*100.*100.)));
+	energyUnits.insert(std::make_pair("MeV", MeV));
+	energyUnits.insert(std::make_pair("keV", keV));
+	energyUnits.insert(std::make_pair("eV" , eV));
+	
+	lengthUnits.insert(std::make_pair("km", km));
+	lengthUnits.insert(std::make_pair("m" , m));
+	lengthUnits.insert(std::make_pair("cm", cm));
+	lengthUnits.insert(std::make_pair("mm", mm));
+	lengthUnits.insert(std::make_pair("um", um));
+	lengthUnits.insert(std::make_pair("nm", nm));
+	
+	xraylibDensity.insert(std::make_pair("g/cm3" , 1./1.));
+	xraylibDensity.insert(std::make_pair("kg/m3" , 1000./(100.*100.*100.)));
 	xraylibDensity.insert(std::make_pair("kg/cm3", 1000./(1.*1.*1.)));
 	
 	xraylibEnergy.insert(std::make_pair("keV", 1.));
-	xraylibEnergy.insert(std::make_pair("eV", 1./1000.));
+	xraylibEnergy.insert(std::make_pair("eV" , 1./1000.));
 	xraylibEnergy.insert(std::make_pair("MeV", 1.e3));
 //=================================================================================================
 
-    AddRefractiveIndex = new G4UIcmdWithAString("/Materials/RefractiveIndex", this);
+    AutoOpticalProperties_El = new G4UIcmdWithAString("/Materials/AutoOpticalProperties", this);
+    AutoOpticalProperties_El -> SetGuidance("Automatically set the optical properties of a material (compound or element) for refraction and absorption"
+                                            "\nname energy=(e1,e2,eN...)[units]"
+                                            "\nFor the array input you can specifiy to use the function linspace. energy=linspace(startE,endE,numValues)[units] ");
+                                            
+    AddRefractiveIndex = new G4UIcmdWithAString("/Materials/AddRefractiveIndex", this);
+    AddRefracticeIndex_Im = new G4UIcmdWithAString("/Materials/AddRefractiveIndex_Im", this);
+    
+    AddAbsorptionLength = new G4UIcmdWithAString("/Materials/AddAbsorptionLength", this);
+    AddAbsorptionLength_xraylib = new G4UIcmdWithAString("/Materials/xraylib/AddAbsorptionLength",this);
+    
+    AddEfficiency = new G4UIcmdWithAString("/Materials/AddEfficiency", this);
+    
+    PrintMPT = new G4UIcmdWithAString("/Materials/PrintMaterialPropertiesTable", this);
 }
 
 DefineMaterialsMessenger::~DefineMaterialsMessenger()
@@ -119,7 +143,13 @@ DefineMaterialsMessenger::~DefineMaterialsMessenger()
     delete DefMixture;
     delete AddMaterialToMixture;
     
+    delete AutoOpticalProperties_El;
     delete AddRefractiveIndex;
+    delete AddRefracticeIndex_Im;
+    delete AddAbsorptionLength;
+    delete AddAbsorptionLength_xraylib;
+    delete AddEfficiency;
+    delete PrintMPT;
 }
 
 void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -251,14 +281,11 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
         
         materials -> AddMaterialToMixture(NameMixture, NameMaterial, fractionalMass*unit);
 	}
-	else if (command == AddRefractiveIndex)
+	else if (command == AutoOpticalProperties_El)
 	{
-	    G4Tokenizer next(newValue);
+	    /*G4Tokenizer next(newValue);
 	    
 	    std::string MaterialName = next();
-	    
-	    G4double density = ConvertToNumber<double> (next, newValue, command);
-	    G4double unit = CheckUnits(next, command, newValue, "xlibDensity");
 	    
 	    double startEnergy = ConvertToNumber<double> (next, newValue, command);
 	    double endEnergy = ConvertToNumber<double> (next, newValue, command);
@@ -269,30 +296,100 @@ void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newVal
 	    
 	    for (int i = 0; i < numElements ; i++){energyValues[i] = dStep * (i + 1);}
 	    
-	    materials -> AddRefractiveIndex(MaterialName, density*unit, energyValues, numElements);
+	    materials -> AddOpticalProperties(MaterialName, energyValues, numElements);*/
 	    
-	    /*Tokenizer token(newValue, command);
+	    Tokenizer token(newValue, command);
 	    
 	    Flag namef("name");
-	    Flag densityf("density", xraylibDensity);
 	    Flag arrayf("energy", xraylibEnergy);
 	    
-	    std::vector<Flag> Flags = {namef, densityf};
+	    //std::vector<Flag> Flags = {namef, arrayf};
 	    
-	    token.SetFlags(Flags);
+	    //token.SetFlags(Flags);
 	    
-	    double density = token.FindDouble(densityf);
-	    std::vector<double> array = token.FindArray(arrayf);
+	    //double density = token.FindDouble(densityf);
 	    std::string element = token.FindString(namef);
+	    doubleArray energy = token.FindArray(arrayf);
 	    
-	    G4cout << "\ndensity = " << density;
-	    G4cout << "\nname = " << element;
-	     G4cout << "\narray = ";
-	    for (int i = 0; i < array.size(); i++)
-	    {
-	        G4cout << array[i] << " ";
-	    }*/
+	    materials -> FillOpticalProperties_xraylib(element, energy.values, energy.size);
+	}
+	else if (command == AddRefractiveIndex)
+	{
+	    Tokenizer token(newValue, command);
 	    
+	    Flag namef("name");
+	    Flag energyf("energy", energyUnits);
+	    Flag refractiveIndexf("rIndex");
+	    
+	    std::string material = token.FindString(namef);
+	    doubleArray energy = token.FindArray(energyf);
+	    doubleArray rIndex = token.FindArray(refractiveIndexf);
+	    
+	    //materials -> AddRefractiveIndex_Re(material, energy.values, rIndex.values, energy.size);
+	    materials -> AddOpticalProperty(material, "RINDEX", energy.values, rIndex.values, energy.size);
+	}
+	else if (command == AddRefracticeIndex_Im)
+	{
+	    Tokenizer token(newValue, command);
+	    
+	    Flag namef("name");
+	    Flag energyf("energy", energyUnits);
+	    Flag refractiveIndexf("rIndex");
+	    
+	    std::string material = token.FindString(namef);
+	    doubleArray energy = token.FindArray(energyf);
+	    doubleArray rIndex = token.FindArray(refractiveIndexf);
+	    
+	    materials -> AddOpticalProperty(material, "IMAGINARYRINDEX", energy.values, rIndex.values, energy.size);
+	    //materials -> AddRefractiveIndex_Im(material, energy.values, rIndex.values, energy.size);
+	}
+	else if (command == AddAbsorptionLength)
+	{
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef("name");
+	    Flag energyf("energy", energyUnits);
+	    Flag absLengthf("absLength", lengthUnits);
+	    
+	    std::string material = token.FindString(namef);
+	    doubleArray energy = token.FindArray(energyf);
+	    doubleArray absLength = token.FindArray(absLengthf);
+	    
+	    materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);
+	    //materials -> AddAbsorptionLength(material, energy.values, absLength.values, energy.size);
+	}
+	else if (command == AddAbsorptionLength_xraylib)
+	{
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef("name");
+	    Flag energyf("energy", energyUnits);
+	    
+	    std::string material = token.FindString(namef);
+	    doubleArray energy = token.FindArray(energyf);
+	    
+	    //materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);
+	
+	    
+	
+	}
+	else if (command == AddEfficiency)
+	{
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef("name");
+	    Flag energyf("energy", energyUnits);
+	    Flag efficiencyf("efficiency");
+	    
+	    std::string material = token.FindString(namef);
+	    doubleArray energy = token.FindArray(energyf);
+	    doubleArray efficiency = token.FindArray(efficiencyf);
+	    
+	    materials -> AddOpticalProperty(material, "EFFICIENCY", energy.values, efficiency.values, energy.size);
+	}
+	else if (command == PrintMPT)
+	{
+	    materials -> PrintMPT(newValue);
 	}
 }
 

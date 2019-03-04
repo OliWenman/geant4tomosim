@@ -22,7 +22,7 @@ DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengt
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1#5*10**7#1*10**7#5*10**8
+nParticles = 2*10**8#1*10**7#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -37,19 +37,20 @@ fullmapping_fluorescence = False
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 20*G4.keV
-maxEnergy = 20*G4.keV
-minSigmaEnergy = 0*G4.keV
-maxSigmaEnergy = 0*G4.keV
-Gun = "Mono"
+minEnergy = 18*G4.keV
+maxEnergy = 18*G4.keV
+minSigmaEnergy = 5*G4.keV
+maxSigmaEnergy = 5*G4.keV
+Gun = "Gauss"
 nBins = 2000
 
 #-------------------------------------------------------------------
 #Macrofiles to add
 macrofile1 = "./../scripts/Settings.mac" 
 macrofile2 = "./../scripts/Geometry.mac"
+macrofile3 = "./../scripts/Materials.mac"
 
-macrofiles = [macrofile1, macrofile2]
+macrofiles = [macrofile3, macrofile1, macrofile2]
 
 #==================================================================
 import os

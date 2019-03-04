@@ -52,6 +52,9 @@
 #include "G4OpMieHG.hh"
 #include "G4OpBoundaryProcess.hh"
 
+#include "GammaOpticalRefraction.hh"
+#include "GammaOpticalAbsorption.hh"
+
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
 	//Creates the messenger class
@@ -178,18 +181,29 @@ void PhysicsList::ConstructEM()
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 				PhysicProcesses.push_back ("Fluorescence");
 			}
+		    if (RefractionCmd == true)
+		    {
+		        GammaOpticalRefraction* photonRefraction = new GammaOpticalRefraction();
+		        GammaOpticalAbsorption* photonAbsorption = new GammaOpticalAbsorption();
+		        
+		        pmanager -> AddDiscreteProcess(photonRefraction);
+		        //pmanager -> AddDiscreteProcess(photonAbsorption);
+		        
+		        //photonRefraction -> SetVerboseLevel(1);
+                PhysicProcesses.push_back ("Refraction");
+		    }
 		}
 		else if (particleName == "opticalphoton" && RefractionCmd == true){
 	        fAbsorptionProcess = new G4OpAbsorption();
-            fRayleighScatteringProcess = new G4OpRayleigh();
-            fMieHGScatteringProcess = new G4OpMieHG();
+            /*fRayleighScatteringProcess = new G4OpRayleigh();
+            fMieHGScatteringProcess = new G4OpMieHG();*/
             fBoundaryProcess = new G4OpBoundaryProcess();
 	
-	        //fBoundaryProcess -> SetVerboseLevel(5);
+	        //fBoundaryProcess -> SetVerboseLevel(1);
 	
 	        pmanager->AddDiscreteProcess(fAbsorptionProcess);
-            pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
-            pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
+            //pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
+            //pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
             pmanager->AddDiscreteProcess(fBoundaryProcess);
             PhysicProcesses.push_back ("Refraction");
 	    }

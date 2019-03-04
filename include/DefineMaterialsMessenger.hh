@@ -52,11 +52,20 @@ class DefineMaterialsMessenger: public G4UImessenger
 	    
 	    G4UIcmdWithAString *DefMixture;
 	    G4UIcmdWithAString *AddMaterialToMixture;
+	    
+	    G4UIcmdWithAString *AutoOpticalProperties_El;
 	    G4UIcmdWithAString *AddRefractiveIndex;
+	    G4UIcmdWithAString *AddRefracticeIndex_Im;
+	    G4UIcmdWithAString *AddAbsorptionLength;
+	    G4UIcmdWithAString *AddAbsorptionLength_xraylib;
+	    G4UIcmdWithAString *AddEfficiency;
+	    G4UIcmdWithAString *PrintMPT;
 
 		std::map<std::string, double> densityUnits;
 		std::map<std::string, double> atomicWeightUnits;
-	    std::map<std::string, double> percentageUnit;	
+	    std::map<std::string, double> percentageUnit;
+	    std::map<std::string, double> energyUnits;	
+	    std::map<std::string, double> lengthUnits;
 	    std::map<std::string, double> xraylibDensity;
 	    std::map<std::string, double> xraylibEnergy;
 };

@@ -12,6 +12,7 @@ class DetectorConstruction;
 class PhysicsList;
 class PrimaryGeneratorAction;
 class StackingAction;
+class SteppingAction;
 
 class G4RunManager;
 class G4VisManager;
@@ -62,6 +63,7 @@ class Simulation
 		PhysicsList* PL;
 		PrimaryGeneratorAction* PGA;
 		StackingAction* particleManager;
+		SteppingAction* stepManager;
 
 		bool Reset;
 		bool Ready;

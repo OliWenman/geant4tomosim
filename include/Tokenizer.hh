@@ -21,6 +21,14 @@ struct Flag
     std::map<std::string, double> units;
 };
 
+struct doubleArray
+{
+    double* values;
+    size_t size;
+};
+
+#endif
+
 class Tokenizer
 {
     public:
@@ -32,7 +40,7 @@ class Tokenizer
         //Would use template <typename T> T but encounter bug "ImportError: ./../src/sim.so: undefined symbol" when importing from python
         double FindDouble(Flag flag);
         std::string FindString(Flag flag);
-        std::vector<double> FindArray(Flag flag);
+        doubleArray FindArray(Flag flag);
    
         void PrintInput(){std::cout << "\ninput = " << input << std::endl;}
    
@@ -44,4 +52,3 @@ class Tokenizer
         std::vector<std::string> tokens;
 };
 
-#endif

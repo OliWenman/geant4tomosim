@@ -32,7 +32,10 @@ class DefineMaterials
         void DefineMixture(G4String Name, G4double density, G4int n_components);
 	    void AddMaterialToMixture(G4String MixtureName, G4String MaterialName, G4double FractionMass);
 	    
-	    void AddRefractiveIndex(std::string MaterialsName, G4double density, double energyValues[], int NumElements);
+	    void FillOpticalProperties_xraylib(std::string MaterialsName, double energyValues[], int NumElements);
+	    void AddOpticalProperty(std::string MaterialsName, const char *key, double energyValues[], double opticalProperty[], int NumElements);
+	    void AddOpticalProperty_xraylib(std::string MaterialsName, const char *key, double energyValues[], int NumElements);
+	    void PrintMPT(std::string Material);
 	    
 	private:
 	

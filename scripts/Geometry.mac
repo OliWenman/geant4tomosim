@@ -1,44 +1,3 @@
-
-#==============================================
-#CREATE CUSTOM MATERIALS
-
-/Materials/Define/Compound AlSi10Mg 5 2.67 g/cm3
-/Materials/AddTo/Compound AlSi10Mg Si 10 %
-/Materials/AddTo/Compound AlSi10Mg Mg 0.35 %
-/Materials/AddTo/Compound AlSi10Mg Fe 0.55 %
-/Materials/AddTo/Compound AlSi10Mg Mn 0.45 %
-/Materials/AddTo/Compound AlSi10Mg Al 88.65 %
-
-/Materials/Define/Compound TI64 5 4.4705 g/cm3
-/Materials/AddTo/Compound TI64 V 4 %
-/Materials/AddTo/Compound TI64 Al 6.125 %
-/Materials/AddTo/Compound TI64 Fe 0.3 %
-/Materials/AddTo/Compound TI64 O 0.2 %
-/Materials/AddTo/Compound TI64 Ti 89.375 %
-
-/Materials/Define/Compound MS1 6 8.05 g/cm3
-/Materials/AddTo/Compound MS1 Ni 18 %
-/Materials/AddTo/Compound MS1 Co 9 %
-/Materials/AddTo/Compound MS1 Mo 4.85 %
-/Materials/AddTo/Compound MS1 Ti 0.7 %
-/Materials/AddTo/Compound MS1 Al 0.1 %
-/Materials/AddTo/Compound MS1 Fe 67.35 %
-
-/Materials/Define/Compound IN625 6 8.5 g/cm3
-/Materials/AddTo/Compound IN625 Cr 21.5 %
-/Materials/AddTo/Compound IN625 Mo 9 %
-/Materials/AddTo/Compound IN625 Nb 3.65 %
-/Materials/AddTo/Compound IN625 Fe 5 %
-/Materials/AddTo/Compound IN625 Ti 0.4 %
-/Materials/AddTo/Compound IN625 Ni 60.45 %
-
-/Materials/Define/Element N 7 28.014 g/mole 1.165 kg/m3
-/Materials/Define/Element Al 13 26.98 g/mole 2.7 g/cm3
-#/Materials/Define/Element name=Al z=13 Mr=26.98[g/mol] density=2.7[g/cm3] 
-
-#/Materials/RefractiveIndex name=Al density=2.7[g/cm3] energy=linspace(0,20,100)[keV] #(13.334,2.5,33.4,4,5)#0 20 100
-/Materials/RefractiveIndex TI64 4.4705 g/cm3 0 20 10
-/Materials/RefractiveIndex N 1.165 kg/m3 0 20 10
 #================================================
 #OBJECT A
 
@@ -67,26 +26,26 @@
 #Object B
 
 #Zigzag
-/Target/Cube/Dimensions SmallSideB 0.15 0.125 0.2 mm
-/Target/Cube/Dimensions CubeCutoutB 0.15 0.125 0.3 mm
-/Target/SubtractSolid LShapeB SmallSideB CubeCutoutB 0.15 0.1 0 mm 0 0 0 deg
-/Target/Cube/Dimensions StraightB 0.2 0.05 0.2 mm
-/Target/UnionSolid zB LShapeB StraightB -0.275 0.075 0 mm 0 0 0 deg
+/Target/Cube/Dimensions SmallSideB 0.15 0.125 0.2 cm
+/Target/Cube/Dimensions CubeCutoutB 0.15 0.125 0.3 cm
+/Target/SubtractSolid LShapeB SmallSideB CubeCutoutB 0.15 0.1 0 cm 0 0 0 deg
+/Target/Cube/Dimensions StraightB 0.2 0.05 0.2 cm
+/Target/UnionSolid zB LShapeB StraightB -0.275 0.075 0 cm 0 0 0 deg
  
 #Attach the objects to the Base
-/Target/Cube/Dimensions BaseB 0.5 0.5 0.15 mm
-/Target/UnionSolid Zjoin1B BaseB zB 0.175 -0.375 -0.35 mm 0 0 0 deg
-/Target/UnionSolid Zjoin2B Zjoin1B zB -0.175 0.375 -0.35 mm 0 0 180 deg
-/Target/UnionSolid Zjoin3B Zjoin2B zB -0.375 -0.175 -0.35 mm 0 0 90 deg 
-/Target/UnionSolid Zjoin4B Zjoin3B zB 0.375 0.175 -0.35 mm 0 0 -90 deg
+/Target/Cube/Dimensions BaseB 0.5 0.5 0.15 cm
+/Target/UnionSolid Zjoin1B BaseB zB 0.175 -0.375 -0.35 cm 0 0 0 deg
+/Target/UnionSolid Zjoin2B Zjoin1B zB -0.175 0.375 -0.35 cm 0 0 180 deg
+/Target/UnionSolid Zjoin3B Zjoin2B zB -0.375 -0.175 -0.35 cm 0 0 90 deg 
+/Target/UnionSolid Zjoin4B Zjoin3B zB 0.375 0.175 -0.35 cm 0 0 -90 deg
 
 #Cut out the indent in the middle
-/Target/Cube/Dimensions IndentB 0.25 0.25 0.05 mm
-/Target/SubtractSolid SubtractObjectB Zjoin4B IndentB 0 0 -0.1 mm 0 0 0 deg 
+/Target/Cube/Dimensions IndentB 0.25 0.25 0.05 cm
+/Target/SubtractSolid SubtractObjectB Zjoin4B IndentB 0 0 -0.1 cm 0 0 0 deg 
 
 #Attach the pole to the object
-/Target/Cube/Dimensions Pole 0.05 0.05 0.3 mm
-/Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 mm 0 0 0 deg
+/Target/Cube/Dimensions Pole 0.05 0.05 0.3 cm
+/Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 cm 0 0 0 deg
 
 #=============================================
 #Place the objects
@@ -98,7 +57,7 @@
 /Target/Rotation ObjectA 0 0 45 deg
 
 #/Target/Material ObjectB MS1
-#/Target/Material ObjectB G4_Al
 #/Target/Colour ObjectB Red
-#/Target/Position ObjectB 0 0 0.45 mm
-#/Target/Rotation ObjectB 0 0 0 deg
+#/Target/Position ObjectB 0 0 0.45 cm
+#/Target/Rotation ObjectB 0 0 45 deg
+

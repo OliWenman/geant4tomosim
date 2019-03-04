@@ -153,7 +153,7 @@ std::string Tokenizer::FindString(Flag flag)
     
     return answer;
 }
-std::vector<double> Tokenizer::FindArray(Flag flag)
+doubleArray Tokenizer::FindArray(Flag flag)
 {
     std::size_t foundFlag;
     std::string answer;
@@ -161,7 +161,7 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
     int errorcounter = 0;
     
     bool flagfound = false;
-    int units = 1;
+    double units = 1.;
     
     std::vector<double> theArray;
     
@@ -193,7 +193,11 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
                     }
                     else
                     {
-                        G4cout << errorMessage << " -> Invalid units";
+                        G4cout << errorMessage << " -> Invalid units!";
+                        G4cout << "\nAvaliable units are: \n";
+                        
+                        for (std::map<std::string, double>::iterator it = flag.units.begin(); it != flag.units.end(); ++it){
+                            G4cout << it -> first << " ";}
                         ++errorcounter;
                     }            
                     answer = answer.substr(0, firstbracket);
@@ -201,6 +205,9 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
                 else       
                 {
                     G4cout << errorMessage << " -> No units given";
+                    G4cout << "\nAvaliable units are: \n";
+                    for (std::map<std::string, double>::iterator it = flag.units.begin(); it != flag.units.end(); ++it){
+                        G4cout << it -> first << " ";}
                     ++errorcounter;
                 }   
             }
@@ -213,7 +220,7 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
     }
     if (!flagfound)
     {
-        G4cout << errorMessage << " -> Invalid flags";
+        G4cout << errorMessage << " -> Invalid flag \'" << flag.name << "\'";
         ++errorcounter;
     }
     
@@ -262,7 +269,7 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
             }
             catch (const std::invalid_argument& ia)
             {
-                G4cout << errorMessage << " -> Invalid number (" << errorcounter << ")" << std::flush;  
+                G4cout << errorMessage << " -> Invalid array: " << arraystring << " (" << errorcounter << ")" << std::flush;  
                 ++errorcounter;
             }
         }
@@ -295,11 +302,20 @@ std::vector<double> Tokenizer::FindArray(Flag flag)
         }     
     }
     
+    doubleArray array;
+    array.values = new double[theArray.size()];
+    array.size = theArray.size();
+    
+    for (int i = 0; i < theArray.size() ; i++)
+    {
+        array.values[i] = theArray[i];
+    }
+    
     if (errorcounter > 0)
     {
         G4cout << G4endl;
         exit(0);
     }
     
-    return theArray;
+    return array;
 }

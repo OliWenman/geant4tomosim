@@ -7,6 +7,7 @@
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
+#include "SteppingAction.hh"
 #include "Data.hh"
 #include "DefineMaterials.hh"
 //Output to console/write to file
@@ -66,6 +67,9 @@ Simulation::Simulation()
 	particleManager = new StackingAction();
 	runManager -> SetUserAction(particleManager);
 	particleManager -> SetKillElectrons(true);
+	
+	stepManager = new SteppingAction();
+	runManager -> SetUserAction(stepManager);
 
 	//Get the pointer to the User Interface manager, set all print info to 0 during events by default
   	UImanager = G4UImanager::GetUIpointer();

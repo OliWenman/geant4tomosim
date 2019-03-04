@@ -1,6 +1,6 @@
 #SETTINGS FOR THE SIMULATION
 #Seed settings
-/data/Seed 0
+/data/Seed 1551709036 #1551708890 #1551709036
 /data/verbose 1
 
 #Physics processes
@@ -9,24 +9,24 @@
 /physics/EM/ComptonScattering true
 /physics/EM/RayleighScattering true
 /physics/EM/Fluorescence true
-/physics/EM/Refraction true
+/physics/EM/Refraction false
 
 #World Settings
-/world/size 500 3.2 2.1 cm		#(Set the world size, everything must be inside of it)
+/world/size 1000 3.2 2.1 cm		#(Set the world size, everything must be inside of it)
 #/world/size 10 5 5 m	
-/world/material G4_Galactic
+/world/material N
 /world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
 
 #Detector Settings		
 /detector/material G4_Galactic	#(Set the material of the detectors)
 /detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
-/detector/fluorescence/dimensions 2 0.01 1 mm
+/detector/fluorescence/dimensions 2 0.01 1 cm
 
 #Beam Settings
 /beam/particle gamma
 /beam/position/halfx 1.05 cm
 /beam/position/halfy 1.25 cm
 
-/Target/CheckAllOverlaps false
+/Target/CheckAllOverlaps true
 /Target/OffSet/Radius 0.0 mm			
 /Target/OffSet/Centre 0.0 0.0 0.0 mm
