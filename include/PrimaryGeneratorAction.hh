@@ -33,6 +33,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		inline void SetParticleEnergy(G4double value ){energyCmd = value;}
 		inline void SetEnergyDistType(G4String value ){EnergyDistTypeCmd = value;}
 		inline void SetEnergySigma(G4double value ){EnergySigmaCmd = value;}
+		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.;}
 		
 		inline void SetBeamWidthY(G4double value){BeamWidthY_Cmd = value;} 
 		inline void SetBeamHeightZ(G4double value){BeamHeightZ_Cmd = value;} 
@@ -47,6 +48,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void SetProgressBar(bool value){ShowProgressBar = value;}
 		
 		void SetParticleType(G4String type);
+		
+		void SetPolization(G4ThreeVector value){polization = value; randPolization = false;}
 
 		//Get methods
 		G4double GetBeamWidthY() {return BeamWidthY_Cmd;}
@@ -63,6 +66,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   	
   	    void SetupFastParticleGun(G4double monoEnergy);
   	    void SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy);
+  	    G4ThreeVector RandomPolarization();
   	
 		//Pointers to the particle source
     	G4ParticleGun* fastParticleGun;
@@ -80,6 +84,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4String EnergyDistTypeCmd;
     	G4double EnergySigmaCmd;
     	bool gunExists;
+		bool randPolization;
+		G4ThreeVector polization;
 		
 		G4double BeamWidthY_Cmd;
 		G4double BeamHeightZ_Cmd;

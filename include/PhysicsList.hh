@@ -32,6 +32,7 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value;}
 		void SetFluorescence(G4bool value){FluorescenceCmd = value;}
 		void SetRefraction(G4bool value){RefractionCmd = value;}
+		void SetGammaAbsorption(G4bool value){GammaAbsorption = value;}
 
 		G4bool GetFluorescence(){return FluorescenceCmd;}
 
@@ -59,17 +60,10 @@ class PhysicsList: public G4VModularPhysicsList
 		G4bool RayleighScatteringCmd;
 		G4bool FluorescenceCmd;
 		G4bool RefractionCmd;
+		G4bool GammaAbsorption;
 
 		//Vector used to read out the physics processes used
 		std::vector<G4String> PhysicProcesses;
-
-		G4Cerenkov* fCerenkovProcess;
-        G4Scintillation* fScintillationProcess;
-        G4OpAbsorption* fAbsorptionProcess;
-        G4OpRayleigh* fRayleighScatteringProcess;
-        G4OpMieHG* fMieHGScatteringProcess;
-        G4OpBoundaryProcess* fBoundaryProcess;
-        
 };
 
 #endif

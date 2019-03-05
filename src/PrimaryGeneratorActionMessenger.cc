@@ -7,6 +7,7 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWith3VectorAndUnit.hh"
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun): PGAction(Gun)
 {	
@@ -42,6 +43,12 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	
 	particleCmd = new G4UIcmdWithAString("/beam/particle", this);
 	particleCmd -> SetGuidance("Set type of particle you want the beam to use");
+	
+	MaxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/beam/MaxEnergy", this);
+	MaxEnergyBinCmd -> SetGuidance("Set the maximum energy bin");
+	
+    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polization", this);
+    SetPolizationCmd -> SetGuidance("");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -56,6 +63,8 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete BeamHalfYCmd;
 	
 	delete particleCmd;
+	delete SetPolizationCmd;
+	delete MaxEnergyBinCmd;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -86,5 +95,14 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	else if( command == particleCmd)
 	{
 	    PGAction -> SetParticleType(newValue);
+	}
+	else if( command == SetPolizationCmd)
+	{
+	    PGAction -> SetPolization(SetPolizationCmd -> GetNew3VectorValue(newValue));
+	} 
+	else if(command == MaxEnergyBinCmd)
+	{
+	    MaxEnergyBinCmd -> GetNewUnitValue(newValue);
+		PGAction -> SetMaxEnergyBinCmd(MaxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
 	}
 }

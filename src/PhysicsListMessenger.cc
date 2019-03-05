@@ -27,8 +27,10 @@ PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObje
 	FluorescenceCmd = new G4UIcmdWithABool("/physics/EM/Fluorescence",this);  
   	FluorescenceCmd -> SetGuidance("Choose if you want fluorescence true/false");
   	
-  	RefractionCmd = new G4UIcmdWithABool("/physics/EM/Refraction", this);
-  	RefractionCmd -> SetGuidance("Choose if you want refraction true/false");
+  	GammaRefractionCmd = new G4UIcmdWithABool("/physics/EM/Refraction", this);
+  	GammaRefractionCmd -> SetGuidance("Choose if you want refraction true/false");
+  	
+  	GammaAbsorptionCmd = new G4UIcmdWithABool("/Physics/Gamma/Absorption", this);
 }
 
 PhysicsListMessenger::~PhysicsListMessenger()
@@ -40,7 +42,8 @@ PhysicsListMessenger::~PhysicsListMessenger()
 	delete ComptonScatteringCmd;
 	delete RayleighScatteringCmd;
 	delete FluorescenceCmd;
-  	delete RefractionCmd;
+  	delete GammaRefractionCmd;
+  	delete GammaAbsorptionCmd;
 }
 
 void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -60,8 +63,10 @@ void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	else if (command == FluorescenceCmd){
 		Physics -> SetFluorescence(FluorescenceCmd -> GetNewBoolValue(newValue));
 	}
-	else if (command == RefractionCmd){
-	    Physics -> SetRefraction(RefractionCmd -> GetNewBoolValue(newValue));
+	else if (command == GammaRefractionCmd){
+	    Physics -> SetRefraction(GammaRefractionCmd -> GetNewBoolValue(newValue));
 	}    
-	    
+	else if (command == GammaAbsorptionCmd){
+	    Physics -> SetGammaAbsorption(GammaAbsorptionCmd -> GetNewBoolValue(newValue));
+	}    
 }

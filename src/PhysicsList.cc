@@ -3,57 +3,43 @@
 //Output to console/write to file
 #include "SettingsLog.hh"
 
-#include "G4SystemOfUnits.hh"
-//#include "G4PhysListFactory.hh"
-#include "G4VPhysicsConstructor.hh"
-#include "G4StepLimiter.hh"
-#include "G4UserSpecialCuts.hh"
-
-#include "G4ParticleDefinition.hh"
+//Register physics processes
 #include "G4ProcessManager.hh"
-#include "G4ParticleTypes.hh"
-#include "G4ParticleTable.hh"
-#include "G4LossTableManager.hh"
-#include "G4PhysicsListHelper.hh"
 
-//Physic lists (contained inside the Geant4 distribution)
-#include "G4EmStandardPhysics.hh"
-
-#include "G4EmLivermorePhysics.hh"
-
-#include "G4Gamma.hh"
+//Standard Gamma processes
 #include "G4ComptonScattering.hh"
-#include "G4GammaConversion.hh"
 #include "G4PhotoElectricEffect.hh"
 #include "G4RayleighScattering.hh"
-#include "G4UAtomicDeexcitation.hh"
 
-#include "G4eMultipleScattering.hh"
-
-#include "G4eIonisation.hh"
-#include "G4eBremsstrahlung.hh"
-#include "G4eplusAnnihilation.hh"
-
+//Livermore Gamma processes
 #include "G4LivermorePhotoElectricModel.hh"
 #include "G4LivermoreComptonModel.hh"
 #include "G4LivermoreRayleighModel.hh"
-#include "G4LivermoreIonisationModel.hh"
 
-#include "G4RegionStore.hh"
+//Fluorescence
+#include "G4UAtomicDeexcitation.hh"
+#include "G4LossTableManager.hh"
 
-#include "G4OpticalPhysics.hh"
-
-#include "G4ProcessManager.hh"
-
-#include "G4Cerenkov.hh"
-#include "G4Scintillation.hh"
-#include "G4OpAbsorption.hh"
-#include "G4OpRayleigh.hh"
-#include "G4OpMieHG.hh"
-#include "G4OpBoundaryProcess.hh"
-
+//Gamma optical physics
 #include "GammaOpticalRefraction.hh"
 #include "GammaOpticalAbsorption.hh"
+
+//Particle definations
+#include "G4ParticleDefinition.hh"
+#include "G4Gamma.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
+#include "G4GenericIon.hh"
+#include "G4Proton.hh"
+#include "G4MuonPlus.hh"
+#include "G4MuonMinus.hh"
+#include "G4OpticalPhoton.hh"
+
+//Other
+#include "G4SystemOfUnits.hh"
+#include "G4StepLimiter.hh"
+#include "G4UserSpecialCuts.hh"
+#include "G4RegionStore.hh"
 
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
@@ -68,10 +54,8 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
 	ComptonScatteringCmd = true;
 	RayleighScatteringCmd = true;
 	FluorescenceCmd = true;
-	RefractionCmd = false;
-	
-	//G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-    //RegisterPhysics( opticalPhysics );    
+	RefractionCmd = true;
+	GammaAbsorption = false;
 }
 
 PhysicsList::~PhysicsList()
@@ -124,21 +108,21 @@ void PhysicsList::ConstructEM()
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					PhysicProcesses.push_back ("Photoelectric effect");
+					PhysicProcesses.push_back ("  - Photoelectric effect");
 				}
 				if (ComptonScatteringCmd == true)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					PhysicProcesses.push_back ("Compton scattering");
+					PhysicProcesses.push_back ("  - Compton scattering");
 				}
 				if (RayleighScatteringCmd == true)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					PhysicProcesses.push_back ("Rayleigh scattering");
+					PhysicProcesses.push_back ("  - Rayleigh scattering");
 				}
 			}
 			else if(PhysicsPackageCmd == "StandardPhysics")
@@ -147,19 +131,19 @@ void PhysicsList::ConstructEM()
 				{
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					PhysicProcesses.push_back ("Photoelectric effect");
+					PhysicProcesses.push_back ("  - Photoelectric effect");
 				}
 				if (ComptonScatteringCmd == true)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					PhysicProcesses.push_back ("Compton scattering");
+					PhysicProcesses.push_back ("  - Compton scattering");
 				}
 				if (RayleighScatteringCmd == true)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					PhysicProcesses.push_back ("Rayleigh scattering");
+					PhysicProcesses.push_back ("  - Rayleigh scattering");
 				}
 			}
 			else
@@ -179,35 +163,25 @@ void PhysicsList::ConstructEM()
   				de->SetAuger(true);   
   				de->SetPIXE(true);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-				PhysicProcesses.push_back ("Fluorescence");
+				PhysicProcesses.push_back ("- Fluorescence");
 			}
 		    if (RefractionCmd == true)
 		    {
 		        GammaOpticalRefraction* photonRefraction = new GammaOpticalRefraction();
-		        GammaOpticalAbsorption* photonAbsorption = new GammaOpticalAbsorption();
-		        
 		        pmanager -> AddDiscreteProcess(photonRefraction);
-		        //pmanager -> AddDiscreteProcess(photonAbsorption);
-		        
-		        //photonRefraction -> SetVerboseLevel(1);
-                PhysicProcesses.push_back ("Refraction");
+                PhysicProcesses.push_back ("- Refraction");
 		    }
-		}
-		else if (particleName == "opticalphoton" && RefractionCmd == true){
-	        fAbsorptionProcess = new G4OpAbsorption();
-            /*fRayleighScatteringProcess = new G4OpRayleigh();
-            fMieHGScatteringProcess = new G4OpMieHG();*/
-            fBoundaryProcess = new G4OpBoundaryProcess();
-	
-	        //fBoundaryProcess -> SetVerboseLevel(1);
-	
-	        pmanager->AddDiscreteProcess(fAbsorptionProcess);
-            //pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
-            //pmanager->AddDiscreteProcess(fMieHGScatteringProcess);
-            pmanager->AddDiscreteProcess(fBoundaryProcess);
-            PhysicProcesses.push_back ("Refraction");
-	    }
-	    
+		    if(GammaAbsorption == true)
+		    {
+		        GammaOpticalAbsorption* photonAbsorption = new GammaOpticalAbsorption();
+		        pmanager -> AddDiscreteProcess(photonAbsorption);
+		        PhysicProcesses.push_back ("- OpticalAbsorption");
+		    }
+		    /*fRayleighScatteringProcess = new G4OpRayleigh();
+            fMieHGScatteringProcess = new G4OpMieHG();
+            pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
+            pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
+		}    
 	    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 1*GeV);
 	}
 
@@ -222,17 +196,16 @@ void PhysicsList::SetCuts()
     //SetCutValue(1000*mm, "proton");
     
     //DumpCutValuesTable();
-
 }
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)
 {
 	log << "\n--------------------------------------------------------------------"
       	   "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
-	    << PhysicsPackageCmd << ":";
+	    << "- " << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++){
-		log << "\n- " << PhysicProcesses[element];
+		log << "\n" << PhysicProcesses[element];
 	}	
 	
 	log << G4endl; 

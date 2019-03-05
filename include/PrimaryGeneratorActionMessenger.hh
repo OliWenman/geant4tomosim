@@ -14,6 +14,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
+class G4UIcmdWith3VectorAndUnit;
 
 class PrimaryGeneratorActionMessenger: public G4UImessenger 
 { 
@@ -36,6 +37,9 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;
 		
 		G4UIcmdWithAString *particleCmd;
+		G4UIcmdWith3VectorAndUnit *SetPolizationCmd;
+		
+		G4UIcmdWithADoubleAndUnit *MaxEnergyBinCmd;
 };
 
 #endif 

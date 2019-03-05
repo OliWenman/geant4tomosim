@@ -32,7 +32,7 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #RECORD EXTRA DATA
 
 fullfield_fluorescence = False 
-fullmapping_fluorescence = False
+fullmapping_fluorescence = True
 
 #-------------------------------------------------------------------
 #ENERGY VARIABLES

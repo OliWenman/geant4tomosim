@@ -41,6 +41,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	energyCmd = 30*keV;
 	EnergySigmaCmd = 0*keV;
 	SetParticleType("gamma");
+	
+	//Set the max energy value (in keV)
+    eMax = 175;
+    randPolization = true;
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -79,31 +83,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 	    }
     }
     
-    G4double angle = G4UniformRand() * 360.0*deg;
-
-    G4ThreeVector normal (1., 0., 0.);
-    G4ThreeVector kphoton;
-    
-    if(fastParticleGun){kphoton = fastParticleGun->GetParticleMomentumDirection();}
-    if(ParticleGun){kphoton = ParticleGun->GetParticleMomentumDirection();}
-    G4ThreeVector product = normal.cross(kphoton);
-    G4double modul2       = product*product;
- 
-    G4ThreeVector e_perpend (0., 0., 1.);
-    if (modul2 > 0.) e_perpend = (1./std::sqrt(modul2))*product;
-    G4ThreeVector e_paralle    = e_perpend.cross(kphoton);
- 
-    G4ThreeVector polar = std::cos(angle)*e_paralle + std::sin(angle)*e_perpend;
+    G4ThreeVector polar;
+    if (randPolization){polar = RandomPolarization();}
+    else {polar = polization;}
     
     if (EnergyDistTypeCmd == "Mono")
     { 
-        //if (particle -> GetParticleName() == "opticalphoton")
-        //{
-            //G4cout << "\nBEING USED " << G4endl;
             
-            fastParticleGun -> SetParticlePolarization(polar);
-       // }
-    
+        fastParticleGun -> SetParticlePolarization(polar);
+      
         //Allow the particles to be fired randomly within the beam width
       	G4double y0 = BeamHeightZ_Cmd*2 * (G4UniformRand()-0.5);
       	G4double z0 = BeamWidthY_Cmd*2 * (G4UniformRand()-0.5);
@@ -154,7 +142,10 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 
 	log << "\n--------------------------------------------------------------------"
 	       "\nBEAM INFORMATION: \n"
-		   "\n- Particles: " << particle -> GetParticleName();   
+		   "\n- Particles: " << particle -> GetParticleName()  
+		<< "\n- Polization: ";
+		   if (randPolization){G4cout << "random";}
+		   else {G4cout << G4BestUnit(polization, "Angle");} 
            /*"\n- Beam type: " << EnergyDistTypeCmd;
            
     if (EnergyDistTypeCmd == "Gauss")
@@ -289,13 +280,30 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
         }  
     }
     
-    //Set the max energy value (in keV)
-    eMax = 175;
-    
     data -> SetMaxEnergy(eMax);
 
     std::vector<int> ibeamEnergy(Bins, 0);
    	beamEnergy = ibeamEnergy;
+}
+
+G4ThreeVector PrimaryGeneratorAction::RandomPolarization()
+{
+    G4double angle = G4UniformRand() * 360.0*deg;
+
+    G4ThreeVector normal (1., 0., 0.);
+    
+    G4ThreeVector kphoton;
+    if(fastParticleGun){kphoton = fastParticleGun->GetParticleMomentumDirection();}
+    if(ParticleGun){kphoton = ParticleGun->GetParticleMomentumDirection();}
+    
+    G4ThreeVector product = normal.cross(kphoton);
+    G4double modul2       = product*product;
+ 
+    G4ThreeVector e_perpend (0., 0., 1.);
+    if (modul2 > 0.) e_perpend = (1./std::sqrt(modul2))*product;
+    G4ThreeVector e_paralle    = e_perpend.cross(kphoton);
+    
+    return std::cos(angle)*e_paralle + std::sin(angle)*e_perpend;
 }
 
 //========================================================================================================================
@@ -374,7 +382,6 @@ void PrimaryGeneratorAction::EstimatedTime(int Percent)
 	
 	    G4cout <<  "\rEstimated time remaining: ";
 		PrintTime(remainingTime);
-
 	}
 	else
 	{

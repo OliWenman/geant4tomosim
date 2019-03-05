@@ -277,7 +277,7 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string MaterialsName, d
     MPT -> AddProperty("REALRINDEX", energyValues, refractiveIndexes_Re, nSize); 
     MPT -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
     MPT -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);  
-    MPT -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
+    //MPT -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
    
     MaterialFound -> SetMaterialPropertiesTable(MPT); 
 }

@@ -9,7 +9,8 @@
 /physics/EM/ComptonScattering true
 /physics/EM/RayleighScattering true
 /physics/EM/Fluorescence true
-/physics/EM/Refraction false
+/physics/EM/Refraction true
+/Physics/Gamma/Absorption false
 
 #World Settings
 /world/size 1000 3.2 2.1 cm		#(Set the world size, everything must be inside of it)
@@ -26,6 +27,7 @@
 /beam/particle gamma
 /beam/position/halfx 1.05 cm
 /beam/position/halfy 1.25 cm
+/beam/MaxEnergy 30 keV
 
 /Target/CheckAllOverlaps true
 /Target/OffSet/Radius 0.0 mm			
