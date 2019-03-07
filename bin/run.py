@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import os 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+this_directory = os.path.dirname(os.path.realpath(__file__))
 
 import sys
-sys.path.insert(0, dir_path + '/../src')
+sys.path.insert(0, this_directory + '/../src')
 import G4Units as G4
 import numpy as np
 
@@ -49,9 +49,9 @@ nBins = 2000
 
 #-------------------------------------------------------------------
 #Macrofiles to add
-macrofile1 = dir_path + "/../scripts/Settings.mac" 
-macrofile2 = dir_path + "/../scripts/Geometry.mac"
-macrofile3 = dir_path + "/../scripts/Materials.mac"
+macrofile1 = this_directory + "/../scripts/Settings.mac" 
+macrofile2 = this_directory + "/../scripts/Geometry.mac"
+macrofile3 = this_directory + "/../scripts/Materials.mac"
 
 macrofiles = [macrofile3, macrofile1, macrofile2]
 
@@ -60,7 +60,7 @@ import os
 
 #Can optionally add a file path and name for the data to be saved when running script
 if __name__ == '__main__':
-    default = dir_path + "/../Output/HDF5/SimulationData.nxs"
+    default = this_directory + "/../Output/HDF5/SimulationData.nxs"
     #Input equals the option given or the default one  
     try:
         Input = sys.argv[1]

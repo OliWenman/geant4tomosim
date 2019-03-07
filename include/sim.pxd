@@ -24,3 +24,5 @@ cdef extern from "Simulation.hh":
       void SetSavingTime(double)
       
       void SetSaveLogPath(string, string)
+      
+      void OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)

@@ -205,8 +205,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		
 	    DC -> RelayToTC(NumberOfImages, rotation_angle);
 		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
-			
-        OutInfo(verboseLevel);
 	     
         //Prints the time and date of the local time that the simulation started
 		time_t now = time(0);
@@ -214,30 +212,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		tm* localtm = localtime(&now);
 
         Visualisation();
-		 
-	    //Open the file within the path set
-	    std::ofstream SaveToFile;
-        SaveToFile.open(SaveLogPath + FileName, std::fstream::app); 
-   	
-        //Output error if can't open file
-        if( !SaveToFile ){ 	
-            std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation.\n" << std::endl;
-          	exit(1);
-        }
-    
-        SettingsLog log(SaveToFile);
-
-		log << "\n--------------------------------------------------------------------"
-		       "\nMETA DATA: \n"
-
-		    << "\n- The seed used: " << seedCmd
-		    << "\n- Total number of projections being processed: " << NumberOfImages
-		    << "\n  - Dark fields: " << nDarkFlatFields
-		    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
-            << "\n- Number of photons per image: " << TotalParticles
-            << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
-                    
-        SaveToFile.close();
                 
         G4cout << "\n--------------------------------------------------------------------"
 	              "\nStarting simulation... \n";
@@ -428,8 +402,10 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::OutInfo(int verbose)
+void Simulation::OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
 {   
+    int verbose = 1;
+
     std::ofstream SaveToFile;
     
     //Try to open the file 
@@ -487,6 +463,16 @@ void Simulation::OutInfo(int verbose)
     DC -> ReadOutInfo(log);
 	PGA -> ReadOutInfo(log);
 	PL -> ReadOutInfo(log);
+	
+	log << "\n--------------------------------------------------------------------"
+		   "\nMETA DATA: \n"
+
+        << "\n- The seed used: " << seedCmd
+        << "\n- Total number of projections being processed: " << NumberOfImages
+	    << "\n  - Dark fields: " << nDarkFlatFields
+	    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
+        << "\n- Number of photons per image: " << TotalParticles
+        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
 	 
 	SaveToFile.close();
 }

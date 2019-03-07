@@ -94,15 +94,7 @@ cdef class PySim:
            
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
-           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
-           
-           if self.nexusfile.setupSuccess == False:
-              print "\nAborting run." 
-              return 
-           
-           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
-           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
-           
+           self.printInfo(TotalParticles, TotalImages, nDarkFlatFields)
            print "\nThe simulation will record the following data: "
            print "- Transmission"
            print "- The beam energy"
@@ -126,12 +118,24 @@ cdef class PySim:
                  print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
                
            if self.FFF == True:
-              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = self.Bins)
               print "- Fluorescence"
               
            if self.FFM == True:
-              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
               print "- Full mapping fluorescence"
+           
+           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
+           if self.nexusfile.setupSuccess == False:
+              print "\nAborting run." 
+              return 0
+           
+           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
+           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
+           
+           if self.FFF == True:
+              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = self.Bins)
+              
+           if self.FFM == True:
+              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
            
            iTime = time.time()
            
@@ -197,7 +201,6 @@ cdef class PySim:
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
-        
 
     #Return the image data from the simulation
     def lastImage(self):
@@ -217,6 +220,9 @@ cdef class PySim:
 
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
+        
+    def printInfo(self, TotalParticles, NumberOfImages, nDarkFlatFields):
+        self.thisptr.OutInfo(TotalParticles, NumberOfImages, nDarkFlatFields)
         
     def setFilePath(self, FilePath, NexusName, logName):
         self.SaveFilePath = FilePath

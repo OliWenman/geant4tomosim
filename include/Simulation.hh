@@ -45,9 +45,10 @@ class Simulation
 		void SetSeed(long int value){seedCmd = value;}
 		void SetVerboseLevel(int value){verboseLevel = value;}
 
+        //It's own private functions to be called by the public functions
+		void OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
+
 	private:
-		//It's own private functions to be called by the public functions
-		void OutInfo(int verbose);
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
 		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);
