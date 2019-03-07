@@ -128,6 +128,8 @@ cdef class PySim:
               print "\nAborting run." 
               return 0
            
+           self.Bins = self.thisptr.GetNumberOfBins()
+           
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
            self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
            

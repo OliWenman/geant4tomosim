@@ -104,7 +104,7 @@ Simulation::~Simulation()
 void Simulation::pyOutputOptions(bool FFF, bool FFM)
 {
 	//Tell the PrimaryGeneratorAction class what data to record
-	PGA -> SetFluoreFM(FFM);
+	//PGA -> SetFluoreFM(FFM);
 
 	//Tell the Data class what data to record
 	//data -> SetFFF(FFF);

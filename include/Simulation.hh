@@ -5,6 +5,7 @@
 #include "globals.hh"
 #include <string>
 #include "SettingsLog.hh"
+#include "Data.hh"
 
 class SimulationMessenger;
 class Data;
@@ -45,6 +46,8 @@ class Simulation
 
 		void SetSeed(long int value){seedCmd = value;}
 		void SetVerboseLevel(int value){verboseLevel = value;}
+		
+		int GetNumberOfBins(){return data -> GetNumberOfBins();}
 
         //It's own private functions to be called by the public functions
 		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);

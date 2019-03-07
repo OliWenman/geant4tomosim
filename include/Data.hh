@@ -33,6 +33,7 @@ class Data
 		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
+		G4int GetNumberOfBins(){return NoBins_Cmd;}
 		G4double GetMaxEnergy(){return MaxE;}
 		
 		bool GetFullMapping_Option(){return fluoreFullMapping;}

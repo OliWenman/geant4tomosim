@@ -27,3 +27,5 @@ cdef extern from "Simulation.hh":
       
       void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
       void PrintInfo(int)
+      
+      int GetNumberOfBins()
