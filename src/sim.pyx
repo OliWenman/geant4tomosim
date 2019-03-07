@@ -94,7 +94,7 @@ cdef class PySim:
            
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
-           self.printInfo(TotalParticles, TotalImages, nDarkFlatFields)
+           self.thisptr.PrintInfo(TotalParticles, TotalImages, nDarkFlatFields)
            print "\nThe simulation will record the following data: "
            print "- Transmission"
            print "- The beam energy"
@@ -221,8 +221,8 @@ cdef class PySim:
     def fullMapping(self):
         return np.array(self.thisptr.GetFullMapping())
         
-    def printInfo(self, TotalParticles, NumberOfImages, nDarkFlatFields):
-        self.thisptr.OutInfo(TotalParticles, NumberOfImages, nDarkFlatFields)
+    def printInfo(self, int verbose):
+        self.thisptr.PrintInfo(verbose)
         
     def setFilePath(self, FilePath, NexusName, logName):
         self.SaveFilePath = FilePath

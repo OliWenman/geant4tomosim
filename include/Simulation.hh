@@ -4,6 +4,7 @@
 #include <vector>
 #include "globals.hh"
 #include <string>
+#include "SettingsLog.hh"
 
 class SimulationMessenger;
 class Data;
@@ -46,12 +47,14 @@ class Simulation
 		void SetVerboseLevel(int value){verboseLevel = value;}
 
         //It's own private functions to be called by the public functions
-		void OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
+		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
+		void PrintInfo(int verbose);
 
 	private:
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
 		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);
+		void PrintInformation(int verbose, SettingsLog log);
 		
 		//Pointers to different classes
 		SimulationMessenger* simMessenger;

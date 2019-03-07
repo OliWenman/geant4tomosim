@@ -402,10 +402,10 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
 {   
     int verbose = 1;
-
+    
     std::ofstream SaveToFile;
     
     //Try to open the file 
@@ -417,14 +417,45 @@ void Simulation::OutInfo(unsigned long long int TotalParticles, int NumberOfImag
     
     //Create an instance of the log to output to terminal and file    
     SettingsLog log(SaveToFile);
-        
+
+    PrintInformation(verbose, log);
+	
+	log << "\n--------------------------------------------------------------------"
+		   "\nMETA DATA: \n"
+
+        << "\n- The seed used: " << seedCmd
+        << "\n- Total number of projections being processed: " << NumberOfImages
+	    << "\n  - Dark fields: " << nDarkFlatFields
+	    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
+        << "\n- Number of photons per image: " << TotalParticles
+        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
+	 
+	SaveToFile.close();
+}
+
+void Simulation::PrintInfo(int verbose)
+{
+    std::ofstream SaveToFile;
+    
+    //Try to open the file 
+    SaveToFile.open(SaveLogPath + FileName); 
+    if( !SaveToFile ) { 	
+        std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << std::endl;
+        exit(1);
+    }
+    
+    //Create an instance of the log to output to terminal and file    
+    SettingsLog log(SaveToFile);
+
+    PrintInformation(verbose, log);
+    SaveToFile.close();
+}
+
+void Simulation::PrintInformation(int verbose, SettingsLog log)
+{       
     //If the verbose has been set >= 2 output info to terminal. Will always output to textfile though
-    if (verbose >= 2){
-        log.terminalOn = true;
-    }
-    else{
-        log.terminalOn = false;
-    }
+    if (verbose >= 2) {log.terminalOn = true;}
+    else              {log.terminalOn = false;}
     
     //Loop through the macro files
     int nFiles = macrofiles.size();
@@ -452,27 +483,11 @@ void Simulation::OutInfo(unsigned long long int TotalParticles, int NumberOfImag
         ReadFile.close();
     }
     
-    if (verbose >= 1){
-        log.terminalOn = true;
-    }
-    else{
-        log.terminalOn = false;
-    }
+    if (verbose >= 1) {log.terminalOn = true;}
+    else              {log.terminalOn = false;}
     
     //Log the info from other classes
     DC -> ReadOutInfo(log);
 	PGA -> ReadOutInfo(log);
 	PL -> ReadOutInfo(log);
-	
-	log << "\n--------------------------------------------------------------------"
-		   "\nMETA DATA: \n"
-
-        << "\n- The seed used: " << seedCmd
-        << "\n- Total number of projections being processed: " << NumberOfImages
-	    << "\n  - Dark fields: " << nDarkFlatFields
-	    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
-        << "\n- Number of photons per image: " << TotalParticles
-        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
-	 
-	SaveToFile.close();
 }

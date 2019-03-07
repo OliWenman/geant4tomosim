@@ -25,4 +25,5 @@ cdef extern from "Simulation.hh":
       
       void SetSaveLogPath(string, string)
       
-      void OutInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+      void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+      void PrintInfo(int)
