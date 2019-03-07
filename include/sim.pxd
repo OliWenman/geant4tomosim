@@ -31,3 +31,6 @@ cdef extern from "Simulation.hh":
       int GetNumberOfBins()
       int GetNumberOfxPixels()
       int GetNumberOfyPixels()
+      
+      bint FullMappingFluorescence()
+      bint FullFieldFluorescence()

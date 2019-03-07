@@ -19,6 +19,9 @@ class FluorescenceSD : public G4VSensitiveDetector
 
 		void SetFFF(bool value){RecordFullField = value;}
 		void SetFFM(bool value){RecordFullMapping = value;}
+		
+		bool FullField()  {return RecordFullField;}
+		bool FullMapping(){return RecordFullMapping;}
 
   	private:
 		bool DetectorEfficiency;

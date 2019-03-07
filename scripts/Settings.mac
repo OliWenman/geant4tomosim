@@ -1,33 +1,56 @@
-#SETTINGS FOR THE SIMULATION
-#Seed settings
-/data/Seed 1551709036 #1551708890 #1551709036
-/data/verbose 1
+#SETTINGS TO CONTROL SIMULATION
 
-#Physics processes
-/physics/addPhysics/EM LivermorePhysics		#(Choose the Physics Package you want to include, refer to the README for details)
+#--------------------------------------------------------------
+# GENERAL
+
+#/simulation/verbose 0
+#/simulation/seed 0
+
+#--------------------------------------------------------------
+# PHYSICS
+
+/physics/addPhysics/EM LivermorePhysics		
 /physics/EM/PhotoElectricEffect true
 /physics/EM/ComptonScattering true
 /physics/EM/RayleighScattering true
 /physics/EM/Fluorescence true
-/physics/EM/Refraction true
+/physics/EM/Refraction false
 /Physics/Gamma/Absorption false
 
-#World Settings
-/world/size 1000 3.2 2.1 cm		#(Set the world size, everything must be inside of it)
-#/world/size 10 5 5 m	
+#--------------------------------------------------------------
+# DATA
+
+/data/Seed 0 
+/data/verbose 1
+/data/bins 2000
+/data/fluorescence/fullmapping true
+/data/fluorescence/fullfield true
+
+#--------------------------------------------------------------
+# WORLD
+
+/world/size 10 3.2 2.1 cm		
 /world/material N
-/world/visualization false	#(Wrtie data as a HepRepFile to be viewed later in HepRApp Data Browser. WARNING: Change to false for long simulations)
+/world/visualization false	
 
-#Detector Settings		
-/detector/material G4_Galactic	#(Set the material of the detectors)
-/detector/MaxEfficiency true		#(if set to true, detectors will become 100% efficient, energy deposit will be energy of particle)
-/detector/fluorescence/dimensions 2 0.01 1 cm
+#--------------------------------------------------------------
+# DETECTORS
 
-#Beam Settings
+/detector/absorption/rows 25
+/detector/absorption/columns 25
+/detector/absorption/halfdimensions 0.1 1.25 1.05 cm
+/detector/fluorescence/halfdimensions 2 0.01 1 cm
+
+#--------------------------------------------------------------
+# BEAM
+
 /beam/particle gamma
 /beam/position/halfx 1.05 cm
 /beam/position/halfy 1.25 cm
 /beam/MaxEnergy 30 keV
+
+#--------------------------------------------------------------
+# OTHER
 
 /Target/CheckAllOverlaps true
 /Target/OffSet/Radius 0.0 mm			

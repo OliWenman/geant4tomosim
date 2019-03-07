@@ -133,11 +133,11 @@ class NexusFormatter:
         
         self.image_key = self.h5file1.create_dataset(DetectorPath + 'image_key', data = np.concatenate((dataKey, flatFieldKey, darkFieldKey)))
         
-        x_pixel_sizeN = detectorDimensions[1]
-        y_pixel_sizeN = detectorDimensions[2]
+        #x_pixel_sizeN = detectorDimensions[1]
+        #y_pixel_sizeN = detectorDimensions[2]
         
-        x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_sizeN)
-        y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_sizeN)
+        #x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_sizeN)
+        #y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_sizeN)
         
         rotation = np.concatenate([rotation, np.full(nCalibrations*2, rotation[NumberOfImages - nCalibrations - 1])])
         

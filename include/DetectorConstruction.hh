@@ -5,6 +5,7 @@
 #include "G4ThreeVector.hh"
 #include "SettingsLog.hh"
 #include "AbsorptionDetector.hh"
+#include "FluorescenceDetector.hh"
 #include "TargetConstruction.hh"
 
 //My own classes
@@ -60,8 +61,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 	
 		void ReadOutInfo(SettingsLog& log);
 		
-		TargetConstruction *GetTargetConstruction(){return TC;}
-		AbsorptionDetector *GetAbsorptionDetector(){return absDetector;}
+		TargetConstruction *GetTargetConstruction()     {return TC;}
+		AbsorptionDetector *GetAbsorptionDetector()     {return absDetector;}
+		FluorescenceDetector *GetFluorescenceDetector() {return fluorescenceDetector;}
 
   	private:
 

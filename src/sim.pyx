@@ -58,7 +58,7 @@ cdef class PySim:
     def __dealloc__(self):
         del self.nexusfile
         del self.thisptr
-"""
+    """
     def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
         self.FFF = fluoreFullField
         self.FFM = fluoreFullMapping
@@ -82,13 +82,13 @@ cdef class PySim:
 
         else:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
-"""           
+    """           
     def addMacroFiles(self, macroFiles):
         self.thisptr.pyAddMacros(macroFiles)
 
     def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes):
         
-        if TotalParticles >= 1 and self.Ready == True:
+        if TotalParticles >= 1:
 
            Path = './../Output/HDF5/'
            
@@ -116,6 +116,9 @@ cdef class PySim:
                  print "  - Sigma energy:", energyArray[1][0]*1000, "keV"
               else:
                  print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
+               
+           self.FFM = self.thisptr.FullMappingFluorescence()
+           self.FFF = self.thisptr.FullFieldFluorescence()
                
            if self.FFF == True:
               print "- Fluorescence"

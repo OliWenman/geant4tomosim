@@ -27,6 +27,9 @@ class FluorescenceDetector
 
         //Set
         void SetHalfDimensions(G4ThreeVector value){halfdimensions = value;}
+        
+        //Get
+        FluorescenceSD* GetSensitiveDetector() {return sensitiveDetector;}
 
     private:
         FluorescenceDetectorMessenger* FDMessenger;

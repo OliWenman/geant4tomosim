@@ -10,7 +10,7 @@ import numpy as np
 #VARIABLES TO CHANGE
 #===================================================================
 #DETECTOR VARIABLES
-
+"""
 nDetY = 375
 nDetZ = 315
 
@@ -19,13 +19,13 @@ fullLengthDet_y = 1.25*G4.cm
 fullLengthDet_z = 1.05*G4.cm
 
 DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengthDet_z/nDetZ])
-
+"""
 #-------------------------------------------------------------------
 #IMAGE VARIABLES
 
-NumberOfImages = 1
-nDarkFlatFields = 0
-nParticles = 2*10**8#1*10**7#5*10**8
+NumberOfImages = 5
+nDarkFlatFields = 2
+nParticles = 100000#2*10**8#1*10**7#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -33,10 +33,10 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 
 #-------------------------------------------------------------------
 #RECORD EXTRA DATA
-
+"""
 fullfield_fluorescence = False 
 fullmapping_fluorescence = True
-
+"""
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
@@ -45,7 +45,6 @@ maxEnergy = 18*G4.keV
 minSigmaEnergy = 5*G4.keV
 maxSigmaEnergy = 5*G4.keV
 Gun = "Gauss"
-nBins = 2000
 
 #-------------------------------------------------------------------
 #Macrofiles to add
@@ -127,9 +126,10 @@ for e in range(NumberOfImages + nDarkFlatFields):
 import sim
 
 Sim = sim.PySim()
-
+"""
 Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
+"""
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
