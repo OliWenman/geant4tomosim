@@ -29,3 +29,5 @@ cdef extern from "Simulation.hh":
       void PrintInfo(int)
       
       int GetNumberOfBins()
+      int GetNumberOfxPixels()
+      int GetNumberOfyPixels()

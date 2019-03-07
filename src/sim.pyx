@@ -58,7 +58,7 @@ cdef class PySim:
     def __dealloc__(self):
         del self.nexusfile
         del self.thisptr
-
+"""
     def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
         self.FFF = fluoreFullField
         self.FFM = fluoreFullMapping
@@ -82,7 +82,7 @@ cdef class PySim:
 
         else:
            print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
-           
+"""           
     def addMacroFiles(self, macroFiles):
         self.thisptr.pyAddMacros(macroFiles)
 
@@ -129,6 +129,8 @@ cdef class PySim:
               return 0
            
            self.Bins = self.thisptr.GetNumberOfBins()
+           self.nDetectorsY = self.thisptr.GetNumberOfxPixels()
+           self.nDetectorsZ = self.thisptr.GetNumberOfyPixels()
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
            self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)

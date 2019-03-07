@@ -113,7 +113,7 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM)
 
 void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
 {
-    G4cout << "\nAdding detector variables...";
+    /*G4cout << "\nAdding detector variables...";
 
 	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
 
@@ -131,7 +131,7 @@ void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<
 
 	Ready = true;
 	
-	G4cout << "\nSuccess!" << G4endl;
+	G4cout << "\nSuccess!" << G4endl;*/
 }
 
 void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
@@ -234,7 +234,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
 
 	//Creates the arrays for the data, wipes them after each image
-	data -> SetUpData(DC -> GetNoDetectorsY(), DC -> GetNoDetectorsZ(), Image);
+	data -> SetUpData(DC->GetAbsorptionDetector()->GetNumberOfxPixels(), 
+	                  DC->GetAbsorptionDetector()->GetNumberOfyPixels(), 
+	                  Image);
 		
     //G4cout << "\n3.448*m = " << 3.448*m << G4endl;exit(0);
 		
@@ -420,6 +422,8 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
     SettingsLog log(SaveToFile);
 
     PrintInformation(verbose, log);
+    
+    double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
 	
 	log << "\n--------------------------------------------------------------------"
 		   "\nMETA DATA: \n"
@@ -429,7 +433,7 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
 	    << "\n  - Dark fields: " << nDarkFlatFields
 	    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
         << "\n- Number of photons per image: " << TotalParticles
-        << "\n- Number of particles per detector on average: " << TotalParticles/(DC -> GetNoDetectorsY() * DC -> GetNoDetectorsZ()) << G4endl;
+        << "\n- Number of particles per pixel on average: " << particleperpixel << G4endl;
 	 
 	SaveToFile.close();
 }

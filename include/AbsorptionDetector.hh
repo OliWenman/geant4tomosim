@@ -43,6 +43,9 @@ class AbsorptionDetector
         G4int GetRows(){return rows;}
         G4int GetColumns(){return columns;}
         
+        G4int GetNumberOfxPixels(){return rows;}
+        G4int GetNumberOfyPixels(){return columns;}
+        
     private:
         //Pointers
         AbsorptionDetectorMessenger* ADMessenger;

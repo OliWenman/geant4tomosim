@@ -1,9 +1,8 @@
 //Own classes
 #include "DetectorConstruction.hh"
 #include "DetectorConstructionMessenger.hh"
-#include "TomographySD.hh"
-#include "TomographyVSD.hh"
-#include "FluorescenceSD.hh"
+#include "AbsorptionDetector.hh"
+#include "FluorescenceDetector.hh"
 #include "Data.hh"
 #include "TargetConstruction.hh"
 //Output to console/write to file
@@ -11,9 +10,6 @@
 
 //Material database
 #include "G4NistManager.hh"
-
-//SensitiveDetector manager
-#include "G4SDManager.hh"
 
 //Solid shapes
 #include "G4Box.hh"
@@ -26,10 +22,6 @@
 //Physical volume
 #include "G4PVPlacement.hh"
 #include "G4RotationMatrix.hh"
-
-//Efficient geometry for the millions of detectors
-#include "G4PVParameterised.hh"
-#include "G4PhantomParameterisation.hh"
 
 //Particle filters
 #include "G4VSDFilter.hh"
@@ -54,19 +46,8 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 	nImage = 0;
 	WorldMaterial_Cmd = "G4_AIR";
 	
-	WarningChecked = false;
-	
-	param = NULL;
-	SolidContainer = NULL;
-	SolidPhantomBoxes = NULL;
-	container_logic = NULL;
-	PhantomBoxes_logic = NULL;
-	
-	SolidFluoDet = NULL;
-	FluoDet_logic = NULL;
-	
-	solidWorld = NULL;
-	logicWorld = NULL;
+	absDetector = new AbsorptionDetector();
+	fluorescenceDetector = new FluorescenceDetector();
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -74,21 +55,9 @@ DetectorConstruction::~DetectorConstruction()
 	//Delete the messenger and Target Construct class
 	delete detectorMessenger; 
 	delete TC;
-
-	//Delete the transmission detectors
-	if (param){delete param;}
-	if (SolidContainer){delete SolidContainer;}
-	if (SolidPhantomBoxes){delete SolidPhantomBoxes;}
-	if (container_logic){delete container_logic;}
-	if (PhantomBoxes_logic){delete PhantomBoxes_logic;}
-
-	//Delete the fluorescence detectors
-	if (SolidFluoDet){delete SolidFluoDet;}
-	if (FluoDet_logic){delete FluoDet_logic;} 
-
-	//Delete the wolrd
-	if (solidWorld){delete solidWorld;}
-	if (logicWorld){delete logicWorld;}
+	
+	delete absDetector;
+	delete fluorescenceDetector;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -98,29 +67,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	{
 		TC -> SetVisualization(Visualization_Cmd);
 
-		//Checks to see if the detectors are outside the world geometry and displays a warning message
-		if (WorldSize_Cmd.y() < DetectorSize_Cmd.y() * NoDetectorsY_Cmd)
-		{
-			G4cout << "\n////////////////////////////////////////////////////////////////////////////////"
-			       << "\n         WARNING: Detectors are outside world volume in Y direction. "
-		  	       << "\n         Needs to be at most " << G4BestUnit(WorldSize_Cmd.y()*2, "Length") << ". Currently equal to " << G4BestUnit(DetectorSize_Cmd.y()*NoDetectorsY_Cmd, "Length")
-	              	       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
-		}
-
-		if (WorldSize_Cmd.z() < DetectorSize_Cmd.z() * NoDetectorsZ_Cmd)
-		{	
-			G4cout << "\n////////////////////////////////////////////////////////////////////////////////"
-		       	       << "\n         WARNING: Detectors are outside world volume in Z direction. "
-		       	       << "\n         Needs to be at most " << G4BestUnit(WorldSize_Cmd.z()*2, "Length") << ". Currently equal to " << G4BestUnit(DetectorSize_Cmd.z()*NoDetectorsZ_Cmd, "Length")
-	                       << "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
-		}
-
 		//Create an instance of the world geometry
-		solidWorld = new G4Box("World", WorldSize_Cmd.x()+DetectorSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
+		solidWorld = new G4Box("World", WorldSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
 
 		//Creates the dimensions for the detector
-		param = new G4PhantomParameterisation();
-		SolidDetectors();	
+		absDetector -> CreateVolumes();
+        fluorescenceDetector -> CreateVolumes();
 
 		//Set the position of the fluorescence detector a distance of 5% from the world boundary 
 		FluorDetPos_Cmd = G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0);
@@ -160,31 +112,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							                         true);		//overlaps checking    
 
 	//Creates the logic and physical volumes for the detectors each run
-	LVDetectors();
+	absDetector -> AddProperties(data, Visualization_Cmd);
+    fluorescenceDetector -> AddProperties(data, Visualization_Cmd);
 	
-	//Don't place the detectors if over the limit for visualization as will be used to test geometry placement
-	if (Visualization_Cmd == true)
-	{
-	    int limit = 1000;    
-	    
-	    int nDetectors = NoDetectorsY_Cmd*NoDetectorsZ_Cmd;
-	    
-	    if (nDetectors > limit && WarningChecked == false)   
-	    {   
-	           G4cout << "\n////////////////////////////////////////////////////////////////////////////////\n"
-	                     "\n                                 WARNING:"
-	                     "\n                      TOO MANY DETECTORS TO VISUALISE!"
-	                     "\n              The limit is " << limit << ". You attempted to place " << nDetectors << 
-	                     ".\n                  Aborting the placement of the detectors.\n"
-	                     "\n////////////////////////////////////////////////////////////////////////////////" << G4endl;
-	                      
-	            WarningChecked = true;
-	    } 
-	    else if (nDetectors < limit)
-	        PVDetectors(logicWorld);
-	}
-	else 
-	    PVDetectors(logicWorld);
+	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
+	fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0));
 	
 	
 	TC -> Construct(logicWorld);
@@ -195,166 +127,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	return physWorld;
 }
 
-void DetectorConstruction::SolidDetectors()
-{
-//-----------------------------------------------------------------
-	//Tomography detectors	
-
-	G4int NoDetectorsX = 1;
-
-	G4double HalfDetectorSizeX = DetectorSize_Cmd.x();
-	G4double HalfDetectorSizeY = DetectorSize_Cmd.y();
-	G4double HalfDetectorSizeZ = DetectorSize_Cmd.z();
-
-	//Create the phantom container for the detectors to go into
-	SolidContainer = new G4Box("PhantomContainer",
-			           NoDetectorsX*HalfDetectorSizeX,
-			           NoDetectorsY_Cmd*HalfDetectorSizeY, 
-			           NoDetectorsZ_Cmd*HalfDetectorSizeZ);
-
-	//Create the dimensiosn of the phantom boxes to go inside the container
-	SolidPhantomBoxes = new G4Box("PhantomBox",
-				      HalfDetectorSizeX,
-				      HalfDetectorSizeY,
-				      HalfDetectorSizeZ);
-
-	//Voxel dimensions in the three dimensions
-	param->SetVoxelDimensions(HalfDetectorSizeX, HalfDetectorSizeY, HalfDetectorSizeZ);
-
-	//Number of voxels in the three dimensions
-	param->SetNoVoxel(NoDetectorsX, NoDetectorsY_Cmd, NoDetectorsZ_Cmd);
-
-	//Assure that the voxels are completely filling the container volume
-	param->CheckVoxelsFillContainer(SolidContainer->GetXHalfLength(),
-                                        SolidContainer->GetYHalfLength(),
-                                        SolidContainer->GetZHalfLength());
-
-//------------------------------------------------------------------
-	//FLUORESCENCE DETECTOR
-	if (FluorescenceDet == true)
-	{
-		SolidFluoDet = new G4Box("FluorescenceDetector",
-			         	         FluorDetSize_Cmd.x(),
-					             FluorDetSize_Cmd.y(),
-					             FluorDetSize_Cmd.z());
-	}
-}
-
-void DetectorConstruction::LVDetectors()
-{
-//-------------------------------------------------------------------
-	//TOMOGRAPHY DETECTORS
-
-	//Pick the material for the detectors based on if the detectors are 100% efficient or not
-	G4Material* DetMaterial;
-	if (DetectorEfficiency_Cmd == false)
-	{	
-		DetMaterial = FindMaterial(DetectorMaterial_Cmd);
-	}
-	else if (DetectorEfficiency_Cmd == true)
-	{	
-		DetMaterial = FindMaterial("G4_Galactic");
-	}
-	
-	G4MaterialPropertiesTable* MPT = DetMaterial -> GetMaterialPropertiesTable();
-	if (!MPT)
-	{
-	    MPT = new G4MaterialPropertiesTable();
-	    
-	    double energy[] = {0.2*keV};
-	    double rindex[] = {1};
-	    int size = 1;
-	    
-	    MPT -> AddProperty("RINDEX", energy, rindex, size);
-	    
-	    DetMaterial -> SetMaterialPropertiesTable(MPT);
-	}
-
-	//Creates the logical volume for the phantom container	
-	container_logic = new G4LogicalVolume(SolidContainer, 
-                					      DetMaterial, 
-                					      "LVPhantomContainer");
-
-	//The parameterised volume which uses this parameterisation is placed in the container logical volume
-	PhantomBoxes_logic = new G4LogicalVolume(SolidPhantomBoxes,
-                   				             DetMaterial,        // material is not relevant here...
-                   				             "LVPhantomBox");
-
-	//Vector of materials of the voxels
-	std::vector < G4Material* > theMaterials;
-	theMaterials.push_back(DetMaterial);
-	param -> SetMaterials(theMaterials);
-
-	//Make the detectors sensitive to hits
-	AttachSensitiveDetector(PhantomBoxes_logic, "TomographyDetector");
-
-    Visualization(container_logic, G4Colour::Red());
-	Visualization(PhantomBoxes_logic, G4Colour::Cyan());
-
-    if (NoDetectorsY_Cmd > 30 || NoDetectorsZ_Cmd > 30)
-    {
-	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
-  		//LV -> SetVisAttributes(ObjectColour);
-	    VisAttributes -> SetVisibility(false);
-	    PhantomBoxes_logic -> SetVisAttributes(VisAttributes);
-    }
-
-//------------------------------------------------------------------
-	//FLUORESCENCE DETECTOR
-	if (FluorescenceDet == true)
-	{
-		FluoDet_logic = new G4LogicalVolume(SolidFluoDet, DetMaterial, "LVFluorescenceDetector");
-
-		//Make the detectors sensitive to hits
-		AttachSensitiveDetector(FluoDet_logic, "FluorescenceDetector");
-		
-		Visualization(FluoDet_logic, G4Colour::Cyan());	
-	}
-}
-
-void DetectorConstruction::PVDetectors(G4LogicalVolume* logicMotherBox)
-{
-	G4double DetectorPosX = WorldSize_Cmd.x();
-	G4int NumberOfVoxels = NoDetectorsY_Cmd * NoDetectorsZ_Cmd;
-
-	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
-            						                      G4ThreeVector(DetectorPosX,0,0),                   // translation
-           						                          container_logic,            // logical volume
-            						                      "PhantomContainer",    // name
-            						                      logicMotherBox,           // mother volume
-            						                      false,                 // No op. bool.
-           						                          0,			//copy number
-							                              false);                    //overlap checking
-
-	//Build the phantom container
-	param -> BuildContainerSolid(container_phys);
-
-	//
-	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("PhantomBoxes",               // name
-                       						                     PhantomBoxes_logic,           // logical volume
-                        					                     container_logic,              // mother volume
-           							                             kUndefined,                  // optimisation hint
-                       						                     NumberOfVoxels, 		// number of voxels
-                       						                     param);                  // parameterisation
-
-	//Gives warning messages when set to 1?
-	PhantomBoxes_phys->SetRegularStructureId(1);
-
-//------------------------------------------------------------------
-	//FLUORESCENCE DETECTOR	
-	if (FluorescenceDet == true)
-	{
-		G4VPhysicalVolume* phyFluoDetector = new G4PVPlacement(0,
-							       	                           FluorDetPos_Cmd,
-							                                   FluoDet_logic,
-							                                   "Fluorecense detector",
-							                                   logicMotherBox,
-							                                   false,
-							                                   0,
-							                                   false);
-	}
-}
-
 G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 {
 	//Obtain pointer to NIST material manager
@@ -362,59 +134,9 @@ G4Material* DetectorConstruction::FindMaterial(G4String MaterialName)
 	return G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);;
 }
 
-void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4String TypeDetector) 
-{
-	// Avoid unnecessary work
-  	if (!volume) 
-		{return;}                  
-
-  	// Check if sensitive detector has already been created
- 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-  	G4VSensitiveDetector* theSD = SDmanager->FindSensitiveDetector(TypeDetector, false);
-
-  	if (!theSD) 
-	{
-		//If the sensitive detector hasn't already been created, create one
-		if (Visualization_Cmd == true && TypeDetector == "TomographyDetector")
-		{
-			//Create a visual detector
-			tomoVSD = new TomographyVSD("TomographyDetector", "TrackerHitsCollection", NoDetectorsY_Cmd, NoDetectorsZ_Cmd, data, DetectorEfficiency_Cmd);
-			SDmanager->AddNewDetector(tomoVSD);	// Store SD if built	
-
-			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			//tomoVSD -> SetFilter(gammaFilter);
-		}
-		else if (TypeDetector == "TomographyDetector")
-		{
-			//Create a detector optimised for perfomance
-    			tomoSD = new TomographySD("TomographyDetector", data, DetectorEfficiency_Cmd);
-			SDmanager->AddNewDetector(tomoSD);	// Store SD if built	
-
-			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			//tomoSD -> SetFilter(gammaFilter);
-		}	
-		else if (TypeDetector == "FluorescenceDetector")
-		{
-			//fluorescenceSD = new FluorescenceSD("FluorescenceDetector", data, DetectorEfficiency_Cmd);
-			//SDmanager->AddNewDetector(fluorescenceSD);
-
-			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			//fluorescenceSD -> SetFilter(gammaFilter);
-		}
-	}
-
-	//Add the correct sensitive detector to the logical volume
-	if (Visualization_Cmd == true && TypeDetector == "TomographyDetector")
-		{volume -> SetSensitiveDetector(tomoVSD);}
-	else if (TypeDetector == "TomographyDetector")
-		{volume -> SetSensitiveDetector(tomoSD);}
-	else if (TypeDetector == "FluorescenceDetector")
-		{volume -> SetSensitiveDetector(fluorescenceSD);}
-}
-
 void DetectorConstruction::Visualization(G4LogicalVolume* LV, G4Colour Colour)
 {
-    G4VisAttributes* ObjectColour = new G4VisAttributes(G4Colour(Colour));	
+    G4VisAttributes* ObjectColour = new G4VisAttributes(Colour);	
   	LV -> SetVisAttributes(ObjectColour);
 }
 
@@ -428,13 +150,11 @@ void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 {
 	TC -> ReadOutInfo();
 
-	G4ThreeVector FullDetDimensions = G4ThreeVector(DetectorSize_Cmd.x()*1, DetectorSize_Cmd.y()*NoDetectorsY_Cmd, DetectorSize_Cmd.z()*NoDetectorsZ_Cmd);
-
 	log << "\n--------------------------------------------------------------------"
 		   "\nWORLD SETUP: \n"
 	       "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
-	    << "\n- World Material: " << WorldMaterial_Cmd << "\n"
-
+	    << "\n- World Material: " << WorldMaterial_Cmd << "\n";
+    /*
            "\n--------------------------------------------------------------------"
 	       "\nTHE DETECTOR SETUP: \n"
 
@@ -456,11 +176,6 @@ void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 	else{	
 		log << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
 	}
-	
-}
-
-TargetConstruction* DetectorConstruction::GetTargetConstruction()
-{
-    return TC;
+	*/
 }
 

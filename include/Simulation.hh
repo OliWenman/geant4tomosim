@@ -6,6 +6,8 @@
 #include <string>
 #include "SettingsLog.hh"
 #include "Data.hh"
+#include "AbsorptionDetector.hh"
+#include "DetectorConstruction.hh"
 
 class SimulationMessenger;
 class Data;
@@ -48,6 +50,8 @@ class Simulation
 		void SetVerboseLevel(int value){verboseLevel = value;}
 		
 		int GetNumberOfBins(){return data -> GetNumberOfBins();}
+		int GetNumberOfxPixels(){return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
+		int GetNumberOfyPixels(){return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
 
         //It's own private functions to be called by the public functions
 		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
