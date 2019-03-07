@@ -2,6 +2,7 @@
 #define FluorescenceSD_h 1
 
 #include "G4VSensitiveDetector.hh"
+#include "TrackerHit.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -10,13 +11,14 @@ class Data;
 class FluorescenceSD : public G4VSensitiveDetector
 {
   	public:
-		FluorescenceSD(const G4String& name, Data* data, const G4bool DetEfficiency);
-    		~FluorescenceSD();
+		FluorescenceSD(Data* data, bool graphics);
+    	~FluorescenceSD();
   
-    		G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* );
+    	virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
+    	virtual void   Initialize(G4HCofThisEvent* hitCollection);
 
-		void SetFFF(bool value){fluoreFullField = value;}
-		void SetFFM(bool value){fluoreFullMapping = value;}
+		void SetFFF(bool value){RecordFullField = value;}
+		void SetFFM(bool value){RecordFullMapping = value;}
 
   	private:
 		bool DetectorEfficiency;
@@ -24,9 +26,11 @@ class FluorescenceSD : public G4VSensitiveDetector
 
 		//Pointers to different classes
 		Data* data;
+		TrackerHitsCollection* fHitsCollection;
 
-		bool fluoreFullField;
-		bool fluoreFullMapping;
+		bool RecordFullField;
+		bool RecordFullMapping;
+		bool GraphicsOn;
 		
 		
 };

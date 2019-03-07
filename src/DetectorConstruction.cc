@@ -395,11 +395,11 @@ void DetectorConstruction::AttachSensitiveDetector(G4LogicalVolume* volume, G4St
 		}	
 		else if (TypeDetector == "FluorescenceDetector")
 		{
-			fluorescenceSD = new FluorescenceSD("FluorescenceDetector", data, DetectorEfficiency_Cmd);
-			SDmanager->AddNewDetector(fluorescenceSD);
+			//fluorescenceSD = new FluorescenceSD("FluorescenceDetector", data, DetectorEfficiency_Cmd);
+			//SDmanager->AddNewDetector(fluorescenceSD);
 
-			G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-			fluorescenceSD -> SetFilter(gammaFilter);
+			//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+			//fluorescenceSD -> SetFilter(gammaFilter);
 		}
 	}
 
