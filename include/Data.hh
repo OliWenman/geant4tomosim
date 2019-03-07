@@ -8,6 +8,8 @@
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 
+class DataMessenger;
+
 class Data
 {
 	public:
@@ -46,10 +48,11 @@ class Data
 		void SetHalfDetectorDimensions(G4ThreeVector value){halfDetectorDimensions = value;}
 		void SetParticlePosition(G4ThreeVector value){ParticlePosition = value;}
 
-		void SetFFF(bool value){fluoreFullField = value;}
-		void SetFFM(bool value){fluoreFullMapping = value;}
+		void SetFullFieldFluorescence(bool value)  {fluoreFullField = value;}
+		void SetFullMappingFluorescence(bool value){fluoreFullMapping = value;}
 
 	private:	
+	    DataMessenger* dataMessenger;
 
 		//Data members
 		std::vector<int> HitDataArray;

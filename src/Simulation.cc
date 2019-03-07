@@ -107,8 +107,8 @@ void Simulation::pyOutputOptions(bool FFF, bool FFM)
 	PGA -> SetFluoreFM(FFM);
 
 	//Tell the Data class what data to record
-	data -> SetFFF(FFF);
-	data -> SetFFM(FFM);
+	//data -> SetFFF(FFF);
+	//data -> SetFFM(FFM);
 }
 
 void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
@@ -205,6 +205,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		
 	    DC -> RelayToTC(NumberOfImages, rotation_angle);
 		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
+		PGA -> SetFluoreFM(data -> GetFullMapping_Option());
 	     
         //Prints the time and date of the local time that the simulation started
 		time_t now = time(0);

@@ -1,10 +1,16 @@
 #include "Data.hh"
+#include "DataMessenger.hh"
 #include <iomanip>
-#include <fstream>
 
-Data::Data(){}
+Data::Data()
+{
+    dataMessenger = new DataMessenger(this);
+}
 
-Data::~Data(){}
+Data::~Data()
+{
+    delete dataMessenger;
+}
 
 void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 {
@@ -57,20 +63,21 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 void Data::SaveFluorescence(double E)//
 {
     int bin = floor(E*1000/(MaxE/NoBins_Cmd));
-    if (bin > NoBins_Cmd - 1){
-        bin = NoBins_Cmd -1;}
+    if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
 
 	++fluorescence[bin];
 }
 
 void Data::SaveFullMapping(double E)
 {	
-	G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2) + 0.5*rows);
-	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
+	//G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2) + 0.5*rows);
+	//G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
 
+    G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2/rows) + 0.5*rows);
+	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2/columns) + 0.5*columns);
+	
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
-    if (eBin > NoBins_Cmd - 1){
-       eBin = NoBins_Cmd -1;}
+    if (eBin > NoBins_Cmd - 1) {eBin = NoBins_Cmd -1;}
 
 	++fullMappingFluore[xBin][yBin][eBin];
 }
