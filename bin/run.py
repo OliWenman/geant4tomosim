@@ -9,34 +9,16 @@ import numpy as np
 
 #VARIABLES TO CHANGE
 #===================================================================
-#DETECTOR VARIABLES
-"""
-nDetY = 375
-nDetZ = 315
-
-fullLengthDet_x = 1*G4.um
-fullLengthDet_y = 1.25*G4.cm
-fullLengthDet_z = 1.05*G4.cm
-
-DetectorDimensions = np.array([fullLengthDet_x, fullLengthDet_y/nDetY, fullLengthDet_z/nDetZ])
-"""
-#-------------------------------------------------------------------
 #IMAGE VARIABLES
 
 NumberOfImages = 5
 nDarkFlatFields = 2
-nParticles = 100000#2*10**8#1*10**7#5*10**8
+nParticles = 1000#2*10**8#1*10**7#5*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
 rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num = NumberOfImages, endpoint = False)
 
-#-------------------------------------------------------------------
-#RECORD EXTRA DATA
-"""
-fullfield_fluorescence = False 
-fullmapping_fluorescence = True
-"""
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 

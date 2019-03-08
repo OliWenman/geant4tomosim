@@ -263,10 +263,10 @@ void Simulation::Visualisation()
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (DC -> GetVisualization() == true)
 	{	
+        PrintToEndOfTerminal('-');
+        G4cout << "GRAPHICS TURNED ON!";
 		visManager = new G4VisExecutive("quiet");
-
 		visManager -> Initialize();
-
         //Make the name of the file the same as the logname, remove the "_log.txt" at the end and replace with _vis
         std::string visFileName = FileName.substr (0, FileName.length() - 8) + "_vis";    
         
@@ -300,7 +300,7 @@ void Simulation::Visualisation()
 		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + filePath);
 		UImanager -> ApplyCommand("/vis/heprep/setFileName " + visFileName);
 		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh false");
-		UImanager -> ApplyCommand("/vis/verbose errors");
+		//UImanager -> ApplyCommand("/vis/verbose errors");
 		UImanager -> ApplyCommand("/vis/viewer/flush");
 		UImanager -> ApplyCommand("/vis/drawVolume");
 		
@@ -320,7 +320,7 @@ void Simulation::Visualisation()
 		UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
 		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
 		
-		G4cout << "\nGRAPHICS HAVE BEEN ENABLED! \nSaving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;
+		G4cout << "\nSaving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;
 			
 		PGA -> SetProgressBar(false);
 	}
@@ -434,6 +434,8 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
         << "\n- Number of photons per image: " << TotalParticles
         << "\n- Number of particles per pixel on average: " << particleperpixel;
     PrintToEndOfTerminal(log, '-');
+    
+    log << std::flush;
 	 
 	SaveToFile.close();
 }
@@ -468,7 +470,7 @@ void Simulation::PrintInformation(int verbose, SettingsLog log)
     {      
         std::ifstream ReadFile;
         
-        //PrintToEndOfTerminal(log, '-');
+        PrintToEndOfTerminal(log, '-');
         //Try to open the macro file      
         ReadFile.open(macrofiles[n]);
         if (!ReadFile) {

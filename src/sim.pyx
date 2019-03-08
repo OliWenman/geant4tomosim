@@ -126,13 +126,13 @@ cdef class PySim:
            if self.FFM == True:
               print "- Full mapping fluorescence"
            
-           rows, columns = os.popen('stty size', 'r').read().split()
-           for i in range(int(columns)):
+           windowRows, windowColumns = os.popen('stty size', 'r').read().split()
+           for i in range(int(windowColumns)):
               sys.stdout.write('-')
            
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:
-              print "\nAborting run." 
+              print "\nAborting run..." 
               return 0
            
            self.Bins = self.thisptr.GetNumberOfBins()

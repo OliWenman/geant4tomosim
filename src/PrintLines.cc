@@ -27,9 +27,9 @@ void PrintToEndOfTerminal(SettingsLog stream, char symbol)
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     
-    G4cout << "\n";
+    stream << "\n";
     for (int i = 0; i < w.ws_col ; i++){stream << symbol;}
-    G4cout << G4endl;
+    stream << "\n";
 }
 
 void PrintToEndOfTerminal(char symbol)
