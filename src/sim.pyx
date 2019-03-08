@@ -12,39 +12,17 @@ import NexusFormatter
 
 cdef class PySim:
 
-    #Hold a C++ instance which we're wrapping
-    cdef Simulation *thisptr     
-    
+    cdef Simulation *thisptr        
     cdef public nexusfile
-
-    #Makes the following available in Python-space:
-    #Detector variables
-    cdef public int nDetectorsY
-    cdef public int nDetectorsZ
-    cdef public int Bins
-    cdef public DetDimensions
-
-    #Output options for the simulation
-    cdef public bint FFF 
-    cdef public bint FFM 
-    cdef public bint BE 
 
     #Simulation time
     cdef public double SimTime
-
-    #Boolean if simulation is ready to go
-    cdef public bint Ready
     
-    cdef public str SaveFilePath
-    
+    cdef public str SaveFilePath  
     cdef public str NexusName
   
     #Constructor, create an instance of the C++ class
     def __cinit__(self):
-        self.Ready = False
-        self.FFF = False
-        self.FFM = False
-        self.BE = True
        
         #Creates the default path to save file 
         WorkingDirectory = os.path.dirname(os.getcwd())
@@ -117,13 +95,13 @@ cdef class PySim:
               else:
                  print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
                
-           self.FFM = self.thisptr.FullMappingFluorescence()
-           self.FFF = self.thisptr.FullFieldFluorescence()
+           FMFluorescence = self.thisptr.FullMappingFluorescence()
+           FFFluorescence = self.thisptr.FullFieldFluorescence()
                
-           if self.FFF == True:
-              print "- Fluorescence"
+           if FMFluorescence == True:
+              print "- Full field fluorescence"
               
-           if self.FFM == True:
+           if FFFluorescence == True:
               print "- Full mapping fluorescence"
            
            windowRows, windowColumns = os.popen('stty size', 'r').read().split()
@@ -135,18 +113,18 @@ cdef class PySim:
               print "\nAborting run..." 
               return 0
            
-           self.Bins = self.thisptr.GetNumberOfBins()
-           self.nDetectorsY = self.thisptr.GetNumberOfxPixels()
-           self.nDetectorsZ = self.thisptr.GetNumberOfyPixels()
+           nBins = self.thisptr.GetNumberOfBins()
+           xPixels = self.thisptr.GetNumberOfxPixels()
+           yPixels = self.thisptr.GetNumberOfyPixels()
            
-           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, self.nDetectorsZ, self.nDetectorsY, self.DetDimensions, rotation_angles)
-           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = self.Bins)
+           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, yPixels, xPixels, self.thisptr.GetAbsorptionDetectorHalfDimensions(), rotation_angles)
+           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = nBins)
            
-           if self.FFF == True:
-              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = self.Bins)
+           if FFFluorescence == True:
+              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = nBins)
               
-           if self.FFM == True:
-              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = self.Bins, xBins = self.nDetectorsY, yBins = self.nDetectorsZ)
+           if FMFluorescence == True:
+              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = nBins, xBins = xPixels, yBins = yPixels)
            
            iTime = time.time()
            
@@ -165,7 +143,7 @@ cdef class PySim:
                gunType = gunTypes[CurrentImage]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType), (-1, self.nDetectorsY))  
+               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType), (-1, xPixels))  
                
                iSavingTime = time.time()
                
@@ -176,18 +154,18 @@ cdef class PySim:
                   
                   self.nexusfile.AddxAxis("Beam_Energy", energyBins)
                   
-                  if self.FFF == True:
+                  if FFFluorescence == True:
                      self.nexusfile.AddxAxis("Fluorescence", energyBins)
                      
-                  if self.FFM == True:
+                  if FMFluorescence == True:
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
                self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
                
-               if self.FFF == True:
+               if FFFluorescence == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
                   
-               if self.FFM == True:
+               if FMFluorescence == True:
                   self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = CurrentImage)
                
                eSavingTime = time.time()
@@ -214,8 +192,8 @@ cdef class PySim:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
 
     #Return the image data from the simulation
-    def lastImage(self):
-        return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
+    #def lastImage(self):
+    #    return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
     
     def photonTransmission(self):
         return np.sum(self.thisptr.GetLastImage())

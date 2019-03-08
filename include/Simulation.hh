@@ -52,12 +52,12 @@ class Simulation
 		void SetSeed(long int value){seedCmd = value;}
 		void SetVerboseLevel(int value){verboseLevel = value;}
 		
-		int GetNumberOfBins(){return data -> GetNumberOfBins();}
-		int GetNumberOfxPixels(){return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
-		int GetNumberOfyPixels(){return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
-		
-		bool FullMappingFluorescence(){return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
-		bool FullFieldFluorescence()  {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
+		int GetNumberOfBins()                                     {return data -> GetNumberOfBins();}
+		int GetNumberOfxPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
+		int GetNumberOfyPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
+		std::vector<double> GetAbsorptionDetectorHalfDimensions() {return DC->GetAbsorptionDetector()->GetHalfDimensions();}
+		bool FullMappingFluorescence()            {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
+		bool FullFieldFluorescence()              {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
 
         //It's own private functions to be called by the public functions
 		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);

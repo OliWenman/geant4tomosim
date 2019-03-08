@@ -4,6 +4,7 @@
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "SettingsLog.hh"
+#include <vector>
 
 //My own classes
 class Data;
@@ -43,8 +44,10 @@ class AbsorptionDetector
         G4int GetRows(){return rows;}
         G4int GetColumns(){return columns;}
         
-        G4int GetNumberOfxPixels(){return rows;}
-        G4int GetNumberOfyPixels(){return columns;}
+        G4int GetNumberOfxPixels()             {return rows;}
+        G4int GetNumberOfyPixels()             {return columns;}
+        G4ThreeVector GetHalfDimenions()       {return halfdimensions;}
+        std::vector<double> GetHalfDimensions(){return {halfdimensions.x(),halfdimensions.y(),halfdimensions.z()};}
         
     private:
         //Pointers
