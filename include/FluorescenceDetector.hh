@@ -3,6 +3,7 @@
 
 #include "globals.hh"
 #include "G4ThreeVector.hh"
+#include "SettingsLog.hh"
 
 //My own classes
 class Data;
@@ -24,6 +25,8 @@ class FluorescenceDetector
         void CreateVolumes(G4ThreeVector halfDimensions);
         void AddProperties(Data* data, G4bool GraphicsOn);
         void PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position);
+        
+        void ReadOutInfo(SettingsLog& log);
 
         //Set
         void SetHalfDimensions(G4ThreeVector value){halfdimensions = value;}
@@ -39,5 +42,6 @@ class FluorescenceDetector
         FluorescenceSD* sensitiveDetector;        
         
         G4ThreeVector halfdimensions;
+        G4ThreeVector position;
 };
 #endif

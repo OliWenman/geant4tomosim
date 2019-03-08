@@ -52,6 +52,6 @@
 #--------------------------------------------------------------
 # OTHER
 
-/Target/CheckAllOverlaps true
+/Target/CheckAllOverlaps false
 /Target/OffSet/Radius 0.0 mm			
 /Target/OffSet/Centre 0.0 0.0 0.0 mm

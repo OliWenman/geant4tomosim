@@ -34,6 +34,7 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <xraylib.h>
+#include "PrintLines.hh"
 
 Simulation::Simulation()
 {	
@@ -140,12 +141,13 @@ void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
     
     for (int n = 0; n < nFiles ; n++)
     {
-        G4cout << "\nReading macro file " << n + 1 << ") " << macroFiles[n] << G4endl
-               << "Adding commands..." << G4endl;
+        PrintToEndOfTerminal('-');        
+        G4cout << "Reading macro file " << n + 1 << ") " << macroFiles[n]
+               << "\nAdding commands..." << G4endl;
                
         G4int Success = UImanager -> ApplyCommand("/control/execute " + macroFiles[n]);
         
-        G4cout << "\nSuccess!" << G4endl; 
+        G4cout << "\nSuccess!"; 
     }
     
     macrofiles = macroFiles;
@@ -191,14 +193,13 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     TC -> SetSimMode(Mode);
     TC -> SetRotationAngle(rotation_angle);
        
-    runManager -> Initialize(); 
-       
     if(Image == 0)
     {		  	    
 	    int verbose;    
 	    if (verboseLevel < 2){verbose = 0;}
 	    else {verbose = verboseLevel - 2;}
 	    runManager -> SetVerboseLevel(verbose);
+	    runManager -> Initialize(); 
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	    PGA-> SetValues(data -> GetNoBins(), DC -> GetWorldSize().x());
@@ -213,9 +214,10 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		tm* localtm = localtime(&now);
 
         Visualisation();
-                
-        G4cout << "\n--------------------------------------------------------------------"
-	              "\nStarting simulation... \n";
+        
+        PrintToEndOfTerminal('-');        
+        //G4cout << "\n--------------------------------------------------------------------"
+	              "Starting simulation... \n";
 			          
 	    G4cout << "\n" << asctime(localtm);
 		    
@@ -225,9 +227,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
                       "\n================================================================================" << G4endl;
         }
 	}
-
-    //Prepare for the run that geometry has changed
-	runManager -> ReinitializeGeometry();
     
     //Prepare for next run. Check if energy or gun has changed 
     PGA -> ResetEvents(Image + 1);   
@@ -238,7 +237,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 	                  DC->GetAbsorptionDetector()->GetNumberOfyPixels(), 
 	                  Image);
 		
-    //G4cout << "\n3.448*m = " << 3.448*m << G4endl;exit(0);
+    //Prepare for the run that geometry has changed
+	runManager -> ReinitializeGeometry();
 		
     //Beam on to start the simulation
     BeamOn(TotalParticles);
@@ -425,15 +425,15 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
     
     double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
 	
-	log << "\n--------------------------------------------------------------------"
-		   "\nMETA DATA: \n"
-
-        << "\n- The seed used: " << seedCmd
+	PrintToEndOfTerminal(log, '-');
+	log << "META DATA: "
+           "\n- The seed used: " << seedCmd
         << "\n- Total number of projections being processed: " << NumberOfImages
 	    << "\n  - Dark fields: " << nDarkFlatFields
 	    << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
         << "\n- Number of photons per image: " << TotalParticles
-        << "\n- Number of particles per pixel on average: " << particleperpixel << G4endl;
+        << "\n- Number of particles per pixel on average: " << particleperpixel;
+    PrintToEndOfTerminal(log, '-');
 	 
 	SaveToFile.close();
 }
@@ -468,15 +468,14 @@ void Simulation::PrintInformation(int verbose, SettingsLog log)
     {      
         std::ifstream ReadFile;
         
+        //PrintToEndOfTerminal(log, '-');
         //Try to open the macro file      
         ReadFile.open(macrofiles[n]);
         if (!ReadFile) {
             G4cout << "\nERROR: Unable to open " << macrofiles[n] << " for log output. " << G4endl;
             exit(1); 
         }
-      
-        log << "\n--------------------------------------------------------------------"
-               "\nMacro file " << n +1 << ": " << macrofiles[n] << "\n" << G4endl; 
+        log << "Macro file " << n +1 << ": " << macrofiles[n] << "\n" << G4endl; 
       
         //Read the file
         std::string Line;    

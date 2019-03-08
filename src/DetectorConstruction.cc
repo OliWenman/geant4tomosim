@@ -37,17 +37,18 @@
 #include "G4Element.hh"
 #include "G4MaterialPropertiesTable.hh"
 
+#include "PrintLines.hh"
+
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 	
 	//Create a messenger for this class
   	detectorMessenger = new DetectorConstructionMessenger(this);	
 	TC = new TargetConstruction();
+	absDetector = new AbsorptionDetector();
+	fluorescenceDetector = new FluorescenceDetector();
 
 	nImage = 0;
 	WorldMaterial_Cmd = "G4_AIR";
-	
-	absDetector = new AbsorptionDetector();
-	fluorescenceDetector = new FluorescenceDetector();
 }
 
 DetectorConstruction::~DetectorConstruction()
@@ -150,10 +151,13 @@ void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 {
 	TC -> ReadOutInfo();
 
-	log << "\n--------------------------------------------------------------------"
-		   "\nWORLD SETUP: \n"
+	PrintToEndOfTerminal(log, '-');
+	log << "WORLD SETUP:"
 	       "\n- World dimensions: " << G4BestUnit(WorldSize_Cmd, "Length")
-	    << "\n- World Material: " << WorldMaterial_Cmd << "\n";
+	    << "\n- World Material: " << WorldMaterial_Cmd;
+	    
+	absDetector -> ReadOutInfo(log);
+	fluorescenceDetector -> ReadOutInfo(log);
     /*
            "\n--------------------------------------------------------------------"
 	       "\nTHE DETECTOR SETUP: \n"

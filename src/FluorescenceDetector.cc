@@ -18,9 +18,12 @@
 #include "G4PVPlacement.hh"
 
 #include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
 
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
+
+#include "PrintLines.hh"
 
 FluorescenceDetector::FluorescenceDetector(): sensitiveDetector(NULL)
 {
@@ -76,14 +79,25 @@ void FluorescenceDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	DetectorLV -> SetSensitiveDetector(sensitiveDetector);
 }
 
-void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
+void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector Position)
 {
     G4VPhysicalVolume* DetectorPlacement = new G4PVPlacement(0,
-							       	                           position,
-							                                   DetectorLV,
-							                                   "Fluorecense detector",
-							                                   MotherBox,
-							                                   false,
-							                                   0,
-							                                   false);
+							       	                         Position,
+							                                 DetectorLV,
+							                                "Fluorecense detector",
+							                                 MotherBox,
+							                                 false,
+							                                 0,
+							                                 false);
+	position = Position; 						          
+}
+
+void FluorescenceDetector::ReadOutInfo(SettingsLog& log)
+{
+    //log << "\n--------------------------------------------------------------------"
+    PrintToEndOfTerminal(log, '-');
+	log	<< "FLUORESCENCE DETECTOR:"
+		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length")
+		<< "\n - ";
+		    
 }

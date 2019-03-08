@@ -95,8 +95,8 @@ cdef class PySim:
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
            self.thisptr.PrintInfo(TotalParticles, TotalImages, nDarkFlatFields)
-           print "\nThe simulation will record the following data: "
-           print "- Transmission"
+           print "RECORDING THE FOLLOWING DATA: "
+           print "- Absoprtion"
            print "- The beam energy"
            monoEnergySet = len(set(energyArray[0][:]))
            sigmaEnergySet = len(set(energyArray[:][1]))
@@ -125,6 +125,10 @@ cdef class PySim:
               
            if self.FFM == True:
               print "- Full mapping fluorescence"
+           
+           rows, columns = os.popen('stty size', 'r').read().split()
+           for i in range(int(columns)):
+              sys.stdout.write('-')
            
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:

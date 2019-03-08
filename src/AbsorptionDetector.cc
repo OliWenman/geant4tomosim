@@ -17,7 +17,7 @@
 #include "G4PVPlacement.hh"
 
 #include "G4SystemOfUnits.hh"
-//#include "G4UnitsTable.hh"
+#include "G4UnitsTable.hh"
 #include "SettingsLog.hh"
 
 #include "G4Colour.hh"
@@ -155,12 +155,14 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 	PhantomBoxes_phys->SetRegularStructureId(1);
 }
 
+#include "PrintLines.hh"
+
 void AbsorptionDetector::ReadOutInfo(SettingsLog& log)
 {
-    /*log << "\n--------------------------------------------------------------------"
-		   "\nABSORPTION DETECTOR: \n"
-		   "\n - Number of cells: " << rows << " x " << columns << " = " << rows*columns <<
-		   "\n - Cell half dimensions: " << G4BestUnit(G4ThreeVector(halfdimensions.x(), halfdimensions.y()/rows, halfdimensions.z()/columns), "Length") <<
-		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length");*/
+    PrintToEndOfTerminal(log, '-');
+	log << "ABSORPTION DETECTOR:"
+		   "\n - Number of pixels: " << rows << " x " << columns << " = " << rows*columns <<
+		   "\n - Pixel half dimensions: " << G4BestUnit(G4ThreeVector(halfdimensions.x(), halfdimensions.y()/rows, halfdimensions.z()/columns), "Length") <<
+		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length");
 		    
 }

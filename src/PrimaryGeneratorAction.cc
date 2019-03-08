@@ -27,6 +27,8 @@
 #include "G4SPSAngDistribution.hh"
 #include "G4SPSEneDistribution.hh"
 
+#include "PrintLines.hh"
+
 PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), Timer()//, ProgressTracker()
 {
 	//Create a messenger for this class
@@ -60,10 +62,9 @@ void PrimaryGeneratorAction::SetParticleType(G4String type)
 {
     particle = G4ParticleTable::GetParticleTable() -> FindParticle(type); 
 	if (!particle){
-	    G4cout << "\nINVALID PARTICLE: " << type << "\nSwitching to gamma." << G4endl;
+	    G4cout << "\nINVALID PARTICLE: " << type << "\nSwitching to gamma..." << G4endl;
 	    particle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
 	}
-	G4cout << "\nThe beam is made up of " << particle -> GetParticleName() << G4endl;
 }
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
@@ -140,8 +141,8 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 {
 	G4ThreeVector BeamDimensions = G4ThreeVector(0, BeamWidthY_Cmd, BeamHeightZ_Cmd);
 
-	log << "\n--------------------------------------------------------------------"
-	       "\nBEAM INFORMATION: \n"
+	PrintToEndOfTerminal(log, '-');
+	log << "BEAM INFORMATION:"
 		   "\n- Particles: " << particle -> GetParticleName()  
 		<< "\n- Polization: ";
 		   if (randPolization){G4cout << "random";}
@@ -156,7 +157,7 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
     else
         log << "\n- Energy of the monochomatic beam: " << G4BestUnit(energyCmd, "Energy");
 	*/       
-	log << "\n- Half beam dimensions: " << G4BestUnit(BeamDimensions, "Length") << G4endl;
+	log << "\n- Half beam dimensions: " << G4BestUnit(BeamDimensions, "Length");
 }
 
 void PrimaryGeneratorAction::SetValues(int nBins, double Position)

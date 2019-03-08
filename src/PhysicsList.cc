@@ -41,6 +41,8 @@
 #include "G4UserSpecialCuts.hh"
 #include "G4RegionStore.hh"
 
+#include "PrintLines.hh"
+
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
 	//Creates the messenger class
@@ -81,7 +83,7 @@ void PhysicsList::ConstructProcess()
 {
 	//Add the transportation of the particles
 	AddTransportation();
-	//Call the method that picks the physics used
+	//Register EM physics
 	ConstructEM();
 }
 void PhysicsList::ConstructEM()
@@ -103,47 +105,41 @@ void PhysicsList::ConstructEM()
 		{
 			if(PhysicsPackageCmd == "LivermorePhysics")
 			{
-				if (PhotoElectricCmd == true)
+				if (PhotoElectricCmd)
 				{
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					PhysicProcesses.push_back ("  - Photoelectric effect");
 				}
-				if (ComptonScatteringCmd == true)
+				if (ComptonScatteringCmd)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					PhysicProcesses.push_back ("  - Compton scattering");
 				}
-				if (RayleighScatteringCmd == true)
+				if (RayleighScatteringCmd)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					PhysicProcesses.push_back ("  - Rayleigh scattering");
 				}
 			}
 			else if(PhysicsPackageCmd == "StandardPhysics")
 			{
-				if (PhotoElectricCmd == true)
+				if (PhotoElectricCmd)
 				{
 					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
 					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-					PhysicProcesses.push_back ("  - Photoelectric effect");
 				}
-				if (ComptonScatteringCmd == true)
+				if (ComptonScatteringCmd)
 				{
 					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
 					pmanager->AddDiscreteProcess(theComptonScattering); 
-					PhysicProcesses.push_back ("  - Compton scattering");
 				}
-				if (RayleighScatteringCmd == true)
+				if (RayleighScatteringCmd)
 				{
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
-					PhysicProcesses.push_back ("  - Rayleigh scattering");
 				}
 			}
 			else
@@ -155,7 +151,7 @@ void PhysicsList::ConstructEM()
 	                   << "\n================================================================================" << G4endl;
 				exit(-1);
 			}
-			if (FluorescenceCmd == true)
+			if (FluorescenceCmd)
 			{
 				//Relaxtion processes after the photoelctric effect
 				G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
@@ -163,19 +159,16 @@ void PhysicsList::ConstructEM()
   				de->SetAuger(true);   
   				de->SetPIXE(true);  
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-				PhysicProcesses.push_back ("- Fluorescence");
 			}
-		    if (RefractionCmd == true)
+		    if (RefractionCmd)
 		    {
 		        GammaOpticalRefraction* photonRefraction = new GammaOpticalRefraction();
 		        pmanager -> AddDiscreteProcess(photonRefraction);
-                PhysicProcesses.push_back ("- Refraction");
 		    }
-		    if(GammaAbsorption == true)
+		    if(GammaAbsorption)
 		    {
 		        GammaOpticalAbsorption* photonAbsorption = new GammaOpticalAbsorption();
 		        pmanager -> AddDiscreteProcess(photonAbsorption);
-		        PhysicProcesses.push_back ("- OpticalAbsorption");
 		    }
 		    /*fRayleighScatteringProcess = new G4OpRayleigh();
             fMieHGScatteringProcess = new G4OpMieHG();
@@ -200,14 +193,12 @@ void PhysicsList::SetCuts()
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)
 {
-	log << "\n--------------------------------------------------------------------"
-      	   "\nTHE FOLLOWING PHYSICS PROCESSES HAVE BEEN REGISTERED\n\n" 
-	    << "- " << PhysicsPackageCmd << ":";
+    PrintToEndOfTerminal(log, '-');
+    log << "PHYSICS PROCESSES" 
+	    << "\n- " << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++){
 		log << "\n" << PhysicProcesses[element];
 	}	
-	
-	log << G4endl; 
 }
 
