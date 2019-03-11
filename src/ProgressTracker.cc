@@ -2,13 +2,10 @@
 #include <iostream>     
 #include <iomanip>      
 
-ProgressTracker::ProgressTracker(unsigned long long int nEvents, int nRuns): Timer()
+ProgressTracker::ProgressTracker(): Timer()
 {
-    NumberOfEvents = nEvents;
-	NumberOfRuns = nRuns;
-
-    CurrentEvent = 0;
-	CurrentImage = 0;
+    NumberOfEvents = 0;
+	NumberOfRuns = 0;
 	
 	SavingTime = 0;
 
@@ -16,7 +13,6 @@ ProgressTracker::ProgressTracker(unsigned long long int nEvents, int nRuns): Tim
 	TotalProgressCheck = ImageProgressCheck = -1;
 
 	remainingTime = 0;
-	timeCheck = false;
 }
 
 ProgressTracker::~ProgressTracker()
@@ -24,31 +20,10 @@ ProgressTracker::~ProgressTracker()
 
 }
 
-//Functions to do with the progress of the simulation
-void ProgressTracker::PrintProgress(G4String Mode)
+void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
 {
-    ++CurrentEvent;
-
 	//Works out the percentage of how many events it has completed
 	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100;
-
-	//Prints only at the start of the simulation
-	if(CurrentEvent == 1 && CurrentImage == 1)
-	{	Timer.Start();	
-		
-		if (Mode == "Calibrating")
-		{
-		    G4cout << "\n================================================================================"
-		              "\n                               Calibrating..."
-	                  "\n================================================================================\n\n\n\n";
-		}
-		else if (Mode == "Simulating")
-		{
-		    G4cout << "\n================================================================================"
-		              "\n                            SIMULATION RUNNING..."
-	                  "\n================================================================================\n\n\n\n";
-	     }
-	}
 
 	//Only prints the percentage if the image number has changed
 	if (ImageProgress != ImageProgressCheck)
@@ -60,86 +35,71 @@ void ProgressTracker::PrintProgress(G4String Mode)
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << std::setw(3) << ImageProgress << "%\ complete ";
-		if (ImageProgress == 100)
-		    G4cout << "| Saving data...\n";
-		else if (ImageProgress == 0)
-		    G4cout << "                \n";
-		else 
-		    G4cout << "\n";
+		G4cout << "\033[2A" "\033[K" "\r" "Projection " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
+		
+		if (ImageProgress == 100)   {G4cout << "- Saving data...\n";}
+		else if (ImageProgress == 0){G4cout << "                \n";}
+		else                        {G4cout << "\n";}
 
 		if(TotalProgress != TotalProgressCheck)
-		{	G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
-			EstimatedTime(TotalProgress);
+		{	
+		    G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
+			EstimatedTime(TotalProgress, CurrentImage);
+			TotalProgressCheck = TotalProgress;
 		}
+		else {G4cout << "\n" "\033[40C";}
 
 		G4cout << std::flush;
 	}
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
 	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	G4cout << "\033[2A" "\033[K" "\rImage " << CurrentImage << ": " << "100%\ complete                  \n"  
-                                              "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
-		EstimatedTime(100);
+	{	
+        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " projections are complete!              \n"
+        "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
+		EstimatedTime(100, NumberOfRuns);
 		G4cout << G4endl;
 		Timer.Stop();
 	}
 }
+
 void ProgressTracker::ProgressBar(int Percent)
 {
-    int intervals = 50;
+	int intervals = 50;
 	int dProgress = 100/intervals;
 
 	G4cout << " (";
-	for (int nbar = -1; nbar < intervals ; ++nbar)
+	for (int nbar = 0; nbar < intervals ; ++nbar)
 	{
-		if (nbar*dProgress < Percent)
-			G4cout << "|";
-		else
-			G4cout << " ";
+		if (nbar*dProgress < Percent) {G4cout << "|";}
+		else                          {G4cout << " ";}
 	}
 	G4cout << ") ";
 }
-void ProgressTracker::EstimatedTime(int Percent)
+
+void ProgressTracker::EstimatedTime(int Percent, int CurrentImage)
 {
-    int interval = 2;
-
-	if (Percent % interval == 0 && Percent != 0)
-	{
-		if (timeCheck == false){
-			Timer.Stop();	
-
-			remainingTime = ((Timer.GetRealElapsed()*(100./Percent)) - Timer.GetRealElapsed()) + (SavingTime * (NumberOfRuns - CurrentImage));
+    if (Percent != 0)
+    {
+		Timer.Stop();	
+		
+		float currentTime = Timer.GetRealElapsed();
+		
+		remainingTime = ((currentTime*(100./Percent)) - currentTime) + (SavingTime * (NumberOfRuns - CurrentImage));
 	
-			PrintTime(remainingTime);
-
-			timeCheck = true;}
-
+	    G4cout <<  "\rEstimated time remaining: ";
+		PrintTime(remainingTime);
 	}
-	else if (Percent % interval != 0 && Percent != 0)
-	{	
-		timeCheck = false;
-	} 
-
-	else
-	{
-		if (Percent < interval)
-			G4cout << "\rEstimated time remaining: calculating... ";
-	}
+	else {G4cout << "\rEstimated time remaining: calculating... ";}
 }
 
 void ProgressTracker::PrintTime(double time)
 {
-    G4cout <<  "\rEstimated time remaining: ";
-
 	//Prints out the sustiable units for the estimated time 
 	if (time > 60)
 	{
-		if(time > 60*60)
-			G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";
-		else
-			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";
+		if(time > 60*60) {G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";}
+		else             {G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";}
 	}
-	else
-		G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";
+	else {G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}
 }

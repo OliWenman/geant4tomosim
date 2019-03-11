@@ -32,34 +32,21 @@ SteppingAction::~SteppingAction()
 /////////////////////////////////////////////////////////////////////////////
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
-    /*G4Track* theTrack = aStep->GetTrack();
-    
-    const G4ParticleDefinition *particle = theTrack -> GetDynamicParticle() -> GetParticleDefinition();
-    
-    //particle -> GetProcessManager() -> DumpInfo();
+    //G4int eventNum = G4RunManager::GetRunManager() -> GetCurrentEvent() -> GetEventID();
+
+    //G4Track* theTrack = aStep->GetTrack();
      
-    G4StepPoint* PreStep = aStep->GetPreStepPoint();
-    G4StepPoint* PostStep = aStep->GetPostStepPoint();
+    //G4StepPoint* PreStep = aStep->GetPreStepPoint();
+    //G4StepPoint* PostStep = aStep->GetPostStepPoint();
      
-    G4TouchableHandle touchPreStep = PreStep->GetTouchableHandle();
-    G4TouchableHandle touchPostStep = PostStep->GetTouchableHandle();
+    //G4TouchableHandle touchPreStep = PreStep->GetTouchableHandle();
+    //G4TouchableHandle touchPostStep = PostStep->GetTouchableHandle();
     
-    G4VPhysicalVolume* volumePre = touchPreStep->GetVolume();
-    G4VPhysicalVolume* volumePost = touchPostStep->GetVolume();
-    
-    G4int eventNum = G4RunManager::GetRunManager() -> GetCurrentEvent() -> GetEventID();
-    
-    const G4VProcess* process = theTrack -> GetCreatorProcess();
-    
-    G4String processName;
-    if (process)
+    //G4VPhysicalVolume* volumePre = touchPreStep->GetVolume();
+    //G4VPhysicalVolume* volumePost = touchPostStep->GetVolume();
+    /*if (volumePost)
     {
-        processName = process -> GetProcessName();
-    }
-     
-    if (volumePre)
-    { 
-        G4cout << "\n" << eventNum <<") Currentvolume  = " << volumePre -> GetName() << " -> " << theTrack -> GetParticleDefinition() -> GetParticleName();
-    }
-    */
+        G4cout << eventNum << ") volumePre = " << volumePre -> GetName() << ", volumePost = " << volumePost -> GetName() << G4endl;
+    }*/
+    
 }

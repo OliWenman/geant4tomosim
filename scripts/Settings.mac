@@ -11,10 +11,10 @@
 
 /physics/addPhysics/EM LivermorePhysics		
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
-/physics/EM/Refraction false
+/physics/EM/ComptonScattering false
+/physics/EM/RayleighScattering false
+/physics/EM/Fluorescence false
+/physics/EM/Refraction true
 /Physics/Gamma/Absorption false
 
 #--------------------------------------------------------------
@@ -23,21 +23,21 @@
 /data/Seed 0 
 /data/verbose 1
 /data/bins 2000
-/data/fluorescence/fullmapping true
-/data/fluorescence/fullfield true
+/data/fluorescence/fullmapping false
+/data/fluorescence/fullfield false
 
 #--------------------------------------------------------------
 # WORLD
 
-/world/size 10 3.2 2.1 cm		
-/world/material N
+/world/size 1000 3.2 2.1 cm		
+/world/material G4_Galactic
 /world/visualization false	
 
 #--------------------------------------------------------------
 # DETECTORS
 
-/detector/absorption/rows 25
-/detector/absorption/columns 25
+/detector/absorption/rows 250
+/detector/absorption/columns 210
 /detector/absorption/halfdimensions 0.1 1.25 1.05 cm
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 

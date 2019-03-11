@@ -28,8 +28,9 @@
 #include "G4SPSEneDistribution.hh"
 
 #include "PrintLines.hh"
+#include "ProgressTracker.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), Timer()//, ProgressTracker()
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress()
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
@@ -77,7 +78,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
         //Prints only at the start of the simulation	    
 	    if (CurrentImage == 1)
 	    {	
-	        Timer.Start();	
+	        progress.Timer.Start();	
 		    G4cout << "\n================================================================================"
 		              "\n                            SIMULATION RUNNING..."
 	                  "\n================================================================================\n\n\n\n";
@@ -89,8 +90,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     else {polar = polization;}
     
     if (EnergyDistTypeCmd == "Mono")
-    { 
-            
+    {             
         fastParticleGun -> SetParticlePolarization(polar);
       
         //Allow the particles to be fired randomly within the beam width
@@ -134,7 +134,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     ++CurrentEvent;
     
     if (ShowProgressBar == true && CurrentEvent > 1){
-        PrintProgress();}
+        progress.PrintProgress(CurrentEvent, CurrentImage);}
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
@@ -182,7 +182,6 @@ void PrimaryGeneratorAction::SetupFastParticleGun(G4double monoEnergy)
 
 void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
 {
-
     ParticleGun = new G4GeneralParticleSource();
     ParticleGun -> SetParticleDefinition(particle);
 
@@ -305,101 +304,4 @@ G4ThreeVector PrimaryGeneratorAction::RandomPolarization()
     G4ThreeVector e_paralle    = e_perpend.cross(kphoton);
     
     return std::cos(angle)*e_paralle + std::sin(angle)*e_perpend;
-}
-
-//========================================================================================================================
-//Functions to do with printing the progress of the simulation
-
-void PrimaryGeneratorAction::PrintProgress()
-{
-	//Works out the percentage of how many events it has completed
-	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100;
-
-	//Only prints the percentage if the image number has changed
-	if (ImageProgress != ImageProgressCheck)
-	{	
-		//Calculates the total progress of the simulationEnergySigmaCmd
-		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
-		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
-		
-		ImageProgressCheck = ImageProgress;
-
-		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\r" "Projection " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
-		if (ImageProgress == 100)
-		    G4cout << "- Saving data...\n";
-		else if (ImageProgress == 0)
-		    G4cout << "                \n";
-		else 
-		    G4cout << "\n";
-
-		if(TotalProgress != TotalProgressCheck)
-		{	G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
-			EstimatedTime(TotalProgress);
-			TotalProgressCheck = TotalProgress;
-		}
-		else {
-		    G4cout << "\n" "\033[40C";}
-
-		G4cout << std::flush;
-	}
-
-	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
-	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	
-        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " projections are complete!              \n"
-        "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
-		EstimatedTime(100);
-		G4cout << G4endl;
-		Timer.Stop();
-	}
-}
-
-void PrimaryGeneratorAction::ProgressBar(int Percent)
-{
-	int intervals = 50;
-	int dProgress = 100/intervals;
-
-	G4cout << " (";
-	for (int nbar = 0; nbar < intervals ; ++nbar)
-	{
-		if (nbar*dProgress < Percent)
-			G4cout << "|";
-		else
-			G4cout << " ";
-	}
-	G4cout << ") ";
-}
-
-void PrimaryGeneratorAction::EstimatedTime(int Percent)
-{
-    if (Percent != 0)
-    {
-		Timer.Stop();	
-		
-		float currentTime = Timer.GetRealElapsed();
-		
-		remainingTime = ((currentTime*(100./Percent)) - currentTime) + (SavingTime * (NumberOfRuns - CurrentImage));
-	
-	    G4cout <<  "\rEstimated time remaining: ";
-		PrintTime(remainingTime);
-	}
-	else
-	{
-		G4cout << "\rEstimated time remaining: calculating... ";
-	}
-}
-
-void PrimaryGeneratorAction::PrintTime(double time)
-{
-	//Prints out the sustiable units for the estimated time 
-	if (time > 60)
-	{
-		if(time > 60*60){
-			G4cout << std::setw(4) << std::setprecision(3) << time/(60*60) << " hours    ";}
-		else{
-			G4cout << std::setw(4) << std::setprecision(2) << time/60 << " minutes  ";}
-	}
-	else {
-        G4cout << std::setw(4) << std::setprecision(2) << int(time) << " s        ";}
 }

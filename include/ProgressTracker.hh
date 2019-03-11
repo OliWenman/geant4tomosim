@@ -5,31 +5,36 @@
 #include "G4Timer.hh"
 #include "globals.hh"
 
-struct ProgressTracker
+class ProgressTracker
 {
-    ProgressTracker(unsigned long long int nEvents, int nRuns);
-    ~ProgressTracker();
+    public:
+        ProgressTracker();
+        ~ProgressTracker();
+
+        G4Timer Timer;  
     
-    G4Timer Timer;
-    
-    //Functions to do with the progress of the simulation
-	void PrintProgress(G4String Mode);
-	void ProgressBar(int Percent);
-	void EstimatedTime(int Percent);
-	void PrintTime(double time);
+        //Functions to do with the progress of the simulation
+        void Setup(unsigned long long int nEvents, int nRuns){NumberOfEvents = nEvents; NumberOfRuns = nRuns;}
+	    void PrintProgress(int CurrentEvent, int CurrentImage);
+        void ResetEvents(){ImageProgressCheck = TotalProgressCheck = -1;}
+        void SetSavingTime(double time){SavingTime = time;}
+      
+    private:
+        void ProgressBar(int Percent);
+	    void EstimatedTime(int Percent, int CurrentImage);
+	    void PrintTime(double time);
+        
+		unsigned long long int NumberOfEvents;
+		int NumberOfRuns;
+		int ImageProgressCheck;
+		double SavingTime;
 
-	int CurrentEvent;
-	unsigned long long int NumberOfEvents;
-	int CurrentImage;
-	int NumberOfRuns;
-	int ImageProgressCheck;
-	double SavingTime;
+		int TotalProgress;
+		int TotalProgressCheck;
 
-	int TotalProgress;
-	int TotalProgressCheck;
-
-	double remainingTime;
-	bool timeCheck;
+		double remainingTime;
+		
+		bool ShowProgressBar;
 };
 
 #endif

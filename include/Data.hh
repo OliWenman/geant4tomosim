@@ -56,10 +56,11 @@ class Data
 	    DataMessenger* dataMessenger;
 
 		//Data members
-		std::vector<int> HitDataArray;
-		std::vector<double> EnergyBins;
-		std::vector<int> fluorescence;
-		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
+		std::vector<double>                                        EnergyBins;
+		std::vector<int>                                           HitDataArray;
+		std::vector<int>                                           fluorescence;
+		std::vector<std::vector<std::vector<int> > >               fullMappingFluore;
+		std::vector<std::vector<std::vector<std::vector<int> > > > diffractionData;
 
 		G4int rows;
 		G4int columns;	
@@ -72,6 +73,7 @@ class Data
 
 		bool fluoreFullField;
 		bool fluoreFullMapping;
+		bool diffraction;
 };
 
 #endif

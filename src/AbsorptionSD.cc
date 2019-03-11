@@ -4,6 +4,7 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4SDManager.hh"
+#include "G4Track.hh"
 
 AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(NULL), data(DataObject)
 {
@@ -30,6 +31,8 @@ G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
 	data -> SaveHitData(nDetector);
+	
+	//aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 	
 	if(GraphicsOn)
 	{

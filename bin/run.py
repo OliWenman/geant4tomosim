@@ -11,9 +11,9 @@ import numpy as np
 #===================================================================
 #IMAGE VARIABLES
 
-NumberOfImages = 5
-nDarkFlatFields = 2
-nParticles = 1000#2*10**8#1*10**7#5*10**8
+NumberOfImages = 1
+nDarkFlatFields = 0
+nParticles = 1*10**7
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -24,9 +24,9 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 
 minEnergy = 18*G4.keV
 maxEnergy = 18*G4.keV
-minSigmaEnergy = 5*G4.keV
-maxSigmaEnergy = 5*G4.keV
-Gun = "Gauss"
+minSigmaEnergy = 7*G4.keV
+maxSigmaEnergy = 7*G4.keV
+Gun = "Mono"
 
 #-------------------------------------------------------------------
 #Macrofiles to add

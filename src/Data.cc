@@ -26,16 +26,31 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		HitDataArray = iHitDataArray;
 		if (NoBins_Cmd > 0)
 		{
-			if (fluoreFullField == true)
+			if (fluoreFullField)
 			{
 				std::vector<int> ifluorescence (NoBins_Cmd, 0);
 				fluorescence = ifluorescence;
 			}
-			if (fluoreFullMapping == true)
+			
+			if (fluoreFullMapping)
 			{
-				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >(nDetectorsZ, std::vector<int>(NoBins_Cmd)));
+				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >
+				                                                                (nDetectorsZ, std::vector<int>
+				                                                                (NoBins_Cmd)));
 				fullMappingFluore = ifullMappingFluore;
 			}
+			
+			if (diffraction)
+			{
+			    int beamPosX = nDetectorsY;
+			    int beamPosY = nDetectorsZ;
+			    std::vector<std::vector<std::vector<std::vector<int> > > > idiffractionData (beamPosX, std::vector<std::vector<std::vector<int> > >
+			                                                                                (beamPosY, std::vector<std::vector<int> >
+			                                                                                (nDetectorsY, std::vector <int>
+			                                                                                (nDetectorsZ))));
+			    diffractionData = idiffractionData;
+			}
+			
 			std::vector<double> iEnergyBins (NoBins_Cmd, 0);
 			int Energy = 0;
 			for (int ele = 0 ; ele < NoBins_Cmd ; ele++)
