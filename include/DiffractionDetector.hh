@@ -1,5 +1,5 @@
-#ifndef RefractionDetector_h
-#define RefractionDetector_h 1
+#ifndef DiffractionDetector_h
+#define DiffractionDetector_h 1
 
 #include "globals.hh"
 #include "G4ThreeVector.hh"
@@ -8,7 +8,7 @@
 
 //My own classes
 class Data;
-class RefractionSD;
+class DiffractionSD;
 //class AbsorptionDetectorMessenger;
 
 //Solids, logic volume and physical volume for the geometry
@@ -23,11 +23,11 @@ class G4PhantomParameterisation;
 class G4Material;
 class G4Colour;
 
-class RefractionDetector
+class DiffractionDetector
 {
     public:
-        RefractionDetector();
-        ~RefractionDetector();
+        DiffractionDetector();
+        ~DiffractionDetector();
     
         void CreateVolumes();
         void AddProperties(Data* data, G4bool GraphicsOn);
@@ -37,8 +37,11 @@ class RefractionDetector
         
         //SetFunctions
         void SetHalfDimensions(G4ThreeVector value){halfdimensions = value;}
+        void SetHalfDimenions(std::vector<double> value){halfdimensions.setX(value[0]);halfdimensions.setY(value[1]);halfdimensions.setZ(value[2]);}
         void SetRows(G4int value){rows = value;}
         void SetColumns(G4int value){columns = value;}
+        void SetNumberOfxPixels(int value){rows = value;}
+        void SetNumberOfyPixels(int value){columns = value;}
         
         //GetFunctions
         G4int GetRows(){return rows;}
@@ -51,14 +54,14 @@ class RefractionDetector
         
     private:
         //Pointers
-        AbsorptionDetectorMessenger* ADMessenger;
+        //AbsorptionDetectorMessenger* ADMessenger;
         G4PhantomParameterisation* param;
         G4Box* DetectorContainer;
         G4Box* DetectorCells;
         G4LogicalVolume* DetectorContainerLV;
 		G4LogicalVolume* DetectorCellsLV;
 		
-		RefractionSD* refractSD;
+		DiffractionSD* diffraSD;
     
         //Variables
         G4int rows;

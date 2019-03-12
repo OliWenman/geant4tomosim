@@ -3,6 +3,7 @@
 #include "DetectorConstructionMessenger.hh"
 #include "AbsorptionDetector.hh"
 #include "FluorescenceDetector.hh"
+#include "DiffractionDetector.hh"
 #include "Data.hh"
 #include "TargetConstruction.hh"
 //Output to console/write to file
@@ -46,6 +47,7 @@ DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorCons
 	TC = new TargetConstruction();
 	absDetector = new AbsorptionDetector();
 	fluorescenceDetector = new FluorescenceDetector();
+	diffractionDetector = new DiffractionDetector();
 
 	nImage = 0;
 	WorldMaterial_Cmd = "G4_AIR";
@@ -59,6 +61,7 @@ DetectorConstruction::~DetectorConstruction()
 	
 	delete absDetector;
 	delete fluorescenceDetector;
+	delete diffractionDetector;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
@@ -74,9 +77,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		//Creates the dimensions for the detector
 		absDetector -> CreateVolumes();
         fluorescenceDetector -> CreateVolumes();
-
-		//Set the position of the fluorescence detector a distance of 5% from the world boundary 
-		FluorDetPos_Cmd = G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0);
+        diffractionDetector -> SetNumberOfxPixels(absDetector->GetNumberOfxPixels());
+        diffractionDetector -> SetNumberOfyPixels(absDetector->GetNumberOfyPixels());
+        diffractionDetector -> SetHalfDimensions(absDetector->GetG4VectHalfDimensions());
+        diffractionDetector ->CreateVolumes();
 	}
 	
 	G4Material* material = FindMaterial(WorldMaterial_Cmd);
@@ -115,10 +119,11 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	//Creates the logic and physical volumes for the detectors each run
 	absDetector -> AddProperties(data, Visualization_Cmd);
     fluorescenceDetector -> AddProperties(data, Visualization_Cmd);
+    diffractionDetector -> AddProperties(data, Visualization_Cmd);
 	
 	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
 	fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0));
-	
+	diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(), absDetector -> GetG4VectHalfDimensions().y()*2, 0));
 	
 	TC -> Construct(logicWorld);
 

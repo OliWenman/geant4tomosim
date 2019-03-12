@@ -45,6 +45,7 @@ class Simulation
 
 		std::vector<int> GetBeamEnergy();
 		std::vector<std::vector<std::vector<int> > > GetFullMapping();
+		std::vector<std::vector<int> > GetDiffractionData() {return data -> GetDiffractionData();}
 		void SetSavingTime(double Time);
 		
 		void SetSaveLogPath(std::string path, std::string fileName){SaveLogPath = path; FileName = fileName;}

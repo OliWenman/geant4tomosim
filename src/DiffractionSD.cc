@@ -1,20 +1,22 @@
-#include "AbsorptionSD.hh"
+#include "DiffractionSD.hh"
 #include "Data.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4SDManager.hh"
 #include "G4Track.hh"
+#include "G4RunManager.hh"
 
-AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(NULL), data(DataObject)
+DiffractionSD::DiffractionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("DiffractionDetecotor"), fHitsCollection(NULL), data(DataObject)
 {
     GraphicsOn = graphics;
-	if(GraphicsOn){collectionName.insert("AbsorptionHitsCollection");}
+	if(GraphicsOn){collectionName.insert("DiffractionHitsCollection");}
+	n = 0;
 }
 
-AbsorptionSD::~AbsorptionSD() {}
+DiffractionSD::~DiffractionSD() {}
 
-void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
+void DiffractionSD::Initialize(G4HCofThisEvent* hce)
 {	
     if(GraphicsOn)
     {
@@ -26,11 +28,16 @@ void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
     }
 }
 
-G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool DiffractionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
+    //G4cout << "\n" << n << ")DIFFRACTION HIT " << G4endl;
+    //n++;
+
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
-	data -> SaveHitData(nDetector);
+	data -> SaveDiffraction(nDetector);
+	
+	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 	
 	if(GraphicsOn)
 	{

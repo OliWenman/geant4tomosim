@@ -45,6 +45,6 @@
 /Materials/AutoOpticalProperties name=Al energy=linspace(0,100,50)[keV]
 #/Materials/AddRefractiveIndex name=Al energy=(05,06,07,08,09,10)[keV] rIndex=(1.05,1.05,1.05,1.05,1.05,1.05)
 #/Materials/AddAbsorptionLength name=Al energy=(05,06,07,08,09,10)[keV] absLength=(1,1,1,1,1,0.8)[mm]
-/Materials/PrintMaterialPropertiesTable Al
+#/Materials/PrintMaterialPropertiesTable Al
 
 #================================================

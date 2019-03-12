@@ -20,7 +20,7 @@
 /////////////////////////////////////////////////////////////////////////////
 SteppingAction::SteppingAction()
 {
-    
+    n = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,11 @@ SteppingAction::~SteppingAction()
 /////////////////////////////////////////////////////////////////////////////
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
+    /*G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    G4ThreeVector momentumDirection = aStep->GetPostStepPoint()->GetMomentumDirection();
+    
+    if (processname == "Rayl") {G4cout << n << ")" << processname << "new momentum = " << momentumDirection << G4endl; n++;}*/
+
     //G4int eventNum = G4RunManager::GetRunManager() -> GetCurrentEvent() -> GetEventID();
 
     //G4Track* theTrack = aStep->GetTrack();

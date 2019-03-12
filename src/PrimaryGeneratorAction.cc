@@ -133,8 +133,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     ++CurrentEvent;
     
-    if (ShowProgressBar == true && CurrentEvent > 1){
-        progress.PrintProgress(CurrentEvent, CurrentImage);}
+    if (ShowProgressBar == true && CurrentEvent > 1){progress.PrintProgress(CurrentEvent, CurrentImage);}
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)

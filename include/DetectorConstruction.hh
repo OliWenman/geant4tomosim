@@ -6,6 +6,7 @@
 #include "SettingsLog.hh"
 #include "AbsorptionDetector.hh"
 #include "FluorescenceDetector.hh"
+#include "DiffractionDetector.hh"
 #include "TargetConstruction.hh"
 
 //My own classes
@@ -13,6 +14,7 @@ class DetectorConstructionMessenger;
 class Data;
 class AbsorptionDetector;
 class FluorescenceDetector;
+class DiffractionDetector;
 class TargetConstruction;
 
 //Solids, logic volume and physical volume for the geometry
@@ -64,6 +66,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		TargetConstruction *GetTargetConstruction()     {return TC;}
 		AbsorptionDetector *GetAbsorptionDetector()     {return absDetector;}
 		FluorescenceDetector *GetFluorescenceDetector() {return fluorescenceDetector;}
+		DiffractionDetector *GetDiffractionDetector()   {return diffractionDetector;}
 
   	private:
 
@@ -82,23 +85,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4String WorldMaterial_Cmd;
 		G4bool Visualization_Cmd;
 
-		//Detector variables
-		/*G4int NoDetectorsY_Cmd;
-		G4int NoDetectorsZ_Cmd;
-		G4ThreeVector DetectorSize_Cmd;
-		G4String DetectorMaterial_Cmd;
-		G4bool DetectorEfficiency_Cmd;*/
-
-		G4ThreeVector FluorDetSize_Cmd;
-		G4ThreeVector FluorDetPos_Cmd;
-
 		//Image variables
 		G4int nImage;
-
-		bool FluorescenceDet;
 		
 		AbsorptionDetector* absDetector;
 		FluorescenceDetector* fluorescenceDetector;		
+		DiffractionDetector* diffractionDetector; 
 };
 
 #endif

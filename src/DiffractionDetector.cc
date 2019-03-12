@@ -1,6 +1,6 @@
-#include "AbsorptionDetector.hh"
-#include "AbsorptionDetectorMessenger.hh"
-#include "AbsorptionSD.hh"
+#include "DiffractionDetector.hh"
+//#include "RefractionDetector.hh"
+#include "DiffractionSD.hh"
 #include "Data.hh"
 //Solid shapes
 #include "G4Box.hh"
@@ -23,29 +23,29 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
-AbsorptionDetector::AbsorptionDetector()
+DiffractionDetector::DiffractionDetector()
 {
-    ADMessenger = new AbsorptionDetectorMessenger(this);
-    absorSD = NULL;
+    //ADMessenger = new AbsorptionDetectorMessenger(this);
+    diffraSD = NULL;
 }
 
-AbsorptionDetector::~AbsorptionDetector()
+DiffractionDetector::~DiffractionDetector()
 {
-    delete ADMessenger;
+    //delete ADMessenger;
 }
     
-void AbsorptionDetector::CreateVolumes()
+void DiffractionDetector::CreateVolumes()
 {
     param = new G4PhantomParameterisation();
 
 	//Create the phantom container for the detectors to go into
-	DetectorContainer = new G4Box("DetectorContainer",
+	DetectorContainer = new G4Box("DiffractionDetectorContainer",
 			                       halfdimensions.x(),
 			                       halfdimensions.y(), 
 			                       halfdimensions.z());
 
 	//Create the dimensiosn of the phantom boxes to go inside the container
-	DetectorCells = new G4Box("AbsorptionCell",
+	DetectorCells = new G4Box("DiffractionCell",
 				               halfdimensions.x()/1,
 				               halfdimensions.y()/rows,
 				               halfdimensions.z()/columns);
@@ -60,8 +60,9 @@ void AbsorptionDetector::CreateVolumes()
                                     DetectorContainer->GetZHalfLength());
 }
 
-void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
+void DiffractionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 {
+    materialName = "G4_Galactic";
 	//Pick the material for the detectors based on if the detectors are 100% efficient or not
 	G4Material* Material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
 	
@@ -82,7 +83,7 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	//Creates the logical volume for the phantom container	
 	DetectorContainerLV = new G4LogicalVolume( DetectorContainer, 
                 					           Material, 
-                					          "AbsorptionContainerLV");
+                					          "DiffractionContainerLV");
                    					      					      
     G4VisAttributes* Red = new G4VisAttributes(G4Colour::Red());	
   	DetectorContainerLV -> SetVisAttributes(Red);
@@ -90,7 +91,7 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	//The parameterised volume which uses this parameterisation is placed in the container logical volume
 	DetectorCellsLV = new G4LogicalVolume( DetectorCells,
                    				           Material,        // material is not relevant here...
-                   				          "AbsorptionCellsLV");
+                   				          "DiffractionCellsLV");
 
     G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
   	DetectorCellsLV -> SetVisAttributes(Cyan);
@@ -106,36 +107,35 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
 
-  	if (!absorSD) 
+  	if (!diffraSD) 
 	{
 		//Create a visual detector
-		absorSD = new AbsorptionSD(data, GraphicsOn);
-		SDmanager->AddNewDetector(absorSD);	// Store SD if built	
+		diffraSD = new DiffractionSD(data, GraphicsOn);
+		SDmanager->AddNewDetector(diffraSD);	// Store SD if built	
 
 		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
 		//tomoVSD -> SetFilter(gammaFilter);
 	}
 
 	//Add the sensitive detector to the logical volume
-	DetectorCellsLV -> SetSensitiveDetector(absorSD);
+	DetectorCellsLV -> SetSensitiveDetector(diffraSD);
 	
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
 	theMaterials.push_back(Material);
 	param -> SetMaterials(theMaterials);
 	
-	data -> SetHalfDetectorDimensions(halfdimensions);	 
-
+	//data -> SetHalfDetectorDimensions(halfdimensions);	 
 }
 
-void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
+void DiffractionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
 {
 	G4int NumberOfVoxels = rows * columns;
 
 	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
             						                      position,                   // translation
            						                          DetectorContainerLV,            // logical volume
-            						                      "AbsorptionContainer",    // name
+            						                      "DiffractionContainer",    // name
             						                      MotherBox,           // mother volume
             						                      false,                 // No op. bool.
            						                          0,			//copy number
@@ -145,7 +145,7 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 	param -> BuildContainerSolid(container_phys);
 
 	//
-	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("AbsorptionCells",               // name
+	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("DiffractionCells",               // name
                        						                     DetectorCellsLV,           // logical volume
                         					                     DetectorContainerLV,              // mother volume
            							                             kUndefined,                  // optimisation hint
@@ -158,12 +158,12 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 
 #include "PrintLines.hh"
 
-void AbsorptionDetector::ReadOutInfo(SettingsLog& log)
+void DiffractionDetector::ReadOutInfo(SettingsLog& log)
 {
-    PrintToEndOfTerminal(log, '-');
+    /*PrintToEndOfTerminal(log, '-');
 	log << "ABSORPTION DETECTOR:"
 		   "\n - Number of pixels: " << rows << " x " << columns << " = " << rows*columns <<
 		   "\n - Pixel half dimensions: " << G4BestUnit(G4ThreeVector(halfdimensions.x(), halfdimensions.y()/rows, halfdimensions.z()/columns), "Length") <<
 		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length");
-		    
+		    */
 }

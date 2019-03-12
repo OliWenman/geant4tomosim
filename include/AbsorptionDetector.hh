@@ -49,6 +49,7 @@ class AbsorptionDetector
         G4ThreeVector GetHalfDimenions()       {return halfdimensions;}
         std::vector<double> GetHalfDimensions(){return {halfdimensions.x(),halfdimensions.y(),halfdimensions.z()};}
         
+        G4ThreeVector GetG4VectHalfDimensions()       {return halfdimensions;}
     private:
         //Pointers
         AbsorptionDetectorMessenger* ADMessenger;

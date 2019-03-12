@@ -13,7 +13,7 @@ import numpy as np
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1*10**7
+nParticles = 1*10**8
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -22,10 +22,10 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 18*G4.keV
-maxEnergy = 18*G4.keV
-minSigmaEnergy = 7*G4.keV
-maxSigmaEnergy = 7*G4.keV
+minEnergy = 15*G4.keV
+maxEnergy = 15*G4.keV
+minSigmaEnergy = 0*G4.keV
+maxSigmaEnergy = 0*G4.keV
 Gun = "Mono"
 
 #-------------------------------------------------------------------
@@ -115,6 +115,7 @@ Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
+Sim.plotDiffraction()
 
 #Sim.printNexusTree()
 #Sim.plotBeamEnergy()

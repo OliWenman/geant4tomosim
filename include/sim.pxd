@@ -13,13 +13,11 @@ cdef extern from "Simulation.hh":
       vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
 
       vector[int] GetLastImage()
-
       vector[int] GetFluorescence()
       vector[double] GetEnergyBins()
-
       vector[int] GetBeamEnergy()
-
       vector[vector[vector[int]]] GetFullMapping()
+      vector[vector[int]] GetDiffractionData()
       
       void SetSavingTime(double)
       

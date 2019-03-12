@@ -11,11 +11,25 @@
 
 /physics/addPhysics/EM LivermorePhysics		
 /physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering false
-/physics/EM/RayleighScattering false
-/physics/EM/Fluorescence false
+/physics/EM/ComptonScattering true
+/physics/EM/RayleighScattering true
+/physics/EM/Fluorescence true
 /physics/EM/Refraction true
 /Physics/Gamma/Absorption false
+
+#/physics/gamma/livermore/photoelectric true
+#/physics/gamma/livermore/comptomscattering true
+#/physics/gamma/livermore/raylieghscattering true
+#/physics/gamma/fluorescence true
+#/physics/gamma/refraction true
+#/physics/gamma/opticalabsorption false
+#/physics/gamma/opticalrayliegh false
+
+#/physics/optical/refraction false
+#/physics/optical/absorption false
+#/physics/optical/raylieghscattering false
+#/physics/optical/meiscattering false
+
 
 #--------------------------------------------------------------
 # DATA
@@ -29,7 +43,7 @@
 #--------------------------------------------------------------
 # WORLD
 
-/world/size 1000 3.2 2.1 cm		
+/world/size 5 10 2.1 cm		
 /world/material G4_Galactic
 /world/visualization false	
 
