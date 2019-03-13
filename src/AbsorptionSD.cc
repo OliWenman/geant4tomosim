@@ -10,6 +10,7 @@ AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetect
 {
     GraphicsOn = graphics;
 	if(GraphicsOn){collectionName.insert("AbsorptionHitsCollection");}
+	n = 0;
 }
 
 AbsorptionSD::~AbsorptionSD() {}
@@ -28,6 +29,8 @@ void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
+    //G4cout << n << ")ABSORPTION HIT " << G4endl;
+    //++n;
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
 	data -> SaveHitData(nDetector);

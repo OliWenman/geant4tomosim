@@ -96,13 +96,13 @@ void DiffractionDetector::AddProperties(Data* data, G4bool GraphicsOn)
     G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
   	DetectorCellsLV -> SetVisAttributes(Cyan);
   	
-  	if (rows*columns > 30*30)
+  	/*if (rows*columns > 30*30)
     {
 	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
 	    VisAttributes -> SetVisibility(false);
 	    DetectorCellsLV -> SetVisAttributes(VisAttributes);
 	    //DetectorContainerLV -> SetDaughtersInvisible(true);
-    }
+    }*/
 	
 	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
@@ -139,7 +139,7 @@ void DiffractionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVect
             						                      MotherBox,           // mother volume
             						                      false,                 // No op. bool.
            						                          0,			//copy number
-							                              false);                    //overlap checking
+							                              true);                    //overlap checking
 
 	//Build the phantom container
 	param -> BuildContainerSolid(container_phys);

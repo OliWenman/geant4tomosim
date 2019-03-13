@@ -103,28 +103,25 @@ void PhysicsList::ConstructEM()
 		//Adds the physics that were turned on via the commands for the gamma particle
 		if(particleName == "gamma")
 		{
-			if(PhysicsPackageCmd == "LivermorePhysics")
+			if (PhotoElectricCmd)
 			{
-				if (PhotoElectricCmd)
-				{
-					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-					thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
-					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-				}
-				if (ComptonScatteringCmd)
-				{
-					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-					theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
-					pmanager->AddDiscreteProcess(theComptonScattering); 
-				}
-				if (RayleighScatteringCmd)
-				{
-					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
-					theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
-					pmanager->AddDiscreteProcess(theRayleighScattering); 
-				}
+				G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
+				thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
+				pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
 			}
-			else if(PhysicsPackageCmd == "StandardPhysics")
+			if (ComptonScatteringCmd)
+			{
+				G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
+				theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
+				pmanager->AddDiscreteProcess(theComptonScattering); 
+			}
+			if (RayleighScatteringCmd)
+			{
+				G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
+				theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
+				pmanager->AddDiscreteProcess(theRayleighScattering); 
+			}
+			/*else if(PhysicsPackageCmd == "StandardPhysics")
 			{
 				if (PhotoElectricCmd)
 				{
@@ -141,7 +138,7 @@ void PhysicsList::ConstructEM()
 					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
 				}
-			}
+			}*/
 			else
 			{
 				//Outputs an error saying if the physics inputted is not a valid input and stops the simulation

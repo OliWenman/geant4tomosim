@@ -9,20 +9,12 @@
 #--------------------------------------------------------------
 # PHYSICS
 
-/physics/addPhysics/EM LivermorePhysics		
-/physics/EM/PhotoElectricEffect true
-/physics/EM/ComptonScattering true
-/physics/EM/RayleighScattering true
-/physics/EM/Fluorescence true
-/physics/EM/Refraction true
-/Physics/Gamma/Absorption false
-
-#/physics/gamma/livermore/photoelectric true
-#/physics/gamma/livermore/comptomscattering true
-#/physics/gamma/livermore/raylieghscattering true
-#/physics/gamma/fluorescence true
-#/physics/gamma/refraction true
-#/physics/gamma/opticalabsorption false
+/physics/gamma/livermore/photoelectric true
+/physics/gamma/livermore/comptomscattering true
+/physics/gamma/livermore/raylieghscattering true
+/physics/gamma/fluorescence true
+/physics/gamma/refraction true
+/physics/gamma/opticalabsorption false
 #/physics/gamma/opticalrayliegh false
 
 #/physics/optical/refraction false
@@ -52,15 +44,15 @@
 
 /detector/absorption/rows 250
 /detector/absorption/columns 210
-/detector/absorption/halfdimensions 0.1 1.25 1.05 cm
+/detector/absorption/halfdimensions 0.001 1.25 1.05 cm
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 
 #--------------------------------------------------------------
 # BEAM
 
 /beam/particle gamma
-/beam/position/halfx 1.05 cm
-/beam/position/halfy 1.25 cm
+/beam/position/halfx 1.05 nm
+/beam/position/halfy 1.25 nm
 /beam/MaxEnergy 30 keV
 
 #--------------------------------------------------------------

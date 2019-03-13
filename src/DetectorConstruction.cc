@@ -123,7 +123,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	
 	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
 	fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0));
-	diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(), absDetector -> GetG4VectHalfDimensions().y()*2, 0));
+	diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2 , absDetector -> GetG4VectHalfDimensions().y()*2, 0));
 	
 	TC -> Construct(logicWorld);
 

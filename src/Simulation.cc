@@ -326,31 +326,6 @@ void Simulation::Visualisation()
 	}
 }
 
-//Returns the last image the simulate did
-std::vector<int> Simulation::GetLastImage(){
-	return data -> GetHitData();
-}
-//Returns the last fluorescence array
-std::vector<int> Simulation::GetFluorescence(){
-	return data -> GetFluorescence();
-}
-//Returns the x scale for the energy
-std::vector<double> Simulation::GetEnergyBins(){
-	return data -> GetEnergyBins();
-}
-//Gets the beam energy for the last image
-std::vector<int> Simulation::GetBeamEnergy(){
-	return PGA -> GetBeamEnergy();
-}
-//Gets the last full mapping fluorescence data
-std::vector<std::vector<std::vector<int> > > Simulation::GetFullMapping(){
-	return data -> GetFullMapping();
-}
-//Sets the saving time for the estimated time to take into account
-void Simulation::SetSavingTime(double Time){
-    PGA -> SetSavingTime(Time);
-}
-
 //Function to run the simulation, will repeat simulation if over max limit
 void Simulation::BeamOn(unsigned long long int nParticles)
 {

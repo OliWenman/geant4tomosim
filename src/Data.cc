@@ -40,8 +40,8 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 			{
 			    G4cout << "Creating full mapping fluorescence data set..." << G4endl;
 				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >
-				                                                                (nDetectorsZ, std::vector<int>
-				                                                                (NoBins_Cmd)));
+				                                                                           (nDetectorsZ, std::vector<int>
+				                                                                           (NoBins_Cmd)));
 				fullMappingFluore = ifullMappingFluore;
 				G4cout << "Success!" << G4endl;
 			}
@@ -52,6 +52,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 			    G4cout << "Creating diffraction data set..." << G4endl;
 			    int beamPosX = nDetectorsY;
 			    int beamPosY = nDetectorsZ;
+			    
 			    std::vector<std::vector<int> > idiffractionData (nDetectorsY, std::vector <int>
 			                                                    (nDetectorsZ));
 			    diffractionData = idiffractionData;

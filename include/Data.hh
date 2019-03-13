@@ -28,11 +28,11 @@ class Data
         void SaveDiffraction(int copyNumber);
 
 		//Get Methods
-		std::vector<int> GetHitData(){return HitDataArray;}
-		std::vector<double> GetEnergyBins(){return EnergyBins;}
-		std::vector<int> GetFluorescence(){return fluorescence;}
+		std::vector<double>                          GetEnergyBins(){return EnergyBins;}
+		std::vector<int>                             GetHitData(){return HitDataArray;}
+		std::vector<int>                             GetFluorescence(){return fluorescence;}
 		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
-		std::vector<std::vector<int> > GetDiffractionData(){return diffractionData;}
+		std::vector<std::vector<int> >               GetDiffractionData(){return diffractionData;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4int GetNumberOfBins(){return NoBins_Cmd;}
@@ -58,11 +58,11 @@ class Data
 	    DataMessenger* dataMessenger;
 
 		//Data members
-		std::vector<double>                                        EnergyBins;
-		std::vector<int>                                           HitDataArray;
-		std::vector<int>                                           fluorescence;
-		std::vector<std::vector<std::vector<int> > >               fullMappingFluore;
-		std::vector<std::vector<int> > diffractionData;
+		std::vector<double>                          EnergyBins;
+		std::vector<int>                             HitDataArray;
+		std::vector<int>                             fluorescence;
+		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
+		std::vector<std::vector<int> >               diffractionData;
 
 		G4int rows;
 		G4int columns;	

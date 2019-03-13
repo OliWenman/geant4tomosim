@@ -30,6 +30,7 @@ class AbsorptionSD : public G4VSensitiveDetector
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;
 		Data* data;
+		int n;
 };
 
 #endif

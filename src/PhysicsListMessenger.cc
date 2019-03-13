@@ -9,28 +9,28 @@
 
 PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObject)
 {
-  	physicsDirectory = new G4UIdirectory("/physics/");
+  	physicsDirectory = new G4UIdirectory("/physics");
   	physicsDirectory -> SetGuidance("Commands to activate physics models and set cuts");
 
   	PhysicsPackageCmd = new G4UIcmdWithAString("/physics/addPhysics/EM",this);  
   	PhysicsPackageCmd -> SetGuidance("Choose the type of physics package to use"); 
 
-	PhotoElectricCmd = new G4UIcmdWithABool("/physics/EM/PhotoElectricEffect",this);  
+	PhotoElectricCmd = new G4UIcmdWithABool("/physics/gamma/livermore/photoelectric",this);  
   	PhotoElectricCmd -> SetGuidance("Choose if you want the photoelectric effect true/false");
 
-	ComptonScatteringCmd = new G4UIcmdWithABool("/physics/EM/ComptonScattering",this);  
+	ComptonScatteringCmd = new G4UIcmdWithABool("/physics/gamma/livermore/comptomscattering",this);  
   	ComptonScatteringCmd -> SetGuidance("Choose if you want compton scattering true/false");
 	
-	RayleighScatteringCmd = new G4UIcmdWithABool("/physics/EM/RayleighScattering",this);  
+	RayleighScatteringCmd = new G4UIcmdWithABool("/physics/gamma/livermore/raylieghscattering",this);  
   	RayleighScatteringCmd -> SetGuidance("Choose if you want rayliegh scattering true/false");
 
-	FluorescenceCmd = new G4UIcmdWithABool("/physics/EM/Fluorescence",this);  
+	FluorescenceCmd = new G4UIcmdWithABool("/physics/gamma/fluorescence",this);  
   	FluorescenceCmd -> SetGuidance("Choose if you want fluorescence true/false");
   	
-  	GammaRefractionCmd = new G4UIcmdWithABool("/physics/EM/Refraction", this);
+  	GammaRefractionCmd = new G4UIcmdWithABool("/physics/gamma/refraction", this);
   	GammaRefractionCmd -> SetGuidance("Choose if you want refraction true/false");
   	
-  	GammaAbsorptionCmd = new G4UIcmdWithABool("/Physics/Gamma/Absorption", this);
+  	GammaAbsorptionCmd = new G4UIcmdWithABool("/physics/gamma/opticalabsorption", this);
 }
 
 PhysicsListMessenger::~PhysicsListMessenger()

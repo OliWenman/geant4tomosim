@@ -11,25 +11,24 @@ cdef extern from "Simulation.hh":
       void pySetupDetectors(int, int, vector[double], int)
       void pyAddMacros(vector[string])
       vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
-
-      vector[int] GetLastImage()
-      vector[int] GetFluorescence()
-      vector[double] GetEnergyBins()
-      vector[int] GetBeamEnergy()
-      vector[vector[vector[int]]] GetFullMapping()
-      vector[vector[int]] GetDiffractionData()
-      
-      void SetSavingTime(double)
-      
-      void SetSaveLogPath(string, string)
       
       void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
       void PrintInfo(int)
+
+      vector[int]                 GetLastImage()
+      vector[int]                 GetFluorescence()
+      vector[double]              GetEnergyBins()
+      vector[int]                 GetBeamEnergy()
+      vector[vector[vector[int]]] GetFullMapping()
+      vector[vector[int]]         GetDiffractionData()
       
       int GetNumberOfBins()
       int GetNumberOfxPixels()
       int GetNumberOfyPixels()
       vector[double] GetAbsorptionDetectorHalfDimensions()
+      
+      void SetSavingTime(double)
+      void SetSaveLogPath(string, string)
       
       bint FullMappingFluorescence()
       bint FullFieldFluorescence()

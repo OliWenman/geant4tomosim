@@ -48,7 +48,6 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
 			TotalProgressCheck = TotalProgress;
 		}
 		else {G4cout << "\n" "\033[40C";}
-
 		G4cout << std::flush;
 	}
 

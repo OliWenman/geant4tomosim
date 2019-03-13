@@ -236,20 +236,19 @@ cdef class PySim:
         plt.show()
         
     def plotDiffraction(self):
+        
         print "function being used"
         data = self.thisptr.GetDiffractionData()
         data = np.array(data)
         
-        plt.figure(220)
-        plt.plot(data[0])
-        plt.show()
-        plt.figure(330)
-        plt.plot(data[1])
-        plt.show()
+        #plt.figure(220)
+        #plt.plot(data[0])
+        #plt.show()
+        #plt.figure(330)
+        #plt.plot(data[1])
+        #plt.show()
         plt.figure(440)
-        plt.imshow(data)
+        plt.imshow(data, cmap="Greys")
+        #plt.
         plt.show()
-        #z = plt.plot(data[2])
-        #p = plt.plot(data[3])
-        
         

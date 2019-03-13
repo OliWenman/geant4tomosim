@@ -10,6 +10,7 @@
 #include "FluorescenceDetector.hh"
 #include "FluorescenceSD.hh"
 #include "DetectorConstruction.hh"
+#include "PrimaryGeneratorAction.hh"
 
 
 class SimulationMessenger;
@@ -38,31 +39,31 @@ class Simulation
 		void pyAddMacros(std::vector<std::string> macroFiles);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
 
-		//Python or C++
-		std::vector<int> GetLastImage();
-		std::vector<double> GetEnergyBins();
-		std::vector<int> GetFluorescence();
+        //It's own private functions to be called by the public functions
+		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
+		void PrintInfo(int verbose);
 
-		std::vector<int> GetBeamEnergy();
-		std::vector<std::vector<std::vector<int> > > GetFullMapping();
-		std::vector<std::vector<int> > GetDiffractionData() {return data -> GetDiffractionData();}
-		void SetSavingTime(double Time);
-		
-		void SetSaveLogPath(std::string path, std::string fileName){SaveLogPath = path; FileName = fileName;}
-
-		void SetSeed(long int value){seedCmd = value;}
-		void SetVerboseLevel(int value){verboseLevel = value;}
+        //GET FUNCTIONS
+		//Functions to return data to Python
+		std::vector<int> GetLastImage()                               {return data -> GetHitData();}
+		std::vector<double> GetEnergyBins()                                      {return data -> GetEnergyBins();}
+		std::vector<int> GetBeamEnergy()                                         {return PGA -> GetBeamEnergy();}
+		std::vector<int> GetFluorescence()                            {return data -> GetFluorescence();}
+		std::vector<std::vector<std::vector<int> > > GetFullMapping() {return data -> GetFullMapping();}
+		std::vector<std::vector<int> > GetDiffractionData()           {return data -> GetDiffractionData();}
 		
 		int GetNumberOfBins()                                     {return data -> GetNumberOfBins();}
 		int GetNumberOfxPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
 		int GetNumberOfyPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
 		std::vector<double> GetAbsorptionDetectorHalfDimensions() {return DC->GetAbsorptionDetector()->GetHalfDimensions();}
-		bool FullMappingFluorescence()            {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
-		bool FullFieldFluorescence()              {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
-
-        //It's own private functions to be called by the public functions
-		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
-		void PrintInfo(int verbose);
+		bool FullMappingFluorescence()                            {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
+		bool FullFieldFluorescence()                              {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
+		
+		//SET FUNCTIONS
+		void SetSaveLogPath(std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName;}
+		void SetSeed(long int value)                                {seedCmd = value;}
+		void SetSavingTime(double Time)                             {PGA -> SetSavingTime(Time);}
+		void SetVerboseLevel(int value)                             {verboseLevel = value;}
 
 	private:
 		void BeamOn(unsigned long long int nParticles);
