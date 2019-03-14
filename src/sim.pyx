@@ -104,9 +104,10 @@ cdef class PySim:
            if FFFluorescence == True:
               print "- Full mapping fluorescence"
            
-           windowRows, windowColumns = os.popen('stty size', 'r').read().split()
-           for i in range(int(windowColumns)):
-              sys.stdout.write('-')
+           #windowRows, windowColumns = os.popen('stty size', 'r').read().split()
+           #for i in range(int(windowColumns)):
+           #   sys.stdout.write('-')
+           self.thisptr.CalculateStorageSpace(TotalImages)
            
            self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:

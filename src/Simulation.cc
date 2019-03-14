@@ -472,3 +472,99 @@ void Simulation::PrintInformation(int verbose, SettingsLog log)
 	PGA -> ReadOutInfo(log);
 	PL -> ReadOutInfo(log);
 }
+
+#include <map>
+
+void Simulation::CalculateStorageSpace(int projections)
+{
+    double totalStorage = 0;
+    std::string unit;
+    
+    int abs_xPixels = GetNumberOfxPixels();
+    int abs_yPixels = GetNumberOfyPixels();
+    int bins = GetNumberOfBins();
+    
+    PrintToEndOfTerminal('-');
+    G4cout << "DISK SPACE REQUIRED FOR DATA: ";
+    
+    //Absorption
+    size_t absorpDataSize = sizeof(GetLastImage()[0]);
+    double absorpStorageSpace = abs_xPixels * abs_yPixels * absorpDataSize * projections;
+    totalStorage += absorpStorageSpace;
+    unit = GetStorageUnit(absorpStorageSpace);
+    G4cout << "\n- Absorption: " << absorpStorageSpace << unit;
+    
+    //Beam energy
+    size_t beam_ByteTypeSize = PGA -> GetBeamEnergyByteTypeSize();
+    double beamStorageSpace = bins * beam_ByteTypeSize * projections;
+    totalStorage += beamStorageSpace;
+    unit = GetStorageUnit(beamStorageSpace);
+    G4cout << "\n- Beam energy: " << beamStorageSpace << unit;
+    
+    //Fluorecence
+    if (data->GetFullMapping_Option())
+    {
+        size_t FMfluoresenceDataSize = sizeof(GetFullMapping()[0]);  
+        double fluorescenceStorageSpace = absorpStorageSpace*GetNumberOfBins();
+        totalStorage += fluorescenceStorageSpace;
+        unit = GetStorageUnit(fluorescenceStorageSpace);              
+        G4cout << "\n- Full mapping fluorescence: " << fluorescenceStorageSpace << unit;
+    }
+    
+    //Diffraction
+    //if ( )
+    //{
+        size_t DiffractionDataSize = data -> GetDiffractionSizeType();
+        double diffractionStorageSpace  = double(abs_xPixels) * double(abs_yPixels) *abs_xPixels * abs_yPixels * DiffractionDataSize * projections;
+        totalStorage += diffractionStorageSpace;
+        unit = GetStorageUnit(diffractionStorageSpace);   
+        G4cout << "\n- Full mapping diffraction: " << diffractionStorageSpace << unit;
+    //}
+    
+    unit = GetStorageUnit(totalStorage);
+    G4cout << "\n- Total: " << totalStorage << unit << std::flush;
+    
+    PrintToEndOfTerminal('-');
+}
+
+std::string Simulation::GetStorageUnit(double &storage)
+{
+    double peta = 1.e15;
+    double tera = 1.e12;
+    double giga = 1.e9;
+    double mega = 1.e6;
+    double kilo = 1.e3;
+    double byte = 1.;
+
+    if (storage < kilo)
+    {
+        if (storage > kilo)
+        {
+            if (storage > mega)
+            {
+                if (storage > giga)
+                {
+                    if(storage > tera)
+                    { 
+                        if(storage > peta)
+                        {
+                            storage = storage/peta;
+                            return " PB";
+                        }
+                        storage = storage/tera;
+                        return " TB";
+                    }
+                    storage = storage/giga;
+                    return " GB";
+                }
+                storage = storage/mega;
+                return " MB";
+            }
+            storage = storage/kilo;
+            return " KB";
+        }
+        storage = storage/byte;
+        return " Bytes";
+    }
+                     
+}

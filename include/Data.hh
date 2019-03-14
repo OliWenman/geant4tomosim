@@ -38,6 +38,10 @@ class Data
 		G4int GetNumberOfBins(){return NoBins_Cmd;}
 		G4double GetMaxEnergy(){return MaxE;}
 		
+		G4int GetAbsorptionSizeType(){return sizeof(HitDataArray[0]);}
+		G4int GetFullMappingFluoreSizeType(){return sizeof(fullMappingFluore[0][0][0]);}
+		G4int GetDiffractionSizeType(){return sizeof(diffractionData[0][0]);}
+		
 		bool GetFullMapping_Option(){return fluoreFullMapping;}
 		bool GetFluorescence_Option(){return fluoreFullField;}
 

@@ -42,12 +42,14 @@ class Simulation
         //It's own private functions to be called by the public functions
 		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
 		void PrintInfo(int verbose);
+		
+		void CalculateStorageSpace(int projections);
 
         //GET FUNCTIONS
 		//Functions to return data to Python
 		std::vector<int> GetLastImage()                               {return data -> GetHitData();}
-		std::vector<double> GetEnergyBins()                                      {return data -> GetEnergyBins();}
-		std::vector<int> GetBeamEnergy()                                         {return PGA -> GetBeamEnergy();}
+		std::vector<double> GetEnergyBins()                           {return data -> GetEnergyBins();}
+		std::vector<int> GetBeamEnergy()                              {return PGA -> GetBeamEnergy();}
 		std::vector<int> GetFluorescence()                            {return data -> GetFluorescence();}
 		std::vector<std::vector<std::vector<int> > > GetFullMapping() {return data -> GetFullMapping();}
 		std::vector<std::vector<int> > GetDiffractionData()           {return data -> GetDiffractionData();}
@@ -66,6 +68,7 @@ class Simulation
 		void SetVerboseLevel(int value)                             {verboseLevel = value;}
 
 	private:
+	    std::string GetStorageUnit(double &storage); 
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
 		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);

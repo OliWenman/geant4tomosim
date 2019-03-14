@@ -26,6 +26,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		std::vector<int> iHitDataArray(nDetectorsY*nDetectorsZ, 0);
 		HitDataArray = iHitDataArray;
 		G4cout << "Success!" << G4endl;
+		
 		if (NoBins_Cmd > 0)
 		{
 			if (fluoreFullField)

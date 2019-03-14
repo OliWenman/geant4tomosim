@@ -28,6 +28,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   	public:
     	PrimaryGeneratorAction(Data *data);    
     	~PrimaryGeneratorAction();
+    	
    		void GeneratePrimaries(G4Event* );
    		void SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnegy);
 		void ReadOutInfo(SettingsLog& log);
@@ -44,7 +45,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		void SetFluoreFM(bool value){FluoreFM = value;}
 		
-		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; NumberOfRuns = TotalImages; progress.Setup(value, TotalImages);}
+		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; 
+		                                                                      NumberOfRuns = TotalImages; 
+		                                                                      progress.Setup(value, TotalImages);}
 		void ResetEvents(int nImage){CurrentEvent = 0; 
 		                             CurrentImage = nImage; 
 		                             progress.ResetEvents();}
@@ -61,6 +64,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		G4double GetMaxEnergy(){return eMax;}
 
 		std::vector<int> GetBeamEnergy(){return beamEnergy;}
+		G4int GetBeamEnergyByteTypeSize(){return sizeof(beamEnergy[0]);}
 
   	private:
   	
