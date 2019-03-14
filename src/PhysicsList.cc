@@ -180,7 +180,7 @@ void PhysicsList::ConstructEM()
 
 void PhysicsList::SetCuts()
 {	
-    //SetCutValue(0.1*mm, "gamma");
+    //SetCutValue(5*mm, "gamma");
     //SetCutValue(1000*mm, "e-");
     //SetCutValue(1000*mm, "e+");
     //SetCutValue(1000*mm, "proton");

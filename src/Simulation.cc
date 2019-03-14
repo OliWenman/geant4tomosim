@@ -163,20 +163,6 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     
     double monoEnergy = gunEnergy[0];
     double sigmaEnergy = gunEnergy[1];
-
-    //Seed settings
-    if(Image == 0)
-    {		
-        if (seedCmd != 0){
-            //Set the seed sequence using inputted seed
-            srand(seedCmd);	 
-        }
-        else {
-            //Set random seed sequence with system time
-            seedCmd = time(0);
-            srand(seedCmd);	 
-        }
-    }  	    
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
@@ -399,6 +385,16 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
     PrintInformation(verbose, log);
     
     double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
+    
+    if (seedCmd != 0){
+        //Set the seed sequence using inputted seed
+        srand(seedCmd);	 
+    }
+    else {
+        //Set random seed sequence with system time
+        seedCmd = time(0);
+        srand(seedCmd);	 
+    }   
 	
 	PrintToEndOfTerminal(log, '-');
 	log << "META DATA: "
@@ -472,8 +468,6 @@ void Simulation::PrintInformation(int verbose, SettingsLog log)
 	PGA -> ReadOutInfo(log);
 	PL -> ReadOutInfo(log);
 }
-
-#include <map>
 
 void Simulation::CalculateStorageSpace(int projections)
 {

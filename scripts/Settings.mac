@@ -26,11 +26,11 @@
 #--------------------------------------------------------------
 # DATA
 
-/data/Seed 0 
+/data/Seed 1552577452
 /data/verbose 1
 /data/bins 2000
 /data/fluorescence/fullmapping false
-/data/fluorescence/fullfield false
+/data/fluorescence/fullfield true
 
 #--------------------------------------------------------------
 # WORLD
@@ -51,8 +51,8 @@
 # BEAM
 
 /beam/particle gamma
-/beam/position/halfx 1.05 nm
-/beam/position/halfy 1.25 nm
+/beam/position/halfx 1.05 cm
+/beam/position/halfy 1.25 cm
 /beam/MaxEnergy 30 keV
 
 #--------------------------------------------------------------

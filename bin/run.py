@@ -11,9 +11,9 @@ import numpy as np
 #===================================================================
 #IMAGE VARIABLES
 
-NumberOfImages = 1
+NumberOfImages = 3
 nDarkFlatFields = 0
-nParticles = 1*10**7
+nParticles = 10#1*10**7
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg

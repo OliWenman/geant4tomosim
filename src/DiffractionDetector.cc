@@ -139,7 +139,7 @@ void DiffractionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVect
             						                      MotherBox,           // mother volume
             						                      false,                 // No op. bool.
            						                          0,			//copy number
-							                              true);                    //overlap checking
+							                              false);                    //overlap checking
 
 	//Build the phantom container
 	param -> BuildContainerSolid(container_phys);
