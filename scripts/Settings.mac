@@ -55,6 +55,9 @@
 /beam/position/halfy 1.25 cm
 /beam/MaxEnergy 30 keV
 
+/gps/particle geantino
+
+
 #--------------------------------------------------------------
 # OTHER
 

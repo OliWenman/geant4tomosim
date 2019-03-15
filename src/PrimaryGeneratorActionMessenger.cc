@@ -8,6 +8,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
+#include "ParticleBeam.hh"
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun): PGAction(Gun)
 {	
@@ -72,29 +73,29 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	if( command == EnergyCmd )
   	{ 
 		EnergyCmd -> GetNewUnitValue(newValue);
-		PGAction -> SetParticleEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
+		PGAction->GetBeam()->SetMonoEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == EnergyDisTypeCmd)
 	{
-        	PGAction -> SetEnergyDistType(newValue);
+        //PGAction -> SetEnergyDistType(newValue);
 	}
 	else if( command == EnergySigmaCmd)
 	{
-        	PGAction -> SetEnergySigma(EnergySigmaCmd -> GetNewDoubleValue(newValue));
+        //PGAction -> SetEnergySigma(EnergySigmaCmd -> GetNewDoubleValue(newValue));
 	}
 	else if( command == BeamHalfXCmd)
   	{ 
 		BeamHalfXCmd -> GetNewUnitValue(newValue);
-		PGAction -> SetBeamWidthY(BeamHalfXCmd -> GetNewDoubleValue(newValue)); 
+		PGAction->GetBeam()->SetHalfX(BeamHalfXCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == BeamHalfYCmd)
   	{ 
 		BeamHalfYCmd -> GetNewUnitValue(newValue);
-		PGAction -> SetBeamHeightZ(BeamHalfYCmd -> GetNewDoubleValue(newValue)); 
+		PGAction->GetBeam()->SetHalfX(BeamHalfYCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == particleCmd)
 	{
-	    PGAction -> SetParticleType(newValue);
+	    PGAction->GetBeam()->SetParticle(newValue);
 	}
 	else if( command == SetPolizationCmd)
 	{

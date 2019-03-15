@@ -10,6 +10,8 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 
+#include "ParticleBeam.hh"
+
 class PrimaryGeneratorActionMessenger;
 class Data;
 class ProgressTracker;
@@ -20,6 +22,8 @@ class G4SPSPosDistribution;
 class G4SPSAngDistribution;
 class G4SPSEneDistribution;
 class G4GeneralParticleSource;
+
+class ParticleBeam;
 
 //It defines a single particle which hits the detectors perpendicular to the input face
 
@@ -65,6 +69,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
 		std::vector<int> GetBeamEnergy(){return beamEnergy;}
 		G4int GetBeamEnergyByteTypeSize(){return sizeof(beamEnergy[0]);}
+		
+		ParticleBeam* GetBeam(){return beam;}
 
   	private:
   	
@@ -108,6 +114,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		int NumberOfRuns;
 		
 		bool ShowProgressBar;
+		
+		ParticleBeam* beam;
 };
 
 #endif

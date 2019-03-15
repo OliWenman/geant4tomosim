@@ -3,6 +3,8 @@
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "G4GeneralParticleSource.hh"
+#include "G4VPrimaryGenerator.hh"
+
 //Output to console/write to file
 #include "SettingsLog.hh"
 
@@ -30,11 +32,12 @@
 #include "PrintLines.hh"
 #include "ProgressTracker.hh"
 
+#include "ParticleBeam.hh"
+
 PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress()
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
-
 	gunExists = false;
 	
 	ShowProgressBar = true;
@@ -48,6 +51,8 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	//Set the max energy value (in keV)
     eMax = 175;
     randPolization = true;
+    
+    beam = new ParticleBeam();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -57,6 +62,8 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	
 	if (ParticleGun){delete ParticleGun;}
 	if (fastParticleGun){delete fastParticleGun;}
+	
+	delete beam;
 }
 
 void PrimaryGeneratorAction::SetParticleType(G4String type)
@@ -68,9 +75,9 @@ void PrimaryGeneratorAction::SetParticleType(G4String type)
 	}
 }
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
-	if(CurrentEvent == 1)
+	/*if(CurrentEvent == 1)
 	{   
 	    //Cleans the beam energy data at the start of each run    
 	    memset(&beamEnergy[0], 0, sizeof(beamEnergy[0]) * Bins);
@@ -133,7 +140,35 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
     
     ++CurrentEvent;
     
-    if (ShowProgressBar == true && CurrentEvent > 1){progress.PrintProgress(CurrentEvent, CurrentImage);}
+    if (ShowProgressBar == true && CurrentEvent > 1){progress.PrintProgress(CurrentEvent, CurrentImage);}*/
+    
+    if(CurrentEvent == 1)
+	{   
+	    //Cleans the beam energy data at the start of each run    
+	    memset(&beamEnergy[0], 0, sizeof(beamEnergy[0]) * Bins);
+
+        //Prints only at the start of the simulation	    
+	    if (CurrentImage == 1)
+	    {	
+	        progress.Timer.Start();	
+		    G4cout << "\n================================================================================"
+		              "\n                            SIMULATION RUNNING..."
+	                  "\n================================================================================\n\n\n\n";
+	    }
+    }
+    
+    G4ThreeVector particleposition = beam->FireParticle(event);
+    
+    //Save beam energy data    	
+    int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
+		
+    if (bin < 0)                      {bin = 0;}
+    else if (bin > beamEnergy.size()) {bin = beamEnergy.size();}
+
+    ++beamEnergy[bin];
+    ++CurrentEvent;
+    
+    if (ShowProgressBar == true && CurrentEvent > 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
@@ -218,7 +253,7 @@ void PrimaryGeneratorAction::SetupParticleGun(G4String GunType, G4double monoEne
 void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
 {  
     //A list of available options for a user to pick from
-    std::vector<G4String> EDistTypeOptions = {"Mono", "Mono(GPS)", "Gauss"};
+    /*std::vector<G4String> EDistTypeOptions = {"Mono", "Mono(GPS)", "Gauss"};
     
     //Checks to see if a gun exists first
     if (!gunExists)
@@ -282,7 +317,7 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
     data -> SetMaxEnergy(eMax);
 
     std::vector<int> ibeamEnergy(Bins, 0);
-   	beamEnergy = ibeamEnergy;
+   	beamEnergy = ibeamEnergy;*/
 }
 
 G4ThreeVector PrimaryGeneratorAction::RandomPolarization()
