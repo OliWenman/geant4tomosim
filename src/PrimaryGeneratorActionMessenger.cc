@@ -50,6 +50,9 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	
     SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polization", this);
     SetPolizationCmd -> SetGuidance("");
+    
+    autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
+    autoPlacement -> SetGuidance("Automatically place the beam at the edge of the world in the -x direction");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -66,6 +69,8 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete particleCmd;
 	delete SetPolizationCmd;
 	delete MaxEnergyBinCmd;
+	
+	delete autoPlacement;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -73,7 +78,7 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	if( command == EnergyCmd )
   	{ 
 		EnergyCmd -> GetNewUnitValue(newValue);
-		PGAction->GetBeam()->SetMonoEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
+		PGAction->GetBeam()->SetBeamMonoEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == EnergyDisTypeCmd)
 	{
@@ -99,11 +104,15 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	}
 	else if( command == SetPolizationCmd)
 	{
-	    PGAction -> SetPolization(SetPolizationCmd -> GetNew3VectorValue(newValue));
+	    //PGAction -> SetPolization(SetPolizationCmd -> GetNew3VectorValue(newValue));
 	} 
 	else if(command == MaxEnergyBinCmd)
 	{
 	    MaxEnergyBinCmd -> GetNewUnitValue(newValue);
 		PGAction -> SetMaxEnergyBinCmd(MaxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
+	}
+	else if (command == autoPlacement)
+	{
+	    PGAction -> SetAutoBeamPlacement(autoPlacement->GetNewBoolValue(newValue));
 	}
 }

@@ -6,6 +6,7 @@ import numpy as np
 cdef extern from "Simulation.hh":
    cdef cppclass Simulation:
       Simulation() except +
+      Simulation(int)
       
       void pyOutputOptions(bint, bint)
       void pySetupDetectors(int, int, vector[double], int)

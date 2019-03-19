@@ -30,6 +30,7 @@ class Simulation
 {
 	public:
 		Simulation();
+		Simulation(int verb);
 		~Simulation(); 
 
 		//Methods
@@ -66,13 +67,15 @@ class Simulation
 		void SetSeed(long int value)                                {seedCmd = value;}
 		void SetSavingTime(double Time)                             {PGA -> SetSavingTime(Time);}
 		void SetVerboseLevel(int value)                             {verboseLevel = value;}
+		void SetGlobalVerboseLevel(int value)                       {globalVerbose = value;}
 
 	private:
 	    std::string GetStorageUnit(double &storage); 
+	    void Setup();
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
 		unsigned long long int LimitGraphics(unsigned long long int nParticlesint, int nImage, std::string Mode);
-		void PrintInformation(int verbose, SettingsLog log);
+		void PrintInformation(SettingsLog log);
 		
 		//Pointers to different classes
 		SimulationMessenger* simMessenger;
@@ -96,6 +99,7 @@ class Simulation
 		std::string FileName;
 		
 		int verboseLevel;
+		int globalVerbose;
 		
 		std::vector<std::string> macrofiles;
 };

@@ -50,8 +50,8 @@
 #=============================================
 #Place the objects
 
-#/Target/Material ObjectA IN625
-/Target/Material ObjectA Al
+/Target/Material ObjectA IN625
+#/Target/Material ObjectA Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
 /Target/Rotation ObjectA 0 0 0 deg

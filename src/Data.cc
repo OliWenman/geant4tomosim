@@ -102,6 +102,11 @@ void Data::SaveFullMapping(double E)
 	
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
     if (eBin > NoBins_Cmd - 1) {eBin = NoBins_Cmd -1;}
+    
+    G4cout << "\nxbin = " << xBin
+           << "\nybin = " << yBin
+           << "\nebin = " << eBin 
+           << "\nMaxE = " << MaxE << G4endl;
 
 	++fullMappingFluore[xBin][yBin][eBin];
 }

@@ -22,7 +22,7 @@ cdef class PySim:
     cdef public str NexusName
   
     #Constructor, create an instance of the C++ class
-    def __cinit__(self):
+    def __cinit__(self, verbose = 1):
        
         #Creates the default path to save file 
         WorkingDirectory = os.path.dirname(os.getcwd())
@@ -30,7 +30,7 @@ cdef class PySim:
         self.SaveFilePath = WorkingDirectory + BuildDirectory
         self.NexusName = "SimulationData.nxs"
         
-        self.thisptr = new Simulation()
+        self.thisptr = new Simulation(verbose)
 
     #Delete the C++ class
     def __dealloc__(self):

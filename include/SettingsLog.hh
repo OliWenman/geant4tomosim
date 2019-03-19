@@ -17,22 +17,18 @@ struct SettingsLog
 
 template <typename T> SettingsLog& operator << (SettingsLog& log, T const& outputStream)
 {
-    if (log.fileOn){
-        log.fileStream_ << outputStream;}
+    if (log.fileOn)     {log.fileStream_ << outputStream;}
      
-    if (log.terminalOn){
-        G4cout << outputStream;}
+    if (log.terminalOn) {G4cout << outputStream;}
     
     return log;
 }
 
 inline SettingsLog& operator << (SettingsLog& log, std::ostream&(*outputStream)(std::ostream&))
 {
-    if(log.fileOn){
-        log.fileStream_ << outputStream;}
+    if(log.fileOn) {log.fileStream_ << outputStream;}
    
-    if (log.terminalOn){
-        G4cout << outputStream;}
+    if (log.terminalOn) {G4cout << outputStream;}
         
     return log;
 }

@@ -17,14 +17,16 @@ ParticleBeam::ParticleBeam()
 
 ParticleBeam::~ParticleBeam()
 {
-    if(fastGun){delete fastGun;}
-    if(advaGun){delete advaGun;}
+    delete fastGun;
+    delete advaGun;
 }
 
 void ParticleBeam::DefualtValues()
 {  
     //Defualt values
     usefastGun = true;
+    autoSourcePlacement = true;
+    randomPolization = true;
     
     G4ParticleDefinition* defualtParticle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
     G4ThreeVector defaultMomentum(1., 0., 0.);
@@ -37,6 +39,8 @@ void ParticleBeam::DefualtValues()
     fastGun -> SetParticleDefinition(defualtParticle);
     fastGun -> SetParticleEnergy(defaultEnergy);
     fastGun -> SetParticleMomentumDirection(defaultMomentum);
+    //fastGun -> SetParticlePolarization(G4ThreeVector(1,0,0));
+    //advaGun -> SetParticlePolarization(G4ThreeVector(1,0,0));
     
     //Setup advanced particlegun
     advaGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(0, 0, 0));
@@ -65,7 +69,7 @@ void ParticleBeam::DefualtValues()
 G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
 {
     G4ThreeVector position;
-
+  
     if (usefastGun) 
     {
         double x = CalculatePositionX();
@@ -73,7 +77,6 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
         
         if (randomPolization) {fastGun -> SetParticlePolarization(RandomPolarization());}
         
-        //Set the ParticleGun conditions
         fastGun -> SetParticlePosition(G4ThreeVector(isource, x, y));
         fastGun -> GeneratePrimaryVertex(event);
         
@@ -83,6 +86,7 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
     {
         if (randomPolization) {advaGun -> SetParticlePolarization(RandomPolarization());}
     
+        advaGun->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(isource, 0, 0));
         advaGun -> GeneratePrimaryVertex(event);
         
         position = advaGun->GetParticlePosition();
@@ -123,5 +127,12 @@ G4double ParticleBeam::GetEnergyOfEvent()
 {
     if(usefastGun) {return fastGun->GetParticleEnergy();}
     else           {return advaGun->GetParticleEnergy();}
+}
+
+void ParticleBeam::SetBeamEnergy(G4double mono, G4double sigma)
+{
+    if(usefastGun) {fastGun->SetParticleEnergy(mono);}
+    else           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(mono);
+                    advaGun->GetCurrentSource()->GetEneDist()->SetBeamSigmaInE(sigma);}
 }
 

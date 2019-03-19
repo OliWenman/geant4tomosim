@@ -22,24 +22,32 @@ ProgressTracker::~ProgressTracker()
 
 void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
 {
-	//Works out the percentage of how many events it has completed
-	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100;
+    //Prints only at the start of the simulation	    
+	if (CurrentImage == 1 && CurrentEvent == 1)
+	{	
+		G4cout << "\n================================================================================"
+		          "\n                            SIMULATION RUNNING..."
+	              "\n================================================================================\n\n\n\n";
+	}
 
-	//Only prints the percentage if the image number has changed
+	//Works out the percentage of how many events it has completed
+	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100. + 1;
+
+	//Only prints the percentage if the image number has changed so not wasting time printing same number
 	if (ImageProgress != ImageProgressCheck)
 	{	
-		//Calculates the total progress of the simulationEnergySigmaCmd
-		int FullProgress = double(CurrentImage - 1)/NumberOfRuns*100;
-		TotalProgress = FullProgress + (double(ImageProgress)/100 * (1./NumberOfRuns)*100);
+		//Calculates the total progress of the simulation
+		int FullProgress = double(CurrentImage - 1.)/NumberOfRuns*100.;
+		TotalProgress = FullProgress + (double(ImageProgress)/100. * (1./NumberOfRuns)*100.);
 		
 		ImageProgressCheck = ImageProgress;
 
 		//Prints above one line and over rides it
 		G4cout << "\033[2A" "\033[K" "\r" "Projection " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
 		
-		if (ImageProgress == 100)   {G4cout << "- Saving data...\n";}
-		else if (ImageProgress == 0){G4cout << "                \n";}
-		else                        {G4cout << "\n";}
+		if      (ImageProgress == 100) {G4cout << "- Saving data...\n";}
+		else if (ImageProgress == 0)   {G4cout << "                \n";}
+		else                           {G4cout << "\n";}
 
 		if(TotalProgress != TotalProgressCheck)
 		{	
@@ -52,14 +60,14 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
 	}
 
 	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
-	if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
+	/*if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
 	{	
         G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " projections are complete!              \n"
         "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
 		EstimatedTime(100, NumberOfRuns);
 		G4cout << G4endl;
 		Timer.Stop();
-	}
+	}*/
 }
 
 void ProgressTracker::ProgressBar(int Percent)

@@ -11,9 +11,9 @@ import numpy as np
 #===================================================================
 #IMAGE VARIABLES
 
-NumberOfImages = 3
+NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 10#1*10**7
+nParticles = 1*10**6
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -22,11 +22,11 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 20*G4.keV
-maxEnergy = 20*G4.keV
-minSigmaEnergy = 0*G4.keV
-maxSigmaEnergy = 0*G4.keV
-Gun = "Mono"
+minEnergy = 30*G4.keV
+maxEnergy = 30*G4.keV
+minSigmaEnergy = 5*G4.keV
+maxSigmaEnergy = 5*G4.keV
+Gun = "Guass"
 
 #-------------------------------------------------------------------
 #Macrofiles to add
@@ -107,7 +107,9 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-Sim = sim.PySim()
+verbose = 0
+
+Sim = sim.PySim(verbose)
 """
 Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
@@ -115,8 +117,11 @@ Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
+del Sim
+
+print "Finished"
 #print Sim.photonTransmission()
-Sim.plotDiffraction()
+#Sim.plotDiffraction()
 
 #Sim.printNexusTree()
 #Sim.plotBeamEnergy()

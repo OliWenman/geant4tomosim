@@ -27,6 +27,7 @@ AbsorptionDetector::AbsorptionDetector()
 {
     ADMessenger = new AbsorptionDetectorMessenger(this);
     absorSD = NULL;
+    param = new G4PhantomParameterisation();
 }
 
 AbsorptionDetector::~AbsorptionDetector()
@@ -36,8 +37,6 @@ AbsorptionDetector::~AbsorptionDetector()
     
 void AbsorptionDetector::CreateVolumes()
 {
-    param = new G4PhantomParameterisation();
-
 	//Create the phantom container for the detectors to go into
 	DetectorContainer = new G4Box("DetectorContainer",
 			                       halfdimensions.x(),

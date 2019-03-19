@@ -27,6 +27,7 @@ DiffractionDetector::DiffractionDetector()
 {
     //ADMessenger = new AbsorptionDetectorMessenger(this);
     diffraSD = NULL;
+    param = new G4PhantomParameterisation();
 }
 
 DiffractionDetector::~DiffractionDetector()
@@ -36,8 +37,6 @@ DiffractionDetector::~DiffractionDetector()
     
 void DiffractionDetector::CreateVolumes()
 {
-    param = new G4PhantomParameterisation();
-
 	//Create the phantom container for the detectors to go into
 	DetectorContainer = new G4Box("DiffractionDetectorContainer",
 			                       halfdimensions.x(),

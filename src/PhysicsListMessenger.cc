@@ -9,7 +9,7 @@
 
 PhysicsListMessenger::PhysicsListMessenger(PhysicsList* PLObject):Physics(PLObject)
 {
-  	physicsDirectory = new G4UIdirectory("/physics");
+  	physicsDirectory = new G4UIdirectory("/physics/");
   	physicsDirectory -> SetGuidance("Commands to activate physics models and set cuts");
 
   	PhysicsPackageCmd = new G4UIcmdWithAString("/physics/addPhysics/EM",this);  

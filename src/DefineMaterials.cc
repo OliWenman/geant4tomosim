@@ -212,8 +212,8 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string MaterialsName, d
         
         std::vector<Ele_FracMass> elementTableTemp (nElements);
         
-        G4cout << "\nMaterial: " << MaterialFound -> GetName()
-               << "\nMade up of the following elements\n" << std::flush;
+        //G4cout << "\nMaterial: " << MaterialFound -> GetName()
+        //       << "\nMade up of the following elements\n" << std::flush;
         
         //Find the elements name, fractional mass, Z and density 
         for (int i = 0; i < nElements; i++)
@@ -224,8 +224,8 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string MaterialsName, d
             elementTableTemp[i].frac_mass = Material_fractional_mass[i];
             elementTableTemp[i].Z = element -> GetZ();
             elementTableTemp[i].density = ElementDensity(elementTableTemp[i].Z);
-            G4cout << "Element: " << elementTableTemp[i].name
-                   << " -> mass: " << elementTableTemp[i].frac_mass*100 << "%\ \n" << std::flush;
+            //G4cout << "Element: " << elementTableTemp[i].name
+            //       << " -> mass: " << elementTableTemp[i].frac_mass*100 << "%\ \n" << std::flush;
         }
         
         elementTable = elementTableTemp;

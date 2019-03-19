@@ -25,6 +25,10 @@ SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 	verboseCmd = new G4UIcmdWithAnInteger("/data/verbose", this);
 	verboseCmd -> SetParameterName("verbose", true);
 	verboseCmd -> SetRange("verbose > -1");
+	
+	globalVerboseCmd = new G4UIcmdWithAnInteger("/simulation/verbose", this);
+	globalVerboseCmd -> SetParameterName("verbose", true);
+	globalVerboseCmd -> SetRange("verbose > -1");
 }
 
 SimulationMessenger::~SimulationMessenger()
@@ -32,6 +36,7 @@ SimulationMessenger::~SimulationMessenger()
 	delete SimulationDirectory;
 	delete seedCmd;
 	delete verboseCmd;
+	delete globalVerboseCmd;
 }
 
 void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -41,5 +46,9 @@ void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if( command == verboseCmd){
 	    sim -> SetVerboseLevel(seedCmd -> GetNewIntValue(newValue));	
+	}
+	else if( command == globalVerboseCmd)
+	{
+	    sim -> SetGlobalVerboseLevel(globalVerboseCmd -> GetNewIntValue(newValue));
 	}
 }

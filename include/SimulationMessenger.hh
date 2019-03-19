@@ -32,6 +32,7 @@ class SimulationMessenger: public G4UImessenger
 		G4UIdirectory* SimulationDirectory;
 		G4UIcmdWithAnInteger *seedCmd;
 		G4UIcmdWithAnInteger *verboseCmd;
+		G4UIcmdWithAnInteger *globalVerboseCmd;
 };
 
 

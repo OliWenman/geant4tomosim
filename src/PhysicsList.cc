@@ -106,13 +106,17 @@ void PhysicsList::ConstructEM()
 			if (PhotoElectricCmd)
 			{
 				G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-				thePhotoElectricEffect->SetEmModel(new G4LivermorePhotoElectricModel());
+				G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
+				//livPhotoElectricEffect->SetVerboseLevel(0);
+				thePhotoElectricEffect->SetVerboseLevel(0);
+				thePhotoElectricEffect->SetEmModel(livPhotoElectricEffect);
 				pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
 			}
 			if (ComptonScatteringCmd)
 			{
 				G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-				theComptonScattering->SetEmModel(new G4LivermoreComptonModel());
+				G4LivermoreComptonModel* livComptonScattering = new G4LivermoreComptonModel();
+				theComptonScattering->SetEmModel(livComptonScattering);
 				pmanager->AddDiscreteProcess(theComptonScattering); 
 			}
 			if (RayleighScatteringCmd)
@@ -139,7 +143,7 @@ void PhysicsList::ConstructEM()
 					pmanager->AddDiscreteProcess(theRayleighScattering); 
 				}
 			}*/
-			else
+			/*else
 			{
 				//Outputs an error saying if the physics inputted is not a valid input and stops the simulation
 				G4cout << "\n================================================================================"
@@ -147,14 +151,16 @@ void PhysicsList::ConstructEM()
 		               << "\n            Refer to the README for list of available Physics inputs "
 	                   << "\n================================================================================" << G4endl;
 				exit(-1);
-			}
+			}*/
 			if (FluorescenceCmd)
 			{
 				//Relaxtion processes after the photoelctric effect
 				G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+				de -> SetVerboseLevel(0);
   				de->SetFluo(true);
   				de->SetAuger(true);   
   				de->SetPIXE(true);  
+  				G4LossTableManager::Instance()->SetVerbose(0);
   				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
 			}
 		    if (RefractionCmd)
