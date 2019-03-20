@@ -27,9 +27,9 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
 
 		//Used to set the physics processes you want
-		void SetPhotoElectric(G4bool value)     {PhotoElectricCmd = value; if(value){PhysicProcesses.push_back("  - Photoelectric effect");}}
-		void SetComptonScattering(G4bool value) {ComptonScatteringCmd = value; if(value){PhysicProcesses.push_back("  - Compton scattering");}}
-		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value; if(value){PhysicProcesses.push_back("  - Rayleigh scattering");}}
+		void SetPhotoElectric(G4bool value)     {PhotoElectricCmd = value; if(value){PhysicProcesses.push_back("- Photoelectric effect (Livermore)");}}
+		void SetComptonScattering(G4bool value) {ComptonScatteringCmd = value; if(value){PhysicProcesses.push_back("- Compton scattering (Livermore)");}}
+		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value; if(value){PhysicProcesses.push_back("- Rayleigh scattering (Livermore)");}}
 		void SetFluorescence(G4bool value)      {FluorescenceCmd = value; if(value){PhysicProcesses.push_back("- Fluorescence");}}
 		void SetRefraction(G4bool value)        {RefractionCmd = value; if(value){PhysicProcesses.push_back("- Refraction");}}
 		void SetGammaAbsorption(G4bool value)   {GammaAbsorption = value; if(value){PhysicProcesses.push_back("- Optical absorption");}}

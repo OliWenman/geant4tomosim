@@ -13,7 +13,7 @@ import numpy as np
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1*10**7
+nParticles = 1*10**6
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -107,7 +107,8 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-verbose = 0
+verbose = 2
+print "verbose = ", verbose
 
 Sim = sim.PySim(verbose)
 """
@@ -117,11 +118,10 @@ Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
+Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
 del Sim
 
 print "Finished"
-#print Sim.photonTransmission()
-#Sim.plotDiffraction()
 
 #Sim.printNexusTree()
 #Sim.plotBeamEnergy()

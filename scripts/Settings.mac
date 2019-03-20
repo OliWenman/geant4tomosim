@@ -26,10 +26,10 @@
 # DATA
 
 /data/Seed 0
-/data/verbose 2
 /data/bins 2000
-/data/fluorescence/fullmapping true
 /data/fluorescence/fullfield true
+/data/fluorescence/fullmapping false
+/data/diffraction/fullmapping false
 
 #--------------------------------------------------------------
 # WORLD
@@ -53,7 +53,7 @@
 /beam/particle gamma
 /beam/position/halfx 1.25 cm
 /beam/position/halfy 1.05 cm
-/beam/MaxEnergy 30 keV
+/beam/MaxEnergy 100 keV
 
 #/gps/ang/type iso
 #/gps/ang/maxtheta 1.2 deg

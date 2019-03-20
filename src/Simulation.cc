@@ -420,10 +420,6 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
 	        << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
             << "\n- Number of photons per image: " << TotalParticles
             << "\n- Number of particles per pixel on average: " << particleperpixel;
-    
-        PrintToEndOfTerminal(log, '-');
-    
-        log << std::flush;
 	 
 	    SaveToFile.close();
     }
@@ -530,14 +526,14 @@ void Simulation::CalculateStorageSpace(int projections)
         }
     
         //Diffraction
-        //if ( )
-        //{
+        if (data->DoFullMappingDiffraction() )
+        {
             size_t DiffractionDataSize = data -> GetDiffractionSizeType();
             double diffractionStorageSpace  = double(abs_xPixels) * double(abs_yPixels) *abs_xPixels * abs_yPixels * DiffractionDataSize * projections;
             totalStorage += diffractionStorageSpace;
             unit = GetStorageUnit(diffractionStorageSpace);   
             G4cout << "\n- Full mapping diffraction: " << diffractionStorageSpace << unit;
-        //}
+        }
     
         unit = GetStorageUnit(totalStorage);
         G4cout << "\n- Total: " << totalStorage << unit << std::flush;

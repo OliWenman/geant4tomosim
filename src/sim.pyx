@@ -31,11 +31,12 @@ cdef class PySim:
         self.NexusName = "SimulationData.nxs"
         
         self.thisptr = new Simulation(verbose)
+        self.nexusfile = NexusFormatter.NexusFormatter()
 
     #Delete the C++ class
     def __dealloc__(self):
-        del self.nexusfile
         del self.thisptr
+        del self.nexusfile
     """
     def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
         self.FFF = fluoreFullField
@@ -73,6 +74,7 @@ cdef class PySim:
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
            self.thisptr.PrintInfo(TotalParticles, TotalImages, nDarkFlatFields)
+           """
            print "RECORDING THE FOLLOWING DATA: "
            print "- Absoprtion"
            print "- The beam energy"
@@ -94,22 +96,22 @@ cdef class PySim:
                  print "  - Sigma energy:", energyArray[1][0]*1000, "keV"
               else:
                  print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
-               
+           """    
            FMFluorescence = self.thisptr.FullMappingFluorescence()
            FFFluorescence = self.thisptr.FullFieldFluorescence()
-               
+           """    
            if FMFluorescence == True:
               print "- Full field fluorescence"
               
            if FFFluorescence == True:
               print "- Full mapping fluorescence"
-           
+           """
            #windowRows, windowColumns = os.popen('stty size', 'r').read().split()
            #for i in range(int(windowColumns)):
            #   sys.stdout.write('-')
            self.thisptr.CalculateStorageSpace(TotalImages)
            
-           self.nexusfile = NexusFormatter.NexusFormatter(self.SaveFilePath + self.NexusName)
+           self.nexusfile.openFile(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:
               print "\nAborting run..." 
               return 0
@@ -188,6 +190,7 @@ cdef class PySim:
               print message, round(self.SimTime/(60*60), 3), "hours. "
             
            print "\nData was saved in", self.SaveFilePath 
+           self.nexusfile.closeFile()
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")

@@ -10,12 +10,14 @@ import datetime
 class NexusFormatter:
     
     #When class is created
-    def __init__(self, FilePath):
+    def __init__(self):
         
         self.fileOpen = False
         self.SimReady = False
         self.setupSuccess = False
         
+    def openFile(self, FilePath):
+    
         print "\nOpening Nexus file:", FilePath
         
         #Check if file exists       
@@ -116,6 +118,7 @@ class NexusFormatter:
         if self.fileOpen == True:
             print "\nClosing NeXus file..."
             self.h5file1.close()
+            self.fileOpen = False
             print "File closed!"
         
     #The dataset that stores the information to do with the transmission data
@@ -269,3 +272,8 @@ class NexusFormatter:
         print "The nexus file layout: "    
         self.h5file1.visit(printname)
         
+    def closeFile(self):
+        print "\nClosing NeXus file..."
+        self.h5file1.close()
+        self.fileOpen = False
+        print "File closed!"

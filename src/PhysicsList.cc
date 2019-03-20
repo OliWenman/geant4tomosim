@@ -197,8 +197,8 @@ void PhysicsList::SetCuts()
 void PhysicsList::ReadOutInfo(SettingsLog& log)
 {
     PrintToEndOfTerminal(log, '-');
-    log << "PHYSICS PROCESSES" 
-	    << "\n- " << PhysicsPackageCmd << ":";
+    log << "PHYSICS PROCESSES: "; 
+	    //<< "\n- " << PhysicsPackageCmd << ":";
 
 	for (int element = 0 ; element < PhysicProcesses.size() ; element++){
 		log << "\n" << PhysicProcesses[element];

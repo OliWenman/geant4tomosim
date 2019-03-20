@@ -79,7 +79,9 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 
     ++beamEnergy[bin];
     
-    if (ShowProgressBar == true && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage); ++CurrentEvent;}
+    if (ShowProgressBar == true && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
+    
+    ++CurrentEvent;
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
