@@ -22,28 +22,29 @@ class Data
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
-        inline void SaveHitData(G4int DetectorNumber){++HitDataArray[DetectorNumber];}
+        inline void SaveAbsorption(G4int DetectorNumber){++absorptionData[DetectorNumber];}
 		void SaveFluorescence(double E);		
 		void SaveFullMapping(double E);
         void SaveDiffraction(int copyNumber);
 
 		//Get Methods
 		std::vector<double>                          GetEnergyBins(){return EnergyBins;}
-		std::vector<int>                             GetHitData(){return HitDataArray;}
-		std::vector<int>                             GetFluorescence(){return fluorescence;}
-		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullMappingFluore;}
+		std::vector<int>                             GetHitData(){return absorptionData;}
+		std::vector<int>                             GetFluorescence(){return fullfieldFluorescenceData;}
+		std::vector<std::vector<std::vector<int> > > GetFullMapping(){return fullmappingFluorescenceData;}
 		std::vector<std::vector<int> >               GetDiffractionData(){return diffractionData;}
 
 		G4int GetNoBins(){return NoBins_Cmd;}
 		G4int GetNumberOfBins(){return NoBins_Cmd;}
 		G4double GetMaxEnergy(){return MaxE;}
 		
-		G4int GetAbsorptionSizeType(){return sizeof(HitDataArray[0]);}
-		G4int GetFullMappingFluoreSizeType(){return sizeof(fullMappingFluore[0][0][0]);}
+		G4int GetAbsorptionSizeType(){return sizeof(absorptionData[0]);}
+		G4int GetFullMappingFluoreSizeType(){return sizeof(fullmappingFluorescenceData[0][0][0]);}
 		G4int GetDiffractionSizeType(){return sizeof(diffractionData[0][0]);}
 		
-		bool GetFullMapping_Option(){return fluoreFullMapping;}
-		bool GetFluorescence_Option(){return fluoreFullField;}
+		bool GetFullMapping_Option(){return fullmappingFluorescence;}
+		bool GetFluorescence_Option(){return fullfieldFluorescence;}
+		bool DoFullMappingDiffraction() {return fullmappingDiffraction;}
 
 		//Set Methods
 		void SetNumberRows(G4int value){rows = value;}
@@ -55,17 +56,18 @@ class Data
 		void SetHalfDetectorDimensions(G4ThreeVector value){halfDetectorDimensions = value;}
 		void SetParticlePosition(G4ThreeVector value){ParticlePosition = value;}
 
-		void SetFullFieldFluorescence(bool value)  {fluoreFullField = value;}
-		void SetFullMappingFluorescence(bool value){fluoreFullMapping = value;}
+		void SetFullFieldFluorescence(bool value)  {fullfieldFluorescence = value;}
+		void SetFullMappingFluorescence(bool value){fullmappingFluorescence = value;}
+		void SetFullMappingDiffraction(bool value) {fullmappingDiffraction = value;}
 
 	private:	
 	    DataMessenger* dataMessenger;
 
 		//Data members
 		std::vector<double>                          EnergyBins;
-		std::vector<int>                             HitDataArray;
-		std::vector<int>                             fluorescence;
-		std::vector<std::vector<std::vector<int> > > fullMappingFluore;
+		std::vector<int>                             absorptionData;
+		std::vector<int>                             fullfieldFluorescenceData;
+		std::vector<std::vector<std::vector<int> > > fullmappingFluorescenceData;
 		std::vector<std::vector<int> >               diffractionData;
 
 		G4int rows;
@@ -77,9 +79,9 @@ class Data
 		G4ThreeVector ParticlePosition;
 		G4ThreeVector halfDetectorDimensions; 
 
-		bool fluoreFullField;
-		bool fluoreFullMapping;
-		bool diffraction;
+        bool fullfieldFluorescence;
+		bool fullmappingFluorescence;
+		bool fullmappingDiffraction;		
 };
 
 #endif

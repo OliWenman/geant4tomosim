@@ -77,7 +77,7 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
         
         if (randomPolization) {fastGun -> SetParticlePolarization(RandomPolarization());}
         
-        fastGun -> SetParticlePosition(G4ThreeVector(isource, x, y));
+        fastGun -> SetParticlePosition(G4ThreeVector(isource, y, x));
         fastGun -> GeneratePrimaryVertex(event);
         
         position = G4ThreeVector(isource, x, y);
@@ -134,5 +134,15 @@ void ParticleBeam::SetBeamEnergy(G4double mono, G4double sigma)
     if(usefastGun) {fastGun->SetParticleEnergy(mono);}
     else           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(mono);
                     advaGun->GetCurrentSource()->GetEneDist()->SetBeamSigmaInE(sigma);}
+    
+    if (sigma == 0 && !usefastGun)
+    {
+        advaGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");      
+    }
+    else if (sigma > 0 && !usefastGun)
+    {
+        advaGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");      
+    }
+    
 }
 

@@ -33,7 +33,7 @@ G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     //++n;
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
-	data -> SaveHitData(nDetector);
+	data -> SaveAbsorption(nDetector);
 	
 	if(GraphicsOn)
 	{

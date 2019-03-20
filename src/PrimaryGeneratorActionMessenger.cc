@@ -108,7 +108,6 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	} 
 	else if(command == MaxEnergyBinCmd)
 	{
-	    MaxEnergyBinCmd -> GetNewUnitValue(newValue);
 		PGAction -> SetMaxEnergyBinCmd(MaxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if (command == autoPlacement)

@@ -35,8 +35,10 @@ class DataMessenger: public G4UImessenger
 		G4UIdirectory *Directory;
 
 		//DETECTOR VARIABLES
-        G4UIcmdWithABool *RecordFullMapping;
-        G4UIcmdWithABool *RecordFullField;
+        G4UIcmdWithABool *RecordFullMappingFluorescence;
+        G4UIcmdWithABool *RecordFullFieldFluorescence;
+        G4UIcmdWithABool *RecordFullMappingDiffraction;
+        
         G4UIcmdWithAnInteger *SetBins;
 };
 

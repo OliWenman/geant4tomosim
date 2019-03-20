@@ -11,6 +11,7 @@
 #include "G4ParticleDefinition.hh"
 
 #include "ParticleBeam.hh"
+#include "Data.hh"
 
 class PrimaryGeneratorActionMessenger;
 class Data;
@@ -37,7 +38,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
    		void SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnegy);
 		void ReadOutInfo(SettingsLog& log);
 
-		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.;}
+		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.; data -> SetMaxEnergy(eMax);}
 		void SetFluoreFM(bool value){FluoreFM = value;}		
 		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; 
 		                                                                      NumberOfRuns = TotalImages; 

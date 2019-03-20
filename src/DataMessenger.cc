@@ -18,11 +18,14 @@ DataMessenger::DataMessenger(Data* DataCollection): G4UImessenger(), data(DataCo
     //Directory = new G4UIdirectory("/detector/absorption");
 	//Directory -> SetGuidance("Commands to control the absorption detector variables. ");	
 
-	RecordFullMapping = new  G4UIcmdWithABool("/data/fluorescence/fullmapping", this);
-	RecordFullMapping -> SetGuidance("Set if you want fullmapping fluorescence data to be recorded");
+	RecordFullMappingFluorescence = new  G4UIcmdWithABool("/data/fluorescence/fullmapping", this);
+	RecordFullMappingFluorescence -> SetGuidance("Set if you want fullmapping fluorescence data to be recorded");
 	
-	RecordFullField = new G4UIcmdWithABool("/data/fluorescence/fullfield", this);
-	RecordFullField -> SetGuidance("Set if you want fullfield fluorescence data to be recorded");
+	RecordFullFieldFluorescence = new G4UIcmdWithABool("/data/fluorescence/fullfield", this);
+	RecordFullFieldFluorescence -> SetGuidance("Set if you want fullfield fluorescence data to be recorded");
+	
+	RecordFullMappingDiffraction = new G4UIcmdWithABool("/data/diffraction/fullmapping", this);
+	RecordFullMappingDiffraction -> SetGuidance("Set if you want to record full mapping diffraction data");
 	
 	SetBins = new G4UIcmdWithAnInteger("/data/bins",this);
 }
@@ -30,20 +33,25 @@ DataMessenger::DataMessenger(Data* DataCollection): G4UImessenger(), data(DataCo
 DataMessenger::~DataMessenger()
 {
     //delete Directory;
-    delete RecordFullMapping;
-    delete RecordFullField;
+    delete RecordFullMappingFluorescence;
+    delete RecordFullFieldFluorescence;
+    delete RecordFullMappingDiffraction;
     delete SetBins;
 }
 
 void DataMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-    if (command == RecordFullMapping)
+    if (command == RecordFullMappingFluorescence)
     {
-		data -> SetFullMappingFluorescence(RecordFullMapping -> GetNewBoolValue(newValue));
+		data -> SetFullMappingFluorescence(RecordFullMappingFluorescence -> GetNewBoolValue(newValue));
     }
-    else if (command == RecordFullField)
+    else if (command == RecordFullFieldFluorescence)
     {
-        data -> SetFullFieldFluorescence(RecordFullField -> GetNewBoolValue(newValue));
+        data -> SetFullFieldFluorescence(RecordFullFieldFluorescence -> GetNewBoolValue(newValue));
+    }
+    else if (command == RecordFullMappingDiffraction)
+    {
+        data -> SetFullMappingDiffraction(RecordFullMappingDiffraction -> GetNewBoolValue(newValue));
     }
     else if (command == SetBins)
     {

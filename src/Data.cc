@@ -5,6 +5,10 @@
 Data::Data()
 {
     dataMessenger = new DataMessenger(this);
+    
+    fullfieldFluorescence = false;
+    fullmappingFluorescence = false;
+    fullmappingDiffraction = false;
 }
 
 Data::~Data()
@@ -23,32 +27,31 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 
 		//Creates a 1D vector for the hit data
 		G4cout << "\nCreating absorption data set..." << G4endl;
-		std::vector<int> iHitDataArray(nDetectorsY*nDetectorsZ, 0);
-		HitDataArray = iHitDataArray;
+		std::vector<int> iabsorptionData(nDetectorsY*nDetectorsZ, 0);
+		absorptionData = iabsorptionData;
 		G4cout << "Success!" << G4endl;
 		
 		if (NoBins_Cmd > 0)
 		{
-			if (fluoreFullField)
+			if (fullfieldFluorescence)
 			{
 			    G4cout << "Creating full field fluorescence data set..." << G4endl;
 				std::vector<int> ifluorescence (NoBins_Cmd, 0);
-				fluorescence = ifluorescence;
+				fullfieldFluorescenceData = ifluorescence;
 				G4cout << "Success!" << G4endl;
 			}
 			
-			if (fluoreFullMapping)
+			if (fullmappingFluorescence)
 			{
 			    G4cout << "Creating full mapping fluorescence data set..." << G4endl;
 				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >
 				                                                                           (nDetectorsZ, std::vector<int>
 				                                                                           (NoBins_Cmd)));
-				fullMappingFluore = ifullMappingFluore;
+				fullmappingFluorescenceData = ifullMappingFluore;
 				G4cout << "Success!" << G4endl;
 			}
 			
-			diffraction = true;
-			if (diffraction)
+			if (fullmappingDiffraction)
 			{
 			    G4cout << "Creating diffraction data set..." << G4endl;
 			    int beamPosX = nDetectorsY;
@@ -74,22 +77,30 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 	else 
 	{
 		//Reset the data to zero ready for the next image
-		memset(&HitDataArray[0], 0, sizeof(HitDataArray[0]) * columns * rows);
+		memset(&absorptionData[0], 0, 
+		       sizeof(absorptionData[0]) * columns * rows);
 
-		if (fluoreFullField == true){
-			memset(&fluorescence[0], 0, sizeof(fluorescence[0]) * NoBins_Cmd);}
+		if (fullfieldFluorescence == true)
+		{
+			memset(&fullfieldFluorescenceData[0], 0, 
+			       sizeof(fullfieldFluorescenceData[0]) * NoBins_Cmd);
+	    }
 
-		if (fluoreFullMapping == true){
-		    std::fill(fullMappingFluore.begin(), fullMappingFluore.end(), std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));}
+		if (fullmappingFluorescence == true)
+		{
+		    std::fill(fullmappingFluorescenceData.begin(), 
+		              fullmappingFluorescenceData.end(), 
+		              std::vector<std::vector<int> > (nDetectorsZ, std::vector<int>(NoBins_Cmd)));
+		}
 	}
 }
 
-void Data::SaveFluorescence(double E)//
+void Data::SaveFluorescence(double E)
 {
-    int bin = floor(E*1000/(MaxE/NoBins_Cmd));
-    if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
+    //int bin = floor(E*1000/(MaxE/NoBins_Cmd) -1);
+    //if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
 
-	++fluorescence[bin];
+	//++fullfieldFluorescenceData[bin];
 }
 
 void Data::SaveFullMapping(double E)
@@ -97,18 +108,17 @@ void Data::SaveFullMapping(double E)
 	//G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2) + 0.5*rows);
 	//G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2) + 0.5*columns); 
 
-    G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2/rows) + 0.5*rows);
-	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2/columns) + 0.5*columns);
+    G4int xBin = floor(ParticlePosition.y()/(halfDetectorDimensions.y()*2/rows) + 0.5*rows -1);
+	G4int yBin = floor(ParticlePosition.z()/(halfDetectorDimensions.z()*2/columns) + 0.5*columns -1);
 	
 	G4int eBin = floor(E*1000/(MaxE/NoBins_Cmd));
     if (eBin > NoBins_Cmd - 1) {eBin = NoBins_Cmd -1;}
-    
-    G4cout << "\nxbin = " << xBin
-           << "\nybin = " << yBin
-           << "\nebin = " << eBin 
-           << "\nMaxE = " << MaxE << G4endl;
 
-	++fullMappingFluore[xBin][yBin][eBin];
+    //if (eBin <= 1000)
+    //{G4cout << "\nebin = " << eBin << G4endl;}
+
+
+	++fullmappingFluorescenceData[xBin][yBin][eBin];
 }
 
 void Data::SaveDiffraction(int copyNum)

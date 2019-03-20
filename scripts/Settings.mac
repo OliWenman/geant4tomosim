@@ -41,8 +41,8 @@
 #--------------------------------------------------------------
 # DETECTORS
 
-/detector/absorption/rows 400
-/detector/absorption/columns 400
+/detector/absorption/rows 200
+/detector/absorption/columns 200
 /detector/absorption/halfdimensions 0.001 1.25 1.05 cm
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 
@@ -53,7 +53,7 @@
 /beam/particle gamma
 /beam/position/halfx 1.25 cm
 /beam/position/halfy 1.05 cm
-/beam/MaxEnergy 100 keV
+/beam/MaxEnergy 30 keV
 
 #/gps/ang/type iso
 #/gps/ang/maxtheta 1.2 deg

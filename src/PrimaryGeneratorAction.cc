@@ -44,6 +44,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	
 	//Set the max energy value (in keV)
     eMax = 175;
+    data -> SetMaxEnergy(eMax);
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -71,14 +72,14 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     //Save beam energy data    	
     int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
 		
-    if (bin < 0)                      {bin = 0;}
-    else if (bin > beamEnergy.size()) {bin = beamEnergy.size();}
+    //if (bin < 0)                      {bin = 0;}
+    if (bin > beamEnergy.size()) {bin = beamEnergy.size();}
+
+    //G4cout << "\nbin = " << bin << G4endl;
 
     ++beamEnergy[bin];
     
-    if (ShowProgressBar == true && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
-    
-    ++CurrentEvent;
+    if (ShowProgressBar == true && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage); ++CurrentEvent;}
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
@@ -108,13 +109,13 @@ void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4d
 {  
    	if (GunType == "Mono")
    	{
-   	    beam->SetBeamEnergy(monoEnergy, 0);
    	    beam->UseFastGun(true);
+   	    beam->SetBeamEnergy(monoEnergy, 0);
    	}
    	else
    	{
-   	    beam->SetBeamEnergy(monoEnergy, sigmaEnergy);
    	    beam->UseFastGun(false);
+   	    beam->SetBeamEnergy(monoEnergy, sigmaEnergy);
    	}
    	
    	std::vector<int> ibeamEnergy(Bins, 0);

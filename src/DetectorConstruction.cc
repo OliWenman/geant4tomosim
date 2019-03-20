@@ -122,8 +122,19 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     diffractionDetector -> AddProperties(data, Visualization_Cmd);
 	
 	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
-	fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, WorldSize_Cmd.y()*0.95, 0));
-	diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2 , absDetector -> GetG4VectHalfDimensions().y()*2, 0));
+	
+	if (data->GetFullMapping_Option() || data->GetFluorescence_Option())
+	{
+	    fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4VectHalfDimensions().y()*1.10, 0));
+	}
+	if (data->DoFullMappingDiffraction())
+	{
+	    double defualtPosX = WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2;
+	    double defualtPosY = absDetector -> GetG4VectHalfDimensions().y()*2;
+	    double defualtPosZ = 0;
+	
+	    diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(defualtPosX, defualtPosY, defualtPosZ));
+	}
 	
 	TC -> Construct(logicWorld);
 
