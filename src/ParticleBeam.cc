@@ -71,7 +71,6 @@ void ParticleBeam::DefualtValues()
     halfx = defaultHalfX;
     halfy = defaultHalfY;
     centre = defaultcentre;
-    isource = defaultcentre.x();
 }
 
 G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
@@ -83,12 +82,12 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
         double x = CalculatePositionX();
         double y = CalculatePositionY();
         
+        position = G4ThreeVector(centre.x(), y, x);
+        
         if (randomPolization) {fastGun -> SetParticlePolarization(RandomPolarization());}
         
-        fastGun -> SetParticlePosition(G4ThreeVector(centre.x(), y, x));
+        fastGun -> SetParticlePosition(position);
         fastGun -> GeneratePrimaryVertex(event);
-        
-        position = G4ThreeVector(isource, x, y);
     }
     else      
     {

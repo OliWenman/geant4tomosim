@@ -20,9 +20,9 @@ class ParticleBeam
         inline double CalculatePositionX(double _halfx) {return _halfx * 2 * (G4UniformRand() - 0.5);}
         inline double CalculatePositionY(double _halfy) {return _halfy * 2 * (G4UniformRand() - 0.5);} 
         
-        void DoAutoSourcePlacement(G4double value){if (autoSourcePlacement) {isource = value;}}
-        void SetAutoSourcePlacement(bool value) {autoSourcePlacement = value;}
-        void SetSourcePlacement(G4double value)   {isource = value;}
+        void DoAutoSourcePlacement(G4double value) {if (autoSourcePlacement) {centre = G4ThreeVector(value, centre.y(), centre.z());}}
+        void SetAutoSourcePlacement(bool value)    {autoSourcePlacement = value;}
+        //void SetSourcePlacement(G4double value)    {centre = G4ThreeVector(value, centre.y(), centre.z());}
         void SetCentreCoordinates(G4ThreeVector value) {centre = value;}
                 
         //Get functions
@@ -42,7 +42,7 @@ class ParticleBeam
         //Set fucntions
         void SetHalfX(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfX(value); halfx = value;}
         void SetHalfY(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfY(value); halfy = value;}
-        void SetSource(double value) {isource = value;}
+        //void SetSource(double value) {isource = value;}
         void SetPolization(G4ThreeVector value) {advaGun->SetParticlePolarization(value);
                                                  fastGun->SetParticlePolarization(value);
                                                  randomPolization = false;}
@@ -69,7 +69,6 @@ class ParticleBeam
         bool randomPolization;
         double halfx;
         double halfy;
-        double isource;
         G4ThreeVector centre;
 };
 

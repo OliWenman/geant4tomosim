@@ -1,0 +1,139 @@
+#--------------------------------------------------------------
+# Macro file to control the beam of the simulation
+# Resources on how to use gps commands
+# http://nngroup.physics.sunysb.edu/captain/reference/master/detSim/dox/detSimGPS.html
+# http://www.apc.univ-paris7.fr/~franco/g4doxy/html/classG4GeneralParticleSourceMessenger.html#369e77c64ee8281a4c20bbcad87f476e
+# http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+# http://hurel.hanyang.ac.kr/Geant4/Geant4_GPS/reat.space.qinetiq.com/gps/examples/examples.html
+
+# Beam commands control the basic G4ParticleGun and G4GeneralParticleSource commands. 
+# G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam
+
+# Position commands
+/beam/autoposition false
+/beam/pos/centre -5 0.2 0.2 cm
+/beam/position/halfx 1.25 cm
+/beam/position/halfy 1.05 cm
+
+# Particle commands
+/beam/particle gamma
+/beam/MaxEnergy 100 keV
+
+# Create a circular diverging beam using gps
+#/gps/pos/type Point
+#/gps/ang/type iso
+#/gps/ang/maxtheta 3 deg
+
+# Bias the position of a 2d beam
+/gps/hist/type biasx
+
+/gps/hist/point 0.00 1.00
+/gps/hist/point 0.01 1.01
+/gps/hist/point 0.02 1.02
+/gps/hist/point 0.03 1.03
+/gps/hist/point 0.04 1.04
+/gps/hist/point 0.05 1.05
+/gps/hist/point 0.06 1.06
+/gps/hist/point 0.07 1.07
+/gps/hist/point 0.08 1.08
+/gps/hist/point 0.09 1.09
+
+/gps/hist/point 0.10 1.10
+/gps/hist/point 0.11 1.09
+/gps/hist/point 0.12 1.08
+/gps/hist/point 0.13 1.07
+/gps/hist/point 0.14 1.06
+/gps/hist/point 0.15 1.05
+/gps/hist/point 0.16 1.04
+/gps/hist/point 0.17 1.03
+/gps/hist/point 0.18 1.02
+/gps/hist/point 0.19 1.01
+
+/gps/hist/point 0.20 1.00
+/gps/hist/point 0.21 1.01
+/gps/hist/point 0.22 1.02
+/gps/hist/point 0.23 1.03
+/gps/hist/point 0.24 1.04
+/gps/hist/point 0.25 1.05
+/gps/hist/point 0.26 1.06
+/gps/hist/point 0.27 1.07
+/gps/hist/point 0.28 1.08
+/gps/hist/point 0.29 1.09
+
+/gps/hist/point 0.30 1.10
+/gps/hist/point 0.31 1.09
+/gps/hist/point 0.32 1.08
+/gps/hist/point 0.33 1.07
+/gps/hist/point 0.34 1.06
+/gps/hist/point 0.35 1.05
+/gps/hist/point 0.36 1.04
+/gps/hist/point 0.37 1.03
+/gps/hist/point 0.38 1.02
+/gps/hist/point 0.39 1.01
+
+/gps/hist/point 0.40 1.00
+/gps/hist/point 0.41 1.01
+/gps/hist/point 0.42 1.02
+/gps/hist/point 0.43 1.03
+/gps/hist/point 0.44 1.04
+/gps/hist/point 0.45 1.05
+/gps/hist/point 0.46 1.06
+/gps/hist/point 0.47 1.07
+/gps/hist/point 0.48 1.08
+/gps/hist/point 0.49 1.09
+
+/gps/hist/point 0.50 1.10
+/gps/hist/point 0.51 1.09
+/gps/hist/point 0.52 1.08
+/gps/hist/point 0.53 1.07
+/gps/hist/point 0.54 1.06
+/gps/hist/point 0.55 1.05
+/gps/hist/point 0.56 1.04
+/gps/hist/point 0.57 1.03
+/gps/hist/point 0.58 1.02
+/gps/hist/point 0.59 1.01
+
+/gps/hist/point 0.60 1.00
+/gps/hist/point 0.61 1.01
+/gps/hist/point 0.62 1.02
+/gps/hist/point 0.63 1.03
+/gps/hist/point 0.64 1.04
+/gps/hist/point 0.65 1.05
+/gps/hist/point 0.66 1.06
+/gps/hist/point 0.67 1.07
+/gps/hist/point 0.68 1.08
+/gps/hist/point 0.69 1.09
+
+/gps/hist/point 0.70 1.10
+/gps/hist/point 0.71 1.09
+/gps/hist/point 0.72 1.08
+/gps/hist/point 0.73 1.07
+/gps/hist/point 0.74 1.06
+/gps/hist/point 0.75 1.05
+/gps/hist/point 0.76 1.04
+/gps/hist/point 0.77 1.03
+/gps/hist/point 0.78 1.02
+/gps/hist/point 0.79 1.01
+
+/gps/hist/point 0.80 1.00
+/gps/hist/point 0.81 1.01
+/gps/hist/point 0.82 1.02
+/gps/hist/point 0.83 1.03
+/gps/hist/point 0.84 1.04
+/gps/hist/point 0.85 1.05
+/gps/hist/point 0.86 1.06
+/gps/hist/point 0.87 1.07
+/gps/hist/point 0.88 1.08
+/gps/hist/point 0.89 1.09
+
+/gps/hist/point 0.90 1.10
+/gps/hist/point 0.91 1.09
+/gps/hist/point 0.92 1.02
+/gps/hist/point 0.93 1.03
+/gps/hist/point 0.94 1.04
+/gps/hist/point 0.95 1.05
+/gps/hist/point 0.96 1.04
+/gps/hist/point 0.97 1.03
+/gps/hist/point 0.98 1.02
+/gps/hist/point 0.99 1.01
+/gps/hist/point 1.00 1.00

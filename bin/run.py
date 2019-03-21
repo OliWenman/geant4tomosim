@@ -33,8 +33,9 @@ Gun = "Mono"
 macrofile1 = this_directory + "/../scripts/Settings.mac" 
 macrofile2 = this_directory + "/../scripts/Geometry.mac"
 macrofile3 = this_directory + "/../scripts/Materials.mac"
+macrofile4 = this_directory + "/../scripts/Beam.mac"
 
-macrofiles = [macrofile3, macrofile1, macrofile2]
+macrofiles = [macrofile3, macrofile1, macrofile2, macrofile4]
 
 #==================================================================
 import os
