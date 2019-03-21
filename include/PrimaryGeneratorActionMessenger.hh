@@ -15,6 +15,7 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWith3VectorAndUnit;
+class G4UIcmdWith3Vector;
 class G4UIcmdWithABool;
 
 class PrimaryGeneratorActionMessenger: public G4UImessenger 
@@ -30,21 +31,24 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 
 		G4UIdirectory *BeamDirectory;
 
-    	G4UIcmdWithADoubleAndUnit *EnergyCmd;  
-		G4UIcmdWithADoubleAndUnit *BeamHalfXCmd;
-		G4UIcmdWithADoubleAndUnit *BeamHalfYCmd;
-		
+        //Energy and particle
+    	G4UIcmdWithADoubleAndUnit *EnergyCmd;  		
 		G4UIcmdWithAString *EnergyDisTypeCmd;
 		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;
-		
 		G4UIcmdWithAString *particleCmd;
 		G4UIcmdWith3VectorAndUnit *SetPolizationCmd;
 		
-		G4UIcmdWithADoubleAndUnit *MaxEnergyBinCmd;
-		
+		//Position commands
 		G4UIcmdWithABool *autoPlacement;
-		
+		G4UIcmdWithADoubleAndUnit *BeamHalfXCmd;
+		G4UIcmdWithADoubleAndUnit *BeamHalfYCmd;
 		G4UIcmdWith3VectorAndUnit *centreCoordinates;
+		
+		//Angle commands
+		G4UIcmdWith3Vector *momentumDirection;
+		
+		
+		G4UIcmdWithADoubleAndUnit *MaxEnergyBinCmd;
 };
 
 #endif 

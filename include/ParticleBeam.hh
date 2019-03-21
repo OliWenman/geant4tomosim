@@ -15,14 +15,13 @@ class ParticleBeam
         ~ParticleBeam();        
         
         G4ThreeVector FireParticle(G4Event* event);
-        double CalculatePositionX()              {return halfx * 2 * (G4UniformRand() - 0.5) + centre.y(); }
-        double CalculatePositionY()              {return halfy * 2 * (G4UniformRand() - 0.5) + centre.z(); }
-        inline double CalculatePositionX(double _halfx) {return _halfx * 2 * (G4UniformRand() - 0.5);}
-        inline double CalculatePositionY(double _halfy) {return _halfy * 2 * (G4UniformRand() - 0.5);} 
+        inline double CalculatePositionX()              {return halfx * 2 * (G4UniformRand() - 0.5) + centre.y(); }
+        inline double CalculatePositionY()              {return halfy * 2 * (G4UniformRand() - 0.5) + centre.z(); }
+        inline double CalculatePositionX(double _halfx) {return _halfx * 2 * (G4UniformRand() - 0.5) + centre.y();}
+        inline double CalculatePositionY(double _halfy) {return _halfy * 2 * (G4UniformRand() - 0.5) + centre.z();} 
         
         void DoAutoSourcePlacement(G4double value) {if (autoSourcePlacement) {centre = G4ThreeVector(value, centre.y(), centre.z());}}
         void SetAutoSourcePlacement(bool value)    {autoSourcePlacement = value;}
-        //void SetSourcePlacement(G4double value)    {centre = G4ThreeVector(value, centre.y(), centre.z());}
         void SetCentreCoordinates(G4ThreeVector value) {centre = value;}
                 
         //Get functions
@@ -42,12 +41,11 @@ class ParticleBeam
         //Set fucntions
         void SetHalfX(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfX(value); halfx = value;}
         void SetHalfY(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfY(value); halfy = value;}
-        //void SetSource(double value) {isource = value;}
         void SetPolization(G4ThreeVector value) {advaGun->SetParticlePolarization(value);
                                                  fastGun->SetParticlePolarization(value);
                                                  randomPolization = false;}
         
-        void SetMomemtumDirection(G4ThreeVector value) {advaGun->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(value); 
+        void SetMomentumDirection(G4ThreeVector value) {advaGun->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(value); 
                                                         fastGun->SetParticleMomentumDirection(value);}
         void SetBeamMonoEnergy(double value)           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(value);
                                                         fastGun->SetParticleEnergy(value);}                                                    

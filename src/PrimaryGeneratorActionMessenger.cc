@@ -8,6 +8,7 @@
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
+#include "G4UIcmdWith3Vector.hh"
 #include "ParticleBeam.hh"
 
 PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGeneratorAction *Gun): PGAction(Gun)
@@ -30,13 +31,13 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	EnergySigmaCmd -> SetParameterName("sE", true);
 	EnergySigmaCmd -> SetRange("sE >= 0");
 
-	BeamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfx", this);
+	BeamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfx", this);
 	BeamHalfXCmd -> SetGuidance("Set the width you would like the beam to be. ");
 	BeamHalfXCmd -> SetUnitCandidates("nm um mm cm m");
 	BeamHalfXCmd -> SetParameterName("Width", true);
 	BeamHalfXCmd -> SetRange("Width > 0");
 
-	BeamHalfYCmd = new G4UIcmdWithADoubleAndUnit("/beam/position/halfy", this);
+	BeamHalfYCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfy", this);
 	BeamHalfYCmd -> SetGuidance("Set the height you would like the beam to be. ");
 	BeamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
 	BeamHalfYCmd -> SetParameterName("Height", true);
@@ -48,7 +49,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	MaxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/beam/MaxEnergy", this);
 	MaxEnergyBinCmd -> SetGuidance("Set the maximum energy bin");
 	
-    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polization", this);
+    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
     SetPolizationCmd -> SetGuidance("");
     
     autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
@@ -58,6 +59,11 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
     centreCoordinates -> SetGuidance("Place the centre of the beam");
     centreCoordinates -> SetUnitCandidates("nm um mm cm m km");
     centreCoordinates -> SetParameterName("x", "y", "z", false, false);
+    
+    momentumDirection = new G4UIcmdWith3Vector("/beam/momentum", this);
+    momentumDirection -> SetGuidance ("Set the direction of the beam");
+    momentumDirection -> SetParameterName("px", "py", "pz", false, false);
+    momentumDirection -> SetRange("px <= 1 && px >= -1 && py <=1 && py >= -1 && py >= -1 && pz <= 1 && pz >= -1");
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -77,6 +83,8 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	
 	delete autoPlacement;
 	delete centreCoordinates;
+	
+	delete momentumDirection;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -124,4 +132,8 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	{
 	    PGAction -> GetBeam()-> SetCentreCoordinates(centreCoordinates->GetNew3VectorValue(newValue));
 	}
+	else if (command == momentumDirection)
+	{
+	    PGAction ->GetBeam()->SetMomentumDirection(momentumDirection->GetNew3VectorValue(newValue));
+	}   
 }

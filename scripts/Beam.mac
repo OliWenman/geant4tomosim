@@ -7,13 +7,13 @@
 # http://hurel.hanyang.ac.kr/Geant4/Geant4_GPS/reat.space.qinetiq.com/gps/examples/examples.html
 
 # Beam commands control the basic G4ParticleGun and G4GeneralParticleSource commands. 
-# G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam
+# G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam but is faster
 
 # Position commands
 /beam/autoposition false
 /beam/pos/centre -5 0.2 0.2 cm
-/beam/position/halfx 1.25 cm
-/beam/position/halfy 1.05 cm
+/beam/pos/halfx 1.25 cm
+/beam/pos/halfy 1.05 cm
 
 # Particle commands
 /beam/particle gamma
