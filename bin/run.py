@@ -13,7 +13,7 @@ import numpy as np
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1*10**6
+nParticles = 1000#1*10**6
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -24,9 +24,9 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 
 minEnergy = 5*G4.keV
 maxEnergy = 5*G4.keV
-minSigmaEnergy = 10*G4.keV
-maxSigmaEnergy = 10*G4.keV
-Gun = "Gauss"
+minSigmaEnergy = 70*G4.keV
+maxSigmaEnergy = 70*G4.keV
+Gun = "Mono"
 
 #-------------------------------------------------------------------
 #Macrofiles to add
@@ -107,7 +107,7 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-verbose = 2
+verbose =1
 print "verbose = ", verbose
 
 Sim = sim.PySim(verbose)
@@ -118,8 +118,6 @@ Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
-Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
-del Sim
 
 print "Finished"
 

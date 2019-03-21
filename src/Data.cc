@@ -26,41 +26,41 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		SetNumberColumns(nDetectorsZ);
 
 		//Creates a 1D vector for the hit data
-		G4cout << "\nCreating absorption data set..." << G4endl;
+		//G4cout << "\nCreating absorption data set..." << G4endl;
 		std::vector<int> iabsorptionData(nDetectorsY*nDetectorsZ, 0);
 		absorptionData = iabsorptionData;
-		G4cout << "Success!" << G4endl;
+		//G4cout << "Success!" << G4endl;
 		
 		if (NoBins_Cmd > 0)
 		{
 			if (fullfieldFluorescence)
 			{
-			    G4cout << "Creating full field fluorescence data set..." << G4endl;
+			    //G4cout << "Creating full field fluorescence data set..." << G4endl;
 				std::vector<int> ifluorescence (NoBins_Cmd, 0);
 				fullfieldFluorescenceData = ifluorescence;
-				G4cout << "Success!" << G4endl;
+				//G4cout << "Success!" << G4endl;
 			}
 			
 			if (fullmappingFluorescence)
 			{
-			    G4cout << "Creating full mapping fluorescence data set..." << G4endl;
+			    //G4cout << "Creating full mapping fluorescence data set..." << G4endl;
 				std::vector<std::vector<std::vector<int> > > ifullMappingFluore (nDetectorsY, std::vector<std::vector<int> >
 				                                                                           (nDetectorsZ, std::vector<int>
 				                                                                           (NoBins_Cmd)));
 				fullmappingFluorescenceData = ifullMappingFluore;
-				G4cout << "Success!" << G4endl;
+				//G4cout << "Success!" << G4endl;
 			}
 			
 			if (fullmappingDiffraction)
 			{
-			    G4cout << "Creating diffraction data set..." << G4endl;
+			    //G4cout << "Creating diffraction data set..." << G4endl;
 			    int beamPosX = nDetectorsY;
 			    int beamPosY = nDetectorsZ;
 			    
 			    std::vector<std::vector<int> > idiffractionData (nDetectorsY, std::vector <int>
 			                                                    (nDetectorsZ));
 			    diffractionData = idiffractionData;
-			    G4cout << "Success!" << G4endl;
+			    //G4cout << "Success!" << G4endl;
 			}
 			
 			std::vector<double> iEnergyBins (NoBins_Cmd, 0);

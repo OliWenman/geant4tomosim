@@ -34,7 +34,7 @@
 
 #include "ParticleBeam.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress()
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress(), beam(NULL), gunMessenger(NULL)
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);

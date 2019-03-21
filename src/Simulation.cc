@@ -36,41 +36,35 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
-Simulation::Simulation(int verb)
+Simulation::Simulation(int verb) : runManager(NULL), data(NULL), DC(NULL), PL(NULL), PGA(NULL), visManager(NULL), particleManager(NULL), stepManager(NULL) 
 {	
     globalVerbose = verb;
 
-    G4cout << "\nWelcome to the tomography data simulation!"; 
-              "\nSetting up... \n";
+    G4cout << "\nWelcome to the tomography data simulation!"
+              "\nSetting up... " << G4endl;
 
-	simMessenger = new SimulationMessenger(this);
+    SaveLogPath = "./../Output/HDF5/";
+	seedCmd = 0;	
 
-	Reset = false;
-	Ready = false;
-
-	verboseLevel = 2;
-
-	//Create an instance of the classes
+    //Create an instance of the classes
 	runManager = new G4RunManager();
+	simMessenger = new SimulationMessenger(this);
 	
 	data = new Data();
-	DC = new DetectorConstruction(data); 
-	PL = new PhysicsList();
 	materials = new DefineMaterials(); 
-	visManager = 0;
-	SaveLogPath = "./../Output/HDF5/";
-
-	//Setup the Geant4 user and action intialization	
-	runManager -> SetUserInitialization(DC);
+	
+  	DC = new DetectorConstruction(data); 
+  	runManager -> SetUserInitialization(DC); 
+  	
+	PL = new PhysicsList();              
 	runManager -> SetUserInitialization(PL);
-
-	PGA = new PrimaryGeneratorAction(data);
+	
+	PGA = new PrimaryGeneratorAction(data); 
 	runManager -> SetUserAction(PGA);
 	
-	particleManager = new StackingAction();
-	runManager -> SetUserAction(particleManager);
-	particleManager -> SetKillElectrons(true);
-	
+	particleManager = new StackingAction(); particleManager -> SetKillElectrons(true);
+    runManager -> SetUserAction(particleManager);
+    
 	stepManager = new SteppingAction();
 	runManager -> SetUserAction(stepManager);
 
@@ -83,25 +77,26 @@ Simulation::Simulation(int verb)
 
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
-	
-	seedCmd = 0;	
 }
 
 Simulation::~Simulation()
 {
 	G4cout << "\nClosing simulation..." << G4endl;
-
-	delete simMessenger;
-
-	if (runManager){delete runManager;}
-	if (visManager){delete visManager;}
-
-	if (data){delete data;}
-	if (materials) {delete materials;}
 	
-	//delete CLHEP::HepRandom::getTheEngine();
+	int showDeletion = 3;
+	
+	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
 
-	G4cout << "Simulation closed! \n" << G4endl;
+    delete data;            if(globalVerbose > showDeletion) {G4cout << "\nData deleted" << std::flush;}
+	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
+	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
+	delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
+	
+	if (visManager) {delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}}
+	
+	delete CLHEP::HepRandom::getTheEngine();
+
+	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 
 void Simulation::pyOutputOptions(bool FFF, bool FFM)
@@ -187,9 +182,9 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     if(Image == 0)
     {		  	    
 	    int verbose;    
-	    if (globalVerbose < 2){verbose = 0;}
-	    else                  {verbose = verboseLevel - 2;}
-	    runManager -> SetVerboseLevel(verbose);
+	    if (globalVerbose < 3){verbose = 3;}
+	    else                  {verbose = globalVerbose - 3;}
+	    //runManager -> SetVerboseLevel(verbose);
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	    PGA -> SetBins(data -> GetNoBins());

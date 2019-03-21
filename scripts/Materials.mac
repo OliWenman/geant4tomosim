@@ -1,6 +1,14 @@
 #==============================================
 #CREATE CUSTOM MATERIALS
 
+/Materials/Define/Compound Test 4 2.67 g/cm3
+/Materials/AddTo/Compound Test Si 25 %
+/Materials/AddTo/Compound Test O 25 %
+/Materials/AddTo/Compound Test N 25 %
+/Materials/AddTo/Compound Test Na 25 %
+#/Materials/AddTo/Compound Test P 25 %
+#/Materials/AddTo/Compound Test C 25 %
+
 /Materials/Define/Compound AlSi10Mg 5 2.67 g/cm3
 /Materials/AddTo/Compound AlSi10Mg Si 10 %
 /Materials/AddTo/Compound AlSi10Mg Mg 0.35 %

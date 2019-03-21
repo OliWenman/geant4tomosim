@@ -66,7 +66,7 @@ class Simulation
 		void SetSaveLogPath(std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName;}
 		void SetSeed(long int value)                                {seedCmd = value;}
 		void SetSavingTime(double Time)                             {PGA -> SetSavingTime(Time);}
-		void SetVerboseLevel(int value)                             {verboseLevel = value;}
+		void SetVerboseLevel(int value)                             {globalVerbose = value;}
 		void SetGlobalVerboseLevel(int value)                       {globalVerbose = value;}
 
 	private:
@@ -90,15 +90,11 @@ class Simulation
 		StackingAction* particleManager;
 		SteppingAction* stepManager;
 
-		bool Reset;
-		bool Ready;
-
 		long int seedCmd;
 
 		std::string SaveLogPath;
 		std::string FileName;
 		
-		int verboseLevel;
 		int globalVerbose;
 		
 		std::vector<std::string> macrofiles;

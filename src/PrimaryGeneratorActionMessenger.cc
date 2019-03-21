@@ -53,6 +53,11 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
     
     autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
     autoPlacement -> SetGuidance("Automatically place the beam at the edge of the world in the -x direction");
+    
+    centreCoordinates = new G4UIcmdWith3VectorAndUnit("/beam/pos/centre", this);
+    centreCoordinates -> SetGuidance("Place the centre of the beam");
+    centreCoordinates -> SetUnitCandidates("nm um mm cm m km");
+    centreCoordinates -> SetParameterName("x", "y", "z", false, false);
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -71,6 +76,7 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete MaxEnergyBinCmd;
 	
 	delete autoPlacement;
+	delete centreCoordinates;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -113,5 +119,9 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	else if (command == autoPlacement)
 	{
 	    PGAction -> SetAutoBeamPlacement(autoPlacement->GetNewBoolValue(newValue));
+	}
+	else if (command == centreCoordinates)
+	{
+	    PGAction -> GetBeam()-> SetCentreCoordinates(centreCoordinates->GetNew3VectorValue(newValue));
 	}
 }

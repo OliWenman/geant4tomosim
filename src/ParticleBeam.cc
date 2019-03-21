@@ -28,42 +28,50 @@ void ParticleBeam::DefualtValues()
     autoSourcePlacement = true;
     randomPolization = true;
     
-    G4ParticleDefinition* defualtParticle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
+    G4ParticleDefinition* defaultParticle = G4ParticleTable::GetParticleTable() -> FindParticle("gamma"); 
     G4ThreeVector defaultMomentum(1., 0., 0.);
     double defaultEnergy = 50*keV;
     double defaultHalfX  = 1.05*cm;
     double defaultHalfY  = 1.25*cm;
-    G4ThreeVector defaultiPosition(0, 0, 0);
+    G4ThreeVector defaultcentre(0, 0, 0);
 
     //Setup faster particle gun
-    fastGun -> SetParticleDefinition(defualtParticle);
+    fastGun -> SetParticleDefinition(defaultParticle);
     fastGun -> SetParticleEnergy(defaultEnergy);
     fastGun -> SetParticleMomentumDirection(defaultMomentum);
-    //fastGun -> SetParticlePolarization(G4ThreeVector(1,0,0));
-    //advaGun -> SetParticlePolarization(G4ThreeVector(1,0,0));
+    
+    //Default variables for the advanced particle gun GPS
+    G4ThreeVector defaultRotation1 (0, 0, 1);
+    G4ThreeVector defualtRotation2 (0, 1, 0);
+    
+    G4String beamType = "Plane";
+    G4String beamShape = "Rectangle";
+    
+    advaGun -> SetParticleDefinition(defaultParticle);
     
     //Setup advanced particlegun
     advaGun -> GetCurrentSource() -> GetPosDist() -> SetCentreCoords(G4ThreeVector(0, 0, 0));
     advaGun -> GetCurrentSource() -> GetPosDist() -> SetHalfX(defaultHalfX);
     advaGun -> GetCurrentSource() -> GetPosDist() -> SetHalfY(defaultHalfY);
     //Automatically set the correct rotation
-    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot1(G4ThreeVector(0, 0, 1));
-    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot2(G4ThreeVector(0, 1, 0));
+    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot1(defaultRotation1);
+    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosRot2(defualtRotation2);
     //Automatically select the shape and type
-    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisType("Plane");
-    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisShape("Square");
+    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisType(beamType);
+    advaGun -> GetCurrentSource() -> GetPosDist() -> SetPosDisShape(beamShape);
 
     //Automatically set the gun momentum in the positive x direction
     advaGun -> GetCurrentSource() -> GetAngDist() -> SetParticleMomentumDirection(defaultMomentum);
+    advaGun -> GetCurrentSource() -> GetAngDist() -> DefineAngRefAxes("angref1", defaultRotation1);
+    advaGun -> GetCurrentSource() -> GetAngDist() -> DefineAngRefAxes("angref2", defualtRotation2);
 
     advaGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");      
     advaGun -> GetCurrentSource() -> GetEneDist() -> SetMonoEnergy(defaultEnergy);
-    advaGun -> SetParticleDefinition(defualtParticle);
     
     halfx = defaultHalfX;
     halfy = defaultHalfY;
-    iposition = defaultiPosition;
-    isource = defaultiPosition.x();
+    centre = defaultcentre;
+    isource = defaultcentre.x();
 }
 
 G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
@@ -77,7 +85,7 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
         
         if (randomPolization) {fastGun -> SetParticlePolarization(RandomPolarization());}
         
-        fastGun -> SetParticlePosition(G4ThreeVector(isource, y, x));
+        fastGun -> SetParticlePosition(G4ThreeVector(centre.x(), y, x));
         fastGun -> GeneratePrimaryVertex(event);
         
         position = G4ThreeVector(isource, x, y);
@@ -86,7 +94,7 @@ G4ThreeVector ParticleBeam::FireParticle(G4Event* event)
     {
         if (randomPolization) {advaGun -> SetParticlePolarization(RandomPolarization());}
     
-        advaGun->GetCurrentSource()->GetPosDist()->SetCentreCoords(G4ThreeVector(isource, 0, 0));
+        advaGun->GetCurrentSource()->GetPosDist()->SetCentreCoords(centre);
         advaGun -> GeneratePrimaryVertex(event);
         
         position = advaGun->GetParticlePosition();

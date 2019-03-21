@@ -43,6 +43,8 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		G4UIcmdWithADoubleAndUnit *MaxEnergyBinCmd;
 		
 		G4UIcmdWithABool *autoPlacement;
+		
+		G4UIcmdWith3VectorAndUnit *centreCoordinates;
 };
 
 #endif 

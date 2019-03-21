@@ -15,14 +15,15 @@ class ParticleBeam
         ~ParticleBeam();        
         
         G4ThreeVector FireParticle(G4Event* event);
-        double CalculatePositionX()              {return halfx * 2 * (G4UniformRand() - 0.5); }
-        double CalculatePositionY()              {return halfy * 2 * (G4UniformRand() - 0.5); }
+        double CalculatePositionX()              {return halfx * 2 * (G4UniformRand() - 0.5) + centre.y(); }
+        double CalculatePositionY()              {return halfy * 2 * (G4UniformRand() - 0.5) + centre.z(); }
         inline double CalculatePositionX(double _halfx) {return _halfx * 2 * (G4UniformRand() - 0.5);}
         inline double CalculatePositionY(double _halfy) {return _halfy * 2 * (G4UniformRand() - 0.5);} 
         
         void DoAutoSourcePlacement(G4double value){if (autoSourcePlacement) {isource = value;}}
         void SetAutoSourcePlacement(bool value) {autoSourcePlacement = value;}
         void SetSourcePlacement(G4double value)   {isource = value;}
+        void SetCentreCoordinates(G4ThreeVector value) {centre = value;}
                 
         //Get functions
         G4ParticleGun*           GetFastGun() {return fastGun;}
@@ -69,7 +70,7 @@ class ParticleBeam
         double halfx;
         double halfy;
         double isource;
-        G4ThreeVector iposition;
+        G4ThreeVector centre;
 };
 
 #endif 

@@ -34,7 +34,8 @@ DefineMaterials::~DefineMaterials()
 
 void DefineMaterials::DefineElement(G4String name, G4int z, G4double a, G4double density)
 {
-	G4Material* newElement = new G4Material(name, z, a, density);
+    G4Material* element = G4NistManager::Instance() -> FindOrBuildMaterial(name);
+    if (!element) {G4Material* newElement = new G4Material(name, z, a, density);}
 }
 
 void DefineMaterials::DefineIsotope(G4String name, G4int z, G4int A, G4double atomicWeight)
@@ -120,7 +121,8 @@ void DefineMaterials::AddIsoMixDensity(G4String IsotopeMixName, G4double Density
 
 void DefineMaterials::DefineMolecule(G4String Name, G4double density, G4int n_components)
 {
-    G4Material* newMaterial = new G4Material(Name, density, n_components);
+    G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(Name);
+    if (!material) {G4Material* newMaterial = new G4Material(Name, density, n_components);}
 }
 
 void DefineMaterials::AddElementToMolecule(G4String MoleculeName, G4String ElementName, G4int NumberOfAtoms)
@@ -143,16 +145,17 @@ void DefineMaterials::AddElementToMolecule(G4String MoleculeName, G4String Eleme
 
 void DefineMaterials::DefineCompound(G4String Name, G4double density, G4int n_components)
 {
-    G4Material* newCompound = new G4Material(Name, density, n_components);
+    G4Material* compound = G4NistManager::Instance() -> FindOrBuildMaterial(Name);
+    
+    if (!compound){G4Material* newCompound = new G4Material(Name, density, n_components);}
 }
 
 void DefineMaterials::AddElementToCompound(G4String CompoundName, G4String ElementName, G4double FractionalMass)
 {
-    G4Material* Compound = FindMaterial(CompoundName);
+    G4Material* Compound = G4NistManager::Instance() -> FindOrBuildMaterial(CompoundName);;
     G4Element* Element = FindElement(ElementName);
     
-    if (Element && Compound)
-        Compound -> AddElement(Element, FractionalMass);
+    if (Element && Compound) {Compound -> AddElement(Element, FractionalMass);}
     else
     {
         if(!Element)
