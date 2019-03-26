@@ -29,6 +29,7 @@ void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
+    
     //G4cout << n << ")ABSORPTION HIT " << G4endl;
     //++n;
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
@@ -47,6 +48,6 @@ G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	
 	    fHitsCollection -> insert( newHit );
 	}
-
+    
   	return true;
 }

@@ -16,6 +16,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	BeamDirectory = new G4UIdirectory("/beam/");
 	BeamDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
 
+    //Energy and particles of the beam
 	EnergyCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/mono", this);
 	EnergyCmd -> SetGuidance("Set the kinetic energy. ");
   	EnergyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
@@ -30,7 +31,17 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	EnergySigmaCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
 	EnergySigmaCmd -> SetParameterName("sE", true);
 	EnergySigmaCmd -> SetRange("sE >= 0");
-
+	
+	MaxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/data/MaxEnergy", this);
+	MaxEnergyBinCmd -> SetGuidance("Set the maximum energy that the data will record");
+	
+    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
+    SetPolizationCmd -> SetGuidance("");
+    
+    particleCmd = new G4UIcmdWithAString("/beam/particle", this);
+	particleCmd -> SetGuidance("Set type of particle you want the beam to use");
+	
+    //Position, direction and placement of the beam
 	BeamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfx", this);
 	BeamHalfXCmd -> SetGuidance("Set the width you would like the beam to be. ");
 	BeamHalfXCmd -> SetUnitCandidates("nm um mm cm m");
@@ -43,16 +54,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	BeamHalfYCmd -> SetParameterName("Height", true);
 	BeamHalfYCmd -> SetRange("Height > 0");
 	
-	particleCmd = new G4UIcmdWithAString("/beam/particle", this);
-	particleCmd -> SetGuidance("Set type of particle you want the beam to use");
-	
-	MaxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/beam/MaxEnergy", this);
-	MaxEnergyBinCmd -> SetGuidance("Set the maximum energy bin");
-	
-    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
-    SetPolizationCmd -> SetGuidance("");
-    
-    autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
+	autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
     autoPlacement -> SetGuidance("Automatically place the beam at the edge of the world in the -x direction");
     
     centreCoordinates = new G4UIcmdWith3VectorAndUnit("/beam/pos/centre", this);

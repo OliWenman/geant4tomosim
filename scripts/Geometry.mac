@@ -54,7 +54,7 @@
 /Target/Material ObjectA Al
 /Target/Colour ObjectA Blue
 /Target/Position ObjectA 0 0 0 mm
-/Target/Rotation ObjectA 0 0 0 deg
+/Target/Rotation ObjectA 0 45 0 deg
 
 #/Target/Material ObjectB MS1
 #/Target/Colour ObjectB Red

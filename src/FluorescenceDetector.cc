@@ -25,6 +25,8 @@
 
 #include "PrintLines.hh"
 
+#include "G4SDParticleFilter.hh"
+
 FluorescenceDetector::FluorescenceDetector(): sensitiveDetector(NULL)
 {
     FDMessenger = new FluorescenceDetectorMessenger(this); 
@@ -38,17 +40,17 @@ FluorescenceDetector::~FluorescenceDetector()
 void FluorescenceDetector::CreateVolumes()
 {
     DetectorVolume = new G4Box("FluorescenceDetector",
-			         	halfdimensions.x(),
-					    halfdimensions.y(),
-					    halfdimensions.z());
+			         	       halfdimensions.x(),
+					           halfdimensions.y(),
+					           halfdimensions.z());
 }
 
 void FluorescenceDetector::CreateVolumes(G4ThreeVector halfDimensions)
 {
     DetectorVolume = new G4Box("FluorescenceDetector",
-			         	halfDimensions.x(),
-					    halfDimensions.y(),
-					    halfDimensions.z());
+			         	       halfDimensions.x(),
+					           halfDimensions.y(),
+					           halfDimensions.z());
 					          
     halfdimensions = halfDimensions;
 }
@@ -72,7 +74,7 @@ void FluorescenceDetector::AddProperties(Data* data, G4bool GraphicsOn)
 		SDmanager->AddNewDetector(sensitiveDetector);	// Store SD if built	
 
 		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-		//tomoVSD -> SetFilter(gammaFilter);
+		//sensitiveDetector -> SetFilter(gammaFilter);
 	}
 
 	//Add the sensitive detector to the logical volume

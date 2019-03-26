@@ -87,15 +87,16 @@ Simulation::~Simulation()
 	
 	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
 
-    delete data;            if(globalVerbose > showDeletion) {G4cout << "\nData deleted" << std::flush;}
-	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
-	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
-	delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
+    delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
 	
 	if (visManager) {delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}}
+
+	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
+	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
 	
 	delete CLHEP::HepRandom::getTheEngine();
 
+    delete data;            if(globalVerbose > showDeletion) {G4cout << "\nData deleted" << std::flush;}
 	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 

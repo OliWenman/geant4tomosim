@@ -13,7 +13,7 @@ import numpy as np
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1000#1*10**6
+nParticles = 1*10**7
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -22,10 +22,10 @@ rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num =
 #-------------------------------------------------------------------
 #ENERGY VARIABLES
 
-minEnergy = 5*G4.keV
-maxEnergy = 5*G4.keV
-minSigmaEnergy = 70*G4.keV
-maxSigmaEnergy = 70*G4.keV
+minEnergy = 10*G4.keV
+maxEnergy = 10*G4.keV
+minSigmaEnergy = 5*G4.keV
+maxSigmaEnergy = 5*G4.keV
 Gun = "Mono"
 
 #-------------------------------------------------------------------
@@ -108,7 +108,7 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-verbose =1
+verbose = 5
 print "verbose = ", verbose
 
 Sim = sim.PySim(verbose)

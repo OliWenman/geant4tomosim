@@ -73,7 +73,7 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
 void ProgressTracker::ProgressBar(int Percent)
 {
 	int intervals = 50;
-	int dProgress = 100/intervals;
+	int dProgress = 102/intervals;
 
 	G4cout << " (";
 	for (int nbar = 0; nbar < intervals ; ++nbar)

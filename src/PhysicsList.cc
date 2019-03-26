@@ -43,6 +43,8 @@
 
 #include "PrintLines.hh"
 
+#include "G4LivermorePolarizedPhotoElectricModel.hh"
+
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
 	//Creates the messenger class
@@ -106,11 +108,15 @@ void PhysicsList::ConstructEM()
 			if (PhotoElectricCmd)
 			{
 				G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-				G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
+				/*G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
 				//livPhotoElectricEffect->SetVerboseLevel(0);
 				thePhotoElectricEffect->SetVerboseLevel(0);
 				thePhotoElectricEffect->SetEmModel(livPhotoElectricEffect);
-				pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
+				pmanager->AddDiscreteProcess(thePhotoElectricEffect); */
+				
+				G4LivermorePolarizedPhotoElectricModel* pee = new G4LivermorePolarizedPhotoElectricModel();
+				thePhotoElectricEffect->SetEmModel(pee);
+				pmanager->AddDiscreteProcess(thePhotoElectricEffect);
 			}
 			if (ComptonScatteringCmd)
 			{

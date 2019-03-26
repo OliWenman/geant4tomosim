@@ -146,7 +146,8 @@ cdef class PySim:
                gunType = gunTypes[CurrentImage]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = np.reshape(self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType), (-1, xPixels))  
+               simOutput = self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType)  
+               simOutput = np.reshape(simOutput, (-1, xPixels))        
                
                iSavingTime = time.time()
                
@@ -163,7 +164,7 @@ cdef class PySim:
                   if FMFluorescence == True:
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
-               self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
+               #self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
                
                if FFFluorescence == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)

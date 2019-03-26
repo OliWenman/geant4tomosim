@@ -13,7 +13,9 @@ Data::Data()
 
 Data::~Data()
 {
+    G4cout << "\nData::Deleting messenger" << std::flush;
     delete dataMessenger;
+    G4cout << "\nData::Deleted" << std::flush;
 }
 
 void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
@@ -35,7 +37,7 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 		{
 			if (fullfieldFluorescence)
 			{
-			    //G4cout << "Creating full field fluorescence data set..." << G4endl;
+			    G4cout << "Creating full field fluorescence data set..." << G4endl;
 				std::vector<int> ifluorescence (NoBins_Cmd, 0);
 				fullfieldFluorescenceData = ifluorescence;
 				//G4cout << "Success!" << G4endl;
@@ -97,10 +99,10 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 
 void Data::SaveFluorescence(double E)
 {
-    //int bin = floor(E*1000/(MaxE/NoBins_Cmd) -1);
-    //if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
+    int bin = floor(E*1000/(MaxE/NoBins_Cmd) -1);
+    if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
 
-	//++fullfieldFluorescenceData[bin];
+	++fullfieldFluorescenceData[bin];
 }
 
 void Data::SaveFullMapping(double E)

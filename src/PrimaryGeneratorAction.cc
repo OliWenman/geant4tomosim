@@ -100,11 +100,15 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 	    << "\n- Polization: ";
 	                          if (randomPolarization) {log << "random";}
 	                          else                    {log << beam -> GetPolarization();} 
-	/*if (myGun)
+	log << "\n- Momentum: " << beam -> GetMomentum(); 
+	log << "\n- Centre: " << G4BestUnit(beam -> GetCentreCoordinates(), "Length");
+	
+	bool fan = beam->CheckIfFan();
+	if (!fan)
 	{
 	    log << "\n- Halfx = " << G4BestUnit(beam -> GetHalfX(), "Length")
 	        << "\n- Halfy = " << G4BestUnit(beam -> GetHalfY(), "Length");
-	}*/ 
+	} 
 }
 
 void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)

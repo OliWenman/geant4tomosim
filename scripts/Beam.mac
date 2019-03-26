@@ -10,16 +10,16 @@
 # G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam but is faster
 
 # Position commands
-/beam/autoposition false
-/beam/pos/centre -5 0.2 0.2 cm
+/beam/autoposition true
+#/beam/pos/centre -3 0.0 0.0 cm
 /beam/pos/halfx 1.25 cm
 /beam/pos/halfy 1.05 cm
+#/beam/momentum 1.00 0.00 0.00 
 
 # Particle commands
 /beam/particle gamma
-/beam/MaxEnergy 100 keV
 
-# Create a circular diverging beam using gps
+# Create a cone fan beam using gps
 #/gps/pos/type Point
 #/gps/ang/type iso
 #/gps/ang/maxtheta 3 deg

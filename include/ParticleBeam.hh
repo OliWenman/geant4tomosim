@@ -15,14 +15,13 @@ class ParticleBeam
         ~ParticleBeam();        
         
         G4ThreeVector FireParticle(G4Event* event);
+        bool          CheckIfFan();
         inline double CalculatePositionX()              {return halfx * 2 * (G4UniformRand() - 0.5) + centre.y(); }
         inline double CalculatePositionY()              {return halfy * 2 * (G4UniformRand() - 0.5) + centre.z(); }
         inline double CalculatePositionX(double _halfx) {return _halfx * 2 * (G4UniformRand() - 0.5) + centre.y();}
         inline double CalculatePositionY(double _halfy) {return _halfy * 2 * (G4UniformRand() - 0.5) + centre.z();} 
         
         void DoAutoSourcePlacement(G4double value) {if (autoSourcePlacement) {centre = G4ThreeVector(value, centre.y(), centre.z());}}
-        void SetAutoSourcePlacement(bool value)    {autoSourcePlacement = value;}
-        void SetCentreCoordinates(G4ThreeVector value) {centre = value;}
                 
         //Get functions
         G4ParticleGun*           GetFastGun() {return fastGun;}
@@ -38,6 +37,11 @@ class ParticleBeam
         double GetHalfX(){return halfx;}
         double GetHalfY(){return halfy;}
         
+        G4ThreeVector GetMomentum(){if (usefastGun) {return fastGun->GetParticleMomentumDirection();}
+                                    else            {return advaGun->GetParticleMomentumDirection();}}
+        
+        G4ThreeVector GetCentreCoordinates(){return centre;}
+        
         //Set fucntions
         void SetHalfX(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfX(value); halfx = value;}
         void SetHalfY(double value) {advaGun->GetCurrentSource()->GetPosDist()->SetHalfY(value); halfy = value;}
@@ -46,11 +50,14 @@ class ParticleBeam
                                                  randomPolization = false;}
         
         void SetMomentumDirection(G4ThreeVector value) {advaGun->GetCurrentSource()->GetAngDist()->SetParticleMomentumDirection(value); 
-                                                        fastGun->SetParticleMomentumDirection(value);}
-        void SetBeamMonoEnergy(double value)           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(value);
-                                                        fastGun->SetParticleEnergy(value);}                                                    
+                                                        fastGun->SetParticleMomentumDirection(value);} 
+        void SetAutoSourcePlacement(bool value)        {autoSourcePlacement = value;}
+        void SetCentreCoordinates(G4ThreeVector value) {centre = value;}                                                 
+                                                                                                    
         void SetParticle(G4String particle);
         void SetBeamEnergy(G4double mono, G4double sigma);
+        void SetBeamMonoEnergy(double value)           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(value);
+                                                        fastGun->SetParticleEnergy(value);}       
         
         void UseFastGun(bool value) {usefastGun = value;}
         bool UseFastGun() {return usefastGun;}

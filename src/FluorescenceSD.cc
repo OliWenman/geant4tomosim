@@ -20,7 +20,10 @@ FluorescenceSD::FluorescenceSD(Data* DataObject, bool graphics) : G4VSensitiveDe
 	if(GraphicsOn){collectionName.insert("FluorescenceHitsCollection");}
 }
 
-FluorescenceSD::~FluorescenceSD(){}
+FluorescenceSD::~FluorescenceSD()
+{
+    if (!fullfieldfluorescence.empty()) {fullfieldfluorescence.clear();}
+}
 
 void FluorescenceSD::Initialize(G4HCofThisEvent* hce)
 {	
@@ -36,10 +39,17 @@ void FluorescenceSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 {
-	G4double PhotonEnergy = aStep->GetPreStepPoint()->GetKineticEnergy();
+	G4double energy = aStep->GetPreStepPoint()->GetKineticEnergy();
 
-	if (RecordFullMapping){data -> SaveFullMapping(PhotonEnergy);}
-	if (RecordFullField)  {data -> SaveFluorescence(PhotonEnergy);}
+    if (!fullfieldfluorescence.empty())
+    {
+        //int bin = floor(E*1000/(MaxE/NoBins_Cmd) -1);
+        //if (bin > NoBins_Cmd - 1) {bin = NoBins_Cmd -1;}
+
+	    //++fullfieldFluorescenceData[bin];
+    }
+	if (RecordFullMapping){data -> SaveFullMapping(energy);}
+	if (RecordFullField)  {data -> SaveFluorescence(energy);}
 	
 	if(GraphicsOn)
 	{
@@ -48,7 +58,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 
 	    //Save all the information about the particle that hit the detector
   	    newHit -> SetChamberNb(0);
-	    newHit -> SetEdep(PhotonEnergy);
+	    newHit -> SetEdep(energy);
 	    newHit -> SetPos (aStep->GetPreStepPoint()->GetPosition());
 	
 	    fHitsCollection -> insert( newHit );
@@ -56,3 +66,15 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 
 	return true;
 }
+
+void FluorescenceSD::SetupFullField(int nBins)
+{
+    fullfieldfluorescence.assign(nBins, 0);
+}
+
+void FluorescenceSD::ResetData()
+{
+    if (!fullfieldfluorescence.empty()) {std::fill(fullfieldfluorescence.begin(), fullfieldfluorescence.end(), 0);}
+}
+
+//void FluorescenceSD::

@@ -10,10 +10,11 @@
 # PHYSICS
 
 /physics/gamma/livermore/photoelectric true
-/physics/gamma/livermore/comptomscattering true
-/physics/gamma/livermore/raylieghscattering true
+/physics/gamma/livermore/comptomscattering false
+/physics/gamma/livermore/raylieghscattering false
 /physics/gamma/fluorescence true
-/physics/gamma/refraction false
+/physics/gamma/refraction true
+
 /physics/gamma/opticalabsorption false
 #/physics/gamma/opticalrayliegh false
 
@@ -27,7 +28,8 @@
 
 /data/Seed 0
 /data/bins 2000
-/data/fluorescence/fullfield true
+/data/MaxEnergy 100 keV
+/data/fluorescence/fullfield false
 /data/fluorescence/fullmapping false
 /data/diffraction/fullmapping false
 
@@ -36,13 +38,13 @@
 
 /world/size 20 10 2.1 cm		
 /world/material G4_Galactic
-/world/visualization true	
+/world/visualization false	
 
 #--------------------------------------------------------------
 # DETECTORS
 
-/detector/absorption/rows 20
-/detector/absorption/columns 20
+/detector/absorption/rows 250
+/detector/absorption/columns 210
 /detector/absorption/halfdimensions 0.001 1.25 1.05 cm
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 

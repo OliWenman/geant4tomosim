@@ -22,10 +22,15 @@ class FluorescenceSD : public G4VSensitiveDetector
 		
 		bool FullField()  {return RecordFullField;}
 		bool FullMapping(){return RecordFullMapping;}
+		
+		void SetupFullField(int nBins);
+		void ResetData();
 
   	private:
 		bool DetectorEfficiency;
 		int nBins;
+		
+		std::vector<int> fullfieldfluorescence;
 
 		//Pointers to different classes
 		Data* data;

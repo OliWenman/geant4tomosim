@@ -153,3 +153,14 @@ void ParticleBeam::SetBeamEnergy(G4double mono, G4double sigma)
     
 }
 
+bool ParticleBeam::CheckIfFan()
+{
+    if (usefastGun) {return false;}
+    
+    if (advaGun->GetCurrentSource()->GetPosDist()->GetPosDisType() == "Point" && 
+        advaGun->GetCurrentSource()->GetAngDist()->GetDistType() == "iso")
+        {return true;}
+    
+    else {return false;} 
+}
+
