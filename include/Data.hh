@@ -22,7 +22,7 @@ class Data
 
 		void SetUpData(int nDetectorsY, int nDetectorsZ, int nImage);
 
-        inline void SaveAbsorption(G4int DetectorNumber){/*++absorptionData[DetectorNumber];*/}
+        inline void SaveAbsorption(G4int DetectorNumber){++absorptionData[DetectorNumber];}
 		void SaveFluorescence(double E);		
 		void SaveFullMapping(double E);
         void SaveDiffraction(int copyNumber);

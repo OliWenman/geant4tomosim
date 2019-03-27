@@ -38,6 +38,8 @@ class Simulation
 		void pyOutputOptions(bool FFF, bool FFM);
 		void pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetectorDimensions, int nBins);
 		void pyAddMacros(std::vector<std::string> macroFiles);
+		void ApplyCommand(std::string command);
+		void ApplyMacroFile(std::string macro);
         std::vector<int> pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angles, std::vector<double> gunEnergy, G4String gunType);
 
         //It's own private functions to be called by the public functions

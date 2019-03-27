@@ -11,6 +11,8 @@ cdef extern from "Simulation.hh":
       void pyOutputOptions(bint, bint)
       void pySetupDetectors(int, int, vector[double], int)
       void pyAddMacros(vector[string])
+      void ApplyCommand(string)
+      void ApplyMacroFile(string)
       vector[int] pyRun(unsigned long long int, vector[int], double, vector[double], string)
       
       void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)

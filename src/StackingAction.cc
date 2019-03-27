@@ -30,7 +30,7 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
   	//if (nextVolume){G4cout << "next volume = " << nextVolume -> GetName()<< G4endl;}
   	//else {G4cout << "no NextVolume. Location = " << aTrack -> GetPosition() << " track ID = " << aTrack-> GetTrackID() << G4endl;}
   	    //Kill all secondary electrons
-  	    if (particle->GetParticleName() == "electron" && killElectrons == true){return fKill;}//status = fKill;}
+  	    if (particle->GetParticleName() == "e-" && killElectrons == true){return fKill;}//status = fKill;}
   	    //else if (aTrack->GetTrackID() > 3 &&  {return fUrgent;}    
   	    else {return fUrgent;}
   	    //Kill all photons that aren't going to hit the fluorescence detector located in the positive y direction    

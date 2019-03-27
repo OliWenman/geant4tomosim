@@ -67,7 +67,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     }
     G4ThreeVector particleposition = beam->FireParticle(event);
     
-    if (FluoreFM == true) {data -> SetParticlePosition(particleposition);}
+    if (FluoreFM) {data -> SetParticlePosition(particleposition);}
     
     //Save beam energy data    	
     int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
@@ -79,7 +79,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 
     ++beamEnergy[bin];
     
-    if (ShowProgressBar == true && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
+    if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
     
     ++CurrentEvent;
 } 

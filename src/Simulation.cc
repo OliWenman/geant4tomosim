@@ -38,10 +38,10 @@
 
 Simulation::Simulation(int verb) : runManager(NULL), data(NULL), DC(NULL), PL(NULL), PGA(NULL), visManager(NULL), particleManager(NULL), stepManager(NULL) 
 {	
-    globalVerbose = verb;
-
     G4cout << "\nWelcome to the tomography data simulation!"
               "\nSetting up... " << G4endl;
+
+    globalVerbose = verb;
 
     SaveLogPath = "./../Output/HDF5/";
 	seedCmd = 0;	
@@ -133,25 +133,165 @@ void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<
 	G4cout << "\nSuccess!" << G4endl;*/
 }
 
+#include "G4UIcommandStatus.hh"
+
 void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
 {
     int nFiles = macroFiles.size();
     
     for (int n = 0; n < nFiles ; n++)
-    {
-        if (globalVerbose > 0)
-        {
-            PrintToEndOfTerminal('-');        
-            G4cout << "Reading macro file " << n + 1 << ") " << macroFiles[n]
-                   << "\nAdding commands..." << G4endl;
-        }
-        
-        G4int Success = UImanager -> ApplyCommand("/control/execute " + macroFiles[n]);
-        
-        if (globalVerbose > 0 ) {G4cout << "\nSuccess!"; }
+    {    
+        ApplyMacroFile(macroFiles[n]);
     }
     
     macrofiles = macroFiles;
+}
+
+void Simulation::ApplyMacroFile(std::string macro)
+{
+    //Read the macro file line by line and extract the commands from the file
+
+     if (globalVerbose > 0)
+     {
+        PrintToEndOfTerminal('-');        
+        G4cout << "Reading file '" << macro << "' " << G4endl;
+     }
+
+    std::ifstream ReadFile;
+        
+    //Try to open the macro file      
+    ReadFile.open(macro);
+    if (!ReadFile) 
+    {
+        G4cout << "\nERROR: Unable to open " << macro << " to apply commands. " << G4endl;
+        exit(1); 
+    }
+      
+    G4cout << "\n";  
+      
+    //Read the file
+    std::string command;    
+    int line = 0;
+    while ((std::getline(ReadFile, command))) 
+    {
+        // TAB-> ' ' conversion
+        str_size nb = 0;
+        while ((nb = command.find('\t', nb)) != G4String::npos) 
+        {
+            command.replace(nb, 1, " ");
+        }
+        
+        //Skips empty lines
+        if(command.size() == 0) continue;
+        
+        size_t foundhash = command.find('#');
+            
+        //If found '#' will remove it and everything after
+        if(foundhash != std::string::npos)
+        {
+            command = command.substr(0, foundhash);
+        }
+            
+        //Check if string isn't just spaces
+        if (command.find_first_not_of(' ') != std::string::npos)
+        {
+            ++line;
+            if (globalVerbose > 3) {G4cout << line << ")";}
+            ApplyCommand(command);
+            
+        }
+    }
+    
+    ReadFile.close();
+    if (globalVerbose > 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
+}
+
+void Simulation::ApplyCommand(std::string command)
+{
+    G4int status = UImanager -> ApplyCommand(command);
+    
+    if (status == fCommandSucceeded)
+    {
+        if (globalVerbose > 3) {G4cout << command << " successful!" << G4endl;}
+    }
+    else
+    {
+        if (status == fCommandNotFound)
+        {
+            G4cout << "ERROR: command \"" << command << "\" not found! " << G4endl; 
+        }
+        else if (status == fIllegalApplicationState)
+        {
+            G4cout << "ERROR: command \"" << command << "\" is applied at the wrong state! " << G4endl; 
+        }
+        else if (status == fParameterOutOfRange)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter out of range! " << G4endl; 
+        }
+        else if (status == fParameterUnreadable)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter is unreadable! " << G4endl; 
+        }
+        else if (status == fParameterOutOfCandidates)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter out of candidates! " << G4endl; 
+        }
+        else if (status == fAliasNotFound)
+        {
+            G4cout << "ERROR: command \"" << command << "\" alias not found " << G4endl;    
+        }
+        
+        bool breakLoop1 = false;
+        G4cout << "\nWould you like to reapply the command?" "\n[y/n]" << G4endl;
+        
+        while (!breakLoop1)
+        {
+            std::string reapplycommand;
+            getline(std::cin, reapplycommand);
+        
+            if (reapplycommand == "y")
+            {
+                breakLoop1 = true;
+                G4cout << G4endl;
+                getline(std::cin, reapplycommand);
+                
+                ApplyCommand(reapplycommand);
+                
+            }
+            else if (reapplycommand == "n")
+            {
+                breakLoop1 = true;
+                
+                bool breakLoop2 = false;
+                G4cout << "\nContinue with the simulation? ""\n[y/n]" << G4endl;
+                
+                while (!breakLoop2)
+                {
+                    std::string continueSimulation;
+                    getline(std::cin, continueSimulation);
+            
+                    if (continueSimulation == "n")
+                    {
+                        breakLoop2 = true;
+                        G4cout << "\nExiting..." << G4endl;
+                        exit(0);
+                    }
+                    else if (continueSimulation == "y")
+                    {
+                        breakLoop2 = true;
+                    }
+                    else 
+                    {
+                        G4cout << "\nPlease type [y] or [n]. " << G4endl;
+                    }
+                }
+            }
+            else 
+            {
+                G4cout << "\nPlease type [y] or [n]. " << G4endl;
+            }
+        }
+    }
 }
 
 //std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
@@ -445,8 +585,9 @@ void Simulation::PrintInformation(SettingsLog log)
     if (globalVerbose > 0)
     {
         //If the verbose has been set >= 2 output info to terminal.
-        if (globalVerbose >= 2) {log.terminalOn = true;}
-        else                    {log.terminalOn = false;}
+        //if (globalVerbose >= 2) {log.terminalOn = true;}
+        //else                    {log.terminalOn = false;}
+        log.terminalOn = false;
     
         //Loop through the macro files
         int nFiles = macrofiles.size();

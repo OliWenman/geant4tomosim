@@ -257,3 +257,8 @@ cdef class PySim:
         #plt.
         plt.show()
         
+    def ApplyCommand(self, command):
+        self.thisptr.ApplyCommand(command)
+        
+    def ApplyMacroFile(self, macrofile):
+        self.thisptr.ApplyMacroFile(macrofile)

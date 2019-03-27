@@ -108,7 +108,7 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-verbose = 5
+verbose = 4
 print "verbose = ", verbose
 
 Sim = sim.PySim(verbose)
@@ -116,8 +116,12 @@ Sim = sim.PySim(verbose)
 Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
 Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
 """
+
+#Sim.ApplyMacroFile(macrofile1)
+
 Sim.addMacroFiles(macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
+
 Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
 
 print "Finished"
