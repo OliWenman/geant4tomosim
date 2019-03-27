@@ -336,6 +336,8 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 	    DC -> RelayToTC(NumberOfImages, rotation_angle);
 	     
 	    runManager -> Initialize(); 
+	    runManager -> SetNumberOfEventsToBeStored (0);
+	    PL -> ActivateUserPhysics();
         Visualisation();
 	    
 	    if (globalVerbose > 0)

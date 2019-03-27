@@ -12,7 +12,7 @@
 /physics/gamma/livermore/photoelectric true
 /physics/gamma/livermore/comptomscattering true
 /physics/gamma/livermore/raylieghscattering true
-/physics/gamma/fluorescence true
+/physics/gamma/fluorescence false
 /physics/gamma/refraction false
 
 /physics/gamma/opticalabsorption false
@@ -28,8 +28,8 @@
 /data/Seed 0 
 /data/bins 2000
 /data/MaxEnergy 20 keV
-/data/fluorescence/fullfield true
-/data/fluorescence/fullmapping true
+/data/fluorescence/fullfield false
+/data/fluorescence/fullmapping false
 /data/diffraction/fullmapping false
 #--------------------------------------------------------------
 # WORLD

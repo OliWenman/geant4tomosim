@@ -13,7 +13,7 @@ import numpy as np
 
 NumberOfImages = 1
 nDarkFlatFields = 0
-nParticles = 1*10**7
+nParticles = 1*10**5
 
 startRotation = 0*G4.deg
 TotalRotation = 180*G4.deg
@@ -26,7 +26,7 @@ minEnergy = 10*G4.keV
 maxEnergy = 10*G4.keV
 minSigmaEnergy = 5*G4.keV
 maxSigmaEnergy = 5*G4.keV
-Gun = "Mono"
+Gun = "Gauss"
 
 #-------------------------------------------------------------------
 #Macrofiles to add
@@ -108,7 +108,7 @@ for e in range(NumberOfImages + nDarkFlatFields):
 #RUN THE SIMULATION
 import sim
 
-verbose = 4
+verbose = 3
 print "verbose = ", verbose
 
 Sim = sim.PySim(verbose)

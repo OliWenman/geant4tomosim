@@ -45,28 +45,47 @@
 
 #include "G4LivermorePolarizedPhotoElectricModel.hh"
 
-PhysicsList::PhysicsList() : G4VModularPhysicsList()
+#include "G4RunManager.hh"
+
+PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), livpol_photoeletriceffect(0),
+                                                      comptonscattering(0), liv_comptonscattering(0),
+                                                      rayleighscattering(0), liv_rayleighscattering(0),
+                                                      de(0), 
+                                                      gamma_refraction(0), 
+                                                      gamma_absorption(0)
 {
 	//Creates the messenger class
-  	PhysicsMessenger = new PhysicsListMessenger(this);
+  	physicsMessenger = new PhysicsListMessenger(this);
 
 	//Sets the cutvalues
 	//cutForGamma = 10*mm;
 	//cutForElectron = 1*um;
 	
-	PhotoElectricCmd = true;
-	ComptonScatteringCmd = true;
-	RayleighScatteringCmd = true;
-	FluorescenceCmd = true;
-	RefractionCmd = true;
-	GammaAbsorption = false;
-	
-	//G4LossTableManager::Instance();
+	photoelectricOn = true;
+	comptonscatteringOn = true;
+	rayleighscatteringOn = true;
+	fluorescenceOn = true;
+	refractionOn = true;
+	gamma_absorptionOn = false;
 }
 
 PhysicsList::~PhysicsList()
 {
-  	delete PhysicsMessenger;
+  	delete physicsMessenger; physicsMessenger = 0;
+  	
+  	delete photoelectriceffect; photoelectriceffect = 0;
+  	delete livpol_photoeletriceffect; livpol_photoeletriceffect = 0;
+  	
+  	delete comptonscattering; comptonscattering = 0;
+  	delete liv_comptonscattering; liv_comptonscattering = 0;
+  	
+  	delete rayleighscattering; rayleighscattering = 0;
+  	delete liv_rayleighscattering; liv_rayleighscattering = 0;
+  	
+  	delete gamma_refraction; gamma_refraction = 0;
+  	delete gamma_absorption; gamma_absorption = 0;
+  	
+  	//delete de;
 }
 void PhysicsList::ConstructParticle()
 {
@@ -105,7 +124,7 @@ void PhysicsList::ConstructEM()
   	auto particleIterator = GetParticleIterator();
   	particleIterator->reset();
 
-	//Cycles through he different particles	
+	//Cycles through the different particles	
   	while( (*particleIterator)() )
 	{
 		//Finds the physics processes for each particle 
@@ -116,90 +135,130 @@ void PhysicsList::ConstructEM()
 		
 		//Adds the physics that were turned on via the commands for the gamma particle
 		if(particleName == "gamma")
-		{
-			if (PhotoElectricCmd)
-			{
-				G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-				/*G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
-				//livPhotoElectricEffect->SetVerboseLevel(0);
-				thePhotoElectricEffect->SetVerboseLevel(0);
-				thePhotoElectricEffect->SetEmModel(livPhotoElectricEffect);
-				pmanager->AddDiscreteProcess(thePhotoElectricEffect); */
-				
-				G4LivermorePolarizedPhotoElectricModel* pee = new G4LivermorePolarizedPhotoElectricModel();
-				thePhotoElectricEffect->SetEmModel(pee);
-				pmanager->AddDiscreteProcess(thePhotoElectricEffect);
-			}
-			if (ComptonScatteringCmd)
-			{
-				G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-				G4LivermoreComptonModel* livComptonScattering = new G4LivermoreComptonModel();
-				theComptonScattering->SetEmModel(livComptonScattering);
-				pmanager->AddDiscreteProcess(theComptonScattering); 
-			}
-			if (RayleighScatteringCmd)
-			{
-				G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
-				theRayleighScattering->SetEmModel(new G4LivermoreRayleighModel());
-				pmanager->AddDiscreteProcess(theRayleighScattering); 
-			}
-			/*else if(PhysicsPackageCmd == "StandardPhysics")
-			{
-				if (PhotoElectricCmd)
-				{
-					G4PhotoElectricEffect* thePhotoElectricEffect = new G4PhotoElectricEffect();
-					pmanager->AddDiscreteProcess(thePhotoElectricEffect); 
-				}
-				if (ComptonScatteringCmd)
-				{
-					G4ComptonScattering* theComptonScattering = new G4ComptonScattering();
-					pmanager->AddDiscreteProcess(theComptonScattering); 
-				}
-				if (RayleighScatteringCmd)
-				{
-					G4RayleighScattering* theRayleighScattering = new G4RayleighScattering();
-					pmanager->AddDiscreteProcess(theRayleighScattering); 
-				}
-			}*/
-			/*else
-			{
-				//Outputs an error saying if the physics inputted is not a valid input and stops the simulation
-				G4cout << "\n================================================================================"
-	       	       	   << "\n            ERROR - INVALID PHYSICS INPUT: " << PhysicsPackageCmd << G4endl
-		               << "\n            Refer to the README for list of available Physics inputs "
-	                   << "\n================================================================================" << G4endl;
-				exit(-1);
-			}*/
-			if (FluorescenceCmd)
-			{
-				//Relaxtion processes after the photoelctric effect
-				G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
-				de -> SetVerboseLevel(0);
-  				de->SetFluo(true);
-  				de->SetAuger(true);   
-  				de->SetPIXE(true);  
-  				G4LossTableManager::Instance()->SetVerbose(0);
-  				G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-			}
-		    if (RefractionCmd)
+		{   
+		    //Setup the photoelectric effect
+		    if (!photoelectriceffect)
 		    {
-		        GammaOpticalRefraction* photonRefraction = new GammaOpticalRefraction();
-		        pmanager -> AddDiscreteProcess(photonRefraction);
+		        photoelectriceffect = new G4PhotoElectricEffect();
+			    livpol_photoeletriceffect = new G4LivermorePolarizedPhotoElectricModel();
+			    photoelectriceffect->SetEmModel(livpol_photoeletriceffect);
+			    pmanager->AddDiscreteProcess(photoelectriceffect);
 		    }
-		    if(GammaAbsorption)
+		
+			/*G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
+			//livPhotoElectricEffect->SetVerboseLevel(0);
+			photoelectriceffect->SetVerboseLevel(0);
+			photoelectriceffect->SetEmModel(livPhotoElectricEffect);
+			pmanager->AddDiscreteProcess(photoelectriceffect); */
+
+            //Setup compton scattering
+            if (!comptonscattering)
+            {
+			    comptonscattering = new G4ComptonScattering();
+			    liv_comptonscattering = new G4LivermoreComptonModel();
+			    comptonscattering->SetEmModel(liv_comptonscattering);
+			    pmanager->AddDiscreteProcess(comptonscattering); 
+			}
+			
+			//Setup the rayleigh scattering
+			if (!rayleighscattering)
+			{
+			    rayleighscattering = new G4RayleighScattering();
+			    liv_rayleighscattering = new G4LivermoreRayleighModel();
+			    rayleighscattering->SetEmModel(liv_rayleighscattering);
+			    pmanager->AddDiscreteProcess(rayleighscattering); 
+		    }
+		    
+			//Setup fluorescence
+			if (!de)
+			{
+			    de = new G4UAtomicDeexcitation();
+			    de -> SetVerboseLevel(0);
+  			    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+            }
+            
+            //Setup gamma refraction
+            if (!gamma_refraction)
+            {
+                gamma_refraction = new GammaOpticalRefraction();
+		        pmanager -> AddDiscreteProcess(gamma_refraction);
+            }
+		    if(!gamma_absorption)
 		    {
-		        GammaOpticalAbsorption* photonAbsorption = new GammaOpticalAbsorption();
-		        pmanager -> AddDiscreteProcess(photonAbsorption);
+		        gamma_absorption = new GammaOpticalAbsorption();
+		        pmanager -> AddDiscreteProcess(gamma_absorption);
 		    }
 		    /*fRayleighScatteringProcess = new G4OpRayleigh();
             fMieHGScatteringProcess = new G4OpMieHG();
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
-		}    
+		 }
 	    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 1*GeV);
 	}
 
 	G4cout << G4endl;
+}
+
+void PhysicsList::ActivateUserPhysics()
+{   
+    G4ProcessManager* gammaProcessManager = G4Gamma::GammaDefinition()->GetProcessManager();
+    
+    G4ProcessVector* processlist = gammaProcessManager->GetProcessList();
+    
+    //Add photoelectric effect to processes if it doesn't already contain it and user wants it on
+    if (photoelectricOn && !processlist->contains(photoelectriceffect)) {
+        gammaProcessManager->AddProcess(photoelectriceffect);
+    }
+    else if (!photoelectricOn) {   
+        gammaProcessManager->RemoveProcess(photoelectriceffect);    
+    }
+   
+    //Add compton scattering to processes if it doesn't already contain it and user wants it on
+    if (comptonscatteringOn && !processlist->contains(comptonscattering)) {
+        gammaProcessManager->AddProcess(comptonscattering);
+    }
+    else if (!comptonscatteringOn) {
+        gammaProcessManager->RemoveProcess(comptonscattering);
+    }
+    
+    //Add rayleigh scattering to processes if it doesn't already contain it and user wants it on
+    if (rayleighscatteringOn && !processlist->contains(rayleighscattering)) {
+        gammaProcessManager->AddProcess(rayleighscattering);
+    }
+    else if (!rayleighscatteringOn) {
+        gammaProcessManager->RemoveProcess(rayleighscattering);
+    }
+    
+    //Add gamma refraction to processes if it doesn't already contain it and user wants it on  
+    if (refractionOn && !processlist->contains(gamma_refraction)) {
+        gammaProcessManager->AddProcess(gamma_refraction);
+    }
+    else if (!refractionOn) {
+        gammaProcessManager->RemoveProcess(gamma_refraction);
+    }
+    
+    //Add gamma absoprtion to processes if it doesn't already contain it and user wants it on  
+    if (gamma_absorptionOn && !processlist->contains(gamma_absorption)) {
+        gammaProcessManager->AddProcess(gamma_absorption);
+    }
+    else if (gamma_absorptionOn) {
+        gammaProcessManager->RemoveProcess(gamma_absorption);
+    }
+    
+    if (fluorescenceOn)
+    {
+        de->SetFluo(true);
+  		de->SetAuger(true);   
+  		de->SetPIXE(true);  
+    }
+    else 
+    {  
+        de->SetFluo(false);
+  		de->SetAuger(false);   
+  		de->SetPIXE(false);
+    }
+    
+    G4cout << "\nBUG: Fluorescence can only be changed once?" << G4endl;
 }
 
 void PhysicsList::SetCuts()
@@ -218,8 +277,11 @@ void PhysicsList::ReadOutInfo(SettingsLog& log)
     log << "PHYSICS PROCESSES: "; 
 	    //<< "\n- " << PhysicsPackageCmd << ":";
 
-	for (int element = 0 ; element < PhysicProcesses.size() ; element++){
-		log << "\n" << PhysicProcesses[element];
-	}	
+	if (photoelectricOn)      {log << "\n- Photoelectric effect (livermore)";}
+	if (comptonscatteringOn)  {log << "\n- Compton scattering (livermore)";}
+	if (rayleighscatteringOn) {log << "\n- Rayleigh scattreing (livermore)";}
+	if (fluorescenceOn)       {log << "\n- Fluorescence";}
+	if (refractionOn)         {log << "\n- Gamma refraction";}
+	if (gamma_absorptionOn)   {log << "\n- Gamma absorption";}
 }
 

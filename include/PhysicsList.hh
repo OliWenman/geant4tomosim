@@ -10,12 +10,19 @@ class G4VPhysicsConstructor;
 class PhysicsListMessenger;
 class G4StepLimiter;
 
-class G4Cerenkov;
-class G4Scintillation;
-class G4OpAbsorption;
-class G4OpRayleigh;
-class G4OpMieHG;
-class G4OpBoundaryProcess;
+class G4PhotoElectricEffect;
+class G4LivermorePolarizedPhotoElectricModel;
+
+class G4ComptonScattering;
+class G4LivermoreComptonModel;
+
+class G4RayleighScattering;
+class G4LivermoreRayleighModel;
+
+class G4VAtomDeexcitation;
+
+class GammaOpticalRefraction;
+class GammaOpticalAbsorption;
 
 class PhysicsList: public G4VModularPhysicsList
 {
@@ -27,15 +34,17 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
 
 		//Used to set the physics processes you want
-		void SetPhotoElectric(G4bool value)     {PhotoElectricCmd = value; if(value){PhysicProcesses.push_back("- Photoelectric effect (Livermore)");}}
-		void SetComptonScattering(G4bool value) {ComptonScatteringCmd = value; if(value){PhysicProcesses.push_back("- Compton scattering (Livermore)");}}
-		void SetRayleighScattering(G4bool value){RayleighScatteringCmd = value; if(value){PhysicProcesses.push_back("- Rayleigh scattering (Livermore)");}}
-		void SetFluorescence(G4bool value)      {FluorescenceCmd = value; if(value){PhysicProcesses.push_back("- Fluorescence");}}
-		void SetRefraction(G4bool value)        {RefractionCmd = value; if(value){PhysicProcesses.push_back("- Refraction");}}
-		void SetGammaAbsorption(G4bool value)   {GammaAbsorption = value; if(value){PhysicProcesses.push_back("- Optical absorption");}}
+		void SetPhotoElectric(G4bool value)     {photoelectricOn = value;}
+		void SetComptonScattering(G4bool value) {comptonscatteringOn = value;}
+		void SetRayleighScattering(G4bool value){rayleighscatteringOn = value;}
+		void SetFluorescence(G4bool value)      {fluorescenceOn = value;}
+		void SetRefraction(G4bool value)        {refractionOn = value;}
+		void SetGammaAbsorption(G4bool value)   {gamma_absorptionOn = value;}
 
-		G4bool GetFluorescence(){return FluorescenceCmd;}
+		G4bool GetFluorescence(){return fluorescenceOn;}
 
+        void ActivateUserPhysics();        
+        
 		//Construct the particles and processes
 		void ConstructEM();
   		void ConstructParticle();
@@ -47,23 +56,36 @@ class PhysicsList: public G4VModularPhysicsList
 
 	private:
 		//Pointer to its messenger class
-		PhysicsListMessenger* PhysicsMessenger;
-
-  		G4double cutForGamma;
-  		G4double cutForElectron;
-  		G4double cutForPositron;
+		PhysicsListMessenger* physicsMessenger;
+		
+		//Pointers to the physics processes and models
+		G4PhotoElectricEffect* photoelectriceffect;
+		G4LivermorePolarizedPhotoElectricModel* livpol_photoeletriceffect;
+		
+		G4ComptonScattering* comptonscattering;
+		G4LivermoreComptonModel* liv_comptonscattering;
+		
+		G4RayleighScattering* rayleighscattering;
+		G4LivermoreRayleighModel* liv_rayleighscattering;
+		
+		G4VAtomDeexcitation* de;
+		
+		GammaOpticalRefraction* gamma_refraction;
+		GammaOpticalAbsorption* gamma_absorption;		
 
 		//Physics options
 		G4String PhysicsPackageCmd;
-		G4bool PhotoElectricCmd;
-		G4bool ComptonScatteringCmd;
-		G4bool RayleighScatteringCmd;
-		G4bool FluorescenceCmd;
-		G4bool RefractionCmd;
-		G4bool GammaAbsorption;
-
-		//Vector used to read out the physics processes used
-		std::vector<G4String> PhysicProcesses;
+		G4bool photoelectricOn;
+		G4bool comptonscatteringOn;
+		G4bool rayleighscatteringOn;
+		G4bool fluorescenceOn;
+		G4bool refractionOn;
+		G4bool gamma_absorptionOn;
+		
+		//Cuts for particles
+		G4double cutForGamma;
+  		G4double cutForElectron;
+  		G4double cutForPositron;
 };
 
 #endif
