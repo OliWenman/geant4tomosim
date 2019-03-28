@@ -50,7 +50,6 @@
 PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), livpol_photoeletriceffect(0),
                                                       comptonscattering(0), liv_comptonscattering(0),
                                                       rayleighscattering(0), liv_rayleighscattering(0),
-                                                      de(0), 
                                                       gamma_refraction(0), 
                                                       gamma_absorption(0)
 {
@@ -84,8 +83,6 @@ PhysicsList::~PhysicsList()
   	
   	delete gamma_refraction; gamma_refraction = 0;
   	delete gamma_absorption; gamma_absorption = 0;
-  	
-  	//delete de;
 }
 void PhysicsList::ConstructParticle()
 {
@@ -170,9 +167,9 @@ void PhysicsList::ConstructEM()
 		    }
 		    
 			//Setup fluorescence
-			if (!de)
+			if (!G4LossTableManager::Instance()->AtomDeexcitation())
 			{
-			    de = new G4UAtomicDeexcitation();
+			    G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
 			    de -> SetVerboseLevel(0);
   			    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
             }
@@ -195,8 +192,6 @@ void PhysicsList::ConstructEM()
 		 }
 	    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 1*GeV);
 	}
-
-	G4cout << G4endl;
 }
 
 void PhysicsList::ActivateUserPhysics()
@@ -241,24 +236,65 @@ void PhysicsList::ActivateUserPhysics()
     if (gamma_absorptionOn && !processlist->contains(gamma_absorption)) {
         gammaProcessManager->AddProcess(gamma_absorption);
     }
-    else if (gamma_absorptionOn) {
+    else if (!gamma_absorptionOn) {
         gammaProcessManager->RemoveProcess(gamma_absorption);
     }
     
-    if (fluorescenceOn)
+    G4VAtomDeexcitation* atomDeexcitation = G4LossTableManager::Instance()->AtomDeexcitation();
+    
+    if(!atomDeexcitation)
     {
-        de->SetFluo(true);
-  		de->SetAuger(true);   
-  		de->SetPIXE(true);  
-    }
-    else 
-    {  
-        de->SetFluo(false);
-  		de->SetAuger(false);   
-  		de->SetPIXE(false);
+        G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+	    de -> SetVerboseLevel(0);
+  	    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
     }
     
-    G4cout << "\nBUG: Fluorescence can only be changed once?" << G4endl;
+    if (fluorescenceOn)
+    {   
+        atomDeexcitation->SetFluo(true);
+  		atomDeexcitation->SetAuger(true);   
+  		atomDeexcitation->SetPIXE(true);  
+    }
+    else// if (flu
+    {  
+        atomDeexcitation->SetFluo(false);
+  		atomDeexcitation->SetAuger(false);   
+  		atomDeexcitation->SetPIXE(false);  
+    }
+}
+
+void PhysicsList::Fluorescence()
+{
+    /*if(!G4LossTableManager::Instance())
+    {
+        G4cout << "\nERROR" << G4endl;
+    }
+
+    G4VAtomDeexcitation* atomDeexcitation = G4LossTableManager::Instance()->AtomDeexcitation();
+    
+    if(!atomDeexcitation)
+    {
+        G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
+	    de -> SetVerboseLevel(0);
+  	    //G4LossTableManager::Instance()->SetAtomDeexcitation(de);
+    }
+    
+    if (fluorescenceOn)
+    {   
+        atomDeexcitation->SetFluo(true);
+  		atomDeexcitation->SetAuger(true);   
+  		atomDeexcitation->SetPIXE(true);  
+    }
+    else// if (flu
+    {  
+        atomDeexcitation->SetFluo(false);
+  		atomDeexcitation->SetAuger(false);   
+  		atomDeexcitation->SetPIXE(false);  
+    }
+    
+    //G4RunManager::GetRunManager()->PhysicsHasBeenModified();
+    
+    G4cout << "\nGeant4 design flaw, cannot unlock " << G4endl;*/
 }
 
 void PhysicsList::SetCuts()

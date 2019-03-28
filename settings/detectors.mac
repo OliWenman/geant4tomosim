@@ -1,0 +1,21 @@
+#--------------------------------------------------------------
+# Macro file to control the world, detectors and data recorded of the simulation
+
+# World
+/world/size 20 10 2.1 cm		
+/world/material G4_Galactic
+/world/visualization false	
+
+# Detectors
+/detector/absorption/rows 250
+/detector/absorption/columns 210
+/detector/absorption/halfdimensions 0.001 1.25 1.05 cm
+/detector/fluorescence/halfdimensions 2 0.01 1 cm
+
+# Data
+/data/Seed 0 
+/data/bins 1000
+/data/MaxEnergy 20 keV
+/data/fluorescence/fullfield true
+/data/fluorescence/fullmapping true
+/data/diffraction/fullmapping false

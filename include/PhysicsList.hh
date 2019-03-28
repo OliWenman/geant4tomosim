@@ -43,7 +43,8 @@ class PhysicsList: public G4VModularPhysicsList
 
 		G4bool GetFluorescence(){return fluorescenceOn;}
 
-        void ActivateUserPhysics();        
+        void ActivateUserPhysics();     
+        void Fluorescence();   
         
 		//Construct the particles and processes
 		void ConstructEM();
@@ -67,8 +68,6 @@ class PhysicsList: public G4VModularPhysicsList
 		
 		G4RayleighScattering* rayleighscattering;
 		G4LivermoreRayleighModel* liv_rayleighscattering;
-		
-		G4VAtomDeexcitation* de;
 		
 		GammaOpticalRefraction* gamma_refraction;
 		GammaOpticalAbsorption* gamma_absorption;		

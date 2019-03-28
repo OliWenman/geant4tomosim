@@ -36,7 +36,7 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
-Simulation::Simulation(int verb) : runManager(NULL), data(NULL), DC(NULL), PL(NULL), PGA(NULL), visManager(NULL), particleManager(NULL), stepManager(NULL) 
+Simulation::Simulation(int verb) : runManager(0), data(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
 {	
     G4cout << "\nWelcome to the tomography data simulation!"
               "\nSetting up... " << G4endl;
@@ -89,7 +89,7 @@ Simulation::~Simulation()
 
     delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
 	
-	if (visManager) {delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}}
+    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}
 
 	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
 	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
@@ -335,6 +335,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
 		
 	    DC -> RelayToTC(NumberOfImages, rotation_angle);
 	     
+	    PL -> Fluorescence(); 
 	    runManager -> Initialize(); 
 	    runManager -> SetNumberOfEventsToBeStored (0);
 	    PL -> ActivateUserPhysics();

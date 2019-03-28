@@ -11,5 +11,3 @@ cython_add_module( sim sim.pyx Simulation.cc ${sources})
 target_include_directories(sim PUBLIC ${LIBXRL_INCLUDE_DIRS})
 target_link_libraries( sim ${Geant4_LIBRARIES} ${pkgcfg_lib_LIBXRL_xrl})
 
-file(COPY G4Units.py DESTINATION ./)
-

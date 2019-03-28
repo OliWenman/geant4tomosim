@@ -3,42 +3,8 @@ import os
 this_directory = os.path.dirname(os.path.realpath(__file__))
 
 import sys
-sys.path.insert(0, this_directory + '/../src')
-import G4Units as G4
-import numpy as np
-
-#VARIABLES TO CHANGE
-#===================================================================
-#IMAGE VARIABLES
-
-NumberOfImages = 1
-nDarkFlatFields = 0
-nParticles = 1*10**5
-
-startRotation = 0*G4.deg
-TotalRotation = 180*G4.deg
-rotation_angles = np.linspace(start = startRotation, stop = TotalRotation, num = NumberOfImages, endpoint = False)
-
-#-------------------------------------------------------------------
-#ENERGY VARIABLES
-
-minEnergy = 10*G4.keV
-maxEnergy = 10*G4.keV
-minSigmaEnergy = 5*G4.keV
-maxSigmaEnergy = 5*G4.keV
-Gun = "Gauss"
-
-#-------------------------------------------------------------------
-#Macrofiles to add
-macrofile1 = this_directory + "/../scripts/Settings.mac" 
-macrofile2 = this_directory + "/../scripts/Geometry.mac"
-macrofile3 = this_directory + "/../scripts/Materials.mac"
-macrofile4 = this_directory + "/../scripts/Beam.mac"
-
-macrofiles = [macrofile3, macrofile1, macrofile2, macrofile4]
-
-#==================================================================
-import os
+sys.path.insert(0, this_directory + '/../settings')
+import tomosim_input as tsi
 
 #Can optionally add a file path and name for the data to be saved when running script
 if __name__ == '__main__':
@@ -92,37 +58,19 @@ if __name__ == '__main__':
     logName = FileName[0:dotPosition] + '_log.txt'
 
 #===================================================================
-#CREATE THE ENERGY ARRAY    
-
-energyArray = []
-monoEnergies = np.linspace(start = minEnergy, stop = maxEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
-energyArray.append(monoEnergies)
-sigmaEnergies = np.linspace(start = minSigmaEnergy, stop = maxSigmaEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
-energyArray.append(sigmaEnergies)
-gunTypes = []
-for e in range(NumberOfImages + nDarkFlatFields):
-    gunTypes.append(Gun)
-#energyArray.append(gunTypes)
-
-#===================================================================
 #RUN THE SIMULATION
 import sim
 
-verbose = 3
-print "verbose = ", verbose
+print "verbose = ", tsi.verbose
 
-Sim = sim.PySim(verbose)
-"""
-Sim.setupDetectors(nDetY, nDetZ, DetectorDimensions, nBins)
-Sim.outputOptions(fullfield_fluorescence, fullmapping_fluorescence)
-"""
-
-#Sim.ApplyMacroFile(macrofile1)
-
-Sim.addMacroFiles(macrofiles)
+Sim = sim.PySim(tsi.verbose)
+Sim.addMacroFiles(tsi.macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 
-Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
+Sim.run(tsi.nParticles, tsi.rotation_angles, tsi.nDarkFlatFields, tsi.energyArray, tsi.gunTypes)
+#Sim.ApplyCommand("/physics/gamma/fluorescence true")
+#Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
+
 
 print "Finished"
 

@@ -164,7 +164,7 @@ cdef class PySim:
                   if FMFluorescence == True:
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
-               #self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
+               self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
                
                if FFFluorescence == True:
                   self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
