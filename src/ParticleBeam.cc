@@ -136,23 +136,6 @@ G4double ParticleBeam::GetEnergyOfEvent()
     else           {return advaGun->GetParticleEnergy();}
 }
 
-void ParticleBeam::SetBeamEnergy(G4double mono, G4double sigma)
-{
-    if(usefastGun) {fastGun->SetParticleEnergy(mono);}
-    else           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(mono);
-                    advaGun->GetCurrentSource()->GetEneDist()->SetBeamSigmaInE(sigma);}
-    
-    if (sigma == 0 && !usefastGun)
-    {
-        advaGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Mono");      
-    }
-    else if (sigma > 0 && !usefastGun)
-    {
-        advaGun -> GetCurrentSource() -> GetEneDist() -> SetEnergyDisType("Gauss");      
-    }
-    
-}
-
 bool ParticleBeam::CheckIfFan()
 {
     if (usefastGun) {return false;}

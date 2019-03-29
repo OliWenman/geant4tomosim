@@ -37,35 +37,11 @@ cdef class PySim:
     def __dealloc__(self):
         del self.thisptr
         del self.nexusfile
-    """
-    def outputOptions(self, bint fluoreFullField = False, bint fluoreFullMapping = False):
-        self.FFF = fluoreFullField
-        self.FFM = fluoreFullMapping
-        self.thisptr.pyOutputOptions(self.FFF, self.FFM)
-
-    #Get needed information from textfiles pySettings.mac and Geometry.mac
-    def setupDetectors(self, int nDetY, int nDetZ, DetectorDimensions, int nBins = 2000):
-        if nDetY >= 1 and nDetZ >= 1:
-
-           self.Bins = nBins
-           self.DetDimensions = DetectorDimensions
-
-           #Call the C++ function
-           self.thisptr.pySetupDetectors(nDetY, nDetZ, DetectorDimensions, self.Bins)
-           
-           #Make the number of detectors availiable for the Python class
-           self.nDetectorsY = nDetY
-           self.nDetectorsZ = nDetZ
-
-           self.Ready = True
-
-        else:
-           print("\nError: The number of detectors for x and y should be greater or equal to 1! ")
-    """           
+   
     def addMacroFiles(self, macroFiles):
         self.thisptr.pyAddMacros(macroFiles)
 
-    def run(self, TotalParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes):
+    def run(self, TotalParticles, rotation_angles, nDarkFlatFields):
         
         if TotalParticles >= 1:
 
@@ -74,38 +50,10 @@ cdef class PySim:
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
            self.thisptr.PrintInfo(TotalParticles, TotalImages, nDarkFlatFields)
-           """
-           print "RECORDING THE FOLLOWING DATA: "
-           print "- Absoprtion"
-           print "- The beam energy"
-           monoEnergySet = len(set(energyArray[0][:]))
-           sigmaEnergySet = len(set(energyArray[:][1]))
            
-           if gunTypes[0] != "Gauss":
-              message = "  - Monochromatic energy:"
-           else:
-              message = "  - Polochromatic mean energy:"
-           
-           if monoEnergySet == 1:
-               print message, energyArray[0][0]*1000, "keV"
-           else:
-               print message, "(energy will change throughout run)", "min =", min(energyArray[0][:]*1000), "keV, max =", max(energyArray[0][:]*1000),"keV"
-               
-           if gunTypes[0] != "Mono":    
-              if sigmaEnergySet == 1:
-                 print "  - Sigma energy:", energyArray[1][0]*1000, "keV"
-              else:
-                 print "  - Sigma energy:", "(energy will change throughout run)", " min =", min(energyArray[:][1]*1000), "keV, max =", max(energyArray[:][1]*1000),"keV"
-           """    
            FMFluorescence = self.thisptr.FullMappingFluorescence()
            FFFluorescence = self.thisptr.FullFieldFluorescence()
-           """    
-           if FMFluorescence == True:
-              print "- Full field fluorescence"
-              
-           if FFFluorescence == True:
-              print "- Full mapping fluorescence"
-           """
+           
            #windowRows, windowColumns = os.popen('stty size', 'r').read().split()
            #for i in range(int(windowColumns)):
            #   sys.stdout.write('-')
@@ -141,12 +89,9 @@ cdef class PySim:
                   rotation_angle = 0
                
                imageInfo = [CurrentImage, nDarkFlatFields, TotalImages]
-               
-               energyInfo = [energyArray[0][CurrentImage], energyArray[1][CurrentImage]]
-               gunType = gunTypes[CurrentImage]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle, energyInfo, gunType)  
+               simOutput = self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle)  
                simOutput = np.reshape(simOutput, (-1, xPixels))        
                
                iSavingTime = time.time()

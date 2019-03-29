@@ -88,25 +88,16 @@ void PhysicsList::ConstructParticle()
 {
 	//Define the particles you are going to be using
 	G4Gamma::GammaDefinition();
-	//G4Gamma gamma; gamma.ConstructParticle();
-	
 	G4Electron::ElectronDefinition();
-	//G4Electron electron; electron.ContructParticle();
-	
 	G4Positron::PositronDefinition();
-	//G4Positron positron; positron.ConstructParticle();
+	
 	G4GenericIon::GenericIonDefinition();
-    //G4GenericIon ion; ion.ConstructParticle();
 
 	G4Proton::ProtonDefinition();
-	//G4Proton proton; proton.ConstructParticle();
 	G4MuonPlus::MuonPlusDefinition();
-  	//G4MuonPlus muonplus; muonplus.ConstructParticle();
   	G4MuonMinus::MuonMinusDefinition();
-  	//G4MuonMinus muonminus.ConstructParticle();
   	
   	G4OpticalPhoton::OpticalPhotonDefinition();
-    //G4OpticalPhoton photon; photon.ConstructParticle();
 }
 
 void PhysicsList::ConstructProcess()

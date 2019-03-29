@@ -69,10 +69,11 @@ class TargetConstruction
 		
 		void SetRotationAngle(G4double value){rotation_angle = value;}
 
+        //Functions for creating different shaped objects
+		void Box(G4String Name, std::vector<double> dimensions);
+
 	private:
 
-		//Functions for creating different shaped objects
-		void Box(G4String Name, std::vector<double> dimensions);
 		void Sphere(G4String Name, std::vector<double> dimensions);
 		void Cylinder(G4String Name, std::vector<double> dimensions);
 		void Trapezoid(G4String Name, std::vector<double> dimensions);

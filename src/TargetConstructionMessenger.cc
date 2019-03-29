@@ -248,6 +248,7 @@ void TargetConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 		std::vector<G4double> Dimensions = {x, y, z};
 		
 		TC -> CreateObject(Name, Type, Dimensions);
+		//TC -> Box(Name, Dimensions);
 	}
 	else if(command == TrapezoidDimensions_Cmd)
 	{

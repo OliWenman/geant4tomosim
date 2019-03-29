@@ -15,44 +15,40 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 {	
 	BeamDirectory = new G4UIdirectory("/beam/");
 	BeamDirectory -> SetGuidance("Commands to control PrimaryGenenatorAction class");
+	
+	usefastGunCmd = new G4UIcmdWithABool("/beam/gps", this);
+	usefastGunCmd -> SetGuidance("Choose which gun to use"
+	                             "\nfalse = fast basic particle gun (use '/beam/' commands after)"
+	                             "\ntrue = advanced Geant4 GeneralParticleSource (use '/gps/' commands after)"); 	
 
     //Energy and particles of the beam
-	EnergyCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/mono", this);
-	EnergyCmd -> SetGuidance("Set the kinetic energy. ");
-  	EnergyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
-	EnergyCmd -> SetParameterName("E", true);
-	EnergyCmd -> SetRange("E > 0");
+	monoEnergyCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/mono", this);
+	monoEnergyCmd -> SetGuidance("Set the kinetic energy. ");
+  	monoEnergyCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
+	monoEnergyCmd -> SetParameterName("E", true);
+	monoEnergyCmd -> SetRange("E > 0");
 	
-	EnergyDisTypeCmd = new G4UIcmdWithAString("/beam/energy/type", this);
-	EnergyDisTypeCmd -> SetGuidance("Set the type of distrubition you want for the energy of the beam. Mono or Gauss, Mono will use G4ParticleGun, Gauss will use G4GeneralParticleSource(GPS)");
+	maxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/data/MaxEnergy", this);
+	maxEnergyBinCmd -> SetGuidance("Set the maximum energy that the data will record");
 	
-	EnergySigmaCmd = new G4UIcmdWithADoubleAndUnit("/beam/energy/sigma", this);
-	EnergySigmaCmd -> SetGuidance("Pick a sigma value for a guassian distrbution");
-	EnergySigmaCmd -> SetUnitCandidates("eV keV MeV GeV TeV");
-	EnergySigmaCmd -> SetParameterName("sE", true);
-	EnergySigmaCmd -> SetRange("sE >= 0");
-	
-	MaxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/data/MaxEnergy", this);
-	MaxEnergyBinCmd -> SetGuidance("Set the maximum energy that the data will record");
-	
-    SetPolizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
-    SetPolizationCmd -> SetGuidance("");
+    polizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
+    polizationCmd -> SetGuidance("");
     
     particleCmd = new G4UIcmdWithAString("/beam/particle", this);
 	particleCmd -> SetGuidance("Set type of particle you want the beam to use");
 	
     //Position, direction and placement of the beam
-	BeamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfx", this);
-	BeamHalfXCmd -> SetGuidance("Set the width you would like the beam to be. ");
-	BeamHalfXCmd -> SetUnitCandidates("nm um mm cm m");
-	BeamHalfXCmd -> SetParameterName("Width", true);
-	BeamHalfXCmd -> SetRange("Width > 0");
+	beamHalfXCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfx", this);
+	beamHalfXCmd -> SetGuidance("Set the width you would like the beam to be. ");
+	beamHalfXCmd -> SetUnitCandidates("nm um mm cm m");
+	beamHalfXCmd -> SetParameterName("Width", true);
+	beamHalfXCmd -> SetRange("Width > 0");
 
-	BeamHalfYCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfy", this);
-	BeamHalfYCmd -> SetGuidance("Set the height you would like the beam to be. ");
-	BeamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
-	BeamHalfYCmd -> SetParameterName("Height", true);
-	BeamHalfYCmd -> SetRange("Height > 0");
+	beamHalfYCmd = new G4UIcmdWithADoubleAndUnit("/beam/pos/halfy", this);
+	beamHalfYCmd -> SetGuidance("Set the height you would like the beam to be. ");
+	beamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
+	beamHalfYCmd -> SetParameterName("Height", true);
+	beamHalfYCmd -> SetRange("Height > 0");
 	
 	autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
     autoPlacement -> SetGuidance("Automatically place the beam at the edge of the world in the -x direction");
@@ -71,17 +67,17 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 {
 	delete BeamDirectory;
+	
+	delete usefastGunCmd;
 
-	delete EnergyCmd;
-	delete EnergyDisTypeCmd;
-	delete EnergySigmaCmd;
+	delete monoEnergyCmd;
 
-	delete BeamHalfXCmd;
-	delete BeamHalfYCmd;
+	delete beamHalfXCmd;
+	delete beamHalfYCmd;
 	
 	delete particleCmd;
-	delete SetPolizationCmd;
-	delete MaxEnergyBinCmd;
+	delete polizationCmd;
+	delete maxEnergyBinCmd;
 	
 	delete autoPlacement;
 	delete centreCoordinates;
@@ -91,40 +87,36 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == EnergyCmd )
+    if (command == usefastGunCmd)
+    {
+        PGAction->GetBeam()->UseFastGun(!usefastGunCmd->GetNewBoolValue(newValue));
+    } 
+	else if( command == monoEnergyCmd )
   	{ 
-		EnergyCmd -> GetNewUnitValue(newValue);
-		PGAction->GetBeam()->SetBeamMonoEnergy(EnergyCmd -> GetNewDoubleValue(newValue)); 
+		monoEnergyCmd -> GetNewUnitValue(newValue);
+		PGAction->GetBeam()->SetMonoEnergy(monoEnergyCmd -> GetNewDoubleValue(newValue)); 
 	}
-	else if( command == EnergyDisTypeCmd)
-	{
-        //PGAction -> SetEnergyDistType(newValue);
-	}
-	else if( command == EnergySigmaCmd)
-	{
-        //PGAction -> SetEnergySigma(EnergySigmaCmd -> GetNewDoubleValue(newValue));
-	}
-	else if( command == BeamHalfXCmd)
+	else if( command == beamHalfXCmd)
   	{ 
-		BeamHalfXCmd -> GetNewUnitValue(newValue);
-		PGAction->GetBeam()->SetHalfX(BeamHalfXCmd -> GetNewDoubleValue(newValue)); 
+		beamHalfXCmd -> GetNewUnitValue(newValue);
+		PGAction->GetBeam()->SetHalfX(beamHalfXCmd -> GetNewDoubleValue(newValue)); 
 	}
-	else if( command == BeamHalfYCmd)
+	else if( command == beamHalfYCmd)
   	{ 
-		BeamHalfYCmd -> GetNewUnitValue(newValue);
-		PGAction->GetBeam()->SetHalfX(BeamHalfYCmd -> GetNewDoubleValue(newValue)); 
+		beamHalfYCmd -> GetNewUnitValue(newValue);
+		PGAction->GetBeam()->SetHalfX(beamHalfYCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if( command == particleCmd)
 	{
 	    PGAction->GetBeam()->SetParticle(newValue);
 	}
-	else if( command == SetPolizationCmd)
+	else if( command == polizationCmd)
 	{
-	    //PGAction -> SetPolization(SetPolizationCmd -> GetNew3VectorValue(newValue));
+	    //PGAction -> SetPolization(polizationCmd -> GetNew3VectorValue(newValue));
 	} 
-	else if(command == MaxEnergyBinCmd)
+	else if(command == maxEnergyBinCmd)
 	{
-		PGAction -> SetMaxEnergyBinCmd(MaxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
+		PGAction -> SetMaxEnergyBinCmd(maxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if (command == autoPlacement)
 	{

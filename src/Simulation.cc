@@ -100,39 +100,6 @@ Simulation::~Simulation()
 	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 
-void Simulation::pyOutputOptions(bool FFF, bool FFM)
-{
-	//Tell the PrimaryGeneratorAction class what data to record
-	//PGA -> SetFluoreFM(FFM);
-
-	//Tell the Data class what data to record
-	//data -> SetFFF(FFF);
-	//data -> SetFFM(FFM);
-}
-
-void Simulation::pySetupDetectors(int nDetectorsY, int nDetectorsZ, std::vector<double> DetDimensions, int nBins)
-{
-    /*G4cout << "\nAdding detector variables...";
-
-	G4ThreeVector halfDimensions = G4ThreeVector(DetDimensions[0], DetDimensions[1], DetDimensions[2]);
-
-	DC -> SetNoDetectorsY(nDetectorsY);
-	DC -> SetNoDetectorsZ(nDetectorsZ);
-	DC -> SetDetectorSize(halfDimensions); 
-
-	if (nBins > 0)
-		{DC -> SetFluorescenceDet(true);}
-	else
-		{DC -> SetFluorescenceDet(false);}
-
-	data -> SetNoBins(nBins);
-	data -> SetHalfDetectorDimensions(halfDimensions);	
-
-	Ready = true;
-	
-	G4cout << "\nSuccess!" << G4endl;*/
-}
-
 #include "G4UIcommandStatus.hh"
 
 void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
@@ -294,16 +261,14 @@ void Simulation::ApplyCommand(std::string command)
     }
 }
 
-//std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, int NumberOfImages, double rotation_angle, int Image, int nDarkFlatFields)
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::vector<int> ImageInfo, double rotation_angle, std::vector<double> gunEnergy, G4String gunType)
+std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, 
+                                   std::vector<int>       ImageInfo, 
+                                   double                 rotation_angle)
 {   
     //Get the info from the vectors
     int Image = ImageInfo[0];
     int nDarkFlatFields = ImageInfo[1];
     int NumberOfImages = ImageInfo[2];
-    
-    double monoEnergy = gunEnergy[0];
-    double sigmaEnergy = gunEnergy[1];
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
@@ -363,7 +328,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, std::v
     
     //Prepare for next run. Check if energy or gun has changed 
     PGA -> ResetEvents(Image + 1);   
-    PGA -> SetupGun(gunType, monoEnergy, sigmaEnergy);
+    PGA -> SetupData();
 
 	//Creates the arrays for the data, wipes them after each image
 	data -> SetUpData(DC->GetAbsorptionDetector()->GetNumberOfxPixels(), 

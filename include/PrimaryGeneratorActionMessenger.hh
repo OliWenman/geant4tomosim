@@ -29,26 +29,26 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 	private:
 		PrimaryGeneratorAction* PGAction;
 
+
 		G4UIdirectory *BeamDirectory;
 
         //Energy and particle
-    	G4UIcmdWithADoubleAndUnit *EnergyCmd;  		
-		G4UIcmdWithAString *EnergyDisTypeCmd;
-		G4UIcmdWithADoubleAndUnit *EnergySigmaCmd;
-		G4UIcmdWithAString *particleCmd;
-		G4UIcmdWith3VectorAndUnit *SetPolizationCmd;
+        G4UIcmdWithABool          *usefastGunCmd;
+        G4UIcmdWithAString        *particleCmd;
+    	G4UIcmdWithADoubleAndUnit *monoEnergyCmd;  		
+		G4UIcmdWith3VectorAndUnit *polizationCmd;
 		
 		//Position commands
-		G4UIcmdWithABool *autoPlacement;
-		G4UIcmdWithADoubleAndUnit *BeamHalfXCmd;
-		G4UIcmdWithADoubleAndUnit *BeamHalfYCmd;
+		G4UIcmdWithABool          *autoPlacement;
+		G4UIcmdWithADoubleAndUnit *beamHalfXCmd;
+		G4UIcmdWithADoubleAndUnit *beamHalfYCmd;
 		G4UIcmdWith3VectorAndUnit *centreCoordinates;
 		
 		//Angle commands
 		G4UIcmdWith3Vector *momentumDirection;
 		
 		
-		G4UIcmdWithADoubleAndUnit *MaxEnergyBinCmd;
+		G4UIcmdWithADoubleAndUnit *maxEnergyBinCmd;
 };
 
 #endif 

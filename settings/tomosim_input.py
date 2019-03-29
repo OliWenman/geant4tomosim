@@ -9,13 +9,16 @@ sys.path.insert(0, this_directory + '/../src')
 import G4Units as G4
 import numpy as np
 
-#Verbose settings
+#========================================================================================
+
+#General settings
 verbose         = 5
+interactive     = True
 
 #Image variables
 NumberOfImages  = 1
 nDarkFlatFields = 0
-nParticles      = 1*10**7
+nParticles      = 1000#1*10**7
 
 #Rotation angles
 startRotation   = 0*G4.deg
@@ -24,25 +27,6 @@ rotation_angles = np.linspace(start = startRotation, \
                               stop = TotalRotation, \
                               num = NumberOfImages, \
                               endpoint = False)
-
-#Energy variables
-minEnergy       = 5*G4.keV
-maxEnergy       = 5*G4.keV
-minSigmaEnergy  = 2*G4.keV
-maxSigmaEnergy  = 2*G4.keV
-Gun             = "Gauss"
-
-energyArray     = []
-gunTypes        = []
-monoEnergies    = np.linspace(start = minEnergy, stop = maxEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
-sigmaEnergies   = np.linspace(start = minSigmaEnergy, stop = maxSigmaEnergy, num = NumberOfImages + nDarkFlatFields, endpoint = True)
-
-energyArray.append(sigmaEnergies)
-energyArray.append(monoEnergies)
-
-for e in range(NumberOfImages + nDarkFlatFields):
-    gunTypes.append(Gun)
-    energyArray.append(gunTypes)
 
 #Macro files to be included
 physics         = this_directory + "/physics.mac"
@@ -58,3 +42,5 @@ macrofiles      = [physics,
                    beam,          
                    sampleGeometry, 
                    samplePlacement]
+                   
+#========================================================================================

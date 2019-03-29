@@ -55,12 +55,13 @@ class ParticleBeam
         void SetCentreCoordinates(G4ThreeVector value) {centre = value;}                                                 
                                                                                                     
         void SetParticle(G4String particle);
-        void SetBeamEnergy(G4double mono, G4double sigma);
-        void SetBeamMonoEnergy(double value)           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(value);
-                                                        fastGun->SetParticleEnergy(value);}       
+        void SetMonoEnergy(double value)           {advaGun->GetCurrentSource()->GetEneDist()->SetMonoEnergy(value);
+                                                    fastGun->SetParticleEnergy(value);}       
         
         void UseFastGun(bool value) {usefastGun = value;}
-        bool UseFastGun() {return usefastGun;}
+        bool UseFastGun()           {return usefastGun;}
+        void UseGPSgun(bool value)  {usefastGun = !value;} 
+        bool GPSgunActive()         {if (usefastGun) {return false;} else {return true;}}
         
     private:
         void DefualtValues();      

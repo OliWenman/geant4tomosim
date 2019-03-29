@@ -35,7 +35,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     	~PrimaryGeneratorAction();
     	
    		void GeneratePrimaries(G4Event* );
-   		void SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnegy);
+   		void SetupData();
 		void ReadOutInfo(SettingsLog& log);
 
 		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.; data -> SetMaxEnergy(eMax);}
@@ -61,9 +61,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		void DoAutoBeamPlacement(G4double value) {beam -> DoAutoSourcePlacement(value);}
 
   	private:
-  	
-  	    void SetupFastParticleGun(G4double monoEnergy);
-  	    void SetupParticleGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy);
 
 		Data* data;
 		ParticleBeam* beam;

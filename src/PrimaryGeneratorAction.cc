@@ -87,15 +87,15 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 {	
 	G4String particle = beam -> GetParticleName();
-	/*bool myGun = beam -> UseFastGun();
+	bool myGun = beam -> UseFastGun();
 	G4String gun;
 	if (myGun == true) {gun = "G4ParticleGun";}
-	else               {gun = "G4GeneralParticleSource";}*/
+	else               {gun = "G4GeneralParticleSource";}
 	bool randomPolarization = beam -> PolarizationRandom();
 	
 	PrintToEndOfTerminal(log, '-');
 	log << "BEAM INFORMATION:"
-	       //"\n- Gun type: " << gun
+	       "\n- Gun type: " << gun
 	    << "\n- Particles: " << particle
 	    << "\n- Polization: ";
 	                          if (randomPolarization) {log << "random";}
@@ -103,27 +103,22 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 	log << "\n- Momentum: " << beam -> GetMomentum(); 
 	log << "\n- Centre: " << G4BestUnit(beam -> GetCentreCoordinates(), "Length");
 	
-	bool fan = beam->CheckIfFan();
-	if (!fan)
+	if (beam->UseFastGun())
 	{
-	    log << "\n- Halfx = " << G4BestUnit(beam -> GetHalfX(), "Length")
-	        << "\n- Halfy = " << G4BestUnit(beam -> GetHalfY(), "Length");
+	
+	}
+	else
+	{
+	    if (!beam->CheckIfFan())
+	    {
+	        log << "\n- Halfx = " << G4BestUnit(beam -> GetHalfX(), "Length")
+	            << "\n- Halfy = " << G4BestUnit(beam -> GetHalfY(), "Length");
+	    }
 	} 
 }
 
-void PrimaryGeneratorAction::SetupGun(G4String GunType, G4double monoEnergy, G4double sigmaEnergy)
-{  
-   	if (GunType == "Mono")
-   	{
-   	    beam->UseFastGun(true);
-   	    beam->SetBeamEnergy(monoEnergy, 0);
-   	}
-   	else
-   	{
-   	    beam->UseFastGun(false);
-   	    beam->SetBeamEnergy(monoEnergy, sigmaEnergy);
-   	}
-   	
+void PrimaryGeneratorAction::SetupData()
+{  	
    	std::vector<int> ibeamEnergy(Bins, 0);
    	beamEnergy = ibeamEnergy;	
 }
