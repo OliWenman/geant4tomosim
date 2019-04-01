@@ -36,12 +36,26 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
-Simulation::Simulation(int verb) : runManager(0), data(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
+Simulation::Simulation(int verb, bool interactive) : runManager(0), data(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
 {	
-    G4cout << "\nWelcome to the tomography data simulation!"
-              "\nSetting up... " << G4endl;
-
     globalVerbose = verb;
+    interactiveOn = interactive;
+    
+    if (globalVerbose > 0)
+    {
+        G4cout << "\nWelcome to the tomography data simulation!"
+                  "\nSetting up... " << G4endl;
+    
+        if (interactiveOn)
+        {
+            G4cout << "\nInteractivity is turned on. The simulation will be paused for inputs if there are any problems. ";
+        }    
+        else 
+        {
+            G4cout << "\nInteractivity is turned off. The simulation will be interupted if there are any problems.";
+        }
+    }
+    
 
     SaveLogPath = "./../Output/HDF5/";
 	seedCmd = 0;	
@@ -102,19 +116,19 @@ Simulation::~Simulation()
 
 #include "G4UIcommandStatus.hh"
 
-void Simulation::pyAddMacros(std::vector<std::string> macroFiles)
+void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
 {
     int nFiles = macroFiles.size();
     
     for (int n = 0; n < nFiles ; n++)
     {    
-        ApplyMacroFile(macroFiles[n]);
+        applymacrofile_pywrapped(macroFiles[n]);
     }
     
     macrofiles = macroFiles;
 }
 
-void Simulation::ApplyMacroFile(std::string macro)
+void Simulation::applymacrofile_pywrapped(std::string macro)
 {
     //Read the macro file line by line and extract the commands from the file
 
@@ -164,7 +178,7 @@ void Simulation::ApplyMacroFile(std::string macro)
         {
             ++line;
             if (globalVerbose > 3) {G4cout << line << ")";}
-            ApplyCommand(command);
+            applycommand_pywrapped(command);
             
         }
     }
@@ -173,7 +187,7 @@ void Simulation::ApplyMacroFile(std::string macro)
     if (globalVerbose > 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
 }
 
-void Simulation::ApplyCommand(std::string command)
+void Simulation::applycommand_pywrapped(std::string command)
 {
     G4int status = UImanager -> ApplyCommand(command);
     
@@ -208,62 +222,69 @@ void Simulation::ApplyCommand(std::string command)
             G4cout << "ERROR: command \"" << command << "\" alias not found " << G4endl;    
         }
         
-        bool breakLoop1 = false;
-        G4cout << "\nWould you like to reapply the command?" "\n[y/n]" << G4endl;
-        
-        while (!breakLoop1)
+        if (interactiveOn)
         {
-            std::string reapplycommand;
-            getline(std::cin, reapplycommand);
+            bool breakLoop1 = false;
+            G4cout << "\nWould you like to reapply the command?" "\n[y/n]" << G4endl;
         
-            if (reapplycommand == "y")
+            while (!breakLoop1)
             {
-                breakLoop1 = true;
-                G4cout << G4endl;
+                std::string reapplycommand;
                 getline(std::cin, reapplycommand);
-                
-                ApplyCommand(reapplycommand);
-                
-            }
-            else if (reapplycommand == "n")
-            {
-                breakLoop1 = true;
-                
-                bool breakLoop2 = false;
-                G4cout << "\nContinue with the simulation? ""\n[y/n]" << G4endl;
-                
-                while (!breakLoop2)
+        
+                if (reapplycommand == "y")
                 {
-                    std::string continueSimulation;
-                    getline(std::cin, continueSimulation);
+                    breakLoop1 = true;
+                    G4cout << G4endl;
+                    getline(std::cin, reapplycommand);
+                
+                    applycommand_pywrapped(reapplycommand);
+                }
+                else if (reapplycommand == "n")
+                {
+                    breakLoop1 = true;
+                
+                    bool breakLoop2 = false;
+                    G4cout << "\nContinue with the simulation? ""\n[y/n]" << G4endl;
+                
+                    while (!breakLoop2)
+                    {
+                        std::string continueSimulation;
+                        getline(std::cin, continueSimulation);
             
-                    if (continueSimulation == "n")
-                    {
-                        breakLoop2 = true;
-                        G4cout << "\nExiting..." << G4endl;
-                        exit(0);
-                    }
-                    else if (continueSimulation == "y")
-                    {
-                        breakLoop2 = true;
-                    }
-                    else 
-                    {
-                        G4cout << "\nPlease type [y] or [n]. " << G4endl;
+                        if (continueSimulation == "n")
+                        {
+                            breakLoop2 = true;
+                            G4cout << "\nExiting..." << G4endl;
+                            exit(0);
+                        }
+                        else if (continueSimulation == "y")
+                        {
+                            breakLoop2 = true;
+                        }
+                        else 
+                        {
+                            G4cout << "\nPlease type [y] or [n]. " << G4endl;
+                        }
                     }
                 }
+                else 
+                {
+                    G4cout << "\nPlease type [y] or [n]. " << G4endl;
+                }
             }
-            else 
-            {
-                G4cout << "\nPlease type [y] or [n]. " << G4endl;
-            }
+        }
+        else
+        {
+            G4cout << "\nAborting simulation..." << G4endl;
+            exit(0);
         }
     }
 }
 
-std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles, 
-                                   std::vector<int>       ImageInfo, 
-                                   double                 rotation_angle)
+int Simulation::run_pywrapped(unsigned long long int TotalParticles, 
+                              std::vector<int>       ImageInfo, 
+                              double                 rotation_angle)
 {   
     //Get the info from the vectors
     int Image = ImageInfo[0];
@@ -360,7 +381,7 @@ std::vector<int> Simulation::pyRun(unsigned long long int TotalParticles,
         PGA -> ResetEvents(0);
 	}
 
-	return data -> GetHitData();
+	return 0;
 }
 
 void Simulation::Visualisation()
@@ -486,7 +507,7 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+void Simulation::printinfo_pywrapped(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
 {   
     if (globalVerbose > 0)
     {
@@ -526,26 +547,9 @@ void Simulation::PrintInfo(unsigned long long int TotalParticles, int NumberOfIm
             << "\n- Number of particles per pixel on average: " << particleperpixel;
 	 
 	    SaveToFile.close();
+	    
+	    CalculateStorageSpace(NumberOfImages);
     }
-}
-
-void Simulation::PrintInfo(int verbose)
-{
-    /*if (global
-    std::ofstream SaveToFile;
-    
-    //Try to open the file 
-    SaveToFile.open(SaveLogPath + FileName); 
-    if( !SaveToFile ) { 	
-        std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << std::endl;
-        exit(1);
-    }
-    
-    //Create an instance of the log to output to terminal and file    
-    SettingsLog log(SaveToFile);
-
-    PrintInformation(verbose, log);
-    SaveToFile.close();*/
 }
 
 void Simulation::PrintInformation(SettingsLog log)
@@ -599,15 +603,15 @@ void Simulation::CalculateStorageSpace(int projections)
         double totalStorage = 0;
         std::string unit;
     
-        int abs_xPixels = GetNumberOfxPixels();
-        int abs_yPixels = GetNumberOfyPixels();
-        int bins = GetNumberOfBins();
+        int abs_xPixels = getNumAbsXpixels_pywrapped();
+        int abs_yPixels = getNumAbsYpixels_pywrapped();
+        int bins = getNumFluoreEneBins_pywrapped();
     
         PrintToEndOfTerminal('-');
         G4cout << "DISK SPACE REQUIRED FOR DATA: ";
     
         //Absorption
-        size_t absorpDataSize = sizeof(GetLastImage()[0]);
+        size_t absorpDataSize = sizeof(getAbsorption_pywrapped()[0]);
         double absorpStorageSpace = abs_xPixels * abs_yPixels * absorpDataSize * projections;
         totalStorage += absorpStorageSpace;
         unit = GetStorageUnit(absorpStorageSpace);
@@ -623,8 +627,8 @@ void Simulation::CalculateStorageSpace(int projections)
         //Fluorecence
         if (data->GetFullMapping_Option())
         {
-            size_t FMfluoresenceDataSize = sizeof(GetFullMapping()[0]);  
-            double fluorescenceStorageSpace = absorpStorageSpace*GetNumberOfBins();
+            size_t FMfluoresenceDataSize = sizeof(getFluoreEneBins_pywrapped()[0]);  
+            double fluorescenceStorageSpace = absorpStorageSpace*getNumFluoreEneBins_pywrapped();
             totalStorage += fluorescenceStorageSpace;
             unit = GetStorageUnit(fluorescenceStorageSpace);              
             G4cout << "\n- Full mapping fluorescence: " << fluorescenceStorageSpace << unit;

@@ -6,31 +6,49 @@ import numpy as np
 cdef extern from "Simulation.hh":
    cdef cppclass Simulation:
       Simulation() except +
-      Simulation(int)
-      
-      void pyAddMacros(vector[string])
-      void ApplyCommand(string)
-      void ApplyMacroFile(string)
-      vector[int] pyRun(unsigned long long int, vector[int], double)
-      
-      void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
-      void PrintInfo(int)
-      void CalculateStorageSpace(int)
+      Simulation(int, bint)
 
-      vector[int]                 GetLastImage()
-      vector[int]                 GetFluorescence()
-      vector[double]              GetEnergyBins()
-      vector[int]                 GetBeamEnergy()
-      vector[vector[vector[int]]] GetFullMapping()
-      vector[vector[int]]         GetDiffractionData()
+#===================================================================================================
       
-      int GetNumberOfBins()
-      int GetNumberOfxPixels()
-      int GetNumberOfyPixels()
-      vector[double] GetAbsorptionDetectorHalfDimensions()
+      #Functions to apply macro files or commands to the simulation
+      void addmacros_pywrapped(vector[string])
+      void applymacrofile_pywrapped(string)
+      void applycommand_pywrapped(string)
       
-      void SetSavingTime(double)
-      void SetSaveLogPath(string, string)
+      #Print information to the user about the simulation
+      void printinfo_pywrapped(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+
+#===================================================================================================
+
+      #Run the simulation 
+      int                         run_pywrapped(unsigned long long int, vector[int], double)
       
+      #Get the data after the simulation is finished
+      #Absorption data
+      vector[int]                 getAbsorption_pywrapped()
+      
+      #Fluorescence data
+      vector[int]                 getFullFieldFluore_pywrapped()
+      vector[vector[vector[int]]] getFullMappingFluore_pywrapped()
+      vector[double]              getFluoreEneBins_pywrapped()
       bint FullMappingFluorescence()
       bint FullFieldFluorescence()
+      
+      #Diffraction data
+      vector[vector[int]]         GetDiffractionData()
+
+      #Beam energy data      
+      vector[int]                 getBeamEnergy_pywrapped()
+      vector[double]              getBeamEnergyBins_pywrapped()
+   
+#===================================================================================================
+  
+      #Set functions
+      void setSavingTime_pywrapped (double)
+      void setlogfile_pywrapped (string, string)
+      
+      #Get functions
+      int getNumFluoreEneBins_pywrapped()                        
+      int getNumAbsXpixels_pywrapped()
+      int getNumAbsYpixels_pywrapped()
+      vector[double] getAbsHalf3Dim_pywrapped()

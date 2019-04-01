@@ -26,53 +26,69 @@ class G4RunManager;
 class G4VisManager;
 class G4UImanager;
 
+//Functions that end with "_pywrapped" mean they have been wrapped in Cython and can be called from python
+
 class Simulation
 {
 	public:
 		Simulation();
-		Simulation(int verb);
+		Simulation(int verb, bool interactive);
 		~Simulation(); 
 
-		//Methods
-		//To be called from Python
-		void pyAddMacros(std::vector<std::string> macroFiles);
-		void ApplyCommand(std::string command);
-		void ApplyMacroFile(std::string macro);
-        std::vector<int> pyRun(unsigned long long int TotalParticles, 
-                               std::vector<int>       ImageInfo, 
-                               double                 rotation_angles);
+//================================================================================================================
 
-        //It's own private functions to be called by the public functions
-		void PrintInfo(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields);
-		void PrintInfo(int verbose);
+		//Apply a list of macro files or commands to the simulation
+		void addmacros_pywrapped      (std::vector<std::string> macroFiles);
+		void applycommand_pywrapped   (std::string command);
+		void applymacrofile_pywrapped (std::string macro);
 		
-		void CalculateStorageSpace(int projections);
+		//Print information about the simulation to the user. Amount of info depends on verbose setting
+		void printinfo_pywrapped(unsigned long long int totalparticles, int numberOfimages, int ndarkflatFields);
+		
+//================================================================================================================		
+	
+		//Function to run the simulation
+        int run_pywrapped(unsigned long long int totalparticles, 
+                          std::vector<int>       imageInfo, 
+                          double                 rotation_angles);
 
-        //GET FUNCTIONS
-		//Functions to return data to Python
-		std::vector<int> GetLastImage()                               {return data -> GetHitData();}
-		std::vector<double> GetEnergyBins()                           {return data -> GetEnergyBins();}
-		std::vector<int> GetBeamEnergy()                              {return PGA -> GetBeamEnergy();}
-		std::vector<int> GetFluorescence()                            {return data -> GetFluorescence();}
-		std::vector<std::vector<std::vector<int> > > GetFullMapping() {return data -> GetFullMapping();}
-		std::vector<std::vector<int> > GetDiffractionData()           {return data -> GetDiffractionData();}
+		//Absorption
+		std::vector<int> getAbsorption_pywrapped() {return data -> GetHitData();}
 		
-		int GetNumberOfBins()                                     {return data -> GetNumberOfBins();}
-		int GetNumberOfxPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
-		int GetNumberOfyPixels()                                  {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
-		std::vector<double> GetAbsorptionDetectorHalfDimensions() {return DC->GetAbsorptionDetector()->GetHalfDimensions();}
-		bool FullMappingFluorescence()                            {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
-		bool FullFieldFluorescence()                              {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
+		//Fluorescence
+		std::vector<
+		 std::vector<
+		  std::vector<int> > > getFullMappingFluore_pywrapped() {return data -> GetFullMapping();}
+		std::vector<int> getFullFieldFluore_pywrapped()         {return data -> GetFluorescence();}
+		std::vector<double> getFluoreEneBins_pywrapped()        {return data -> GetEnergyBins();}
+		bool FullMappingFluorescence()                          {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
+		bool FullFieldFluorescence()                            {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
 		
-		//SET FUNCTIONS
-		void SetSaveLogPath(std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName;}
+		//Diffraction
+		std::vector<std::vector<int> > GetDiffractionData() {return data -> GetDiffractionData();}
+		
+		//Beam energy
+		std::vector<int> getBeamEnergy_pywrapped()        {return PGA -> GetBeamEnergy();}
+        std::vector<double> getBeamEnergyBins_pywrapped() {return data -> GetEnergyBins();}
+
+//================================================================================================================
+	
+	    //Get functions
+		int getNumFluoreEneBins_pywrapped()            {return data -> GetNumberOfBins();}
+		int getNumAbsXpixels_pywrapped()               {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
+		int getNumAbsYpixels_pywrapped()               {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
+		std::vector<double> getAbsHalf3Dim_pywrapped() {return DC->GetAbsorptionDetector()->GetHalfDimensions();}
+		
+		//Set functions
+		void setlogfile_pywrapped (std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName;}
+		void setSavingTime_pywrapped (double Time)                                    {PGA -> SetSavingTime(Time);}
+		
 		void SetSeed(long int value)                                {seedCmd = value;}
-		void SetSavingTime(double Time)                             {PGA -> SetSavingTime(Time);}
 		void SetVerboseLevel(int value)                             {globalVerbose = value;}
-		void SetGlobalVerboseLevel(int value)                       {globalVerbose = value;}
 
 	private:
 	    std::string GetStorageUnit(double &storage); 
+	    void CalculateStorageSpace(int projections);
 	    void Setup();
 		void BeamOn(unsigned long long int nParticles);
 		void Visualisation();
@@ -99,6 +115,7 @@ class Simulation
 		
 		int globalVerbose;
 		
+		bool interactiveOn;
 		std::vector<std::string> macrofiles;
 };
 

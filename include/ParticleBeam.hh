@@ -27,6 +27,8 @@ class ParticleBeam
         G4ParticleGun*           GetFastGun() {return fastGun;}
         G4GeneralParticleSource* GetAdvaGun() {return advaGun;}
         
+        G4double GetMonoEnergy()   {if (usefastGun) {return fastGun->GetParticleEnergy();}
+                                    else            {return advaGun->GetCurrentSource()->GetEneDist()->GetMonoEnergy();}}
         G4double GetEnergyOfEvent();
         G4String GetParticleName() {if (usefastGun) {return fastGun->GetParticleDefinition()->GetParticleName();}
                                     else            {return advaGun->GetParticleDefinition()->GetParticleName();}}

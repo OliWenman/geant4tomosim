@@ -9,8 +9,10 @@
 # Beam commands control the basic G4ParticleGun and G4GeneralParticleSource commands. 
 # G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam but is faster
 
+dfgdfhfhfh
+
 # Type of beam
-/beam/gps false
+/beam/gps true
 /beam/energy/mono 19 keV
 
 # Create a cone fan beam using gps

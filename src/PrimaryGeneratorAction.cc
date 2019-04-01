@@ -100,12 +100,31 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 	    << "\n- Polization: ";
 	                          if (randomPolarization) {log << "random";}
 	                          else                    {log << beam -> GetPolarization();} 
+	if (beam->UseFastGun())
+	{
+	    log << "\n- Mono energy: " << G4BestUnit(beam->GetMonoEnergy(), "Energy");
+	}
+	else 
+	{
+	    G4String enetype = beam->GetAdvaGun()->GetCurrentSource()->GetEneDist()->GetEnergyDisType();
+	    log << "\n- Energy distrubition type: " << enetype;
+	    
+	    if (enetype == "Gauss" || enetype == "Mono")
+	    {
+	        log << "\n- Mono energy: " << G4BestUnit(beam->GetMonoEnergy(), "Energy");
+	        if (enetype == "Gauss")
+	        {
+	            log << "\n- Sigma energy: " << G4BestUnit(beam->GetAdvaGun()->GetCurrentSource()->GetEneDist()->GetSE(), "Energy");
+	        }
+	    }
+	}
 	log << "\n- Momentum: " << beam -> GetMomentum(); 
 	log << "\n- Centre: " << G4BestUnit(beam -> GetCentreCoordinates(), "Length");
 	
 	if (beam->UseFastGun())
 	{
-	
+	    log << "\n- Halfx = " << G4BestUnit(beam -> GetHalfX(), "Length")
+	        << "\n- Halfy = " << G4BestUnit(beam -> GetHalfY(), "Length");
 	}
 	else
 	{

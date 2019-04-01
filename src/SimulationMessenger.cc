@@ -49,6 +49,6 @@ void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if( command == globalVerboseCmd)
 	{
-	    sim -> SetGlobalVerboseLevel(globalVerboseCmd -> GetNewIntValue(newValue));
+	    sim -> SetVerboseLevel(globalVerboseCmd -> GetNewIntValue(newValue));
 	}
 }

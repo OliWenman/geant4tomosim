@@ -63,13 +63,11 @@ import sim
 
 print "verbose = ", tsi.verbose
 
-Sim = sim.PySim(tsi.verbose)
+Sim = sim.PySim(tsi.verbose, tsi.interactive)
 Sim.addMacroFiles(tsi.macrofiles)
 Sim.setFilePath(FilePath, FileName, logName)
 
 Sim.run(tsi.nParticles, tsi.rotation_angles, tsi.nDarkFlatFields)
-Sim.ApplyCommand("/physics/gamma/fluorescence true")
-#Sim.run(nParticles, rotation_angles, nDarkFlatFields, energyArray, gunTypes)
 
 
 print "Finished"

@@ -22,7 +22,7 @@ cdef class PySim:
     cdef public str NexusName
   
     #Constructor, create an instance of the C++ class
-    def __cinit__(self, verbose = 1):
+    def __cinit__(self, verbose = 1, interactive = True):
        
         #Creates the default path to save file 
         WorkingDirectory = os.path.dirname(os.getcwd())
@@ -30,7 +30,7 @@ cdef class PySim:
         self.SaveFilePath = WorkingDirectory + BuildDirectory
         self.NexusName = "SimulationData.nxs"
         
-        self.thisptr = new Simulation(verbose)
+        self.thisptr = new Simulation(verbose, interactive)
         self.nexusfile = NexusFormatter.NexusFormatter()
 
     #Delete the C++ class
@@ -39,7 +39,7 @@ cdef class PySim:
         del self.nexusfile
    
     def addMacroFiles(self, macroFiles):
-        self.thisptr.pyAddMacros(macroFiles)
+        self.thisptr.addmacros_pywrapped(macroFiles)
 
     def run(self, TotalParticles, rotation_angles, nDarkFlatFields):
         
@@ -49,26 +49,21 @@ cdef class PySim:
            
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
-           self.thisptr.PrintInfo(TotalParticles, TotalImages, nDarkFlatFields)
+           self.thisptr.printinfo_pywrapped(TotalParticles, TotalImages, nDarkFlatFields)
            
            FMFluorescence = self.thisptr.FullMappingFluorescence()
            FFFluorescence = self.thisptr.FullFieldFluorescence()
-           
-           #windowRows, windowColumns = os.popen('stty size', 'r').read().split()
-           #for i in range(int(windowColumns)):
-           #   sys.stdout.write('-')
-           self.thisptr.CalculateStorageSpace(TotalImages)
            
            self.nexusfile.openFile(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:
               print "\nAborting run..." 
               return 0
            
-           nBins = self.thisptr.GetNumberOfBins()
-           xPixels = self.thisptr.GetNumberOfxPixels()
-           yPixels = self.thisptr.GetNumberOfyPixels()
+           nBins = self.thisptr.getNumFluoreEneBins_pywrapped()
+           xPixels = self.thisptr.getNumAbsXpixels_pywrapped()
+           yPixels = self.thisptr.getNumAbsYpixels_pywrapped()
            
-           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, yPixels, xPixels, self.thisptr.GetAbsorptionDetectorHalfDimensions(), rotation_angles)
+           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, yPixels, xPixels, self.thisptr.getAbsHalf3Dim_pywrapped(), rotation_angles)
            self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = nBins)
            
            if FFFluorescence == True:
@@ -91,15 +86,14 @@ cdef class PySim:
                imageInfo = [CurrentImage, nDarkFlatFields, TotalImages]
                             
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               simOutput = self.thisptr.pyRun(TotalParticles, imageInfo, rotation_angle)  
-               simOutput = np.reshape(simOutput, (-1, xPixels))        
+               self.thisptr.run_pywrapped(TotalParticles, imageInfo, rotation_angle)  
                
                iSavingTime = time.time()
                
-               self.nexusfile.AddProjectionData(simOutput, CurrentImage)
+               self.nexusfile.AddProjectionData(self.absorptionData(), CurrentImage)
                
                if CurrentImage == 0:
-                  energyBins = self.lastEnergyBins()
+                  energyBins = self.beamEnergyBins()
                   
                   self.nexusfile.AddxAxis("Beam_Energy", energyBins)
                   
@@ -109,17 +103,17 @@ cdef class PySim:
                   if FMFluorescence == True:
                      self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
                
-               self.nexusfile.AddData("Beam_Energy", self.beamEnergy(), nImage = CurrentImage)    
+               self.nexusfile.AddData("Beam_Energy", self.beamEnergyData(), nImage = CurrentImage)    
                
                if FFFluorescence == True:
-                  self.nexusfile.AddData("Fluorescence", data = self.lastEnergyFreq(), nImage = CurrentImage)
+                  self.nexusfile.AddData("Fluorescence", data = self.fullfieldfluoreData(), nImage = CurrentImage)
                   
                if FMFluorescence == True:
-                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullMapping(), nImage = CurrentImage)
+                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullmappingfluoreData(), nImage = CurrentImage)
                
                eSavingTime = time.time()
                SavingTime  = eSavingTime - iSavingTime
-               self.thisptr.SetSavingTime(SavingTime)
+               self.thisptr.setSavingTime_pywrapped (SavingTime)
 
            #Ouput the time in the appropriate units
            eTime = time.time()
@@ -141,45 +135,42 @@ cdef class PySim:
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
 
-    #Return the image data from the simulation
-    #def lastImage(self):
-    #    return np.reshape(self.thisptr.GetLastImage(), (-1, self.nDetectorsY))
+    
+    def absorptionData(self):
+        return np.reshape(self.thisptr.getAbsorption_pywrapped(), (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
     
     def photonTransmission(self):
-        return np.sum(self.thisptr.GetLastImage())
+        return np.sum(self.thisptr.getAbsorption_pywrapped())
 
-    def lastEnergyBins(self):
-        return np.array(self.thisptr.GetEnergyBins())
+    def beamEnergyBins(self):
+        return np.array(self.thisptr.getBeamEnergyBins_pywrapped())
 
-    def lastEnergyFreq(self):
-        return np.array(self.thisptr.GetFluorescence())
+    def fullfieldfluoreData(self):
+        return np.array(self.thisptr.getFullFieldFluore_pywrapped())
 
-    def beamEnergy(self):
-        return np.array(self.thisptr.GetBeamEnergy())  
+    def beamEnergyData(self):
+        return np.array(self.thisptr.getBeamEnergy_pywrapped())  
 
-    def fullMapping(self):
-        return np.array(self.thisptr.GetFullMapping())
-        
-    def printInfo(self, int verbose):
-        self.thisptr.PrintInfo(verbose)
+    def fullmappingfluoreData(self):
+        return np.array(self.thisptr.getFullMappingFluore_pywrapped())
         
     def setFilePath(self, FilePath, NexusName, logName):
         self.SaveFilePath = FilePath
         self.NexusName = NexusName
-        self.thisptr.SetSaveLogPath(FilePath, logName)
+        self.thisptr.setlogfile_pywrapped (FilePath, logName)
         
     def printNexusTree(self):
         self.nexusfile.DisplayTree()
         
     def plotBeamEnergy(self):
-        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetBeamEnergy())
+        plt.plot(self.beamEnergyBins(), self.thisptr.getBeamEnergy_pywrapped())
         plt.title("Beam energy distrubution")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Photons")
         plt.show()
         
     def plotFinalFluorescence(self):
-        plt.plot(self.thisptr.GetEnergyBins(), self.thisptr.GetFluorescence())
+        plt.plot(self.thisptr.getFluoreEneBins_pywrapped(), self.thisptr.getFullFieldFluore_pywrapped())
         plt.title("Fluorescence")
         plt.xlabel("Energy (keV)")
         plt.ylabel("Photons")
@@ -203,7 +194,7 @@ cdef class PySim:
         plt.show()
         
     def ApplyCommand(self, command):
-        self.thisptr.ApplyCommand(command)
+        self.thisptr.applycommand_pywrapped(command)
         
     def ApplyMacroFile(self, macrofile):
-        self.thisptr.ApplyMacroFile(macrofile)
+        self.thisptr.applymacrofile_pywrapped(macrofile)
