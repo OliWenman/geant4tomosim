@@ -3,6 +3,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "TrackerHit.hh"
+#include "MyVectors.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -16,6 +17,7 @@ class Data;
 class AbsorptionSD : public G4VSensitiveDetector
 {
   	public:
+  	    AbsorptionSD();
 		AbsorptionSD(Data* data,  bool graphics);
     	~AbsorptionSD();
   
@@ -23,14 +25,28 @@ class AbsorptionSD : public G4VSensitiveDetector
     	virtual void   Initialize(G4HCofThisEvent* hitCollection);
     	virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 
-		G4bool GraphicsOn;
+        void InitialiseData(int xpix, int ypix);
+        void FreeMemory();
 
+        bool GraphicsActive()        {return graphicsOn;}
+        void SetGraphics(bool value) {graphicsOn = value; collectionName.insert("AbsorptionHitsCollection");} 
+        
+        //Data
+        int_vector1D GetData() {return absorptionData;}
+    
   	private:
 
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;
 		Data* data;
+		
+		int_vector1D absorptionData;
+		
+		int xpixels;
+		int ypixels;
+		
 		int n;
+		bool graphicsOn;
 };
 
 #endif

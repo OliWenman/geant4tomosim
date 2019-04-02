@@ -26,13 +26,17 @@ cdef extern from "Simulation.hh":
       #Get the data after the simulation is finished
       #Absorption data
       vector[int]                 getAbsorption_pywrapped()
+      int                         getNumAbsXpixels_pywrapped()
+      int                         getNumAbsYpixels_pywrapped()
+      vector[double]              getAbsHalf3Dim_pywrapped()
       
       #Fluorescence data
       vector[int]                 getFullFieldFluore_pywrapped()
       vector[vector[vector[int]]] getFullMappingFluore_pywrapped()
       vector[double]              getFluoreEneBins_pywrapped()
-      bint FullMappingFluorescence()
-      bint FullFieldFluorescence()
+      bint                        fluorFMactive_pywrapped()
+      bint                        fluorFFactive_pywrapped()
+      int                         getNumFluorbins_pywrapped()  
       
       #Diffraction data
       vector[vector[int]]         GetDiffractionData()
@@ -40,6 +44,7 @@ cdef extern from "Simulation.hh":
       #Beam energy data      
       vector[int]                 getBeamEnergy_pywrapped()
       vector[double]              getBeamEnergyBins_pywrapped()
+      int                         getbeambins_pywrapped()
    
 #===================================================================================================
   
@@ -47,8 +52,5 @@ cdef extern from "Simulation.hh":
       void setSavingTime_pywrapped (double)
       void setlogfile_pywrapped (string, string)
       
-      #Get functions
-      int getNumFluoreEneBins_pywrapped()                        
-      int getNumAbsXpixels_pywrapped()
-      int getNumAbsYpixels_pywrapped()
-      vector[double] getAbsHalf3Dim_pywrapped()
+      #Free memory
+      void freedataMemory_pywrapped()

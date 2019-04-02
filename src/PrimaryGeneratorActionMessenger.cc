@@ -28,7 +28,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	monoEnergyCmd -> SetParameterName("E", true);
 	monoEnergyCmd -> SetRange("E > 0");
 	
-	maxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/data/MaxEnergy", this);
+	maxEnergyBinCmd = new G4UIcmdWithADoubleAndUnit("/beam/maxenergy", this);
 	maxEnergyBinCmd -> SetGuidance("Set the maximum energy that the data will record");
 	
     polizationCmd = new G4UIcmdWith3VectorAndUnit("/beam/polarization", this);
@@ -62,6 +62,9 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
     momentumDirection -> SetGuidance ("Set the direction of the beam");
     momentumDirection -> SetParameterName("px", "py", "pz", false, false);
     momentumDirection -> SetRange("px <= 1 && px >= -1 && py <=1 && py >= -1 && py >= -1 && pz <= 1 && pz >= -1");
+    
+    numberofbins = new G4UIcmdWithAnInteger("/beam/bins", this);
+          
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
@@ -83,6 +86,8 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete centreCoordinates;
 	
 	delete momentumDirection;
+	
+	delete numberofbins;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -116,6 +121,7 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	} 
 	else if(command == maxEnergyBinCmd)
 	{
+	    //maxEnergyBinCmd
 		PGAction -> SetMaxEnergyBinCmd(maxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
 	}
 	else if (command == autoPlacement)
@@ -128,6 +134,10 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	}
 	else if (command == momentumDirection)
 	{
-	    PGAction ->GetBeam()->SetMomentumDirection(momentumDirection->GetNew3VectorValue(newValue));
+	    PGAction->GetBeam()->SetMomentumDirection(momentumDirection->GetNew3VectorValue(newValue));
 	}   
+	else if (command == numberofbins)
+	{
+	    PGAction->SetNumberOfBins(numberofbins->GetNewIntValue(newValue));
+	}
 }

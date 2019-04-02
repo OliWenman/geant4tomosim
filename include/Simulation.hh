@@ -1,17 +1,17 @@
 #ifndef Simulation_h
 #define Simulation_h 1
 
-#include <vector>
+#include "MyVectors.hh"
 #include "globals.hh"
 #include <string>
 #include "SettingsLog.hh"
 #include "Data.hh"
 #include "AbsorptionDetector.hh"
+#include "AbsorptionSD.hh"
 #include "FluorescenceDetector.hh"
 #include "FluorescenceSD.hh"
 #include "DetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
-
 
 class SimulationMessenger;
 class Data;
@@ -49,42 +49,46 @@ class Simulation
 	
 		//Function to run the simulation
         int run_pywrapped(unsigned long long int totalparticles, 
-                          std::vector<int>       imageInfo, 
+                          int_vector1D           imageInfo, 
                           double                 rotation_angles);
 
+        //Functions to get data from detectors
+
 		//Absorption
-		std::vector<int> getAbsorption_pywrapped() {return data -> GetHitData();}
+		int_vector1D    getAbsorption_pywrapped()    {return DC->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }//{return data -> GetHitData();}
+		double_vector1D getAbsHalf3Dim_pywrapped()   {return DC->GetAbsorptionDetector()->GetHalfDimensions();               }
+		int             getNumAbsXpixels_pywrapped() {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();              }
+		int             getNumAbsYpixels_pywrapped() {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();              }
 		
 		//Fluorescence
-		std::vector<
-		 std::vector<
-		  std::vector<int> > > getFullMappingFluore_pywrapped() {return data -> GetFullMapping();}
-		std::vector<int> getFullFieldFluore_pywrapped()         {return data -> GetFluorescence();}
-		std::vector<double> getFluoreEneBins_pywrapped()        {return data -> GetEnergyBins();}
-		bool FullMappingFluorescence()                          {return data->GetFullMapping_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMapping();}
-		bool FullFieldFluorescence()                            {return data->GetFluorescence_Option();}//DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullField();}
+		int_vector3D    getFullMappingFluore_pywrapped() {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping();    }
+		int_vector1D    getFullFieldFluore_pywrapped()   {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullField();      }
+		double_vector1D getFluoreEneBins_pywrapped()     {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->GetEnergyBins();     }
+		bool            fluorFMactive_pywrapped()        {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullMappingActive(); }
+		bool            fluorFFactive_pywrapped()        {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->FullFieldActive();   }
+		int             getNumFluorbins_pywrapped()      {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
 		
 		//Diffraction
-		std::vector<std::vector<int> > GetDiffractionData() {return data -> GetDiffractionData();}
+		int_vector2D GetDiffractionData() {return data -> GetDiffractionData();}
 		
 		//Beam energy
-		std::vector<int> getBeamEnergy_pywrapped()        {return PGA -> GetBeamEnergy();}
-        std::vector<double> getBeamEnergyBins_pywrapped() {return data -> GetEnergyBins();}
+		int_vector1D    getBeamEnergy_pywrapped()     {return PGA -> GetBeamIntensity();  }
+        double_vector1D getBeamEnergyBins_pywrapped() {return PGA -> GetBeamEnergy(); }
+        int             getbeambins_pywrapped()       {return PGA -> GetNumberOfBins();}
 
 //================================================================================================================
-	
-	    //Get functions
-		int getNumFluoreEneBins_pywrapped()            {return data -> GetNumberOfBins();}
-		int getNumAbsXpixels_pywrapped()               {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();}
-		int getNumAbsYpixels_pywrapped()               {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();}
-		std::vector<double> getAbsHalf3Dim_pywrapped() {return DC->GetAbsorptionDetector()->GetHalfDimensions();}
 		
 		//Set functions
-		void setlogfile_pywrapped (std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName;}
-		void setSavingTime_pywrapped (double Time)                                    {PGA -> SetSavingTime(Time);}
+		void setlogfile_pywrapped    (std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName; }
+		void setSavingTime_pywrapped (double Time)                            {PGA -> SetSavingTime(Time);              }
+		
+		//Free memory of data
+		void freedataMemory_pywrapped() {DC->GetAbsorptionDetector()->GetSensitiveDetector()->FreeMemory();}	
 		
 		void SetSeed(long int value)                                {seedCmd = value;}
 		void SetVerboseLevel(int value)                             {globalVerbose = value;}
+		
+		void CleanGeometry();
 
 	private:
 	    std::string GetStorageUnit(double &storage); 

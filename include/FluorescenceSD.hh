@@ -3,6 +3,7 @@
 
 #include "G4VSensitiveDetector.hh"
 #include "TrackerHit.hh"
+#include "MyVectors.hh"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -11,36 +12,55 @@ class Data;
 class FluorescenceSD : public G4VSensitiveDetector
 {
   	public:
+  	    FluorescenceSD();
 		FluorescenceSD(Data* data, bool graphics);
     	~FluorescenceSD();
   
     	virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
     	virtual void   Initialize(G4HCofThisEvent* hitCollection);
-
-		void SetFFF(bool value){RecordFullField = value;}
-		void SetFFM(bool value){RecordFullMapping = value;}
 		
-		bool FullField()  {return RecordFullField;}
-		bool FullMapping(){return RecordFullMapping;}
+		void InitialiseData();
+		void FreeMemory();
 		
-		void SetupFullField(int nBins);
-		void ResetData();
+		//Set methods
+		void RecordFullMapping(bool value) {fullmappingOn = value;}
+		void RecordFullField  (bool value) {fullfieldOn = value;}
+		
+		void SetGraphics    (bool value) {graphicsOn = value;}
+		void SetMaxEnergy   (double value)  {maxenergy  = value; G4cout << "\n\n\n\n\n USED " << maxenergy << G4endl;}
+		void SetNumberOfBins(int value)  {nbins      = value;}
+		
+		//Get methods
+		bool FullMappingActive() {return fullmappingOn;}
+		bool FullFieldActive()   {return fullfieldOn;}
+		
+		int GetNumberOfBins()    {return nbins;}
+				
+		//Return the data
+		int_vector1D    GetFullField()   {return fullfieldfluorescence;}
+		int_vector3D    GetFullMapping() {return fullmappingfluorescence;}
+		double_vector1D GetEnergyBins()  {return energybins;}
 
   	private:
-		bool DetectorEfficiency;
-		int nBins;
-		
-		std::vector<int> fullfieldfluorescence;
-
-		//Pointers to different classes
-		Data* data;
+  	    //Pointers to different classes
+		Data*                  data;
 		TrackerHitsCollection* fHitsCollection;
+  	
+  	    //Data
+		int_vector1D    fullfieldfluorescence;
+		int_vector3D    fullmappingfluorescence;
+  	    double_vector1D energybins;
+  	
+  	    //Variables to build the data
+		int    nbins;
+		double absorb_xpixels;
+		double absorb_ypixels;
+        double maxenergy;
 
-		bool RecordFullField;
-		bool RecordFullMapping;
-		bool GraphicsOn;
-		
-		
+        //Options to turn on
+		bool fullfieldOn;
+		bool fullmappingOn;
+		bool graphicsOn;
 };
 
 #endif

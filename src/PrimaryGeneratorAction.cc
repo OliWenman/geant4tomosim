@@ -34,7 +34,7 @@
 
 #include "ParticleBeam.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress(), beam(NULL), gunMessenger(NULL)
+PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress(), beam(0), gunMessenger(0)
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
@@ -58,28 +58,23 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     if(CurrentEvent == 1)
 	{   
 	    //Cleans the beam energy data at the start of each run    
-	    memset(&beamEnergy[0], 0, sizeof(beamEnergy[0]) * Bins);
+	    memset(&beamintensity[0], 0, sizeof(beamintensity[0]) * Bins);
 	    
 	    if (CurrentImage == 1)
 	    {
 	        progress.Timer.Start();	
 	    }
     }
-    G4ThreeVector particleposition = beam->FireParticle(event);
-    
-    if (FluoreFM) {data -> SetParticlePosition(particleposition);}
+    particleposition = beam->FireParticle(event);
+    //if (FluoreFM) {data -> SetParticlePosition(particleposition);}
     
     //Save beam energy data    	
     int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
-		
-    //if (bin < 0)                      {bin = 0;}
-    if (bin > beamEnergy.size()) {bin = beamEnergy.size();}
+    if (bin > beamintensity.size()) {bin = beamintensity.size();}
 
-    //G4cout << "\nbin = " << bin << G4endl;
+    ++beamintensity[bin];
 
-    ++beamEnergy[bin];
-    
-    if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
+    //if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
     
     ++CurrentEvent;
 } 
@@ -138,6 +133,16 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 
 void PrimaryGeneratorAction::SetupData()
 {  	
-   	std::vector<int> ibeamEnergy(Bins, 0);
-   	beamEnergy = ibeamEnergy;	
+   	int_vector1D    ibeamintensity(Bins, 0);
+   	double_vector1D ienergy(Bins, 0);
+   	
+    int ene = 0;
+	for (int i = 0 ; i < Bins ; i++)
+	{
+	    ++ene;
+		ienergy[i] = (eMax/Bins)*ene;
+	}
+
+    beamintensity = ibeamintensity;	
+	energy        = ienergy;
 }

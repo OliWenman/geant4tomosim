@@ -40,6 +40,11 @@
 
 #include "PrintLines.hh"
 
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4RegionStore.hh"
+#include "G4GeometryManager.hh"
+
 DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
 { 	
 	//Create a messenger for this class
@@ -66,6 +71,15 @@ DetectorConstruction::~DetectorConstruction()
 
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {  
+    /*G4GeometryManager::GetInstance()->OpenGeometry();
+	G4PhysicalVolumeStore::GetInstance()->Clean(); 
+    G4LogicalVolumeStore::GetInstance()->Clean(); 
+    G4RegionStore::GetInstance()->Clean();
+    G4GeometryManager::GetInstance()->CloseGeometry();*/
+
+    //Create an instance of the world geometry
+	//solidWorld = new G4Box("World", WorldSize_Cmd.x(), WorldSize_Cmd.y(), WorldSize_Cmd.z());
+
 	//Setup needed paramenters and variables only on the first image
 	if (nImage == 0)
 	{
@@ -123,18 +137,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	
 	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
 	
-	if (data->GetFullMapping_Option() || data->GetFluorescence_Option())
-	{
+	//if (data->GetFullMapping_Option() || data->GetFluorescence_Option())
+	//{
 	    fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4VectHalfDimensions().y()*1.10, 0));
-	}
-	if (data->DoFullMappingDiffraction())
-	{
+	//}
+	//if (data->DoFullMappingDiffraction())
+	//{
 	    double defualtPosX = WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2;
 	    double defualtPosY = absDetector -> GetG4VectHalfDimensions().y()*2;
 	    double defualtPosZ = 0;
 	
-	    diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(defualtPosX, defualtPosY, defualtPosZ));
-	}
+	    //diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(defualtPosX, defualtPosY, defualtPosZ));
+	//}
 	
 	TC -> Construct(logicWorld);
 

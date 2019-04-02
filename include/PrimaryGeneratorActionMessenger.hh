@@ -49,6 +49,7 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		
 		
 		G4UIcmdWithADoubleAndUnit *maxEnergyBinCmd;
+		G4UIcmdWithAnInteger      *numberofbins;
 };
 
 #endif 

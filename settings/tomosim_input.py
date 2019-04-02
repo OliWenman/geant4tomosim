@@ -6,7 +6,7 @@ this_directory = os.path.dirname(os.path.realpath(__file__))
 import sys
 sys.path.insert(0, this_directory + '/../src')
 
-import G4Units as G4
+import units as G4
 import numpy as np
 
 #========================================================================================
@@ -18,7 +18,7 @@ interactive     = True
 #Image variables
 NumberOfImages  = 1
 nDarkFlatFields = 0
-nParticles      = 1000#1*10**7
+nParticles      = 1*10**6
 
 #Rotation angles
 startRotation   = 0*G4.deg

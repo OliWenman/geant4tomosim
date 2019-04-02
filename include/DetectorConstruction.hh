@@ -56,8 +56,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4LogicalVolume* GetWorldLV() {return logicWorld;}
 		G4bool GetVisualization(){return Visualization_Cmd;}
 		
-		G4int GetAbsoptionDetectorRows(){return absDetector -> GetRows();}
-		G4int GetAbsoptionDetectorColumns(){return absDetector -> GetColumns();}
+		G4int GetAbsorptionDetector_xpixels() const {return absDetector -> GetRows();}
+		G4int GetAbsorptionDetector_ypixels()const {return absDetector -> GetColumns();}
 
 		void RelayToTC(int NumberOfImages, double TotalAngle);
 	

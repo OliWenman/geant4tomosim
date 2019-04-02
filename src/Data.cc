@@ -29,8 +29,8 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 
 		//Creates a 1D vector for the hit data
 		//G4cout << "\nCreating absorption data set..." << G4endl;
-		std::vector<int> iabsorptionData(nDetectorsY*nDetectorsZ, 0);
-		absorptionData = iabsorptionData;
+		//std::vector<int> iabsorptionData(nDetectorsY*nDetectorsZ, 0);
+		//absorptionData = iabsorptionData;
 		//G4cout << "Success!" << G4endl;
 		
 		if (NoBins_Cmd > 0)
@@ -78,9 +78,10 @@ void Data::SetUpData(int nDetectorsY, int nDetectorsZ, int nImage)
 	}
 	else 
 	{
-		//Reset the data to zero ready for the next image
+		/*//Reset the data to zero ready for the next image
 		memset(&absorptionData[0], 0, 
 		       sizeof(absorptionData[0]) * columns * rows);
+        */
 
 		if (fullfieldFluorescence == true)
 		{

@@ -7,15 +7,26 @@
 /world/visualization false	
 
 # Detectors
+# - Absorption
+/detector/absorption/halfdimensions 0.001 1.25 1.05 cm
 /detector/absorption/rows 250
 /detector/absorption/columns 210
-/detector/absorption/halfdimensions 0.001 1.25 1.05 cm
+
+# - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
+/detector/fluorescence/bins 1000
+/detector/fluorescence/maxenergy 20 keV
+/detector/fluorescence/fullmapping true
+/detector/fluorescence/fullfield true
+
+# - Beam
+/beam/bins 2000
+/beam/maxenergy 175 keV
 
 # Data
 /data/Seed 0 
-/data/bins 1000
-/data/MaxEnergy 20 keV
+#/data/bins 1000
+#/data/MaxEnergy 20 keV
 /data/fluorescence/fullfield true
-/data/fluorescence/fullmapping false
+/data/fluorescence/fullmapping true
 /data/diffraction/fullmapping false

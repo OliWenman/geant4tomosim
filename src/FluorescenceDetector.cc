@@ -30,6 +30,20 @@
 FluorescenceDetector::FluorescenceDetector(): sensitiveDetector(NULL)
 {
     FDMessenger = new FluorescenceDetectorMessenger(this); 
+    
+    // Check if sensitive detector has already been created
+ 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+
+  	if (!sensitiveDetector) 
+	{
+		//Create a visual detector
+		sensitiveDetector = new FluorescenceSD();
+		SDmanager->AddNewDetector(sensitiveDetector);	// Store SD if built	
+
+		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+		//sensitiveDetector -> SetFilter(gammaFilter);
+	}
+    
 }
 
 FluorescenceDetector::~FluorescenceDetector()
@@ -63,19 +77,6 @@ void FluorescenceDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	
 	G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
   	DetectorLV -> SetVisAttributes(Cyan);
-	
-	// Check if sensitive detector has already been created
- 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-
-  	if (!sensitiveDetector) 
-	{
-		//Create a visual detector
-		sensitiveDetector = new FluorescenceSD(data, GraphicsOn);
-		SDmanager->AddNewDetector(sensitiveDetector);	// Store SD if built	
-
-		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-		//sensitiveDetector -> SetFilter(gammaFilter);
-	}
 
 	//Add the sensitive detector to the logical volume
 	DetectorLV -> SetSensitiveDetector(sensitiveDetector);
@@ -91,7 +92,9 @@ void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVec
 							                                 false,
 							                                 0,
 							                                 false);
-	position = Position; 						          
+	position = Position; 
+	
+	sensitiveDetector->InitialiseData();						          
 }
 
 void FluorescenceDetector::ReadOutInfo(SettingsLog& log)

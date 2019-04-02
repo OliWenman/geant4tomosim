@@ -6,18 +6,64 @@
 #include "G4SDManager.hh"
 #include "G4Track.hh"
 
-AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(NULL), data(DataObject)
+AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(0), data(0)
 {
-    GraphicsOn = graphics;
-	if(GraphicsOn){collectionName.insert("AbsorptionHitsCollection");}
+
+}
+
+AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(0), data(DataObject)
+{
+    graphicsOn = graphics;
+	if(graphicsOn){collectionName.insert("AbsorptionHitsCollection");}
 	n = 0;
+}
+
+void AbsorptionSD::InitialiseData(int xpix, int ypix)
+{
+    if (absorptionData.empty())
+    {
+        xpixels = xpix;
+        ypixels = ypix;
+    
+        int initialValue = 0;
+    
+        int_vector1D temp(xpixels*ypixels, initialValue);
+        absorptionData = temp;
+        
+        G4cout << "\nAbsorption data is empty, creating a " << xpixels << " x " << ypixels << " array" << G4endl;
+    }
+    else
+    {
+        memset(&absorptionData[0], 0, 
+		       sizeof(absorptionData[0]) * xpixels * ypixels);
+        
+        G4cout << "\nAbsorption data already exists, reset back to zero " << G4endl; 
+    }
+}
+
+void AbsorptionSD::FreeMemory()
+{
+    if (!absorptionData.empty())
+    {
+        absorptionData.clear();
+        absorptionData.shrink_to_fit();
+    }
+    
+    if (absorptionData.empty())
+    {
+        G4cout << "\nworked" << G4endl;
+    }
+    else
+    {
+        G4cout << "\nDidn't work" << G4endl;
+    }
 }
 
 AbsorptionSD::~AbsorptionSD() {}
 
 void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
 {	
-    if(GraphicsOn)
+    if(graphicsOn)
     {
   	    //Create hits collection object
   	    fHitsCollection = new TrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
@@ -29,20 +75,25 @@ void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
 
 G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
+    G4int pixel = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
+
+    ++absorptionData[pixel];
+    
+   /*
     
     //G4cout << n << ")ABSORPTION HIT " << G4endl;
     //++n;
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
 	data -> SaveAbsorption(nDetector);
-	
-	if(GraphicsOn)
+	*/
+	if(graphicsOn)
 	{
 	    //Create the TrackerHit class object to record hits
   	    TrackerHit* newHit = new TrackerHit();
 
 	    //Save all the information about the particle that hit the detector
-  	    newHit -> SetChamberNb(nDetector);
+  	    newHit -> SetChamberNb(pixel);
 	    newHit -> SetEdep(aStep->GetPreStepPoint()->GetKineticEnergy());
 	    newHit -> SetPos (aStep->GetPreStepPoint()->GetPosition());
 	

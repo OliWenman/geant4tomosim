@@ -36,6 +36,11 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
+Simulation::Simulation()
+{
+
+}
+
 Simulation::Simulation(int verb, bool interactive) : runManager(0), data(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
 {	
     globalVerbose = verb;
@@ -314,10 +319,9 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
 	    //runManager -> SetVerboseLevel(verbose);
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
-	    PGA -> SetBins(data -> GetNoBins());
 	    PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
 		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
-		PGA -> SetFluoreFM(data -> GetFullMapping_Option());
+		//PGA -> SetFluoreFM(data -> GetFullMapping_Option());
 		
 	    DC -> RelayToTC(NumberOfImages, rotation_angle);
 	     
@@ -352,9 +356,9 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
     PGA -> SetupData();
 
 	//Creates the arrays for the data, wipes them after each image
-	data -> SetUpData(DC->GetAbsorptionDetector()->GetNumberOfxPixels(), 
+	/*data -> SetUpData(DC->GetAbsorptionDetector()->GetNumberOfxPixels(), 
 	                  DC->GetAbsorptionDetector()->GetNumberOfyPixels(), 
-	                  Image);
+	                  Image);*/
 
     //runManager -> Initialize(); 		
     
@@ -596,6 +600,24 @@ void Simulation::PrintInformation(SettingsLog log)
     }
 }
 
+#include "G4PhysicalVolumeStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4RegionStore.hh"
+#include "G4GeometryManager.hh"
+
+void Simulation::CleanGeometry()
+{
+    //Clean old geometry if any
+    G4GeometryManager::GetInstance()->OpenGeometry();
+	G4PhysicalVolumeStore::GetInstance()->Clean(); 
+    G4LogicalVolumeStore::GetInstance()->Clean(); 
+    G4RegionStore::GetInstance()->Clean();
+    G4GeometryManager::GetInstance()->CloseGeometry();
+    
+    //The geometry needs to be Reinitialised for the next run
+	runManager -> ReinitializeGeometry();
+}
+
 void Simulation::CalculateStorageSpace(int projections)
 {
     if (globalVerbose > 0)
@@ -605,7 +627,7 @@ void Simulation::CalculateStorageSpace(int projections)
     
         int abs_xPixels = getNumAbsXpixels_pywrapped();
         int abs_yPixels = getNumAbsYpixels_pywrapped();
-        int bins = getNumFluoreEneBins_pywrapped();
+        int bins = getNumFluorbins_pywrapped();
     
         PrintToEndOfTerminal('-');
         G4cout << "DISK SPACE REQUIRED FOR DATA: ";
@@ -628,7 +650,7 @@ void Simulation::CalculateStorageSpace(int projections)
         if (data->GetFullMapping_Option())
         {
             size_t FMfluoresenceDataSize = sizeof(getFluoreEneBins_pywrapped()[0]);  
-            double fluorescenceStorageSpace = absorpStorageSpace*getNumFluoreEneBins_pywrapped();
+            double fluorescenceStorageSpace = absorpStorageSpace*getNumFluorbins_pywrapped();
             totalStorage += fluorescenceStorageSpace;
             unit = GetStorageUnit(fluorescenceStorageSpace);              
             G4cout << "\n- Full mapping fluorescence: " << fluorescenceStorageSpace << unit;

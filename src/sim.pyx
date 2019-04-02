@@ -51,26 +51,27 @@ cdef class PySim:
 
            self.thisptr.printinfo_pywrapped(TotalParticles, TotalImages, nDarkFlatFields)
            
-           FMFluorescence = self.thisptr.FullMappingFluorescence()
-           FFFluorescence = self.thisptr.FullFieldFluorescence()
+           FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
+           FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
            
            self.nexusfile.openFile(self.SaveFilePath + self.NexusName)
            if self.nexusfile.setupSuccess == False:
               print "\nAborting run..." 
               return 0
            
-           nBins = self.thisptr.getNumFluoreEneBins_pywrapped()
+           fluoreBins = self.thisptr.getNumFluorbins_pywrapped()
+           beamBins   = self.thisptr.getbeambins_pywrapped()
            xPixels = self.thisptr.getNumAbsXpixels_pywrapped()
            yPixels = self.thisptr.getNumAbsYpixels_pywrapped()
            
            self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, yPixels, xPixels, self.thisptr.getAbsHalf3Dim_pywrapped(), rotation_angles)
-           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = nBins)
+           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = beamBins)
            
            if FFFluorescence == True:
-              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = nBins)
+              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = fluoreBins)
               
            if FMFluorescence == True:
-              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = nBins, xBins = xPixels, yBins = yPixels)
+              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = fluoreBins, xBins = xPixels, yBins = yPixels)
            
            iTime = time.time()
            
@@ -93,15 +94,16 @@ cdef class PySim:
                self.nexusfile.AddProjectionData(self.absorptionData(), CurrentImage)
                
                if CurrentImage == 0:
-                  energyBins = self.beamEnergyBins()
+                  energy_xaxis = self.beamEnergyBins()
                   
-                  self.nexusfile.AddxAxis("Beam_Energy", energyBins)
+                  self.nexusfile.AddxAxis("Beam_Energy", energy_xaxis)
                   
+                  energy_xaxis = self.thisptr.getFluoreEneBins_pywrapped()
                   if FFFluorescence == True:
-                     self.nexusfile.AddxAxis("Fluorescence", energyBins)
+                     self.nexusfile.AddxAxis("Fluorescence", energy_xaxis)
                      
                   if FMFluorescence == True:
-                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energyBins)
+                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energy_xaxis)
                
                self.nexusfile.AddData("Beam_Energy", self.beamEnergyData(), nImage = CurrentImage)    
                
@@ -131,6 +133,8 @@ cdef class PySim:
             
            print "\nData was saved in", self.SaveFilePath 
            self.nexusfile.closeFile()
+           
+           self.thisptr.freedataMemory_pywrapped()
             
         else:
            print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")

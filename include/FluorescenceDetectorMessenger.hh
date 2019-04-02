@@ -4,7 +4,7 @@
 #include "G4UImessenger.hh"
 #include "globals.hh"
 
-class FluorescenceDetector;;
+class FluorescenceDetector;
 
 class G4UImessenger;
 
@@ -29,15 +29,18 @@ class FluorescenceDetectorMessenger: public G4UImessenger
 		
 	private:		
 		//Pointer to the DetectorConstruction class
-		FluorescenceDetector *FD;
+		FluorescenceDetector *detectorbuilder;
 
 		//Pointer to the G4UIdirectory
-		G4UIdirectory *Directory;
+		G4UIdirectory *directory;
 
 		//DETECTOR VARIABLES
-        G4UIcmdWith3VectorAndUnit *SetDimensions;
-        G4UIcmdWithABool *RecordFullMapping;
-        G4UIcmdWithABool *RecordFullField;
+        G4UIcmdWith3VectorAndUnit *setdimensions;
+        G4UIcmdWithABool *setfullmapping;
+        G4UIcmdWithABool *setfullfield;
+        
+        G4UIcmdWithAnInteger* setbins;
+        G4UIcmdWithADoubleAndUnit* setmaxenergy;
 };
 
 #endif 

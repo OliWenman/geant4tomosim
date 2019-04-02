@@ -23,11 +23,20 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
+#include "PlacementTest.hh"
+
 AbsorptionDetector::AbsorptionDetector()
 {
     ADMessenger = new AbsorptionDetectorMessenger(this);
     absorSD = NULL;
     param = new G4PhantomParameterisation();
+    
+    // Check if sensitive detector has already been created
+ 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+
+	//Create a visual detector
+	absorSD = new AbsorptionSD();
+	SDmanager->AddNewDetector(absorSD);	// Store SD if built	
 }
 
 AbsorptionDetector::~AbsorptionDetector()
@@ -124,14 +133,27 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	param -> SetMaterials(theMaterials);
 	
 	data -> SetHalfDetectorDimensions(halfdimensions);	 
+	
+	absorSD->SetGraphics(GraphicsOn);
 
 }
+
+#include "G4PhysicalVolumeStore.hh"
 
 void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
 {
 	G4int NumberOfVoxels = rows * columns;
+	
+	/*G4PhysicalVolumeStore* volumestore = G4PhysicalVolumeStore::GetInstance();
+	G4VPhysicalVolume* check = volumestore->GetVolume("AbsorptionContainer", false);
+	
+	if (check)
+	{
+	    //delete check;
+	    //check -> Set
+	}*/
 
-	G4VPhysicalVolume* container_phys = new G4PVPlacement(0,                  // rotation
+	G4VPhysicalVolume* container_phys = new PlacementTest(0,                  // rotation
             						                      position,                   // translation
            						                          DetectorContainerLV,            // logical volume
             						                      "AbsorptionContainer",    // name
@@ -153,6 +175,8 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 
 	//Gives warning messages when set to 1?
 	PhantomBoxes_phys->SetRegularStructureId(1);
+	
+	absorSD->InitialiseData(rows, columns);
 }
 
 #include "PrintLines.hh"

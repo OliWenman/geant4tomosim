@@ -183,12 +183,20 @@ class NexusFormatter:
         
             dataGroup = self.h5file1.create_group(DataPath +'detector_Fluor/')
             dataGroup.attrs['NX_class'] = 'NXdata'
-            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, eBins), dtype = 'i4')  # Y axis data  
+            dataGroup.attrs['axes'] = xLabel         # X axis of default plot
+            xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+        
+            dataGroup.attrs[xLabel + '_indices'] = [1,] 
+            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, eBins), dtype = 'i4')  # Y axis data 
             
         elif dataType == "Full_Mapping_Fluorescence":
             
             dataGroup = self.h5file1.create_group(DataPath +'detector_FluorFM/')
             dataGroup.attrs['NX_class'] = 'NXdata'
+            dataGroup.attrs['axes'] = xLabel         # X axis of default plot
+            xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
+            
+            dataGroup.attrs[xLabel + '_indices'] = [1,] #
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, xBins, yBins, eBins), dtype = 'i4')  # Y axis data
         
         else:
@@ -203,6 +211,9 @@ class NexusFormatter:
         if dataType == 'Fluorescence':
         
             DataPath = DataPath + '_Fluor/'
+            dataSet = self.h5file1[DataPath + '/energy']
+            dataSet[:] = data
+            """
             dataGroup = self.h5file1[DataPath]
             
             xLabel = "energy"
@@ -210,10 +221,13 @@ class NexusFormatter:
             dataGroup['energy'] = self.h5file1['entry1/tomo_entry/instrument/detector_BE/energy']
         
             dataGroup.attrs[xLabel + '_indices'] = [1,] 
-            
+            """
         elif dataType == 'Full_Mapping_Fluorescence':
         
             DataPath = DataPath + '_FluorFM/'
+            dataSet = self.h5file1[DataPath + '/energy']
+            dataSet[:] = data
+            """
             dataGroup = self.h5file1[DataPath]
             
             xLabel = "energy"
@@ -221,12 +235,13 @@ class NexusFormatter:
             dataGroup['energy'] = self.h5file1['entry1/tomo_entry/instrument/detector_BE/energy']
         
             dataGroup.attrs[xLabel + '_indices'] = [3,] 
-            
+            """
         elif dataType == 'Beam_Energy':
             DataPath = DataPath + '_BE'
-        
-        dataSet = self.h5file1[DataPath + '/energy']
-        dataSet[:] = data
+            dataSet = self.h5file1[DataPath + '/energy']
+            dataSet[:] = data
+        #dataSet = self.h5file1[DataPath + '/energy']
+        #dataSet[:] = data
         
     def AddxAxisTest(self, dataType):
     
