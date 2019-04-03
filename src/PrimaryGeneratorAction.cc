@@ -1,5 +1,4 @@
 //Own classes
-#include "Data.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorActionMessenger.hh"
 #include "G4GeneralParticleSource.hh"
@@ -34,7 +33,9 @@
 
 #include "ParticleBeam.hh"
 
-PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryGeneratorAction(), data(DataObject), progress(), beam(0), gunMessenger(0)
+PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction(), progress(), 
+                                                                                  beam(0), 
+                                                                                  gunMessenger(0)
 {
 	//Create a messenger for this class
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
@@ -43,8 +44,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(Data* DataObject):G4VUserPrimaryG
 	ShowProgressBar = true;	
 	
 	//Set the max energy value (in keV)
-    eMax = 175;
-    data -> SetMaxEnergy(eMax);
+    eMax = 175*keV*1000.;
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

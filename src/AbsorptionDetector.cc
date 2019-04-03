@@ -1,7 +1,6 @@
 #include "AbsorptionDetector.hh"
 #include "AbsorptionDetectorMessenger.hh"
 #include "AbsorptionSD.hh"
-#include "Data.hh"
 //Solid shapes
 #include "G4Box.hh"
 
@@ -68,7 +67,7 @@ void AbsorptionDetector::CreateVolumes()
                                     DetectorContainer->GetZHalfLength());
 }
 
-void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
+void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 {
 	//Pick the material for the detectors based on if the detectors are 100% efficient or not
 	G4Material* Material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
@@ -114,15 +113,8 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
 
-  	if (!absorSD) 
-	{
-		//Create a visual detector
-		absorSD = new AbsorptionSD(data, GraphicsOn);
-		SDmanager->AddNewDetector(absorSD);	// Store SD if built	
-
-		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
-		//tomoVSD -> SetFilter(gammaFilter);
-	}
+	//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
+	//tomoVSD -> SetFilter(gammaFilter);
 
 	//Add the sensitive detector to the logical volume
 	DetectorCellsLV -> SetSensitiveDetector(absorSD);
@@ -132,10 +124,7 @@ void AbsorptionDetector::AddProperties(Data* data, G4bool GraphicsOn)
 	theMaterials.push_back(Material);
 	param -> SetMaterials(theMaterials);
 	
-	data -> SetHalfDetectorDimensions(halfdimensions);	 
-	
 	absorSD->SetGraphics(GraphicsOn);
-
 }
 
 #include "G4PhysicalVolumeStore.hh"

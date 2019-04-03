@@ -1,7 +1,6 @@
 #include "DiffractionDetector.hh"
 //#include "RefractionDetector.hh"
 #include "DiffractionSD.hh"
-#include "Data.hh"
 //Solid shapes
 #include "G4Box.hh"
 
@@ -59,7 +58,7 @@ void DiffractionDetector::CreateVolumes()
                                     DetectorContainer->GetZHalfLength());
 }
 
-void DiffractionDetector::AddProperties(Data* data, G4bool GraphicsOn)
+void DiffractionDetector::AddProperties(G4bool GraphicsOn)
 {
     materialName = "G4_Galactic";
 	//Pick the material for the detectors based on if the detectors are 100% efficient or not
@@ -109,7 +108,7 @@ void DiffractionDetector::AddProperties(Data* data, G4bool GraphicsOn)
   	if (!diffraSD) 
 	{
 		//Create a visual detector
-		diffraSD = new DiffractionSD(data, GraphicsOn);
+		diffraSD = new DiffractionSD();
 		SDmanager->AddNewDetector(diffraSD);	// Store SD if built	
 
 		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");

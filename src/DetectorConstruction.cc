@@ -4,7 +4,6 @@
 #include "AbsorptionDetector.hh"
 #include "FluorescenceDetector.hh"
 #include "DiffractionDetector.hh"
-#include "Data.hh"
 #include "TargetConstruction.hh"
 //Output to console/write to file
 #include "SettingsLog.hh"
@@ -45,14 +44,14 @@
 #include "G4RegionStore.hh"
 #include "G4GeometryManager.hh"
 
-DetectorConstruction::DetectorConstruction(Data* DataObject):G4VUserDetectorConstruction(), data(DataObject)
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction()
 { 	
 	//Create a messenger for this class
-  	detectorMessenger = new DetectorConstructionMessenger(this);	
-	TC = new TargetConstruction();
-	absDetector = new AbsorptionDetector();
+  	detectorMessenger    = new DetectorConstructionMessenger(this);	
+	TC                   = new TargetConstruction();
+	absDetector          = new AbsorptionDetector();
 	fluorescenceDetector = new FluorescenceDetector();
-	diffractionDetector = new DiffractionDetector();
+	diffractionDetector  = new DiffractionDetector();
 
 	nImage = 0;
 	WorldMaterial_Cmd = "G4_AIR";
@@ -131,24 +130,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 							                         true);		//overlaps checking    
 
 	//Creates the logic and physical volumes for the detectors each run
-	absDetector -> AddProperties(data, Visualization_Cmd);
-    fluorescenceDetector -> AddProperties(data, Visualization_Cmd);
-    diffractionDetector -> AddProperties(data, Visualization_Cmd);
+	absDetector -> AddProperties(Visualization_Cmd);
+    fluorescenceDetector -> AddProperties(Visualization_Cmd);
+    diffractionDetector -> AddProperties(Visualization_Cmd);
 	
 	absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(WorldSize_Cmd.x(),0,0) );
+	fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4VectHalfDimensions().y()*1.10, 0));
 	
-	//if (data->GetFullMapping_Option() || data->GetFluorescence_Option())
-	//{
-	    fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4VectHalfDimensions().y()*1.10, 0));
-	//}
-	//if (data->DoFullMappingDiffraction())
-	//{
-	    double defualtPosX = WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2;
-	    double defualtPosY = absDetector -> GetG4VectHalfDimensions().y()*2;
-	    double defualtPosZ = 0;
+	double defualtPosX = WorldSize_Cmd.x()-absDetector -> GetG4VectHalfDimensions().x()*2;
+	double defualtPosY = absDetector -> GetG4VectHalfDimensions().y()*2;
+	double defualtPosZ = 0;
 	
-	    //diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(defualtPosX, defualtPosY, defualtPosZ));
-	//}
+    //diffractionDetector -> PlaceDetectors(logicWorld, G4ThreeVector(defualtPosX, defualtPosY, defualtPosZ));
 	
 	TC -> Construct(logicWorld);
 
@@ -188,28 +181,5 @@ void DetectorConstruction::ReadOutInfo(SettingsLog& log)
 	    
 	absDetector -> ReadOutInfo(log);
 	fluorescenceDetector -> ReadOutInfo(log);
-    /*
-           "\n--------------------------------------------------------------------"
-	       "\nTHE DETECTOR SETUP: \n"
-
-	       "\nTransmission detectors: "
-	       "\n- Number of detectors: " << NoDetectorsY_Cmd << " x " << NoDetectorsZ_Cmd << " = " << NoDetectorsY_Cmd * NoDetectorsZ_Cmd
-	    << "\n- Individual half detector dimensions: " << G4BestUnit(DetectorSize_Cmd, "Length")
-	    << "\n- Half detector dimensions: " << G4BestUnit(FullDetDimensions, "Length") << G4endl;
-
-	if (FluorescenceDet == true){
-	
-		log << "\nFluorescence detector: "
-		       "\n- Dimensions: " << G4BestUnit(FluorDetSize_Cmd, "Length")
-		    << "\n- Position: " << G4BestUnit(FluorDetPos_Cmd, "Length") 
-	        << "\n- Number of bins: " << data -> GetNoBins() << G4endl;
-	}
-	if (DetectorEfficiency_Cmd == false){	
-		log << "\n- Detector material: " << DetectorMaterial_Cmd << G4endl;
-	}
-	else{	
-		log << "\n- Detectors are assumed to be 100%\ efficient " << G4endl;
-	}
-	*/
 }
 

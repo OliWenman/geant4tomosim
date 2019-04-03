@@ -7,13 +7,11 @@
 
 class G4Step;
 class G4HCofThisEvent;
-class Data;
 
 class FluorescenceSD : public G4VSensitiveDetector
 {
   	public:
   	    FluorescenceSD();
-		FluorescenceSD(Data* data, bool graphics);
     	~FluorescenceSD();
   
     	virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
@@ -43,7 +41,6 @@ class FluorescenceSD : public G4VSensitiveDetector
 
   	private:
   	    //Pointers to different classes
-		Data*                  data;
 		TrackerHitsCollection* fHitsCollection;
   	
   	    //Data

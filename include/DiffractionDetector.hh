@@ -7,7 +7,6 @@
 #include <vector>
 
 //My own classes
-class Data;
 class DiffractionSD;
 //class AbsorptionDetectorMessenger;
 
@@ -30,7 +29,7 @@ class DiffractionDetector
         ~DiffractionDetector();
     
         void CreateVolumes();
-        void AddProperties(Data* data, G4bool GraphicsOn);
+        void AddProperties(G4bool GraphicsOn);
         void PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position);
         
         void ReadOutInfo(SettingsLog& log);

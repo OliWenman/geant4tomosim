@@ -5,7 +5,6 @@
 #include "globals.hh"
 #include <string>
 #include "SettingsLog.hh"
-#include "Data.hh"
 #include "AbsorptionDetector.hh"
 #include "AbsorptionSD.hh"
 #include "FluorescenceDetector.hh"
@@ -14,7 +13,6 @@
 #include "PrimaryGeneratorAction.hh"
 
 class SimulationMessenger;
-class Data;
 class DefineMaterials;
 class DetectorConstruction;
 class PhysicsList;
@@ -69,7 +67,7 @@ class Simulation
 		int             getNumFluorbins_pywrapped()      {return DC->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
 		
 		//Diffraction
-		int_vector2D GetDiffractionData() {return data -> GetDiffractionData();}
+		int_vector2D GetDiffractionData() {/*return data -> GetDiffractionData();*/}
 		
 		//Beam energy
 		int_vector1D    getBeamEnergy_pywrapped()     {return PGA -> GetBeamIntensity();  }
@@ -106,7 +104,6 @@ class Simulation
 		G4RunManager           *runManager;
 		G4VisManager           *visManager;
 		G4UImanager            *UImanager;
-		Data                   *data;
 		DefineMaterials        *materials;
 		DetectorConstruction   *DC;
 		PhysicsList            *PL;

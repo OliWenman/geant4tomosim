@@ -10,12 +10,10 @@
 #include "G4ParticleDefinition.hh"
 
 #include "ParticleBeam.hh"
-#include "Data.hh"
 
 #include "MyVectors.hh"
 
 class PrimaryGeneratorActionMessenger;
-class Data;
 class ProgressTracker;
 
 class G4Event;
@@ -32,7 +30,7 @@ class ParticleBeam;
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
-    	PrimaryGeneratorAction(Data *data);    
+    	PrimaryGeneratorAction();    
     	~PrimaryGeneratorAction();
     	
    		void GeneratePrimaries(G4Event* );
@@ -44,7 +42,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		
 		G4int GetBeamEnergyByteTypeSize(){return sizeof(beamintensity[0]);}
 
-		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.; data -> SetMaxEnergy(eMax);}
+		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.;}
 		void SetFluoreFM(bool value){FluoreFM = value;}		
 		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; 
 		                                                                      NumberOfRuns = TotalImages; 
@@ -72,9 +70,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
   	private:
 
-		Data                            *data;
+        PrimaryGeneratorActionMessenger *gunMessenger;
 		ParticleBeam                    *beam;
-		PrimaryGeneratorActionMessenger *gunMessenger;
         ProgressTracker                  progress;
         
         int_vector1D    beamintensity;

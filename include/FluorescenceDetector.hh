@@ -23,7 +23,7 @@ class FluorescenceDetector
     
         void CreateVolumes();
         void CreateVolumes(G4ThreeVector halfDimensions);
-        void AddProperties(Data* data, G4bool GraphicsOn);
+        void AddProperties(G4bool GraphicsOn);
         void PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position);
         
         void ReadOutInfo(SettingsLog& log);

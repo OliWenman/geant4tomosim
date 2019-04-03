@@ -1,6 +1,5 @@
 #include "SimulationMessenger.hh"
 #include "Simulation.hh"
-#include "Data.hh"
 #include <stdlib.h>
 #include <climits>
 

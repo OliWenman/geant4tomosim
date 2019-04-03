@@ -1,5 +1,4 @@
 #include "FluorescenceSD.hh"
-#include "Data.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
@@ -20,15 +19,6 @@ FluorescenceSD::FluorescenceSD (): G4VSensitiveDetector("FluorescenceDetector"),
     fullfieldOn   = true;
     fullmappingOn = true;
     graphicsOn    = false;
-}
-
-FluorescenceSD::FluorescenceSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("FluorescenceDetector"), fHitsCollection(NULL), data(DataObject)
-{
-	fullfieldOn = data -> GetFluorescence_Option();
-	fullmappingOn = data -> GetFullMapping_Option();
-	
-	graphicsOn = graphics;
-	if(graphicsOn){collectionName.insert("FluorescenceHitsCollection");}
 }
 
 FluorescenceSD::~FluorescenceSD()

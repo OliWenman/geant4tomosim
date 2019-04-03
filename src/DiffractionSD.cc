@@ -1,5 +1,4 @@
 #include "DiffractionSD.hh"
-#include "Data.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
@@ -7,18 +6,16 @@
 #include "G4Track.hh"
 #include "G4RunManager.hh"
 
-DiffractionSD::DiffractionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("DiffractionDetecotor"), fHitsCollection(NULL), data(DataObject)
+DiffractionSD::DiffractionSD() : G4VSensitiveDetector("DiffractionDetecotor"), fHitsCollection(0)
 {
-    GraphicsOn = graphics;
-	if(GraphicsOn){collectionName.insert("DiffractionHitsCollection");}
-	n = 0;
+
 }
 
 DiffractionSD::~DiffractionSD() {}
 
 void DiffractionSD::Initialize(G4HCofThisEvent* hce)
 {	
-    if(GraphicsOn)
+    if(graphicsOn)
     {
   	    //Create hits collection object
   	    fHitsCollection = new TrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
@@ -35,11 +32,11 @@ G4bool DiffractionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 	G4int nDetector = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 	//Save the detector hits to the data class
-	data -> SaveDiffraction(nDetector);
+	//data -> SaveDiffraction(nDetector);
 	
 	aStep->GetTrack()->SetTrackStatus(fStopAndKill);
 	
-	if(GraphicsOn)
+	if(graphicsOn)
 	{
 	    //Create the TrackerHit class object to record hits
   	    TrackerHit* newHit = new TrackerHit();

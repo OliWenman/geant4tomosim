@@ -11,7 +11,6 @@
 
 //My own classes
 class DetectorConstructionMessenger;
-class Data;
 class AbsorptionDetector;
 class FluorescenceDetector;
 class DiffractionDetector;
@@ -30,7 +29,7 @@ class G4Colour;
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   	public:
-        DetectorConstruction(Data *data);
+        DetectorConstruction();
     	~DetectorConstruction();
 
 		//Base class method
@@ -40,14 +39,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
 		void SetWorldMaterial(G4String value){WorldMaterial_Cmd = value;}
 		void SetVisualization(G4bool value){Visualization_Cmd = value;}
-
-		/*void SetNoDetectorsY(G4int value){NoDetectorsY_Cmd = value;} 
-		void SetNoDetectorsZ(G4int value){NoDetectorsZ_Cmd = value;}
-		void SetDetectorSize(G4ThreeVector value){DetectorSize_Cmd = value;}
-		void SetDetectorMaterial(G4String value){DetectorMaterial_Cmd = value;}
-		void SetDetectorEfficiency(G4bool value){DetectorEfficiency_Cmd = value;}
-		void SetFluorescenceDet(G4bool value){FluorescenceDet = value;}
-		void SetFluorDetSize(G4ThreeVector value){FluorDetSize_Cmd = value;}*/
 		
 		void SetCurrentImage(int value){nImage = value;}
 
@@ -63,10 +54,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 	
 		void ReadOutInfo(SettingsLog& log);
 		
-		TargetConstruction *GetTargetConstruction()     {return TC;}
-		AbsorptionDetector *GetAbsorptionDetector()     {return absDetector;}
+		TargetConstruction   *GetTargetConstruction()   {return TC;}
+		AbsorptionDetector   *GetAbsorptionDetector()   {return absDetector;}
 		FluorescenceDetector *GetFluorescenceDetector() {return fluorescenceDetector;}
-		DiffractionDetector *GetDiffractionDetector()   {return diffractionDetector;}
+		DiffractionDetector  *GetDiffractionDetector()  {return diffractionDetector;}
 
   	private:
 
@@ -75,7 +66,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
 		//Pointers to my own classes 
 		DetectorConstructionMessenger* detectorMessenger;
-		Data* data;
 		TargetConstruction* TC;
 
 		//World variables

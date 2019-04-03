@@ -2,7 +2,6 @@
 #include "FluorescenceDetectorMessenger.hh"
 #include "FluorescenceSD.hh"
 
-#include "Data.hh"
 //Solid shapes
 #include "G4Box.hh"
 
@@ -69,7 +68,7 @@ void FluorescenceDetector::CreateVolumes(G4ThreeVector halfDimensions)
     halfdimensions = halfDimensions;
 }
 
-void FluorescenceDetector::AddProperties(Data* data, G4bool GraphicsOn)
+void FluorescenceDetector::AddProperties(G4bool GraphicsOn)
 {
 	G4Material* Material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
 	

@@ -1,21 +1,13 @@
 #include "AbsorptionSD.hh"
-#include "Data.hh"
 
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 #include "G4SDManager.hh"
 #include "G4Track.hh"
 
-AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(0), data(0)
+AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(0)
 {
 
-}
-
-AbsorptionSD::AbsorptionSD(Data* DataObject, bool graphics) : G4VSensitiveDetector("AbsorptionDetecotor"), fHitsCollection(0), data(DataObject)
-{
-    graphicsOn = graphics;
-	if(graphicsOn){collectionName.insert("AbsorptionHitsCollection");}
-	n = 0;
 }
 
 void AbsorptionSD::InitialiseData(int xpix, int ypix)

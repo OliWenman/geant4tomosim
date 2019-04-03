@@ -8,7 +8,6 @@
 #include "PrimaryGeneratorAction.hh"
 #include "StackingAction.hh"
 #include "SteppingAction.hh"
-#include "Data.hh"
 #include "DefineMaterials.hh"
 //Output to console/write to file
 #include "SettingsLog.hh"
@@ -41,7 +40,7 @@ Simulation::Simulation()
 
 }
 
-Simulation::Simulation(int verb, bool interactive) : runManager(0), data(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
+Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
 {	
     globalVerbose = verb;
     interactiveOn = interactive;
@@ -69,16 +68,15 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), data(0), DC(
 	runManager = new G4RunManager();
 	simMessenger = new SimulationMessenger(this);
 	
-	data = new Data();
 	materials = new DefineMaterials(); 
 	
-  	DC = new DetectorConstruction(data); 
+  	DC = new DetectorConstruction(); 
   	runManager -> SetUserInitialization(DC); 
   	
 	PL = new PhysicsList();              
 	runManager -> SetUserInitialization(PL);
 	
-	PGA = new PrimaryGeneratorAction(data); 
+	PGA = new PrimaryGeneratorAction(); 
 	runManager -> SetUserAction(PGA);
 	
 	particleManager = new StackingAction(); particleManager -> SetKillElectrons(true);
@@ -105,16 +103,14 @@ Simulation::~Simulation()
 	int showDeletion = 3;
 	
 	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
-	
-    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}
 
 	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
 	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
-	
-	delete CLHEP::HepRandom::getTheEngine();
 
-    delete data;            if(globalVerbose > showDeletion) {G4cout << "\nData deleted" << std::flush;}
+    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}
     delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
+    
+    delete CLHEP::HepRandom::getTheEngine();
 	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 
@@ -636,7 +632,7 @@ void Simulation::CalculateStorageSpace(int projections)
         G4cout << "\n- Beam energy: " << beamStorageSpace << unit;
     
         //Fluorecence
-        if (data->GetFullMapping_Option())
+        if (fluorFMactive_pywrapped())
         {
             size_t FMfluoresenceDataSize = sizeof(getFluoreEneBins_pywrapped()[0]);  
             double fluorescenceStorageSpace = absorpStorageSpace*getNumFluorbins_pywrapped();
@@ -645,7 +641,7 @@ void Simulation::CalculateStorageSpace(int projections)
             G4cout << "\n- Full mapping fluorescence: " << fluorescenceStorageSpace << unit;
         }
     
-        //Diffraction
+        /*//Diffraction
         if (data->DoFullMappingDiffraction() )
         {
             size_t DiffractionDataSize = data -> GetDiffractionSizeType();
@@ -653,7 +649,7 @@ void Simulation::CalculateStorageSpace(int projections)
             totalStorage += diffractionStorageSpace;
             unit = GetStorageUnit(diffractionStorageSpace);   
             G4cout << "\n- Full mapping diffraction: " << diffractionStorageSpace << unit;
-        }
+        }*/
     
         unit = GetStorageUnit(totalStorage);
         G4cout << "\n- Total: " << totalStorage << unit << std::flush;

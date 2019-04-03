@@ -1,5 +1,4 @@
 //Own classes
-#include "Data.hh"
 #include "TargetConstruction.hh"
 #include "TargetConstructionMessenger.hh"
 //Output to console/write to file

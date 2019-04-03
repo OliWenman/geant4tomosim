@@ -7,7 +7,6 @@
 
 class G4Step;
 class G4HCofThisEvent;
-class Data;
 
 //Tracker sensitive detector class.
 //The hits are accounted in hits in ProcessHits() function which is called
@@ -18,7 +17,6 @@ class AbsorptionSD : public G4VSensitiveDetector
 {
   	public:
   	    AbsorptionSD();
-		AbsorptionSD(Data* data,  bool graphics);
     	~AbsorptionSD();
   
     	//Methods
@@ -38,7 +36,6 @@ class AbsorptionSD : public G4VSensitiveDetector
 
 		//Pointers to different classes
 		TrackerHitsCollection* fHitsCollection;
-		Data* data;
 		
 		int_vector1D absorptionData;
 		
