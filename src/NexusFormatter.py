@@ -196,7 +196,7 @@ class NexusFormatter:
             dataGroup.attrs['axes'] = xLabel         # X axis of default plot
             xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
             
-            dataGroup.attrs[xLabel + '_indices'] = [1,] #
+            dataGroup.attrs[xLabel + '_indices'] = [3,] #
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, xBins, yBins, eBins), dtype = 'i4')  # Y axis data
         
         else:

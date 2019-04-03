@@ -7,33 +7,41 @@
 # http://hurel.hanyang.ac.kr/Geant4/Geant4_GPS/reat.space.qinetiq.com/gps/examples/examples.html
 
 # Beam commands control the basic G4ParticleGun and G4GeneralParticleSource commands. 
-# G4ParticleGun can only be modified via the beam commands and is for a basic rectangular beam but is faster
+# G4ParticleGun can only be modified via the beam commands and is for a
+# basic rectangular beam but is faster
 
-# Type of beam
+#--------------------------------------------------------------
+# Beam commands
+
 /beam/gps false
+
+# - Energy commands
 /beam/energy/mono 19 keV
 
-# Create a cone fan beam using gps
-#/gps/pos/type Point
-#/gps/ang/type iso
-#/gps/ang/maxtheta 3 deg
-
-/gps/ene/type Gauss
-/gps/ene/mono 10 keV
-/gps/ene/sigma 2 keV
-
-
-# Position commands
+# - Position commands
 /beam/autoposition true
 #/beam/pos/centre -3 0.0 0.0 cm
 /beam/pos/halfx 1.25 cm
 /beam/pos/halfy 1.05 cm
 #/beam/momentum 1.00 0.00 0.00 
 
-# Particle commands
+# - Particle commands
 /beam/particle gamma
 
-# Bias the position of a 2d beam
+#--------------------------------------------------------------
+# GeneralParticleSource commands
+
+# - Create a cone fan beam using gps
+#/gps/pos/type Point
+#/gps/ang/type iso
+#/gps/ang/maxtheta 3 deg
+
+# - Energy commands
+/gps/ene/type Gauss
+/gps/ene/mono 6 keV
+/gps/ene/sigma 2 keV
+
+# Bias the position of a 2d beam (leads to segmentation fault at end?)
 /gps/hist/type biasx
 
 /gps/hist/point 0.00 1.00
@@ -146,3 +154,5 @@
 /gps/hist/point 0.98 1.02
 /gps/hist/point 0.99 1.01
 /gps/hist/point 1.00 1.00
+
+#--------------------------------------------------------------

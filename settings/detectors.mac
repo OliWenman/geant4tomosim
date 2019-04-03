@@ -1,10 +1,21 @@
-#--------------------------------------------------------------
-# Macro file to control the world, detectors and data recorded of the simulation
+#--------------------------------------------------------------------------------
+# Macro file to control the general simulation settings, world size and material, 
+# and different detectors size, placement, data to record, etc.
+
+#--------------------------------------------------------------------------------
+
+# General
+/simulation/seed 0
+/simulation/graphics false
+/world/visualization false	
+
+#--------------------------------------------------------------------------------
 
 # World
 /world/size 20 10 2.1 cm		
 /world/material G4_Galactic
-/world/visualization false	
+
+#--------------------------------------------------------------------------------
 
 # Detectors
 # - Absorption
@@ -23,8 +34,8 @@
 /beam/bins 2000
 /beam/maxenergy 175 keV
 
-# Data
-/data/Seed 0 
+#--------------------------------------------------------------------------------
+
 #/data/bins 1000
 #/data/MaxEnergy 20 keV
 /data/fluorescence/fullfield true

@@ -36,8 +36,6 @@ void AbsorptionSD::InitialiseData(int xpix, int ypix)
     {
         memset(&absorptionData[0], 0, 
 		       sizeof(absorptionData[0]) * xpixels * ypixels);
-        
-        G4cout << "\nAbsorption data already exists, reset back to zero " << G4endl; 
     }
 }
 

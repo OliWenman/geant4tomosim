@@ -111,7 +111,9 @@ cdef class PySim:
                   self.nexusfile.AddData("Fluorescence", data = self.fullfieldfluoreData(), nImage = CurrentImage)
                   
                if FMFluorescence == True:
-                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = self.fullmappingfluoreData(), nImage = CurrentImage)
+                  data = self.fullmappingfluoreData()
+
+                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = data, nImage = CurrentImage)
                
                eSavingTime = time.time()
                SavingTime  = eSavingTime - iSavingTime

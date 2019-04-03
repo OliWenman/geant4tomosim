@@ -105,8 +105,6 @@ Simulation::~Simulation()
 	int showDeletion = 3;
 	
 	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
-
-    delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
 	
     delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}
 
@@ -116,6 +114,7 @@ Simulation::~Simulation()
 	delete CLHEP::HepRandom::getTheEngine();
 
     delete data;            if(globalVerbose > showDeletion) {G4cout << "\nData deleted" << std::flush;}
+    delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
 	G4cout << "\nSimulation closed! \n" << G4endl;
 }
 
@@ -530,16 +529,6 @@ void Simulation::printinfo_pywrapped(unsigned long long int TotalParticles, int 
         PrintInformation(log);
     
         double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
-    
-        if (seedCmd != 0){
-            //Set the seed sequence using inputted seed
-            srand(seedCmd);	 
-        }
-        else {
-            //Set random seed sequence with system time
-            seedCmd = time(0);
-            srand(seedCmd);	 
-        }   
 	
 	    PrintToEndOfTerminal(log, '-');
 	    log << "META DATA: "
@@ -711,6 +700,24 @@ std::string Simulation::GetStorageUnit(double &storage)
         }
         storage = storage/byte;
         return " Bytes";
+    }              
+}
+
+void Simulation::SetSeed(long int seedinput)
+{
+    seedCmd = seedinput;
+    
+    if (seedinput == 0)
+    {
+        //Set random seed sequence with system time
+        seedCmd = time(0);
+        srand(seedCmd);	 
+        randseed = true;
     }
-                     
+    else
+    {       
+        //Set the seed sequence using inputted seed
+        srand(seedCmd);	 
+        randseed = false;
+    }   
 }

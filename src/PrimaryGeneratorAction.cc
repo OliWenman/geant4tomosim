@@ -74,7 +74,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 
     ++beamintensity[bin];
 
-    //if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
+    if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
     
     ++CurrentEvent;
 } 

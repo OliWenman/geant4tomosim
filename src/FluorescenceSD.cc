@@ -64,9 +64,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
         const PrimaryGeneratorAction* pga = dynamic_cast<const PrimaryGeneratorAction*> (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
 
         int energybin = floor(energy*1000/(maxenergy/nbins) -1);
-        G4cout << "\nenergybin = " << energybin;
-        G4cout << "\nmaxenergy = " << maxenergy;
-        G4cout << "\nnbins     = " << nbins << G4endl;
+    
         if (energybin > nbins - 1) {energybin = nbins -1;}
 
         G4ThreeVector ipos = pga->GetParticlePosition();
@@ -74,10 +72,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
         int xbin = floor(ipos.y()/(pga->GetBeamHalfx()*2/absorb_xpixels) + 0.5*absorb_xpixels -1);
 	    int ybin = floor(ipos.z()/(pga->GetBeamHalfy()*2/absorb_ypixels) + 0.5*absorb_ypixels -1);
     
-        G4cout << "\nxbin = " << xbin;
-        G4cout << "\nybin = " << ybin << G4endl;
-    
-        fullmappingfluorescence[energybin][xbin][ybin];
+        ++fullmappingfluorescence[xbin][ybin][energybin];
     }
 	//if (fullmappingOn){data -> SaveFullMapping(energy);}
 	//if (fullfieldOn)  {data -> SaveFluorescence(energy);}
@@ -118,7 +113,6 @@ void FluorescenceSD::InitialiseData()
             memset(&fullfieldfluorescence[0], 
                    0, 
 			       sizeof(fullfieldfluorescence[0]) * nbins);
-			G4cout << "\nfullfield fluorescence wiped" << G4endl;
         }
     }
     
@@ -127,7 +121,7 @@ void FluorescenceSD::InitialiseData()
     
         if (fullmappingfluorescence.empty())
         {
-             const DetectorConstruction* detectorconstruction = dynamic_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+            const DetectorConstruction* detectorconstruction = dynamic_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
             
             int xpixels = detectorconstruction->GetAbsorptionDetector_xpixels();
             int ypixels = detectorconstruction->GetAbsorptionDetector_ypixels();
@@ -141,15 +135,13 @@ void FluorescenceSD::InitialiseData()
             absorb_xpixels = xpixels;
             absorb_ypixels = ypixels;
             
-             G4cout << "\nfullmapping fluorescence empty, created" << G4endl;
+            G4cout << "\nfullmapping fluorescence empty, created " << xpixels << " x " << ypixels << " x " << nbins << G4endl;
         }
         else
         {
             std::fill(fullmappingfluorescence.begin(), fullmappingfluorescence.end(), 
 		              int_vector2D (absorb_ypixels, 
 		              int_vector1D (nbins)));
-		    
-		     G4cout << "\nfullfield fluorescence wiped" << G4endl;
         }
     }
     

@@ -78,15 +78,17 @@ class Simulation
 
 //================================================================================================================
 		
-		//Set functions
+		//Set pywrapped functions
 		void setlogfile_pywrapped    (std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName; }
 		void setSavingTime_pywrapped (double Time)                            {PGA -> SetSavingTime(Time);              }
 		
 		//Free memory of data
-		void freedataMemory_pywrapped() {DC->GetAbsorptionDetector()->GetSensitiveDetector()->FreeMemory();}	
+		void freedataMemory_pywrapped() {DC->GetAbsorptionDetector()->GetSensitiveDetector()->FreeMemory();
+		                                 DC->GetFluorescenceDetector()->GetSensitiveDetector()->FreeMemory();}	
 		
-		void SetSeed(long int value)                                {seedCmd = value;}
-		void SetVerboseLevel(int value)                             {globalVerbose = value;}
+		//Set functions
+		void SetSeed(long int value);    //{seedCmd = value;}
+		void SetVerboseLevel(int value) {globalVerbose = value;}
 		
 		void CleanGeometry();
 
@@ -100,19 +102,20 @@ class Simulation
 		void PrintInformation(SettingsLog log);
 		
 		//Pointers to different classes
-		SimulationMessenger* simMessenger;
-		G4RunManager* runManager;
-		G4VisManager* visManager;
-		G4UImanager* UImanager;
-		Data* data;
-		DefineMaterials* materials;
-		DetectorConstruction* DC;
-		PhysicsList* PL;
-		PrimaryGeneratorAction* PGA;
-		StackingAction* particleManager;
-		SteppingAction* stepManager;
+		SimulationMessenger    *simMessenger;
+		G4RunManager           *runManager;
+		G4VisManager           *visManager;
+		G4UImanager            *UImanager;
+		Data                   *data;
+		DefineMaterials        *materials;
+		DetectorConstruction   *DC;
+		PhysicsList            *PL;
+		PrimaryGeneratorAction *PGA;
+		StackingAction         *particleManager;
+		SteppingAction         *stepManager;
 
 		long int seedCmd;
+		bool randseed;
 
 		std::string SaveLogPath;
 		std::string FileName;

@@ -29,10 +29,9 @@ class SimulationMessenger: public G4UImessenger
 		Simulation* sim;
 
 		//Pointers to different commands
-		G4UIdirectory* SimulationDirectory;
-		G4UIcmdWithAnInteger *seedCmd;
-		G4UIcmdWithAnInteger *verboseCmd;
-		G4UIcmdWithAnInteger *globalVerboseCmd;
+		G4UIdirectory        *directory;
+		G4UIcmdWithAnInteger *setseed;
+		G4UIcmdWithAString   *setgraphics;
 };
 
 
