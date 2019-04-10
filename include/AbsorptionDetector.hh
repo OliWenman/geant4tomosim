@@ -14,6 +14,7 @@ class AbsorptionDetectorMessenger;
 class G4Box;
 class G4LogicalVolume;
 class G4VPhysicalVolume;
+class G4PVParameterised;   
 
 //For efficient geometry containing millions of solids
 class G4PhantomParameterisation;
@@ -53,21 +54,23 @@ class AbsorptionDetector
         AbsorptionSD* GetSensitiveDetector(){return absorSD;}
     private:
         //Pointers
-        AbsorptionDetectorMessenger* ADMessenger;
-        G4PhantomParameterisation* param;
-        G4Box* DetectorContainer;
-        G4Box* DetectorCells;
-        G4LogicalVolume* DetectorContainerLV;
-		G4LogicalVolume* DetectorCellsLV;
+        AbsorptionDetectorMessenger *messenger;
+        G4PhantomParameterisation   *param;
+        
+        G4Box                       *container;
+        G4Box                       *cells;
+        G4LogicalVolume             *container_logic;
+		G4LogicalVolume             *cells_logic;
+		G4VPhysicalVolume           *container_placement;
+		G4PVParameterised           *cells_placement;
 		
-		AbsorptionSD* absorSD;
+		AbsorptionSD                *absorSD;
     
         //Variables
-        G4int rows;
-		G4int columns;
+        G4int         rows;
+		G4int         columns;
 		G4ThreeVector halfdimensions;
-		//G4Material* material;
-		G4String materialName;
-		G4bool realDetector;
+		G4String      materialName;
+		G4bool        realDetector;
 };
 #endif

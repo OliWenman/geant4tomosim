@@ -12,6 +12,9 @@
 #include "DetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
+#include "SampleConstruction.hh"
+
+class SampleConstruction;
 class SimulationMessenger;
 class DefineMaterials;
 class DetectorConstruction;
@@ -53,7 +56,7 @@ class Simulation
         //Functions to get data from detectors
 
 		//Absorption
-		int_vector1D    getAbsorption_pywrapped()    {return DC->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }//{return data -> GetHitData();}
+		int_vector1D    getAbsorption_pywrapped()    {return DC->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }
 		double_vector1D getAbsHalf3Dim_pywrapped()   {return DC->GetAbsorptionDetector()->GetHalfDimensions();               }
 		int             getNumAbsXpixels_pywrapped() {return DC->GetAbsorptionDetector()->GetNumberOfxPixels();              }
 		int             getNumAbsYpixels_pywrapped() {return DC->GetAbsorptionDetector()->GetNumberOfyPixels();              }
@@ -91,6 +94,7 @@ class Simulation
 		void CleanGeometry();
 
 	private:
+	    void Initialise_dataSets();
 	    std::string GetStorageUnit(double &storage); 
 	    void CalculateStorageSpace(int projections);
 	    void Setup();
@@ -105,6 +109,7 @@ class Simulation
 		G4VisManager           *visManager;
 		G4UImanager            *UImanager;
 		DefineMaterials        *materials;
+		SampleConstruction     *sampleconstruction;
 		DetectorConstruction   *DC;
 		PhysicsList            *PL;
 		PrimaryGeneratorAction *PGA;
@@ -120,7 +125,7 @@ class Simulation
 		int globalVerbose;
 		
 		bool interactiveOn;
-		std::vector<std::string> macrofiles;
+		string_vector1D macrofiles;
 };
 
 #endif

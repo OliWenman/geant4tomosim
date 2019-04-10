@@ -1,0 +1,24 @@
+# =============================================================
+# Object B
+
+# Zigzag
+/Target/Cube/dimensions SmallSideB 0.15 0.125 0.2 cm
+/Target/Cube/dimensions CubeCutoutB 0.15 0.125 0.3 cm
+/Target/SubtractSolid LShapeB SmallSideB CubeCutoutB 0.15 0.1 0 cm 0 0 0 deg
+/Target/Cube/dimensions StraightB 0.2 0.05 0.2 cm
+/Target/UnionSolid zB LShapeB StraightB -0.275 0.075 0 cm 0 0 0 deg
+ 
+# Attach the objects to the Base
+/Target/Cube/dimensions BaseB 0.5 0.5 0.15 cm
+/Target/UnionSolid Zjoin1B BaseB zB 0.175 -0.375 -0.35 cm 0 0 0 deg
+/Target/UnionSolid Zjoin2B Zjoin1B zB -0.175 0.375 -0.35 cm 0 0 180 deg
+/Target/UnionSolid Zjoin3B Zjoin2B zB -0.375 -0.175 -0.35 cm 0 0 90 deg 
+/Target/UnionSolid Zjoin4B Zjoin3B zB 0.375 0.175 -0.35 cm 0 0 -90 deg
+
+# Cut out the indent in the middle
+/Target/Cube/dimensions IndentB 0.25 0.25 0.05 cm
+/Target/SubtractSolid SubtractObjectB Zjoin4B IndentB 0 0 -0.1 cm 0 0 0 deg 
+
+# Attach the pole to the object
+/Target/Cube/dimensions Pole 0.05 0.05 0.3 cm
+/Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 cm 0 0 0 deg

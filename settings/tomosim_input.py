@@ -12,20 +12,20 @@ import numpy as np
 #========================================================================================
 
 #General settings
-verbose         = 5
+verbose         = 10
 interactive     = True
 
 #Image variables
-NumberOfImages  = 1
+NumberOfImages  = 20
 nDarkFlatFields = 0
-nParticles      = 1*10**7
+nParticles      = 5*10**6
 
 #Rotation angles
 startRotation   = 0*G4.deg
 TotalRotation   = 180.*G4.deg
-rotation_angles = np.linspace(start = startRotation, \
-                              stop = TotalRotation, \
-                              num = NumberOfImages, \
+rotation_angles = np.linspace(start    = startRotation,  \
+                              stop     = TotalRotation,  \
+                              num      = NumberOfImages, \
                               endpoint = False)
 
 #Macro files to be included

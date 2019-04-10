@@ -7,14 +7,13 @@
 #include "AbsorptionDetector.hh"
 #include "FluorescenceDetector.hh"
 #include "DiffractionDetector.hh"
-#include "TargetConstruction.hh"
-
+#include "G4Box.hh"
 //My own classes
 class DetectorConstructionMessenger;
 class AbsorptionDetector;
 class FluorescenceDetector;
 class DiffractionDetector;
-class TargetConstruction;
+class SampleConstruction;
 
 //Solids, logic volume and physical volume for the geometry
 class G4Box;
@@ -35,52 +34,45 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		//Base class method
     	G4VPhysicalVolume* Construct();
 		
-		//Set methods
-		void SetWorldSize(G4ThreeVector value){WorldSize_Cmd = value;}
-		void SetWorldMaterial(G4String value){WorldMaterial_Cmd = value;}
-		void SetVisualization(G4bool value){Visualization_Cmd = value;}
-		
-		void SetCurrentImage(int value){nImage = value;}
-
-		//Get methods
-		G4ThreeVector GetWorldSize() const {return WorldSize_Cmd;}
-		G4LogicalVolume* GetWorldLV() {return logicWorld;}
-		G4bool GetVisualization(){return Visualization_Cmd;}
-		
-		G4int GetAbsorptionDetector_xpixels() const {return absDetector -> GetRows();}
-		G4int GetAbsorptionDetector_ypixels()const {return absDetector -> GetColumns();}
-
-		void RelayToTC(int NumberOfImages, double TotalAngle);
-	
+		void ModifyWorldVolume(G4ThreeVector value);
+		void ModifyWorldMaterial(G4String materialname);
+		void SetGraphics(bool graphics);
 		void ReadOutInfo(SettingsLog& log);
 		
-		TargetConstruction   *GetTargetConstruction()   {return TC;}
-		AbsorptionDetector   *GetAbsorptionDetector()   {return absDetector;}
-		FluorescenceDetector *GetFluorescenceDetector() {return fluorescenceDetector;}
-		DiffractionDetector  *GetDiffractionDetector()  {return diffractionDetector;}
+		//Set methods
+		void SetVisualization(G4bool value){Visualization_Cmd = value;}	
+		void SetWorldDimensions(G4ThreeVector dim) { if(world_dimensions != dim) {world_dimensions = dim; built = false;}} 
+        void SetWorldMaterial  (std::string   mat) { if(world_material != mat)   {world_material   = mat; built = false;}}
 
-  	private:
-
-		G4Material* FindMaterial(G4String material);
-		void Visualization(G4LogicalVolume*, G4Colour);
-
-		//Pointers to my own classes 
-		DetectorConstructionMessenger* detectorMessenger;
-		TargetConstruction* TC;
-
-		//World variables
-		G4Box* solidWorld;
-		G4LogicalVolume* logicWorld;
-		G4ThreeVector WorldSize_Cmd;
-		G4String WorldMaterial_Cmd;
-		G4bool Visualization_Cmd;
-
-		//Image variables
-		G4int nImage;
+		//Get methods
+		G4ThreeVector    GetWorldSize() const {return world_dimensions;}
+		G4bool           GetVisualization()   {return Visualization_Cmd;}
 		
-		AbsorptionDetector* absDetector;
-		FluorescenceDetector* fluorescenceDetector;		
-		DiffractionDetector* diffractionDetector; 
+		//Get pointers
+		AbsorptionDetector   *GetAbsorptionDetector()   const {return absDetector;}
+		FluorescenceDetector *GetFluorescenceDetector() const {return fluorescenceDetector;}
+		DiffractionDetector  *GetDiffractionDetector()  const {return diffractionDetector;}
+		SampleConstruction   *GetSampleConstruction()   const {return sampleconstruction;}
+        G4LogicalVolume      *GetWorldLV()              const {return logicWorld;}
+        
+  	private:
+		//Pointers to my own classes 
+		DetectorConstructionMessenger  *detectorMessenger;
+        AbsorptionDetector             *absDetector;
+		FluorescenceDetector           *fluorescenceDetector;		
+		DiffractionDetector            *diffractionDetector; 	
+		SampleConstruction             *sampleconstruction;
+
+		//World pointers
+		G4Box             *solidWorld;
+		G4LogicalVolume   *logicWorld;
+		G4VPhysicalVolume *physWorld; 
+		
+		G4ThreeVector world_dimensions;
+		std::string   world_material;
+		
+		bool Visualization_Cmd;
+        bool built;
 };
 
 #endif

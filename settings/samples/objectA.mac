@@ -1,0 +1,24 @@
+# =============================================================
+# OBJECT A
+
+# Base of the object
+/Target/Cube/dimensions BaseA 0.5 0.5 0.35 cm
+
+# Inside of the box cut out
+/Target/Cube/dimensions HollowCutoutA 0.4 0.4 0.35 cm
+/Target/SubtractSolid NewSolidA BaseA HollowCutoutA 0 0 0.3 cm 0 0 0 rad
+
+# Create the top part to join on
+/Target/Cube/dimensions TopPartA 0.2 0.2 0.4 cm
+/Target/Cube/dimensions InsideTopPartA 0.1 0.1 0.4 cm
+/Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 cm 0 0 0 deg
+/Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 cm 0 0 0 deg
+/Target/SubtractSolid NewBaseATest NewBaseA InsideTopPartA 0 0 0.2 cm 0 0 0 deg
+
+# Cut out the sides
+/Target/Cube/dimensions SideCutoutA 0.2 0.2 0.2 cm
+/Target/SubtractSolid SideCutout1A NewBaseATest SideCutoutA 0.4 0.2 0.1 cm 0 0 0 rad
+/Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 cm 0 0 0 rad
+/Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 cm 0 0 0 rad
+/Target/SubtractSolid ObjectA SideCutout3A SideCutoutA 0.2 -0.4 0.1 cm 0 0 0 rad
+

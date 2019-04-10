@@ -1,8 +1,8 @@
 //Own classes
 #include "Simulation.hh"
 #include "SimulationMessenger.hh"
+#include "SampleConstruction.hh"
 #include "DetectorConstruction.hh"
-#include "TargetConstruction.hh"
 #include "FluorescenceSD.hh"
 #include "PhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
@@ -61,14 +61,13 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
     }
     
 
-    SaveLogPath = "./../Output/HDF5/";
-	seedCmd = 0;	
+    SaveLogPath = "./../Output/HDF5/";	
 
-    //Create an instance of the classes
+    simMessenger = new SimulationMessenger(this);	
+	materials    = new DefineMaterials(); 
+
+    //Create the objects needed for the G4RunManager class	
 	runManager = new G4RunManager();
-	simMessenger = new SimulationMessenger(this);
-	
-	materials = new DefineMaterials(); 
 	
   	DC = new DetectorConstruction(); 
   	runManager -> SetUserInitialization(DC); 
@@ -92,14 +91,16 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
+    sampleconstruction = DC->GetSampleConstruction();
+
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+	SetSeed(0);
 }
 
 Simulation::~Simulation()
 {
-	G4cout << "\nClosing simulation..." << G4endl;
-	
+    if (globalVerbose > 0) {G4cout << "\nClosing simulation..." << G4endl;}
 	int showDeletion = 3;
 	
 	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
@@ -111,7 +112,7 @@ Simulation::~Simulation()
     delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
     
     delete CLHEP::HepRandom::getTheEngine();
-	G4cout << "\nSimulation closed! \n" << G4endl;
+	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
 #include "G4UIcommandStatus.hh"
@@ -126,6 +127,8 @@ void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
     }
     
     macrofiles = macroFiles;
+    
+    G4cout << "\nCOMPLETE! " << G4endl;
 }
 
 void Simulation::applymacrofile_pywrapped(std::string macro)
@@ -281,6 +284,9 @@ void Simulation::applycommand_pywrapped(std::string command)
         }
     }
 }
+#include "G4LogicalVolumeStore.hh"
+#include "G4LogicalVolume.hh"
+#include "G4GeometryManager.hh"
 
 int Simulation::run_pywrapped(unsigned long long int TotalParticles, 
                               std::vector<int>       ImageInfo, 
@@ -295,32 +301,28 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
 	CLHEP::HepRandom::setTheSeed(rand());
 
     G4String Mode;
+    bool darkflatfields;
     if (Image < NumberOfImages - nDarkFlatFields){
         Mode = "Simulating";
+        darkflatfields = false;
     }
     else if (Image >= NumberOfImages - nDarkFlatFields){
         Mode = "Calibrating";
+        darkflatfields = true;
     }
- 
-    TargetConstruction* TC = DC -> GetTargetConstruction();
-    TC -> SetSimMode(Mode);
-    TC -> SetRotationAngle(rotation_angle);
-      
+    
     if(Image == 0)
     {		  	    
 	    int verbose;    
 	    if (globalVerbose < 3){verbose = 3;}
 	    else                  {verbose = globalVerbose - 3;}
-	    //runManager -> SetVerboseLevel(verbose);
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	    PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
 		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
-		//PGA -> SetFluoreFM(data -> GetFullMapping_Option());
 		
-	    DC -> RelayToTC(NumberOfImages, rotation_angle);
-	     
 	    PL -> Fluorescence(); 
+	 
 	    runManager -> Initialize(); 
 	    runManager -> SetNumberOfEventsToBeStored (0);
 	    PL -> ActivateUserPhysics();
@@ -346,24 +348,18 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
         }
 	}
     
+    sampleconstruction->Construct(darkflatfields);
+    sampleconstruction->ApplyTransforms(rotation_angle, 0);
+
     //Prepare for next run. Check if energy or gun has changed 
     PGA -> ResetEvents(Image + 1);   
-    PGA -> SetupData();
-
-	//Creates the arrays for the data, wipes them after each image
-	/*data -> SetUpData(DC->GetAbsorptionDetector()->GetNumberOfxPixels(), 
-	                  DC->GetAbsorptionDetector()->GetNumberOfyPixels(), 
-	                  Image);*/
-
-    //runManager -> Initialize(); 		
+    
+    Initialise_dataSets();
     
     if (globalVerbose < 1) {PGA -> SetProgressBar(false);}
-    
+     
     //Beam on to start the simulation
     BeamOn(TotalParticles);
-
-    //Prepare for the run that geometry has changed
-	runManager -> ReinitializeGeometry();
 
 	if (Image + 1 == NumberOfImages)
 	{
@@ -374,10 +370,8 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
                       "\n================================================================================" << G4endl;
 	    }
 	    
-        TargetConstruction* TC = DC -> GetTargetConstruction();         
-        TC -> SetCurrentImage(0);
-        DC -> SetCurrentImage(0);
         PGA -> ResetEvents(0);
+        sampleconstruction->SetLastFullRotation(0);
 	}
 
 	return 0;
@@ -515,15 +509,14 @@ void Simulation::printinfo_pywrapped(unsigned long long int TotalParticles, int 
         //Try to open the file 
         SaveToFile.open(SaveLogPath + FileName); 
         if( !SaveToFile ) { 	
-            std::cerr << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << std::endl;
+            G4cout << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << G4endl;
             exit(1);
         }
-    
+        
         //Create an instance of the log to output to terminal and file    
         SettingsLog log(SaveToFile);
-
         PrintInformation(log);
-    
+
         double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
 	
 	    PrintToEndOfTerminal(log, '-');
@@ -716,4 +709,12 @@ void Simulation::SetSeed(long int seedinput)
         srand(seedCmd);	 
         randseed = false;
     }   
+}
+
+void Simulation::Initialise_dataSets()
+{
+    //if (globalverbose > 2) {G4cout << "\nInitialising data... " << G4endl;
+    DC->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
+    DC->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
+    PGA->SetupData();
 }

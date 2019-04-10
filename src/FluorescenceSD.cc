@@ -84,6 +84,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 }
 
 #include "DetectorConstruction.hh"
+#include "AbsorptionDetector.hh"
 
 void FluorescenceSD::InitialiseData()
 {   
@@ -113,8 +114,8 @@ void FluorescenceSD::InitialiseData()
         {
             const DetectorConstruction* detectorconstruction = dynamic_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
             
-            int xpixels = detectorconstruction->GetAbsorptionDetector_xpixels();
-            int ypixels = detectorconstruction->GetAbsorptionDetector_ypixels();
+            const int xpixels = detectorconstruction->GetAbsorptionDetector()->GetNumberOfxPixels();
+            const int ypixels = detectorconstruction->GetAbsorptionDetector()->GetNumberOfyPixels();
             
             int_vector3D temp (xpixels, int_vector2D
 				              (ypixels, int_vector1D

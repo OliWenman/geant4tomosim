@@ -1,26 +1,26 @@
 #--------------------------------------------------------------
 # Macro file to build the geometry of the sample you want
-# 
+# http://hypernews.slac.stanford.edu/HyperNews/geant4/get/geometry/1522.html
 
 # =============================================================
 # OBJECT A
 
 # Base of the object
-/Target/Cube/Dimensions BaseA 0.5 0.5 0.35 cm
+/Target/Cube/dimensions BaseA 0.5 0.5 0.35 cm
 
 # Inside of the box cut out
-/Target/Cube/Dimensions HollowCutoutA 0.4 0.4 0.35 cm
+/Target/Cube/dimensions HollowCutoutA 0.4 0.4 0.35 cm
 /Target/SubtractSolid NewSolidA BaseA HollowCutoutA 0 0 0.3 cm 0 0 0 rad
 
 # Create the top part to join on
-/Target/Cube/Dimensions TopPartA 0.2 0.2 0.4 cm
-/Target/Cube/Dimensions InsideTopPartA 0.1 0.1 0.4 cm
+/Target/Cube/dimensions TopPartA 0.2 0.2 0.4 cm
+/Target/Cube/dimensions InsideTopPartA 0.1 0.1 0.4 cm
 /Target/SubtractSolid HollowTopA TopPartA InsideTopPartA 0 0 0 cm 0 0 0 deg
 /Target/UnionSolid NewBaseA HollowTopA NewSolidA 0 0 -0.05 cm 0 0 0 deg
 /Target/SubtractSolid NewBaseATest NewBaseA InsideTopPartA 0 0 0.2 cm 0 0 0 deg
 
 # Cut out the sides
-/Target/Cube/Dimensions SideCutoutA 0.2 0.2 0.2 cm
+/Target/Cube/dimensions SideCutoutA 0.2 0.2 0.2 cm
 /Target/SubtractSolid SideCutout1A NewBaseATest SideCutoutA 0.4 0.2 0.1 cm 0 0 0 rad
 /Target/SubtractSolid SideCutout2A SideCutout1A SideCutoutA -0.4 -0.2 0.1 cm 0 0 0 rad
 /Target/SubtractSolid SideCutout3A SideCutout2A SideCutoutA -0.2 0.4 0.1 cm 0 0 0 rad
@@ -30,24 +30,24 @@
 # Object B
 
 # Zigzag
-/Target/Cube/Dimensions SmallSideB 0.15 0.125 0.2 cm
-/Target/Cube/Dimensions CubeCutoutB 0.15 0.125 0.3 cm
+/Target/Cube/dimensions SmallSideB 0.15 0.125 0.2 cm
+/Target/Cube/dimensions CubeCutoutB 0.15 0.125 0.3 cm
 /Target/SubtractSolid LShapeB SmallSideB CubeCutoutB 0.15 0.1 0 cm 0 0 0 deg
-/Target/Cube/Dimensions StraightB 0.2 0.05 0.2 cm
+/Target/Cube/dimensions StraightB 0.2 0.05 0.2 cm
 /Target/UnionSolid zB LShapeB StraightB -0.275 0.075 0 cm 0 0 0 deg
  
 # Attach the objects to the Base
-/Target/Cube/Dimensions BaseB 0.5 0.5 0.15 cm
+/Target/Cube/dimensions BaseB 0.5 0.5 0.15 cm
 /Target/UnionSolid Zjoin1B BaseB zB 0.175 -0.375 -0.35 cm 0 0 0 deg
 /Target/UnionSolid Zjoin2B Zjoin1B zB -0.175 0.375 -0.35 cm 0 0 180 deg
 /Target/UnionSolid Zjoin3B Zjoin2B zB -0.375 -0.175 -0.35 cm 0 0 90 deg 
 /Target/UnionSolid Zjoin4B Zjoin3B zB 0.375 0.175 -0.35 cm 0 0 -90 deg
 
 # Cut out the indent in the middle
-/Target/Cube/Dimensions IndentB 0.25 0.25 0.05 cm
+/Target/Cube/dimensions IndentB 0.25 0.25 0.05 cm
 /Target/SubtractSolid SubtractObjectB Zjoin4B IndentB 0 0 -0.1 cm 0 0 0 deg 
 
 # Attach the pole to the object
-/Target/Cube/Dimensions Pole 0.05 0.05 0.3 cm
+/Target/Cube/dimensions Pole 0.05 0.05 0.3 cm
 /Target/UnionSolid ObjectB SubtractObjectB Pole 0 0 -0.35 cm 0 0 0 deg
 

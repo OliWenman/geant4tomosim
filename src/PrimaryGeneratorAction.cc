@@ -55,7 +55,7 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {    
-    if(CurrentEvent == 1)
+    if(CurrentEvent == 0)
 	{   
 	    //Cleans the beam energy data at the start of each run    
 	    memset(&beamintensity[0], 0, sizeof(beamintensity[0]) * Bins);
@@ -66,8 +66,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 	    }
     }
     particleposition = beam->FireParticle(event);
-    //if (FluoreFM) {data -> SetParticlePosition(particleposition);}
-    
+   
     //Save beam energy data    	
     int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
     if (bin > beamintensity.size()) {bin = beamintensity.size();}

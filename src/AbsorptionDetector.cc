@@ -24,10 +24,11 @@
 
 #include "PlacementTest.hh"
 
-AbsorptionDetector::AbsorptionDetector()
+AbsorptionDetector::AbsorptionDetector() : container(0), cells(0),
+                                           container_logic(0), cells_logic(0),
+                                           container_placement(0), cells_placement(0)
 {
-    ADMessenger = new AbsorptionDetectorMessenger(this);
-    absorSD = NULL;
+    messenger = new AbsorptionDetectorMessenger(this);
     param = new G4PhantomParameterisation();
     
     // Check if sensitive detector has already been created
@@ -40,74 +41,82 @@ AbsorptionDetector::AbsorptionDetector()
 
 AbsorptionDetector::~AbsorptionDetector()
 {
-    delete ADMessenger;
+    delete messenger;
 }
     
 void AbsorptionDetector::CreateVolumes()
 {
+    if (container) {delete container; container = 0;}
+
 	//Create the phantom container for the detectors to go into
-	DetectorContainer = new G4Box("DetectorContainer",
-			                       halfdimensions.x(),
-			                       halfdimensions.y(), 
-			                       halfdimensions.z());
+	container = new G4Box("container",
+			              halfdimensions.x(),
+			              halfdimensions.y(), 
+			              halfdimensions.z());
+
+    if (cells) {delete cells; container = 0;}
 
 	//Create the dimensiosn of the phantom boxes to go inside the container
-	DetectorCells = new G4Box("AbsorptionCell",
-				               halfdimensions.x()/1,
-				               halfdimensions.y()/rows,
-				               halfdimensions.z()/columns);
+	cells = new G4Box("AbsorptionCell",
+				       halfdimensions.x()/1,
+				       halfdimensions.y()/rows,
+				       halfdimensions.z()/columns);
 
 	//Voxel dimensions in the three dimensions
 	param->SetVoxelDimensions(halfdimensions.x()/1, halfdimensions.y()/rows, halfdimensions.z()/columns);
+	
 	//Number of voxels in the three dimensions
 	param->SetNoVoxel(1, rows, columns);
+	
 	//Assure that the voxels are completely filling the container volume
-	param->CheckVoxelsFillContainer(DetectorContainer->GetXHalfLength(),
-                                    DetectorContainer->GetYHalfLength(),
-                                    DetectorContainer->GetZHalfLength());
+	param->CheckVoxelsFillContainer(container->GetXHalfLength(),
+                                    container->GetYHalfLength(),
+                                    container->GetZHalfLength());
 }
 
 void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 {
 	//Pick the material for the detectors based on if the detectors are 100% efficient or not
-	G4Material* Material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
+	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
 	
-	G4MaterialPropertiesTable* MPT = Material -> GetMaterialPropertiesTable();
-	if (!MPT)
+	G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
+	if (!mpt)
 	{
-	    MPT = new G4MaterialPropertiesTable();
+	    mpt = new G4MaterialPropertiesTable();
 	    
 	    double energy[] = {0.2*keV};
 	    double rindex[] = {1};
 	    int size = 1;
 	    
-	    MPT -> AddProperty("RINDEX", energy, rindex, size);
+	    mpt -> AddProperty("RINDEX", energy, rindex, size);
 	    
-	    Material -> SetMaterialPropertiesTable(MPT);
+	    material -> SetMaterialPropertiesTable(mpt);
 	}
 
-	//Creates the logical volume for the phantom container	
-	DetectorContainerLV = new G4LogicalVolume( DetectorContainer, 
-                					           Material, 
-                					          "AbsorptionContainerLV");
+    //Creates the logical volume for the phantom container	
+    if (container_logic) {delete container_logic; container_logic = 0;}
+	container_logic = new G4LogicalVolume(container, 
+                					      material, 
+                					      "AbsorptionContainer");
                    					      					      
     G4VisAttributes* Red = new G4VisAttributes(G4Colour::Red());	
-  	DetectorContainerLV -> SetVisAttributes(Red);
+  	container_logic -> SetVisAttributes(Red);
 
-	//The parameterised volume which uses this parameterisation is placed in the container logical volume
-	DetectorCellsLV = new G4LogicalVolume( DetectorCells,
-                   				           Material,        // material is not relevant here...
-                   				          "AbsorptionCellsLV");
+    //The parameterised volume which uses this parameterisation is placed in the container logical volume
+    if (cells_logic) {delete cells_logic;}
+	cells_logic = new G4LogicalVolume(cells,
+                   				      material,        // material is not relevant here...
+                   				      "AbsorptionCells");
 
     G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
-  	DetectorCellsLV -> SetVisAttributes(Cyan);
+  	cells_logic -> SetVisAttributes(Cyan);
   	
   	if (rows*columns > 30*30)
     {
 	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
 	    VisAttributes -> SetVisibility(false);
-	    DetectorCellsLV -> SetVisAttributes(VisAttributes);
-	    //DetectorContainerLV -> SetDaughtersInvisible(true);
+	    cells_logic -> SetVisAttributes(VisAttributes);
+	    //container_logic -> SetDaughtersInvisible(true);
     }
 	
 	// Check if sensitive detector has already been created
@@ -117,11 +126,12 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 	//tomoVSD -> SetFilter(gammaFilter);
 
 	//Add the sensitive detector to the logical volume
-	DetectorCellsLV -> SetSensitiveDetector(absorSD);
+	cells_logic -> SetSensitiveDetector(absorSD);
+	absorSD->SetGraphics(GraphicsOn);
 	
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
-	theMaterials.push_back(Material);
+	theMaterials.push_back(material);
 	param -> SetMaterials(theMaterials);
 	
 	absorSD->SetGraphics(GraphicsOn);
@@ -133,39 +143,31 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 {
 	G4int NumberOfVoxels = rows * columns;
 	
-	/*G4PhysicalVolumeStore* volumestore = G4PhysicalVolumeStore::GetInstance();
-	G4VPhysicalVolume* check = volumestore->GetVolume("AbsorptionContainer", false);
-	
-	if (check)
-	{
-	    //delete check;
-	    //check -> Set
-	}*/
-
-	G4VPhysicalVolume* container_phys = new PlacementTest(0,                  // rotation
-            						                      position,                   // translation
-           						                          DetectorContainerLV,            // logical volume
-            						                      "AbsorptionContainer",    // name
-            						                      MotherBox,           // mother volume
-            						                      false,                 // No op. bool.
-           						                          0,			//copy number
-							                              false);                    //overlap checking
+    if (container_placement) {delete container_placement; container_placement = 0;}
+	container_placement = new G4PVPlacement(0,                          // rotation
+            						        position,                   // translation
+           						            container_logic,            // logical volume
+            						        "AbsorptionContainer",      // name
+            						        MotherBox,                  // mother volume
+            						        false,                      // No op. bool.
+           						            0,			                // copy number
+							                false);                     // overlap checking
 
 	//Build the phantom container
-	param -> BuildContainerSolid(container_phys);
+	param -> BuildContainerSolid(container_placement);
 
-	//
-	G4PVParameterised* PhantomBoxes_phys = new G4PVParameterised("AbsorptionCells",               // name
-                       						                     DetectorCellsLV,           // logical volume
-                        					                     DetectorContainerLV,              // mother volume
-           							                             kUndefined,                  // optimisation hint
-                       						                     NumberOfVoxels, 		// number of voxels
-                       						                     param);                  // parameterisation
+    if (cells_placement) {delete cells_placement; cells_placement = 0;}
+	cells_placement = new G4PVParameterised("AbsorptionCells",     // name
+                       						cells_logic,           // logical volume
+                        					container_logic,       // mother volume
+           							        kUndefined,            // optimisation hint
+                       						NumberOfVoxels, 	   // number of voxels
+                       						param);                // parameterisation
 
 	//Gives warning messages when set to 1?
-	PhantomBoxes_phys->SetRegularStructureId(1);
-	
-	absorSD->InitialiseData(rows, columns);
+	cells_placement->SetRegularStructureId(1);
+	absorSD->Set_xpixels(rows);
+	absorSD->Set_ypixels(columns);
 }
 
 #include "PrintLines.hh"

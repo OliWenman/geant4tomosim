@@ -12,7 +12,7 @@
 #--------------------------------------------------------------------------------
 # World
 
-/world/size 20 10 2.1 cm		
+/world/size 15 10 2.1 cm		
 /world/material G4_Galactic
 
 #--------------------------------------------------------------------------------
@@ -26,8 +26,8 @@
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 /detector/fluorescence/bins 1000
-/detector/fluorescence/maxenergy 20 keV
-/detector/fluorescence/fullmapping true
+/detector/fluorescence/maxenergy 60 keV
+/detector/fluorescence/fullmapping false
 /detector/fluorescence/fullfield true
 
 # - Beam

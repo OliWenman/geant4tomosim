@@ -34,8 +34,8 @@ class DetectorConstructionMessenger: public G4UImessenger
 		//Pointer to the G4UIdirectory
 		G4UIdirectory *WorldDirectory;
 		
-		G4UIcmdWith3VectorAndUnit *WorldSize_Cmd;
-		G4UIcmdWithAString *WorldMaterial_Cmd;
+		G4UIcmdWith3VectorAndUnit *setworld_dimensions;
+		G4UIcmdWithAString *setworld_material;
 		G4UIcmdWithABool *Visualization_Cmd;
 
 };

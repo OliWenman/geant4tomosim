@@ -23,7 +23,7 @@ class AbsorptionSD : public G4VSensitiveDetector
     	virtual void   Initialize(G4HCofThisEvent* hitCollection);
     	virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 
-        void InitialiseData(int xpix, int ypix);
+        void InitialiseData();
         void FreeMemory();
 
         bool GraphicsActive()        {return graphicsOn;}
@@ -31,6 +31,10 @@ class AbsorptionSD : public G4VSensitiveDetector
         
         //Data
         int_vector1D GetData() {return absorptionData;}
+        
+        //Set
+        void Set_xpixels(int value){xpixels = value;}
+        void Set_ypixels(int value){ypixels = value;}
     
   	private:
 

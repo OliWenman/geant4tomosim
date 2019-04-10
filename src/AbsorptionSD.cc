@@ -10,13 +10,10 @@ AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHit
 
 }
 
-void AbsorptionSD::InitialiseData(int xpix, int ypix)
+void AbsorptionSD::InitialiseData()
 {
     if (absorptionData.empty())
     {
-        xpixels = xpix;
-        ypixels = ypix;
-    
         int initialValue = 0;
     
         int_vector1D temp(xpixels*ypixels, initialValue);
@@ -77,7 +74,7 @@ G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	//Save the detector hits to the data class
 	data -> SaveAbsorption(nDetector);
 	*/
-	if(graphicsOn)
+	/*if(graphicsOn)
 	{
 	    //Create the TrackerHit class object to record hits
   	    TrackerHit* newHit = new TrackerHit();
@@ -88,7 +85,7 @@ G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 	    newHit -> SetPos (aStep->GetPreStepPoint()->GetPosition());
 	
 	    fHitsCollection -> insert( newHit );
-	}
+	}*/
     
   	return true;
 }

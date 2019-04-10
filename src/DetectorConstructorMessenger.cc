@@ -20,14 +20,14 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	WorldDirectory = new G4UIdirectory("/world/");
 	WorldDirectory -> SetGuidance("Commands to control the world variables. ");	
 
-	WorldSize_Cmd = new G4UIcmdWith3VectorAndUnit("/world/size", this);
-	WorldSize_Cmd -> SetGuidance("Set the world size for the x, y and z dimensions ");
-	WorldSize_Cmd -> SetParameterName("worldX","worldY","worldZ",true,true);
-	WorldSize_Cmd -> SetUnitCandidates("mm cm m um ");
-	WorldSize_Cmd -> SetRange("worldX > 0 || worldY > 0 || worldZ > 0");
+	setworld_dimensions = new G4UIcmdWith3VectorAndUnit("/world/size", this);
+	setworld_dimensions -> SetGuidance("Set the world size for the x, y and z dimensions ");
+	setworld_dimensions -> SetParameterName("worldX","worldY","worldZ",true,true);
+	setworld_dimensions -> SetUnitCandidates("mm cm m um ");
+	setworld_dimensions -> SetRange("worldX > 0 || worldY > 0 || worldZ > 0");
 
-	WorldMaterial_Cmd = new G4UIcmdWithAString("/world/material", this);
-	WorldMaterial_Cmd -> SetGuidance("Set the world's material");
+	setworld_material = new G4UIcmdWithAString("/world/material", this);
+	setworld_material -> SetGuidance("Set the world's material");
 
 	Visualization_Cmd = new G4UIcmdWithABool("/world/visualization", this);
 	Visualization_Cmd -> SetGuidance("Set if you would like the ouput of a .HepRep file to be visualized later ");
@@ -38,21 +38,21 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 DetectorConstructionMessenger::~DetectorConstructionMessenger()
 {
 	delete WorldDirectory;	
-	delete WorldSize_Cmd;
-	delete WorldMaterial_Cmd;
+	delete setworld_dimensions;
+	delete setworld_material;
 	delete Visualization_Cmd;
 }
 
 void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if( command == WorldSize_Cmd )
+	if( command == setworld_dimensions )
 	{
-		G4ThreeVector Dimensions = WorldSize_Cmd -> GetNew3VectorValue(newValue);
-		ConstructDet -> SetWorldSize(Dimensions/2);
+		G4ThreeVector Dimensions = setworld_dimensions -> GetNew3VectorValue(newValue);
+		ConstructDet -> SetWorldDimensions(Dimensions/2);//SetWorldSize(Dimensions/2);
 	}
-	if( command == WorldMaterial_Cmd )
+	if( command == setworld_material )
 	{
-		ConstructDet -> SetWorldMaterial(newValue);
+		ConstructDet -> SetWorldMaterial(newValue);//SetWorldMaterial(newValue);
 	}
 	else if( command == Visualization_Cmd )
 	{

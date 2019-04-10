@@ -93,7 +93,7 @@ void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVec
 							                                 false);
 	position = Position; 
 	
-	sensitiveDetector->InitialiseData();						          
+	//sensitiveDetector->InitialiseData();						          
 }
 
 void FluorescenceDetector::ReadOutInfo(SettingsLog& log)

@@ -4,15 +4,14 @@
 # Place the objects
 
 /Target/Material ObjectA IN625
-#/Target/Material ObjectA Al
-/Target/Colour ObjectA Blue
+/Target/Colour ObjectA blue
 /Target/Position ObjectA 0 0 0 mm
-/Target/Rotation ObjectA 0 0 45 deg
+/Target/Rotation ObjectA 0 90 0 deg
 
-#/Target/Material ObjectB MS1
-#/Target/Colour ObjectB Red
-#/Target/Position ObjectB 0 0 0.45 cm
-#/Target/Rotation ObjectB 0 0 45 deg
+/Target/Material ObjectB MS1
+/Target/Colour ObjectB red
+/Target/Position ObjectB -0.45 0 0 cm
+/Target/Rotation ObjectB 0 90 0 deg
 
 #/Target/Cube/Dimensions DiffractionTest 0.001 0.1 0.1 mm
 #/Target/Material DiffractionTest G4_Al
@@ -20,5 +19,4 @@
 #/Target/Rotation DiffractionTest 0 0 0 deg
 
 /Target/CheckAllOverlaps false
-/Target/OffSet/Radius 0.0 mm			
-/Target/OffSet/Centre 0.0 0.0 0.0 mm
+/Target/OffSet/Radius 1 mm			

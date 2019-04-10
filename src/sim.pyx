@@ -47,10 +47,11 @@ cdef class PySim:
 
            Path = './../Output/HDF5/'
            
+           
            TotalImages = len(rotation_angles) + nDarkFlatFields
 
            self.thisptr.printinfo_pywrapped(TotalParticles, TotalImages, nDarkFlatFields)
-           
+          
            FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
            FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
            
@@ -79,6 +80,8 @@ cdef class PySim:
            
                #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
                if CurrentImage < TotalImages - nDarkFlatFields:
+                  
+                  #if (deletatheta = 
                   rotation_angle = rotation_angles[CurrentImage]
                   
                elif CurrentImage >= TotalImages - nDarkFlatFields:
