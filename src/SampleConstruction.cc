@@ -29,7 +29,8 @@ SampleConstruction::~SampleConstruction()
 
 void SampleConstruction::Construct(bool darkflatfields)
 {
-
+    //Loops through the samples, build the G4VSolids, G4LogicalVolumes and G4PVPlacements (the sample will decide within
+    //each method if it needs to or not)
     for (int i = 0 ; i < samplelist.size() ; i++)
     {
         SampleDescription* sample = samplelist[i];
@@ -39,6 +40,8 @@ void SampleConstruction::Construct(bool darkflatfields)
         if (removeplacement) {sample->MotherBoxUpdated(); removeplacement = false;}
         bool sampleplaced = sample->BuildPlacement(darkflatfields);
     
+        //Set the master placement as the first placement. All other samples
+        //will rotate around this sample
         if (sampleplaced && !masterplacementSet) 
         {
             sample->SetMaster(true); 
@@ -54,9 +57,11 @@ void SampleConstruction::Construct(bool darkflatfields)
 
 void SampleConstruction::ApplyTransforms(double fullrotation, double position)
 {
+    //Work out the change in angle
     double deltaTheta = fullrotation - lastfullrotation;
     lastfullrotation = fullrotation;
 
+    //Loop through the samples and apply the placement transforms needed to them
     for (int i = 0 ; i < samplelist.size() ; i++)
     {
         SampleDescription* sample = samplelist[i];
@@ -67,10 +72,11 @@ void SampleConstruction::ApplyTransforms(double fullrotation, double position)
 }
 
 #include "Boolean_Sample.hh"
+#include "CommandStatus.hh"
 
-void SampleConstruction::AddToSampleList(std::string     name, 
-                                         std::string     type, 
-                                         double_vector1D dimensions)
+int SampleConstruction::AddToSampleList(std::string     name, 
+                                        std::string     type, 
+                                        double_vector1D dimensions)
 {
     //Check if a sample containing that name already exists
     for (int i = 0 ; i < samplelist.size() ; i++)
@@ -78,7 +84,7 @@ void SampleConstruction::AddToSampleList(std::string     name,
         if(samplelist[i]->GetName() == name)
         {
             G4cout << "\nWARNING: Cannot create sample \"" << name << "\" because it already exists. Ignoring command... " << G4endl;
-            return;
+            return fParameterAlreadyExists;
         }
     }
 
@@ -100,6 +106,8 @@ void SampleConstruction::AddToSampleList(std::string     name,
     }
     
     samplelist.push_back(sample);
+    
+    return 0;
 }
 
 SampleDescription* SampleConstruction::FindSample(std::string name)
@@ -115,7 +123,8 @@ SampleDescription* SampleConstruction::FindSample(std::string name)
             return sample;
         }
     }
-    return sample;
+    
+    return NULL;
 }
 
 Boolean_Sample* SampleConstruction::FindSample_Boolean(std::string name)
@@ -132,7 +141,7 @@ Boolean_Sample* SampleConstruction::FindSample_Boolean(std::string name)
         }
     }
     
-    G4cout << "\nWARNING: Couldn't find sample \"" << name << "\". Returning NULL pointer..." << G4endl;
+    return NULL;
 }
 
 

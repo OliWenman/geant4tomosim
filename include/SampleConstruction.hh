@@ -40,7 +40,7 @@ class SampleConstruction
                              
 		void RemovePlacement(bool val) {removeplacement = val;}
 		
-		void AddToSampleList(std::string name, std::string, double_vector1D);
+		int AddToSampleList(std::string name, std::string, double_vector1D);
 		SampleDescription* FindSample(std::string name);
 		Boolean_Sample*    FindSample_Boolean(std::string name);
 		

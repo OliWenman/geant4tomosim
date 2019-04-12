@@ -16,9 +16,9 @@ verbose         = 10
 interactive     = True
 
 #Image variables
-NumberOfImages  = 20
+NumberOfImages  = 1
 nDarkFlatFields = 0
-nParticles      = 5*10**6
+nParticles      = 1#1*10**7
 
 #Rotation angles
 startRotation   = 0*G4.deg

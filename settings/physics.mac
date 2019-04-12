@@ -3,7 +3,7 @@
 /physics/gamma/livermore/photoelectric true
 /physics/gamma/livermore/comptomscattering true
 /physics/gamma/livermore/raylieghscattering true
-/physics/gamma/fluorescence true
+/physics/gamma/fluorescence false
 /physics/gamma/refraction false
 
 /physics/gamma/opticalabsorption false

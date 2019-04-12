@@ -115,7 +115,7 @@ Simulation::~Simulation()
 	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
-#include "G4UIcommandStatus.hh"
+#include "CommandStatus.hh"
 
 void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
 {
@@ -158,6 +158,7 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
     int line = 0;
     while ((std::getline(ReadFile, command))) 
     {
+        ++line;
         // TAB-> ' ' conversion
         str_size nb = 0;
         while ((nb = command.find('\t', nb)) != G4String::npos) 
@@ -179,7 +180,6 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
         //Check if string isn't just spaces
         if (command.find_first_not_of(' ') != std::string::npos)
         {
-            ++line;
             if (globalVerbose > 3) {G4cout << line << ")";}
             applycommand_pywrapped(command);
             
@@ -190,16 +190,26 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
     if (globalVerbose > 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
 }
 
+#include "G4UIcommandTree.hh"
+#include "G4UIcommand.hh"
+#include "strfunctions.hh"
+
 void Simulation::applycommand_pywrapped(std::string command)
 {
+    //Remove all spaces at the front of the parameters, at the back and any repeated spaces
+    strfunctions::RemoveSpaces_repeated_front_back(command);
+
+    //Apply the command
     G4int status = UImanager -> ApplyCommand(command);
     
+    //Check the status of the command. If successful, continue with the simulation
     if (status == fCommandSucceeded)
     {
         if (globalVerbose > 3) {G4cout << command << " successful!" << G4endl;}
     }
     else
     {
+        //Geant4 checks
         if (status == fCommandNotFound)
         {
             G4cout << "ERROR: command \"" << command << "\" not found! " << G4endl; 
@@ -222,9 +232,50 @@ void Simulation::applycommand_pywrapped(std::string command)
         }
         else if (status == fAliasNotFound)
         {
-            G4cout << "ERROR: command \"" << command << "\" alias not found " << G4endl;    
+            G4cout << "ERROR: command \"" << command << "\" alias not found! " << G4endl;    
+        }
+        //My checks
+        else if (status == fNotEnoughParameters)
+        {
+            G4cout << "ERROR: command \"" << command << "\" incorrect parameters! " << G4endl;
+        }
+        else if (status == fIncorrectUnit)
+        {
+            G4cout << "ERROR: command \"" << command << "\" incorrect unit! " << G4endl;
+        }
+        else if (status == fParameterNotADouble)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter not a double! " << G4endl;
+        }
+        else if (status == fParameterNotAInteger)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter not a integer! " << G4endl;
+        }
+        else if (status == fFlagNotFound)
+        {
+            G4cout << "ERROR: command \"" << command << "\" flag not found! " << G4endl;
+        }
+        else if (status == fParameterNotFound)
+        {
+            G4cout << "ERROR: command \"" << command << "\" cannot find parameter! " << G4endl;
+        }
+        else if (status == fParameterAlreadyExists)
+        {
+            G4cout << "ERROR: command \"" << command << "\" parameter already exists! " << G4endl;
+        }
+        else
+        {
+             G4cout << "ERROR: command \"" << command << "\" error code : " << status << G4endl;
         }
         
+        //Remove the users input to get only the command path 
+        auto commandpath = command.substr(0, command.find(' '));
+        //Find the command pointer that corrosponds to the command path used        
+        G4UIcommand* commandptr = UImanager->GetTree()->FindPath(commandpath.c_str());
+        //If commandptr exists, print the guidance associated with that command to the user
+        if (commandptr) {G4cout << "\nGuidance: \"" << commandptr->GetGuidanceLine(0) << "\"" << G4endl; }
+        
+        //If interactivtiy is on, give the user the chance to reapply the command
         if (interactiveOn)
         {
             bool breakLoop1 = false;
@@ -284,34 +335,28 @@ void Simulation::applycommand_pywrapped(std::string command)
         }
     }
 }
+
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4GeometryManager.hh"
 
-int Simulation::run_pywrapped(unsigned long long int TotalParticles, 
-                              std::vector<int>       ImageInfo, 
+int Simulation::run_pywrapped(unsigned long long int n_particles, 
+                              std::vector<int>       imageinfo, 
                               double                 rotation_angle)
 {   
-    //Get the info from the vectors
-    int Image = ImageInfo[0];
-    int nDarkFlatFields = ImageInfo[1];
-    int NumberOfImages = ImageInfo[2];
+    //Get image parameters from the imageinfo
+    int n_projection    = imageinfo[0];
+    int nDarkFlatFields = imageinfo[1];
+    int totalprojections  = imageinfo[2];
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
 
-    G4String Mode;
     bool darkflatfields;
-    if (Image < NumberOfImages - nDarkFlatFields){
-        Mode = "Simulating";
-        darkflatfields = false;
-    }
-    else if (Image >= NumberOfImages - nDarkFlatFields){
-        Mode = "Calibrating";
-        darkflatfields = true;
-    }
+    if      (n_projection < totalprojections - nDarkFlatFields)  {darkflatfields = false;}
+    else if (n_projection >= totalprojections - nDarkFlatFields) {darkflatfields = true;}
     
-    if(Image == 0)
+    if(n_projection == 0)
     {		  	    
 	    int verbose;    
 	    if (globalVerbose < 3){verbose = 3;}
@@ -319,7 +364,7 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
 	    PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
-		PGA -> SetNumberOfEvents(TotalParticles, NumberOfImages);
+		PGA -> SetNumberOfEvents(n_particles, totalprojections);
 		
 	    PL -> Fluorescence(); 
 	 
@@ -339,7 +384,7 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
             G4cout << "Starting simulation... \n";
 			          
 	        G4cout << "\n" << asctime(localtm);
-		    if (TotalParticles > 0)
+		    if (n_particles > 0)
 		    {
 	            G4cout << "\n================================================================================"
 	                      "\n                                 Geant4 info"
@@ -352,16 +397,16 @@ int Simulation::run_pywrapped(unsigned long long int TotalParticles,
     sampleconstruction->ApplyTransforms(rotation_angle, 0);
 
     //Prepare for next run. Check if energy or gun has changed 
-    PGA -> ResetEvents(Image + 1);   
+    PGA -> ResetEvents(n_projection + 1);   
     
     Initialise_dataSets();
     
     if (globalVerbose < 1) {PGA -> SetProgressBar(false);}
      
     //Beam on to start the simulation
-    BeamOn(TotalParticles);
+    BeamOn(n_particles);
 
-	if (Image + 1 == NumberOfImages)
+	if (n_projection + 1 == totalprojections)
 	{
 	    if (globalVerbose > 0)
 	    {
@@ -500,7 +545,7 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::printinfo_pywrapped(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+void Simulation::printinfo_pywrapped(unsigned long long int n_particles, int totalprojections, int nDarkFlatFields)
 {   
     if (globalVerbose > 0)
     {
@@ -517,20 +562,20 @@ void Simulation::printinfo_pywrapped(unsigned long long int TotalParticles, int 
         SettingsLog log(SaveToFile);
         PrintInformation(log);
 
-        double particleperpixel = TotalParticles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
+        double particleperpixel = n_particles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
 	
 	    PrintToEndOfTerminal(log, '-');
 	    log << "META DATA: "
                "\n- The seed used: " << seedCmd
-            << "\n- Total number of projections being processed: " << NumberOfImages
+            << "\n- Total number of projections being processed: " << totalprojections
 	        << "\n  - Dark fields: " << nDarkFlatFields
-	        << "\n  - Sample: " << NumberOfImages - nDarkFlatFields
-            << "\n- Number of photons per image: " << TotalParticles
+	        << "\n  - Sample: " << totalprojections - nDarkFlatFields
+            << "\n- Number of photons per image: " << n_particles
             << "\n- Number of particles per pixel on average: " << particleperpixel;
 	 
 	    SaveToFile.close();
 	    
-	    CalculateStorageSpace(NumberOfImages);
+	    CalculateStorageSpace(totalprojections);
     }
 }
 
@@ -556,7 +601,7 @@ void Simulation::PrintInformation(SettingsLog log)
                 G4cout << "\nERROR: Unable to open " << macrofiles[n] << " for log output. " << G4endl;
                 exit(1); 
             }
-            log << "Macro file " << n +1 << ": " << macrofiles[n] << "\n" << G4endl; 
+            log << "Macro file " << n + 1 << ": " << macrofiles[n] << "\n" << G4endl; 
       
             //Read the file
             std::string Line;    

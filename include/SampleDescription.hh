@@ -36,8 +36,6 @@ class SampleDescription
                              double        deltaZ, 
                              double        radius,
                              G4ThreeVector centre);
-        
-        void CalculateDistanceToMaster(G4ThreeVector imasterpos) {ilengthToMaster = G4ThreeVector(iposition.x() - imasterpos.x(), iposition.y() - imasterpos.y(), iposition.z());}
                                         
         void RemovePhysicalVolume() {delete placement; placement = 0; construct_placement = true;}
         void MotherBoxUpdated(){construct_placement = true;}
