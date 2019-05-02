@@ -17,10 +17,7 @@ class Boolean_Sample : public SampleDescription
         Boolean_Sample(std::string     _name, 
                        std::string     _type, 
                        double_vector1D _dim,
-                       int             _id);
-                          
-        //~Boolean_Sample();
-    
+                       int             _id);  
     
         void BuildSolid();
     

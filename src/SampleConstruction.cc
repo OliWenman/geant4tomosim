@@ -17,12 +17,11 @@ SampleConstruction::~SampleConstruction()
 {
     delete messenger;
     
-    for (int i = 0 ; i < samplelist.size() ; i++)
+    for (SampleCollection::iterator it = samplelist.begin() ; it != samplelist.end(); ++it)
     {
-        delete samplelist[i];
+        delete (*it);
     }
     samplelist.clear();
-    samplelist.shrink_to_fit();
 }
 
 #include "G4PhysicalVolumeStore.hh"
@@ -110,6 +109,11 @@ int SampleConstruction::AddToSampleList(std::string     name,
     return 0;
 }
 
+int SampleConstruction::CloneSample(std::string name, std::string clone_name)
+{
+
+}
+
 SampleDescription* SampleConstruction::FindSample(std::string name)
 {
     SampleDescription* sample;
@@ -142,6 +146,15 @@ Boolean_Sample* SampleConstruction::FindSample_Boolean(std::string name)
     }
     
     return NULL;
+}
+
+void SampleConstruction::Reset()
+{
+    for (SampleCollection::iterator it = samplelist.begin() ; it != samplelist.end(); ++it)
+    {
+        delete (*it);
+    }
+    samplelist.clear();
 }
 
 

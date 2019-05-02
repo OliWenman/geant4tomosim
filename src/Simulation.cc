@@ -105,11 +105,12 @@ Simulation::~Simulation()
 	
 	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
 
-	delete materials;       if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
-	delete simMessenger;    if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
+    delete sampleconstruction; if(globalVerbose > showDeletion) {G4cout << "\nSampleConstrction deleted " << std::flush;}
+	delete materials;          if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
+	delete simMessenger;       if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
 
-    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted" << std::flush;}
-    delete runManager;      if(globalVerbose > showDeletion) {G4cout << "\nRunManager deleted" << std::flush;}
+    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted\n" << std::flush;}
+    delete runManager; if(globalVerbose > showDeletion) {G4cout << "RunManager deleted" << std::flush;}
     
     delete CLHEP::HepRandom::getTheEngine();
 	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
@@ -393,6 +394,9 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
         }
 	}
     
+    //Construct the samples. If darkflatfields are on, then it will remove the samples G4VPhysicalVolume.
+    //After it has been constructed, if the G4VPhysicalVolume still exists, apply the needed transformations
+    //to the sample such as rotation and translation
     sampleconstruction->Construct(darkflatfields);
     sampleconstruction->ApplyTransforms(rotation_angle, 0);
 
@@ -415,6 +419,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
                       "\n================================================================================" << G4endl;
 	    }
 	    
+	    //Reset needed variables for next run
         PGA -> ResetEvents(0);
         sampleconstruction->SetLastFullRotation(0);
 	}
@@ -632,6 +637,8 @@ void Simulation::CleanGeometry()
 {
     //Clean old geometry if any
     G4GeometryManager::GetInstance()->OpenGeometry();
+    sampleconstruction->Reset();
+    
 	G4PhysicalVolumeStore::GetInstance()->Clean(); 
     G4LogicalVolumeStore::GetInstance()->Clean(); 
     G4RegionStore::GetInstance()->Clean();

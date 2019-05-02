@@ -69,8 +69,6 @@ DetectorConstruction::~DetectorConstruction()
 	delete absDetector;
 	delete fluorescenceDetector;
 	delete diffractionDetector;
-	
-	delete sampleconstruction;
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct()

@@ -24,7 +24,7 @@ class SampleConstructionMessenger : public MyG4UImessenger
 { 
 	public:
 		SampleConstructionMessenger(SampleConstruction* sc);
-		~SampleConstructionMessenger(void);
+		~SampleConstructionMessenger();
 
 		//Base class method
 		//void SetNewValue(G4UIcommand* command, G4String newValue);
@@ -35,7 +35,7 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		//Pointer to the SampleConstruction class
 		SampleConstruction *sampleconstruction;
 
-		G4UIdirectory      *directory;
+		G4UIdirectory   *directory;
 		MultiParameters *build_cube;
 		MultiParameters *build_sphere;
 		MultiParameters *build_cylinder;
@@ -43,12 +43,12 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		MultiParameters *build_ellipsoid;
 
 		//Set sample attributes
-		MultiParameters *setsample_position;
-		MultiParameters *setsample_rotation;
-		MultiParameters *setsample_material;
-		MultiParameters *setsample_colour;
-		MultiParameters *checkforoverlaps;
-		G4UIcmdWithABool   *checkforoverlapsAll;
+		MultiParameters  *setsample_position;
+		MultiParameters  *setsample_rotation;
+		MultiParameters  *setsample_material;
+		MultiParameters  *setsample_colour;
+		MultiParameters  *checkforoverlaps;
+		//G4UIcmdWithABool *checkforoverlapsAll;
 		
 		//Boolean solids
 		MultiParameters *build_subtractsolid;

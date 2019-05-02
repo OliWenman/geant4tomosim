@@ -29,7 +29,7 @@ SampleDescription::SampleDescription(std::string     _name,
 }
 
 SampleDescription::~SampleDescription()
-{
+{   
     delete solid;
     delete logic;
     delete placement;

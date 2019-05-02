@@ -39,8 +39,11 @@ class SampleConstruction
                              double        deltaZ);
                              
 		void RemovePlacement(bool val) {removeplacement = val;}
+		void Reset();
 		
 		int AddToSampleList(std::string name, std::string, double_vector1D);
+		int CloneSample(std::string name, std::string clone_name);
+		
 		SampleDescription* FindSample(std::string name);
 		Boolean_Sample*    FindSample_Boolean(std::string name);
 		

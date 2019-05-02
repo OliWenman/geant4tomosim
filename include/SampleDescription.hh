@@ -26,7 +26,7 @@ class SampleDescription
                           double_vector1D _dim,
                           int             _id);
                           
-        ~SampleDescription();
+        virtual ~SampleDescription();
         
         //Build the samples G4VSolid, G4LogicalVolume and G4PVPlacement
         virtual void BuildSolid();

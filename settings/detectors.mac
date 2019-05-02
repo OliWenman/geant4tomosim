@@ -7,7 +7,7 @@
 
 /simulation/seed 0
 /simulation/graphics false
-/world/visualization true	
+/world/visualization false	
 
 #--------------------------------------------------------------------------------
 # World
@@ -20,15 +20,15 @@
 
 # - Absorption
 /detector/absorption/halfdimensions 0.001 1.25 1.05 cm
-/detector/absorption/rows 25
-/detector/absorption/columns 21
+/detector/absorption/rows 250
+/detector/absorption/columns 210
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm
 /detector/fluorescence/bins 1000
 /detector/fluorescence/maxenergy 60 keV
 /detector/fluorescence/fullmapping false
-/detector/fluorescence/fullfield true
+/detector/fluorescence/fullfield false
 
 # - Beam
 /beam/bins 2000
