@@ -210,63 +210,24 @@ void Simulation::applycommand_pywrapped(std::string command)
     }
     else
     {
-        //Geant4 checks
-        if (status == fCommandNotFound)
+        switch (status)
         {
-            G4cout << "ERROR: command \"" << command << "\" not found! " << G4endl; 
-        }
-        else if (status == fIllegalApplicationState)
-        {
-            G4cout << "ERROR: command \"" << command << "\" is applied at the wrong state! " << G4endl; 
-        }
-        else if (status == fParameterOutOfRange)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter out of range! " << G4endl; 
-        }
-        else if (status == fParameterUnreadable)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter is unreadable! " << G4endl; 
-        }
-        else if (status == fParameterOutOfCandidates)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter out of candidates! " << G4endl; 
-        }
-        else if (status == fAliasNotFound)
-        {
-            G4cout << "ERROR: command \"" << command << "\" alias not found! " << G4endl;    
-        }
-        //My checks
-        else if (status == fNotEnoughParameters)
-        {
-            G4cout << "ERROR: command \"" << command << "\" incorrect parameters! " << G4endl;
-        }
-        else if (status == fIncorrectUnit)
-        {
-            G4cout << "ERROR: command \"" << command << "\" incorrect unit! " << G4endl;
-        }
-        else if (status == fParameterNotADouble)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter not a double! " << G4endl;
-        }
-        else if (status == fParameterNotAInteger)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter not a integer! " << G4endl;
-        }
-        else if (status == fFlagNotFound)
-        {
-            G4cout << "ERROR: command \"" << command << "\" flag not found! " << G4endl;
-        }
-        else if (status == fParameterNotFound)
-        {
-            G4cout << "ERROR: command \"" << command << "\" cannot find parameter! " << G4endl;
-        }
-        else if (status == fParameterAlreadyExists)
-        {
-            G4cout << "ERROR: command \"" << command << "\" parameter already exists! " << G4endl;
-        }
-        else
-        {
-             G4cout << "ERROR: command \"" << command << "\" error code : " << status << G4endl;
+            //Geant4 checks
+            case fCommandNotFound:          G4cout << "ERROR: command \"" << command << "\" not found! " << G4endl;                     break;
+            case fIllegalApplicationState:  G4cout << "ERROR: command \"" << command << "\" is applied at the wrong state! " << G4endl; break;
+            case fParameterOutOfRange:      G4cout << "ERROR: command \"" << command << "\" parameter out of range! " << G4endl;        break;
+            case fParameterUnreadable:      G4cout << "ERROR: command \"" << command << "\" parameter is unreadable! " << G4endl;       break;
+            case fParameterOutOfCandidates: G4cout << "ERROR: command \"" << command << "\" parameter out of candidates! " << G4endl;   break;
+            case fAliasNotFound:            G4cout << "ERROR: command \"" << command << "\" alias not found! " << G4endl;               break;
+            //My checks
+            case fNotEnoughParameters:      G4cout << "ERROR: command \"" << command << "\" incorrect parameters! " << G4endl;          break;
+            case fIncorrectUnit:            G4cout << "ERROR: command \"" << command << "\" incorrect unit! " << G4endl;                break;
+            case fParameterNotADouble:      G4cout << "ERROR: command \"" << command << "\" parameter not a double! " << G4endl;        break;
+            case fParameterNotAInteger:     G4cout << "ERROR: command \"" << command << "\" parameter not a integer! " << G4endl;       break;
+            case fFlagNotFound:             G4cout << "ERROR: command \"" << command << "\" flag not found! " << G4endl;                break;
+            case fParameterNotFound:        G4cout << "ERROR: command \"" << command << "\" cannot find parameter! " << G4endl;         break;
+            case fParameterAlreadyExists:   G4cout << "ERROR: command \"" << command << "\" parameter already exists! " << G4endl;      break;
+            default:                        G4cout << "ERROR: command \"" << command << "\" error code : " << status << G4endl;         break;
         }
         
         //Remove the users input to get only the command path 
@@ -340,6 +301,7 @@ void Simulation::applycommand_pywrapped(std::string command)
 #include "G4LogicalVolumeStore.hh"
 #include "G4LogicalVolume.hh"
 #include "G4GeometryManager.hh"
+#include "ProgressTracker.hh"
 
 int Simulation::run_pywrapped(unsigned long long int n_particles, 
                               std::vector<int>       imageinfo, 
@@ -381,16 +343,14 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 		    //Convert now to tm struct for local timezone
 		    tm* localtm = localtime(&now);
         
-            PrintToEndOfTerminal('-');        
-            G4cout << "Starting simulation... \n";
+            PrintToEndOfTerminal('=');        
+            G4cout << "STARTING SIMULATION... \n";
 			          
 	        G4cout << "\n" << asctime(localtm);
-		    if (n_particles > 0)
-		    {
-	            G4cout << "\n================================================================================"
-	                      "\n                                 Geant4 info"
-                          "\n================================================================================" << G4endl;
-            }
+        }
+        else 
+        {
+            PGA->GetProgressTracker().print = false;
         }
 	}
     
@@ -404,8 +364,6 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
     PGA -> ResetEvents(n_projection + 1);   
     
     Initialise_dataSets();
-    
-    if (globalVerbose < 1) {PGA -> SetProgressBar(false);}
      
     //Beam on to start the simulation
     BeamOn(n_particles);
@@ -492,7 +450,8 @@ void Simulation::Visualisation()
 		
 		if (globalVerbose > 0) {G4cout << "\nSaving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;}
 			
-		PGA -> SetProgressBar(false);
+		PGA->GetProgressTracker().singleline = false;
+		PGA->GetProgressTracker().graphicsOn = true;
 	}
 }
 
@@ -588,9 +547,6 @@ void Simulation::PrintInformation(SettingsLog log)
 {       
     if (globalVerbose > 0)
     {
-        //If the verbose has been set >= 2 output info to terminal.
-        //if (globalVerbose >= 2) {log.terminalOn = true;}
-        //else                    {log.terminalOn = false;}
         log.terminalOn = false;
     
         //Loop through the macro files
@@ -765,7 +721,7 @@ void Simulation::SetSeed(long int seedinput)
 
 void Simulation::Initialise_dataSets()
 {
-    //if (globalverbose > 2) {G4cout << "\nInitialising data... " << G4endl;
+    if (globalVerbose > 2) {G4cout << "\nInitialising data... " << G4endl;}
     DC->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
     DC->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
     PGA->SetupData();

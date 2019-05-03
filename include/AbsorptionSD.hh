@@ -27,7 +27,7 @@ class AbsorptionSD : public G4VSensitiveDetector
         void FreeMemory();
 
         bool GraphicsActive()        {return graphicsOn;}
-        void SetGraphics(bool value) {graphicsOn = value; collectionName.insert("AbsorptionHitsCollection");} 
+        void SetGraphics(bool value) {graphicsOn = value;} 
         
         //Data
         int_vector1D GetData() {return absorptionData;}

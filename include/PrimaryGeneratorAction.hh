@@ -36,60 +36,60 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
    		void GeneratePrimaries(G4Event* );
    		void SetupData();
 		void ReadOutInfo(SettingsLog& log);
-		
-		int_vector1D GetBeamIntensity() {return beamintensity;}
-		double_vector1D GetBeamEnergy(){return energy;}
-		
-		G4int GetBeamEnergyByteTypeSize(){return sizeof(beamintensity[0]);}
 
+        //Set functions
 		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.;}
-		void SetFluoreFM(bool value){FluoreFM = value;}		
-		void SetNumberOfEvents(unsigned long long int value, int TotalImages){NumberOfEvents = value; 
-		                                                                      NumberOfRuns = TotalImages; 
+		void SetFluoreFM(bool value){fm_fluorescence = value;}		
+		void SetNumberOfEvents(unsigned long long int value, int TotalImages){totalevents = value; 
+		                                                                      totalruns = TotalImages; 
 		                                                                      progress.Setup(value, TotalImages);}
-		void SetNumberOfBins(int value){Bins = value;}
-		void ResetEvents(int nImage){CurrentEvent = 0; 
-		                             CurrentImage = nImage; 
+		void SetNumberOfBins(int value){bins = value;}
+		void ResetEvents(int nImage){currentevent = 0; 
+		                             currentrun = nImage; 
 		                             progress.ResetEvents();}
 		
 		void SetSavingTime(double value){progress.SetSavingTime(value);}
-		void SetProgressBar(bool value){ShowProgressBar = value;}
-		
-		G4double GetMaxEnergy(){return eMax;}
-		
-		ParticleBeam* GetBeam(){return beam;}
+		void SetProgressBar(bool value){progress.singleline = value;}
 		
 		void SetAutoBeamPlacement(bool value)    {beam -> SetAutoSourcePlacement(value);}
 		void DoAutoBeamPlacement(G4double value) {beam -> DoAutoSourcePlacement(value);}
 
-        const G4ThreeVector GetParticlePosition() const {return particleposition;}
-        
-        double GetBeamHalfx() const {return beam->GetHalfX();}
-        double GetBeamHalfy() const {return beam->GetHalfY();}
-        int    GetNumberOfBins() const {return Bins;}
+        //Get functions
+        ParticleBeam*       GetBeam()            {return beam;}
+        ProgressTracker&    GetProgressTracker() {return progress;}
+        int_vector1D        GetBeamIntensity()   {return beamintensity;}
+		double_vector1D     GetBeamEnergy()      {return energy;}
+		
+        const G4ThreeVector GetParticlePosition() const {return particleposition;}        
+        const double        GetBeamHalfx() const {return beam->GetHalfX();}
+        const double        GetBeamHalfy() const {return beam->GetHalfY();}
+        const double        GetMaxEnergy(){return eMax;}
+        const int           GetNumberOfBins() const {return bins;}
+        const int           GetBeamEnergyByteTypeSize(){return sizeof(beamintensity[0]);}
 
   	private:
+        //Data
 
+        //Objects
         PrimaryGeneratorActionMessenger *gunMessenger;
 		ParticleBeam                    *beam;
         ProgressTracker                  progress;
         
+        //Vectors
         int_vector1D    beamintensity;
         double_vector1D energy;
 
-		G4double eMax;
-		G4double Bins;
-
-		bool FluoreFM;
+        //Simulation variables
+		double        eMax;
+		double        bins;
+		bool          fm_fluorescence;
+        G4ThreeVector particleposition;
         
-		int CurrentEvent;
-		unsigned long long int NumberOfEvents;
-		int CurrentImage;
-		int NumberOfRuns;
-		
-		bool ShowProgressBar;
-		
-		G4ThreeVector particleposition;
+        //Progress
+        unsigned long long int totalevents;
+		int currentevent;
+		int totalruns;
+		int currentrun;
 };
 
 #endif

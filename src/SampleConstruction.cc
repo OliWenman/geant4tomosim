@@ -49,6 +49,7 @@ void SampleConstruction::Construct(bool darkflatfields)
             mastercentre = sample->GetInitialPosition();
         }
     }
+    
     G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
 
@@ -109,9 +110,37 @@ int SampleConstruction::AddToSampleList(std::string     name,
     return 0;
 }
 
-int SampleConstruction::CloneSample(std::string name, std::string clone_name)
-{
-
+int SampleConstruction::CloneSample(std::string name, std::string name_to_clone)
+{   
+    /*
+    //Check if a sample containing that name already exists
+    for (int i = 0 ; i < samplelist.size() ; i++)
+    {
+        if(samplelist[i]->GetName() == name)
+        {
+            G4cout << "\nWARNING: Cannot create sample \"" << name << "\" because it already exists. Ignoring command... " << G4endl;
+            return fParameterAlreadyExists;
+        }
+    }
+    
+    int n;
+    
+    //Find the sample to clone
+    for (int i = 0 ; i < samplelist.size() ; i++)
+    {
+        if(samplelist[i]->GetName() == name_to_clone)
+        {
+            n = i;
+            break;
+        }
+    }
+    
+    SampleDescription* clone = new SampleDescription();
+    clone->PrintDescription();
+    
+    clone = samplelist[n];
+    clone->PrintDescription();
+    */
 }
 
 SampleDescription* SampleConstruction::FindSample(std::string name)

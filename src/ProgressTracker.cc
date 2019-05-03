@@ -4,15 +4,21 @@
 
 ProgressTracker::ProgressTracker(): Timer()
 {
-    NumberOfEvents = 0;
-	NumberOfRuns = 0;
+    totalparticles = 0;
+	totalprojections = 0;
 	
-	SavingTime = 0;
+	savingtime = 0;
 
-	TotalProgress = 0;
-	TotalProgressCheck = ImageProgressCheck = -1;
+	totalprogress = 0;
+	totalprogressCheck = projectioncheck = -1;
 
 	remainingTime = 0;
+	
+	singleline = false;
+	print      = true; 
+	graphicsOn = false;
+	
+	dprogress = 5;
 }
 
 ProgressTracker::~ProgressTracker()
@@ -20,54 +26,90 @@ ProgressTracker::~ProgressTracker()
 
 }
 
-void ProgressTracker::PrintProgress(int CurrentEvent, int CurrentImage)
+void ProgressTracker::PrintProgress(int CurrentEvent, int currentprojection)
 {
-    //Prints only at the start of the simulation	    
-	if (CurrentImage == 1 && CurrentEvent == 1)
-	{	
-		G4cout << "\n================================================================================"
-		          "\n                            SIMULATION RUNNING..."
-	              "\n================================================================================\n\n\n\n";
+    //Checks if information needs to be printed
+    if (print)
+    {
+        //Prints only at the start of the simulation if info on single line	    
+	    if (currentprojection == 1 && CurrentEvent == 1)
+	    {
+	        if (singleline)
+	        {	
+	            G4cout << "\n\n\n\n" << std::flush;
+	        }
+	        else
+	        {
+	            G4cout << "\n" << std::flush;
+	        }
+        }
+	    //Works out the percentage of how many events it has completed for this projection
+        int projectionprogress = CurrentEvent*100./totalparticles;
+    
+	    //Only calculates the percentage if the image number has changed so not wasting time printing same number
+    	if (projectionprogress != projectioncheck)
+	    {	
+		    //Calculates the total progress of the simulation				
+		    totalprogress = 100.*(double(totalparticles*(currentprojection -1) + CurrentEvent)/(totalparticles*totalprojections));
+		    
+		    projectioncheck = projectionprogress;
+    
+            //Checks if the user wants the information printed on a single line or not
+            if (singleline)
+            {
+		        //Prints above one line and over rides it
+		        G4cout << "\033[2A" "\033[K" "\r" "Projection " << currentprojection << " of " << totalprojections << ": " << std::setw(3) << projectionprogress << "%\ complete ";
+		    
+		        //If the projection has finished, indicate it's saving the data
+		        if      (projectionprogress == 100) {G4cout << "- Saving data...\n";}
+		        else if (projectionprogress == 0)   {G4cout << "                \n";}
+		        else                           {G4cout << "\n";}
+    
+                //Print the total progress and estimated time if it has changed
+		        if(totalprogress != totalprogressCheck)
+		        {	
+		            G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << totalprogress << "\%"; ProgressBar(totalprogress); G4cout << "\n" "\033[40C";
+		    	    G4cout << "\rEstimated time remaining: ";
+		    	    double etime = EstimatedTime(totalprogress, currentprojection);
+		    	    if (etime == -1)
+		    	    {
+		    	        G4cout << "calculating...";
+		    	    }
+		    	    else
+		    	    {
+		    	        PrintTime(etime);
+		    	    }
+		    	    
+		    	    totalprogressCheck = totalprogress;
+		        }
+		        else {G4cout << "\n" "\033[40C";}
+	        }
+	        else
+	        {
+	            //Prints the information on a new line. Useful if extra information needs to be printed during simulation
+	            if(totalprogress != totalprogressCheck && projectionprogress % dprogress == 0)
+		        {	
+		            G4cout << currentprojection << " of " << totalprojections << ": " << std::setw(3) << projectionprogress << "%\,";
+		            G4cout << "total progress: " << std::setw(3) << totalprogress << "%\ complete. Estimated time left "; 
+		            double etime = EstimatedTime(totalprogress, currentprojection);
+		            if (etime == -1)
+		    	    {
+		    	        G4cout << "calculating...";
+		    	    }
+		    	    else
+		    	    {
+		    	        PrintTime(etime);
+		    	    }
+		            
+		            totalprogressCheck = totalprogress;
+		            
+		            G4cout << "\n";
+		        }
+	        }
+	        
+	        G4cout << std::flush;
+	    }
 	}
-
-	//Works out the percentage of how many events it has completed
-	int ImageProgress = (double(CurrentEvent)/NumberOfEvents)*100. + 1;
-
-	//Only prints the percentage if the image number has changed so not wasting time printing same number
-	if (ImageProgress != ImageProgressCheck)
-	{	
-		//Calculates the total progress of the simulation
-		int FullProgress = double(CurrentImage - 1.)/NumberOfRuns*100.;
-		TotalProgress = FullProgress + (double(ImageProgress)/100. * (1./NumberOfRuns)*100.);
-		
-		ImageProgressCheck = ImageProgress;
-
-		//Prints above one line and over rides it
-		G4cout << "\033[2A" "\033[K" "\r" "Projection " << CurrentImage << " of " << NumberOfRuns << ": " << std::setw(3) << ImageProgress << "%\ complete ";
-		
-		if      (ImageProgress == 100) {G4cout << "- Saving data...\n";}
-		else if (ImageProgress == 0)   {G4cout << "                \n";}
-		else                           {G4cout << "\n";}
-
-		if(TotalProgress != TotalProgressCheck)
-		{	
-		    G4cout << "\033[K" "\rTotal progress: " << std::setw(3) << TotalProgress << "\%"; ProgressBar(TotalProgress); G4cout << "\n" "\033[40C";
-			EstimatedTime(TotalProgress, CurrentImage);
-			TotalProgressCheck = TotalProgress;
-		}
-		else {G4cout << "\n" "\033[40C";}
-		G4cout << std::flush;
-	}
-
-	//Corrects the end perecentage to 100% once simulation is complete and outputs a space
-	/*if(CurrentEvent == NumberOfEvents && CurrentImage == NumberOfRuns)
-	{	
-        G4cout << "\033[2A" "\033[K" "\r" "All " << NumberOfRuns << " projections are complete!              \n"
-        "\rTotal progress: 100\%"; ProgressBar(100); G4cout << "\n";
-		EstimatedTime(100, NumberOfRuns);
-		G4cout << G4endl;
-		Timer.Stop();
-	}*/
 }
 
 void ProgressTracker::ProgressBar(int Percent)
@@ -84,20 +126,24 @@ void ProgressTracker::ProgressBar(int Percent)
 	G4cout << ") ";
 }
 
-void ProgressTracker::EstimatedTime(int Percent, int CurrentImage)
+double ProgressTracker::EstimatedTime(int Percent, int currentprojection)
 {
+    //If the percent is 0, return -1 as will cause an error due to dividing by 0
     if (Percent != 0)
     {
 		Timer.Stop();	
 		
 		float currentTime = Timer.GetRealElapsed();
 		
-		remainingTime = ((currentTime*(100./Percent)) - currentTime) + (SavingTime * (NumberOfRuns - CurrentImage));
+		//Calculate the estimated remaining time left for the simulation
+		remainingTime = ((currentTime*(100./Percent)) - currentTime) + (savingtime * (totalprojections - currentprojection));
 	
-	    G4cout <<  "\rEstimated time remaining: ";
-		PrintTime(remainingTime);
-	}
-	else {G4cout << "\rEstimated time remaining: calculating... ";}
+	    return remainingTime;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 void ProgressTracker::PrintTime(double time)

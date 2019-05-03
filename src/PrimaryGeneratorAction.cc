@@ -41,10 +41,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
   	gunMessenger = new PrimaryGeneratorActionMessenger(this);
 	beam = new ParticleBeam();
 	
-	ShowProgressBar = true;	
-	
 	//Set the max energy value (in keV)
-    eMax = 175*keV*1000.;
+    eMax = 175.;
+    
+    SetProgressBar(false);
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -55,12 +55,12 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {    
-    if(CurrentEvent == 0)
+    if(currentevent == 0)
 	{   
 	    //Cleans the beam energy data at the start of each run    
-	    memset(&beamintensity[0], 0, sizeof(beamintensity[0]) * Bins);
+	    memset(&beamintensity[0], 0, sizeof(beamintensity[0]) * bins);
 	    
-	    if (CurrentImage == 1)
+	    if (currentrun == 1)
 	    {
 	        progress.Timer.Start();	
 	    }
@@ -68,14 +68,13 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
     particleposition = beam->FireParticle(event);
    
     //Save beam energy data    	
-    int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/Bins)) -1;
+    int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/bins)) -1;
     if (bin > beamintensity.size()) {bin = beamintensity.size();}
 
     ++beamintensity[bin];
 
-    if (ShowProgressBar && CurrentEvent >= 1) {progress.PrintProgress(CurrentEvent, CurrentImage);}
-    
-    ++CurrentEvent;
+    ++currentevent;
+    progress.PrintProgress(currentevent, currentrun);
 } 
 
 void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
@@ -132,14 +131,14 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 
 void PrimaryGeneratorAction::SetupData()
 {  	
-   	int_vector1D    ibeamintensity(Bins, 0);
-   	double_vector1D ienergy(Bins, 0);
+   	int_vector1D    ibeamintensity(bins, 0);
+   	double_vector1D ienergy(bins, 0);
    	
     int ene = 0;
-	for (int i = 0 ; i < Bins ; i++)
+	for (int i = 0 ; i < bins ; i++)
 	{
 	    ++ene;
-		ienergy[i] = (eMax/Bins)*ene;
+		ienergy[i] = (eMax/bins)*ene;
 	}
 
     beamintensity = ibeamintensity;	

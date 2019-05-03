@@ -12,13 +12,13 @@ import numpy as np
 #========================================================================================
 
 #General settings
-verbose         = 5
+verbose         = 1
 interactive     = True
 
 #Image variables
-NumberOfImages  = 1
+NumberOfImages  = 5
 nDarkFlatFields = 0
-nParticles      = 1*10**5
+nParticles      = 1*10**6
 
 #Rotation angles
 startRotation   = 0*G4.deg

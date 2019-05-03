@@ -21,6 +21,7 @@ class G4VPhysicalVolume;
 class SampleDescription
 {
     public:
+        SampleDescription();
         SampleDescription(std::string     _name, 
                           std::string     _type, 
                           double_vector1D _dim,
@@ -40,6 +41,8 @@ class SampleDescription
         void RemovePhysicalVolume() {delete placement; placement = 0; construct_placement = true;}
         void MotherBoxUpdated(){construct_placement = true;}
         
+        virtual void PrintDescription();
+        
         //Set methods via messenger - checks if value has changed. If it has it knowns to reconstruct the G4 class associated with it
         void SetMaterial (std::string _material) {if (material  != _material)  {material  = _material;  construct_logic = construct_placement = true;}}
         void SetColour   (std::string col)       {if (colour    != col)        {colour = col;           construct_logic = construct_placement = true;}}
@@ -51,8 +54,8 @@ class SampleDescription
         void SetMaster(bool value) {master = value;}
         
         //Get functions
-        std::string   GetName()            {return name;}
-        G4ThreeVector GetInitialPosition() {return iposition;}
+        std::string   GetName()            const {return name;}
+        G4ThreeVector GetInitialPosition() const {return iposition;}
                
     private:
         //Build methods for G4VSolid

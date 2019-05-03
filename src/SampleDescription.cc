@@ -1,5 +1,6 @@
 #include "SampleDescription.hh"
 #include <math.h> 
+SampleDescription::SampleDescription() {}
 
 SampleDescription::SampleDescription(std::string     _name, 
                                      std::string     _type, 
@@ -28,11 +29,40 @@ SampleDescription::SampleDescription(std::string     _name,
     checkforoverlaps = false;
 }
 
+#include "G4SolidStore.hh"
+#include "G4LogicalVolumeStore.hh"
+#include "G4PhysicalVolumeStore.hh"
+
 SampleDescription::~SampleDescription()
 {   
-    delete solid;
-    delete logic;
+    /*G4VSolid*          solidptr     = G4SolidStore::GetInstance()->GetSolid(name, false);
+    G4LogicalVolume*   logicptr     = G4LogicalVolumeStore::GetInstance()->GetVolume(name, false);
+    G4VPhysicalVolume* placementptr = G4PhysicalVolumeStore::GetInstance()->GetVolume(name, false);
+    
+    G4cout << "\n--------------------------------------------------";
+    */
+    /*if (placementptr) {delete placementptr; G4cout << "\ndeleted placement " << name; } 
+    if (logicptr)     {delete logicptr;     G4cout << "\ndeleted logic " << name;}
+    if (solidptr)     {delete solidptr;     G4cout << "\ndeleted solid " << name << G4endl;}*/
+    
+    //if (placement) {delete placement; G4cout << "\ndeleted placement " << name; } 
+    //if (logic)     {delete logic;     G4cout << "\ndeleted logic " << name;}
+    //if (solid)     {delete solid;     G4cout << "\ndeleted solid " << name << G4endl;}
+
     delete placement;
+    delete logic;
+    delete solid;
+}
+
+void SampleDescription::PrintDescription()
+{
+    G4cout << G4endl;
+    G4cout << "\n---------------------------------------------------"
+           << "\nname : " << name
+           << "\ntype : " << type
+           << "\nid   : " << id
+           << "\nipos : " << iposition
+           << "\nirot : " << irotation;
 }
 
 //Different shapes for G4VSolid

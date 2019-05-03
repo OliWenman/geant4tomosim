@@ -25,7 +25,7 @@ class FluorescenceSD : public G4VSensitiveDetector
 		void RecordFullField  (bool value) {fullfieldOn = value;}
 		
 		void SetGraphics    (bool value) {graphicsOn = value;}
-		void SetMaxEnergy   (double value)  {maxenergy  = value; G4cout << "\n\n\n\n\n USED " << maxenergy << G4endl;}
+		void SetMaxEnergy   (double value)  {maxenergy  = value;}
 		void SetNumberOfBins(int value)  {nbins      = value;}
 		
 		//Get methods
