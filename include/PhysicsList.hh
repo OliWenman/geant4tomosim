@@ -24,6 +24,8 @@ class G4VAtomDeexcitation;
 class GammaOpticalRefraction;
 class GammaOpticalAbsorption;
 
+class StepMax;
+
 class PhysicsList: public G4VModularPhysicsList
 {
 	public:
@@ -51,6 +53,7 @@ class PhysicsList: public G4VModularPhysicsList
   		void ConstructParticle();
   		void ConstructProcess();
 		void SetCuts();
+		void AddStepMax();
 
 		//Read and save info user has inputted
 		void ReadOutInfo(SettingsLog& log);
@@ -70,7 +73,9 @@ class PhysicsList: public G4VModularPhysicsList
 		G4LivermoreRayleighModel* liv_rayleighscattering;
 		
 		GammaOpticalRefraction* gamma_refraction;
-		GammaOpticalAbsorption* gamma_absorption;		
+		GammaOpticalAbsorption* gamma_absorption;	
+		
+		StepMax* fStepMaxProcess;	
 
 		//Physics options
 		G4String PhysicsPackageCmd;

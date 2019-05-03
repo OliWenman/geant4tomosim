@@ -6,7 +6,7 @@
 /sample/G4LogicalVolume/material   ObjectA IN625
 /sample/G4LogicalVolume/colour     ObjectA blue
 /sample/G4VPhysicalVolume/position ObjectA 0 0 0 mm
-/sample/G4VPhysicalVolume/rotation ObjectA 0 90 0 deg
+/sample/G4VPhysicalVolume/rotation ObjectA 0 0 45 deg
 
 #/sample/G4LogicalVolume/material ObjectB MS1
 #/sample/G4LogicalVolume/colour ObjectB red

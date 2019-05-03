@@ -43,8 +43,6 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 	
 	//Set the max energy value (in keV)
     eMax = 175.;
-    
-    SetProgressBar(false);
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

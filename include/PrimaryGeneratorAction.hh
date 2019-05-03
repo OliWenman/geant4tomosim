@@ -49,7 +49,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		                             progress.ResetEvents();}
 		
 		void SetSavingTime(double value){progress.SetSavingTime(value);}
-		void SetProgressBar(bool value){progress.singleline = value;}
 		
 		void SetAutoBeamPlacement(bool value)    {beam -> SetAutoSourcePlacement(value);}
 		void DoAutoBeamPlacement(G4double value) {beam -> DoAutoSourcePlacement(value);}

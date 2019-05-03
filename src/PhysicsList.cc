@@ -290,12 +290,34 @@ void PhysicsList::Fluorescence()
 
 void PhysicsList::SetCuts()
 {	
-    //SetCutValue(5*mm, "gamma");
+    //SetCutValue(10000*mm, "gamma");
     //SetCutValue(1000*mm, "e-");
     //SetCutValue(1000*mm, "e+");
     //SetCutValue(1000*mm, "proton");
     
     //DumpCutValuesTable();
+}
+
+#include "StepMax.hh"
+
+//Loop through each particle and add its max step for each process
+void PhysicsList::AddStepMax()
+{
+    // Step limitation seen as a process
+    fStepMaxProcess = new StepMax();
+
+    auto particleIterator=GetParticleIterator();
+    particleIterator->reset();
+    while ((*particleIterator)())
+    {
+        G4ParticleDefinition* particle = particleIterator->value();
+        G4ProcessManager* pmanager = particle->GetProcessManager();
+
+        if (fStepMaxProcess->IsApplicable(*particle))
+        {
+            pmanager->AddDiscreteProcess(fStepMaxProcess);
+        }
+  }
 }
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)
@@ -310,5 +332,7 @@ void PhysicsList::ReadOutInfo(SettingsLog& log)
 	if (fluorescenceOn)       {log << "\n- Fluorescence";}
 	if (refractionOn)         {log << "\n- Gamma refraction";}
 	if (gamma_absorptionOn)   {log << "\n- Gamma absorption";}
+	
+	
 }
 

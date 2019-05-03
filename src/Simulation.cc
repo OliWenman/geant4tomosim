@@ -60,7 +60,6 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
         }
     }
     
-
     SaveLogPath = "./../Output/HDF5/";	
 
     simMessenger = new SimulationMessenger(this);	

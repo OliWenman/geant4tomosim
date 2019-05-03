@@ -89,8 +89,9 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int currentprojection)
 	            //Prints the information on a new line. Useful if extra information needs to be printed during simulation
 	            if(totalprogress != totalprogressCheck && projectionprogress % dprogress == 0)
 		        {	
-		            G4cout << currentprojection << " of " << totalprojections << ": " << std::setw(3) << projectionprogress << "%\,";
-		            G4cout << "total progress: " << std::setw(3) << totalprogress << "%\ complete. Estimated time left "; 
+		            G4cout << currentprojection << " of " << totalprojections << ": " << std::setw(3) << projectionprogress << "\%";
+		            G4cout << ", total progress: " << std::setw(3) << totalprogress << "%\ complete. ";
+		            G4cout << "Estimated time left "; 
 		            double etime = EstimatedTime(totalprogress, currentprojection);
 		            if (etime == -1)
 		    	    {

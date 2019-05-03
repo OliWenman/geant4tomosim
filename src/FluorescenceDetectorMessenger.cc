@@ -17,7 +17,7 @@
 
 FluorescenceDetectorMessenger::FluorescenceDetectorMessenger(FluorescenceDetector* fluordetector): G4UImessenger(), detectorbuilder(fluordetector)
 {
-    directory = new G4UIdirectory("/detector/fluorescence");
+    directory = new G4UIdirectory("/detector/fluorescence/");
 	directory -> SetGuidance("Commands to control the fluorescence detector variables. ");	
 
 	setdimensions = new G4UIcmdWith3VectorAndUnit("/detector/fluorescence/halfdimensions", this);

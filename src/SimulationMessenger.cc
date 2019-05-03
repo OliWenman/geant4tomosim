@@ -9,6 +9,7 @@
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithABool.hh"
+#include "G4UIcmdWithoutParameter.hh"
 
 SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 {	
@@ -23,6 +24,8 @@ SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 	
 	setgraphics = new G4UIcmdWithAString("/simulation/graphics", this);
 	setgraphics -> SetGuidance("Set if you want the simulation to output a file that can viewed to see the geometry");
+	
+	progressSingleline = new G4UIcmdWithoutParameter("/simulation/progress/singleline", this);
 }
 
 SimulationMessenger::~SimulationMessenger()
@@ -30,6 +33,7 @@ SimulationMessenger::~SimulationMessenger()
 	delete directory;
 	delete setseed;
 	delete setgraphics;
+	delete progressSingleline;
 }
 
 void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -42,4 +46,9 @@ void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	{
 	
 	}
+	else if (command == progressSingleline)
+	{
+	
+	}
+	
 }

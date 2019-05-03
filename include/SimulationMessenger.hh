@@ -15,6 +15,7 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithADouble;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithABool;
+class G4UIcmdWithoutParameter;
 
 class SimulationMessenger: public G4UImessenger 
 { 
@@ -29,9 +30,10 @@ class SimulationMessenger: public G4UImessenger
 		Simulation* sim;
 
 		//Pointers to different commands
-		G4UIdirectory        *directory;
-		G4UIcmdWithAnInteger *setseed;
-		G4UIcmdWithAString   *setgraphics;
+		G4UIdirectory*           directory;
+		G4UIcmdWithAnInteger*    setseed;
+		G4UIcmdWithAString*      setgraphics;
+		G4UIcmdWithoutParameter* progressSingleline;
 };
 
 

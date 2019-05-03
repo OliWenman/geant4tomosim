@@ -16,7 +16,7 @@
 /beam/gps false
 
 # - Energy commands
-/beam/energy/mono 50 keV
+/beam/energy/mono 80 keV
 
 # - Position commands
 /beam/autoposition true

@@ -32,24 +32,24 @@ SteppingAction::~SteppingAction()
 /////////////////////////////////////////////////////////////////////////////
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
-    /*G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-    G4ThreeVector momentumDirection = aStep->GetPostStepPoint()->GetMomentumDirection();
+    //G4String processname = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    //G4ThreeVector momentumDirection = aStep->GetPostStepPoint()->GetMomentumDirection();
     
-    if (processname == "Rayl") {G4cout << n << ")" << processname << "new momentum = " << momentumDirection << G4endl; n++;}*/
+    //if (processname == "Rayl") {G4cout << n << ")" << processname << "new momentum = " << momentumDirection << G4endl; n++;}
 
-    //G4int eventNum = G4RunManager::GetRunManager() -> GetCurrentEvent() -> GetEventID();
+    /*G4int eventNum = G4RunManager::GetRunManager() -> GetCurrentEvent() -> GetEventID();
 
-    //G4Track* theTrack = aStep->GetTrack();
+    G4Track* theTrack = aStep->GetTrack();
      
-    //G4StepPoint* PreStep = aStep->GetPreStepPoint();
-    //G4StepPoint* PostStep = aStep->GetPostStepPoint();
+    G4StepPoint* PreStep = aStep->GetPreStepPoint();
+    G4StepPoint* PostStep = aStep->GetPostStepPoint();
      
-    //G4TouchableHandle touchPreStep = PreStep->GetTouchableHandle();
-    //G4TouchableHandle touchPostStep = PostStep->GetTouchableHandle();
+    G4TouchableHandle touchPreStep = PreStep->GetTouchableHandle();
+    G4TouchableHandle touchPostStep = PostStep->GetTouchableHandle();
     
-    //G4VPhysicalVolume* volumePre = touchPreStep->GetVolume();
-    //G4VPhysicalVolume* volumePost = touchPostStep->GetVolume();
-    /*if (volumePost)
+    G4VPhysicalVolume* volumePre = touchPreStep->GetVolume();
+    G4VPhysicalVolume* volumePost = touchPostStep->GetVolume();
+    if (volumePost)
     {
         G4cout << eventNum << ") volumePre = " << volumePre -> GetName() << ", volumePost = " << volumePost -> GetName() << G4endl;
     }*/
