@@ -4,7 +4,6 @@ import h5py
 import time
 import os
 import gc
-import getpass
 import matplotlib.pyplot as plt
 import sys
 

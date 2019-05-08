@@ -32,7 +32,11 @@ class SampleDescription
         //Build the samples G4VSolid, G4LogicalVolume and G4PVPlacement
         virtual void BuildSolid();
         void BuildLogicVolume();
-        bool BuildPlacement(bool darkflatfields);
+        bool BuildPlacement(bool darkflatfields, 
+                            double tiltangleX, 
+                            double tiltangleY, 
+                            G4ThreeVector tiltcentre);
+
         void ApplyTransforms(double        deltaTheta, 
                              double        deltaZ, 
                              double        radius,
@@ -56,6 +60,9 @@ class SampleDescription
         //Get functions
         std::string   GetName()            const {return name;}
         G4ThreeVector GetInitialPosition() const {return iposition;}
+        
+        G4ThreeVector GetPosition() {if (placement) {return placement->GetTranslation();}}
+        bool HasPlacement() {if (placement) {return true;} else {return false;}}
                
     private:
         //Build methods for G4VSolid

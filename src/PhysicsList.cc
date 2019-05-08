@@ -303,7 +303,7 @@ void PhysicsList::SetCuts()
 //Loop through each particle and add its max step for each process
 void PhysicsList::AddStepMax()
 {
-    // Step limitation seen as a process
+    /*// Step limitation seen as a process
     fStepMaxProcess = new StepMax();
 
     auto particleIterator=GetParticleIterator();
@@ -317,7 +317,7 @@ void PhysicsList::AddStepMax()
         {
             pmanager->AddDiscreteProcess(fStepMaxProcess);
         }
-  }
+  }*/
 }
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)

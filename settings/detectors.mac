@@ -7,7 +7,7 @@
 
 /simulation/seed 0
 /simulation/graphics false
-/world/visualization false	
+/world/visualization true	
 
 #--------------------------------------------------------------------------------
 # World
@@ -20,8 +20,8 @@
 
 # - Absorption
 /detector/absorption/halfdimensions 0.001 1.25 1.05 cm
-/detector/absorption/rows 250
-/detector/absorption/columns 210
+/detector/absorption/rows 2
+/detector/absorption/columns 2
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm

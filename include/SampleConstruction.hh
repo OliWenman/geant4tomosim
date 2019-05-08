@@ -50,12 +50,18 @@ class SampleConstruction
 		void SetLastFullRotation(double value){lastfullrotation = 0;}
 		
 		//Set commands from messenger
-		void SetRadiusOffSet(double r) {radius = r;}
+		void SetRadiusOffSet(double r)        {radius = r;}
+		void SetTiltAngleX  (double anglex)   {tiltangleX = anglex;}
+		void SetTiltAngleY  (double angley)   {tiltangleY = angley;}
+		void SetTiltCentre  (G4ThreeVector c) {tiltcentre = c;}
+		
+	    G4ThreeVector CalculateCentre();
 		
     private:
         
         SampleConstructionMessenger* messenger;
-        SampleCollection samplelist;     
+        SampleCollection samplelist;   
+        SampleDescription* master;  
 
         bool removeplacement;
         double lastfullrotation;   
@@ -65,6 +71,10 @@ class SampleConstruction
         G4ThreeVector mastercentre;
         
         double radius;
+        
+        double tiltangleX;
+        double tiltangleY;
+        G4ThreeVector tiltcentre;
 };
 
 #endif

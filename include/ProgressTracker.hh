@@ -22,7 +22,8 @@ class ProgressTracker
         bool print;
         bool singleline;
         bool graphicsOn;
-        int  dprogress;         
+        int  dprogress;     
+        double rotationangle;    
       
     private:
         void ProgressBar(int Percent);

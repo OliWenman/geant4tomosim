@@ -15,7 +15,6 @@ class MyG4UImessenger : public G4UImessenger
         virtual ~MyG4UImessenger();
     
         virtual int  ApplyCommand(G4UIcommand* command, G4String newValue);
-        //virtual void SetNewValue (G4UIcommand* command, G4String newValue);
 };
 
 #endif

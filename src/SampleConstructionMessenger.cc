@@ -121,7 +121,19 @@ SampleConstructionMessenger::SampleConstructionMessenger(SampleConstruction* sc)
 	setradiusoffset -> SetUnitCategory("Length");
 	setradiusoffset -> SetDefaultUnit("cm");
 	setradiusoffset -> SetDefaultValue(0.5*cm);
-
+	
+	set_xtiltangle = new G4UIcmdWithADoubleAndUnit("/sample/tilt/anglex", this);
+	set_xtiltangle -> SetGuidance("Set the x angle if the whole sample needs to be tilted");
+	set_xtiltangle -> SetUnitCategory("Angle");
+	
+    set_ytiltangle = new G4UIcmdWithADoubleAndUnit("/sample/tilt/angley", this);
+	set_ytiltangle -> SetGuidance("Set the y angle if the whole sample needs to be tilted");
+	set_ytiltangle -> SetUnitCategory("Angle");
+	
+	set_tiltcentre = new G4UIcmdWith3VectorAndUnit("/sample/tilt/centre", this);
+	set_tiltcentre -> SetGuidance("Set centre of where all the samples will be rotate relative to");
+	set_tiltcentre -> SetUnitCategory("Length");
+	
 //=================================================================================================
 //  UNIT DICTIONARY
 
@@ -156,6 +168,9 @@ SampleConstructionMessenger::~SampleConstructionMessenger()
 	delete checkforoverlaps;
 
 	delete setradiusoffset;
+	delete set_xtiltangle;
+	delete set_ytiltangle;
+	delete set_tiltcentre;
 }
 
 #include "SampleDescription.hh"
@@ -167,8 +182,34 @@ SampleConstructionMessenger::~SampleConstructionMessenger()
 #include "G4ThreeVector.hh"
 #include "CommandStatus.hh"
 
-//void SetNewValue(G4UIcommand* command, G4String newValue)
-//{ ; }
+void SampleConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+{  
+    //-------------------------------------------------------------------------------------------------------------------------------
+	if(command == setradiusoffset )
+	{
+	    setradiusoffset -> GetNewUnitValue(newValue);
+		sampleconstruction -> SetRadiusOffSet(setradiusoffset -> GetNewDoubleValue(newValue));	
+	}
+    //-------------------------------------------------------------------------------------------------------------------------------
+    else if (command == set_xtiltangle)
+    {
+        set_xtiltangle->GetNewUnitValue(newValue);
+        sampleconstruction->SetTiltAngleX(set_xtiltangle->GetNewDoubleValue(newValue));
+    }
+    else if (command == set_ytiltangle)
+    {
+        set_ytiltangle->GetNewUnitValue(newValue);
+        sampleconstruction->SetTiltAngleY(set_ytiltangle->GetNewDoubleValue(newValue));
+    }
+    else if (command == set_tiltcentre)
+    {
+        sampleconstruction->SetTiltCentre(set_tiltcentre->GetNew3VectorValue(newValue));
+    }
+    else if(command == checkforoverlaps)
+	{
+		//sampleconstruction -> SetOverlapCheck(checkforoverlaps -> GetNewBoolValue(newValue));
+	}
+}
 
 int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String newValue)
 {
@@ -611,8 +652,8 @@ int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String new
         G4String unitstr = next();
         
         //Check if its an appropiate unit, if it isn't return error code
-		bool correctunit = length_units.count(unitstr);
-		if (correctunit) { unit = length_units[unitstr];}
+		bool correctunit = angle_units.count(unitstr);
+		if (correctunit) { unit = angle_units[unitstr];}
 		else             { return fIncorrectUnit;}
 		
 		xrot = xrot * unit; 
@@ -649,17 +690,6 @@ int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String new
 		if (!sample) {return fParameterNotFound;}
 	    
 	    sample->SetColour(colour);
-	}
-//-------------------------------------------------------------------------------------------------------------------------------
-	else if(command == checkforoverlaps)
-	{
-		//sampleconstruction -> SetOverlapCheck(checkforoverlaps -> GetNewBoolValue(newValue));
-	}
-//-------------------------------------------------------------------------------------------------------------------------------
-	else if(command == setradiusoffset )
-	{
-	    setradiusoffset -> GetNewUnitValue(newValue);
-		sampleconstruction -> SetRadiusOffSet(setradiusoffset -> GetNewDoubleValue(newValue));	
 	}
 //-------------------------------------------------------------------------------------------------------------------------------
 

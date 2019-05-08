@@ -3,15 +3,23 @@
 # 
 # Place the objects
 
-/sample/G4LogicalVolume/material   ObjectA IN625
+/sample/G4LogicalVolume/material   ObjectA AlSi10Mg
 /sample/G4LogicalVolume/colour     ObjectA blue
-/sample/G4VPhysicalVolume/position ObjectA 0 0 0 mm
-/sample/G4VPhysicalVolume/rotation ObjectA 0 0 45 deg
+/sample/G4VPhysicalVolume/position ObjectA 00.00 00.00 -1.10 mm
+/sample/G4VPhysicalVolume/rotation ObjectA 00.00 00.00 00.00 deg
 
-#/sample/G4LogicalVolume/material ObjectB MS1
-#/sample/G4LogicalVolume/colour ObjectB red
-#/sample/G4VPhysicalVolume/position ObjectB -0.45 0 0 cm
-#/sample/G4VPhysicalVolume/rotation ObjectB 0 90 0 deg
+/sample/G4LogicalVolume/material ObjectB IN625
+/sample/G4LogicalVolume/colour ObjectB red
+/sample/G4VPhysicalVolume/position ObjectB 00.00 00.00 03.60 mm
+/sample/G4VPhysicalVolume/rotation ObjectB 00.00 00.00 01.00 deg
+
 
 /sample/G4VPhysicalVolume/checkoverlaps ObjectA false
-/sample/rotation/radius 1 mm			
+/sample/rotation/radius  00.00 mm			
+/sample/tilt/anglex      10.00 deg
+/sample/tilt/angley      00.00 deg
+/sample/tilt/centre      00.00 00.00 00.00 mm
+
+#ObjectA z -0.11cm
+#ObjectB z +0.36cm
+

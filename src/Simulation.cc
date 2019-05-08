@@ -363,6 +363,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
     PGA -> ResetEvents(n_projection + 1);   
     
     Initialise_dataSets();
+    PGA -> GetProgressTracker().rotationangle = rotation_angle;
      
     //Beam on to start the simulation
     BeamOn(n_particles);
@@ -440,7 +441,7 @@ void Simulation::Visualisation()
 		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true");
 		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2");
 		
-		UImanager -> ApplyCommand("/vis/scene/add/axes 0 0 0 1 mm");
+		UImanager -> ApplyCommand("/vis/scene/add/axes 0 0 0 1 cm");
 		UImanager -> ApplyCommand("/vis/viewer/zoom 0.5 mm");
 		
 		UImanager -> ApplyCommand("/vis/scene/add/hits");

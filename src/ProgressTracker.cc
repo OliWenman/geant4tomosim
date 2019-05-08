@@ -18,7 +18,7 @@ ProgressTracker::ProgressTracker(): Timer()
 	print      = true; 
 	graphicsOn = false;
 	
-	dprogress = 5;
+	dprogress = 20;
 }
 
 ProgressTracker::~ProgressTracker()
@@ -87,22 +87,30 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int currentprojection)
 	        else
 	        {
 	            //Prints the information on a new line. Useful if extra information needs to be printed during simulation
-	            if(totalprogress != totalprogressCheck && projectionprogress % dprogress == 0)
+	            if(projectionprogress % dprogress == 0)
 		        {	
-		            G4cout << currentprojection << " of " << totalprojections << ": " << std::setw(3) << projectionprogress << "\%";
-		            G4cout << ", total progress: " << std::setw(3) << totalprogress << "%\ complete. ";
-		            G4cout << "Estimated time left "; 
-		            double etime = EstimatedTime(totalprogress, currentprojection);
-		            if (etime == -1)
-		    	    {
-		    	        G4cout << "calculating...";
-		    	    }
-		    	    else
-		    	    {
-		    	        PrintTime(etime);
-		    	    }
+		            if (projectionprogress == 0) 
+		            {
+		                G4cout << "projection " << currentprojection << " of " << totalprojections
+		                       << ", sample rotation: " << std::fixed << rotationangle*180./3.14159265359 << " deg\n";
+		            }
 		            
-		            totalprogressCheck = totalprogress;
+		            G4cout << std::setw(3) << projectionprogress << "\% ";
+		            
+		            if (projectionprogress == 100)
+		            {
+		                G4cout << "\ntotal progress: " << std::setw(3) << totalprogress << "%\ complete. ";
+		                G4cout << "estimated time left "; 
+		                double etime = EstimatedTime(totalprogress, currentprojection);
+		                if (etime == -1)
+		    	        {
+		    	            G4cout << "calculating...";
+		    	        }
+		    	        else
+		    	        {
+		    	            PrintTime(etime);
+		    	        }
+		    	    }
 		            
 		            G4cout << "\n";
 		        }

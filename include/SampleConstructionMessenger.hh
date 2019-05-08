@@ -27,7 +27,7 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		~SampleConstructionMessenger();
 
 		//Base class method
-		//void SetNewValue(G4UIcommand* command, G4String newValue);
+		void SetNewValue(G4UIcommand* command, G4String newValue);
 		int  ApplyCommand(G4UIcommand* command, G4String newValue);
 		
 	private:	
@@ -56,8 +56,11 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		MultiParameters *setsample_innerPosition;
 		MultiParameters *setsample_innerRotation;
 
-		//Rotation radius
-		G4UIcmdWithADoubleAndUnit *setradiusoffset;
+		//Adjusted positioning and rotation of the sample
+		G4UIcmdWithADoubleAndUnit  *setradiusoffset;
+		G4UIcmdWithADoubleAndUnit  *set_xtiltangle;
+		G4UIcmdWithADoubleAndUnit  *set_ytiltangle;
+		G4UIcmdWith3VectorAndUnit *set_tiltcentre;
 
 		//Dictionary for units
 		std::map<std::string, double> length_units;		

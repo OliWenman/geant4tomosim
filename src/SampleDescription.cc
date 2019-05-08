@@ -1,5 +1,8 @@
 #include "SampleDescription.hh"
 #include <math.h> 
+#include "G4SystemOfUnits.hh"
+#include "G4UnitsTable.hh"
+
 SampleDescription::SampleDescription() {}
 
 SampleDescription::SampleDescription(std::string     _name, 
@@ -154,7 +157,7 @@ void SampleDescription::BuildLogicVolume()
 
 #include "G4RotationMatrix.hh"
 
-bool SampleDescription::BuildPlacement(bool darkflatfields)
+bool SampleDescription::BuildPlacement(bool darkflatfields, double tiltangleX, double tiltangleY, G4ThreeVector tiltcentre)
 {
     if (darkflatfields)
     {
@@ -182,21 +185,38 @@ bool SampleDescription::BuildPlacement(bool darkflatfields)
                 //The order of rotation matters
                 G4RotationMatrix* rotmatrix = new G4RotationMatrix();
                 
+                //Adjust the rotations for any tilt to the sample
+                irotation = G4ThreeVector(irotation.x() + tiltangleX,
+                                          irotation.y() + tiltangleY,
+                                          irotation.z());          
+                
                 //Rotate the axis of rotation for the sample first
                 rotmatrix->rotateZ(irotation.z());
                 
                 //Rotate the other axes for the right orientation
                 rotmatrix->rotateX(irotation.x());
                 rotmatrix->rotateY(irotation.y());
+                
+                //Calculate the adjusted positions for z and y for tilt angle x
+                double newZ = tiltcentre.z() + std::cos(tiltangleX)*(iposition.z()) - std::sin(tiltangleX)*(iposition.y());
+                double newY = tiltcentre.y() + std::sin(tiltangleX)*(iposition.z()) + std::cos(tiltangleX)*(iposition.y());
+                
+                iposition = G4ThreeVector(iposition.x(), newY, newZ);
+                
+                //Calculate the adjusted positions for z and x for tilt angle y
+                newZ = tiltcentre.z() + std::cos(-tiltangleY)*(iposition.z()) - std::sin(-tiltangleY)*(iposition.x());
+                double newX = tiltcentre.x() + std::sin(-tiltangleY)*(iposition.z()) + std::cos(-tiltangleY)*(iposition.x());
+                
+                iposition = G4ThreeVector(newX, iposition.y(), newZ);
         
                 placement = new G4PVPlacement(rotmatrix,            
-				    			 	          iposition,    
+				    			 	          iposition,  
 				    			  	          logic,              //its logical volume
 				    			  	          name,               //its name
 				    			  	          motherbox_logic,    //its mother  volume
 				    			 	          false,              //no boolean operation
 				    			 	          id,                 //copy number
-				    			 	          checkforoverlaps);  //overlaps checking   	
+				    			 	          true);  //overlaps checking   	
             
                 construct_placement = false;
                 
@@ -259,7 +279,7 @@ void SampleDescription::ApplyTransforms(double        deltaTheta,
 		    newpos = G4ThreeVector(newX, newY, currentpos.z());
         }   
         
-        placement->SetTranslation(newpos);          
+        placement->SetTranslation(newpos); 
     }
 }
 
