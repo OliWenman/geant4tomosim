@@ -34,8 +34,11 @@ class SampleConstructionMessenger : public MyG4UImessenger
 	
 		//Pointer to the SampleConstruction class
 		SampleConstruction *sampleconstruction;
-
-		G4UIdirectory   *directory;
+        
+        G4UIdirectory   *directory;
+        
+        //My custom commands
+        //G4VSolid types
 		MultiParameters *build_cube;
 		MultiParameters *build_sphere;
 		MultiParameters *build_cylinder;
@@ -48,7 +51,6 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		MultiParameters  *setsample_material;
 		MultiParameters  *setsample_colour;
 		MultiParameters  *checkforoverlaps;
-		//G4UIcmdWithABool *checkforoverlapsAll;
 		
 		//Boolean solids
 		MultiParameters *build_subtractsolid;
@@ -56,11 +58,14 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		MultiParameters *setsample_innerPosition;
 		MultiParameters *setsample_innerRotation;
 
+        //Geant4 commands
 		//Adjusted positioning and rotation of the sample
 		G4UIcmdWithADoubleAndUnit  *setradiusoffset;
 		G4UIcmdWithADoubleAndUnit  *set_xtiltangle;
 		G4UIcmdWithADoubleAndUnit  *set_ytiltangle;
 		G4UIcmdWith3VectorAndUnit *set_tiltcentre;
+		
+		G4UIcmdWithABool *checkforalloverlaps;
 
 		//Dictionary for units
 		std::map<std::string, double> length_units;		

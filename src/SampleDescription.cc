@@ -157,7 +157,11 @@ void SampleDescription::BuildLogicVolume()
 
 #include "G4RotationMatrix.hh"
 
-bool SampleDescription::BuildPlacement(bool darkflatfields, double tiltangleX, double tiltangleY, G4ThreeVector tiltcentre)
+bool SampleDescription::BuildPlacement(bool          darkflatfields, 
+                                       double        tiltangleX, 
+                                       double        tiltangleY, 
+                                       G4ThreeVector tiltcentre, 
+                                       bool          checkforoverlaps)
 {
     if (darkflatfields)
     {
@@ -216,7 +220,7 @@ bool SampleDescription::BuildPlacement(bool darkflatfields, double tiltangleX, d
 				    			  	          motherbox_logic,    //its mother  volume
 				    			 	          false,              //no boolean operation
 				    			 	          id,                 //copy number
-				    			 	          true);  //overlaps checking   	
+				    			 	          checkforoverlaps);  //overlaps checking   	
             
                 construct_placement = false;
                 

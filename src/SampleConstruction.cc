@@ -16,6 +16,8 @@ SampleConstruction::SampleConstruction()
     tiltangleX = 0.*deg;
     tiltangleY = 0.*deg;
     tiltcentre = G4ThreeVector(0., 0., 0.);
+    
+    checkforoverlaps = false;
 }
 
 SampleConstruction::~SampleConstruction()
@@ -48,7 +50,8 @@ void SampleConstruction::Construct(bool darkflatfields)
         bool sampleplaced = sample->BuildPlacement(darkflatfields, 
                                                    tiltangleX, 
                                                    tiltangleY, 
-                                                   tiltcentre);
+                                                   tiltcentre, 
+                                                   checkforoverlaps);
     
         //Set the master placement as the first placement. All other samples
         //will rotate around this sample along the z axis

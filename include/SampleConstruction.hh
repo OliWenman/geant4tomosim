@@ -50,10 +50,11 @@ class SampleConstruction
 		void SetLastFullRotation(double value){lastfullrotation = 0;}
 		
 		//Set commands from messenger
-		void SetRadiusOffSet(double r)        {radius = r;}
-		void SetTiltAngleX  (double anglex)   {tiltangleX = anglex;}
-		void SetTiltAngleY  (double angley)   {tiltangleY = angley;}
-		void SetTiltCentre  (G4ThreeVector c) {tiltcentre = c;}
+		void SetRadiusOffSet       (double r)        {radius = r;}
+		void SetTiltAngleX         (double anglex)   {tiltangleX = anglex;}
+		void SetTiltAngleY         (double angley)   {tiltangleY = angley;}
+		void SetTiltCentre         (G4ThreeVector c) {tiltcentre = c;}
+		void SetCheckForAllOverLaps(bool value)      {checkforoverlaps = value;}
 		
 	    G4ThreeVector CalculateCentre();
 		
@@ -71,7 +72,7 @@ class SampleConstruction
         G4ThreeVector mastercentre;
         
         double radius;
-        
+        bool   checkforoverlaps;
         double tiltangleX;
         double tiltangleY;
         G4ThreeVector tiltcentre;

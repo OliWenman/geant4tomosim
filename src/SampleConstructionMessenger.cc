@@ -134,6 +134,9 @@ SampleConstructionMessenger::SampleConstructionMessenger(SampleConstruction* sc)
 	set_tiltcentre -> SetGuidance("Set centre of where all the samples will be rotate relative to");
 	set_tiltcentre -> SetUnitCategory("Length");
 	
+	checkforalloverlaps = new G4UIcmdWithABool("/sample/checkforalloverlaps", this);
+	checkforalloverlaps -> SetGuidance("Check for overlaps for all the samples placed");
+	
 //=================================================================================================
 //  UNIT DICTIONARY
 
@@ -171,6 +174,8 @@ SampleConstructionMessenger::~SampleConstructionMessenger()
 	delete set_xtiltangle;
 	delete set_ytiltangle;
 	delete set_tiltcentre;
+	
+	delete checkforalloverlaps;
 }
 
 #include "SampleDescription.hh"
@@ -182,15 +187,15 @@ SampleConstructionMessenger::~SampleConstructionMessenger()
 #include "G4ThreeVector.hh"
 #include "CommandStatus.hh"
 
+//Default method for commands that use Geant4 default type commands 
+
 void SampleConstructionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {  
-    //-------------------------------------------------------------------------------------------------------------------------------
-	if(command == setradiusoffset )
+    if (command == setradiusoffset)
 	{
 	    setradiusoffset -> GetNewUnitValue(newValue);
 		sampleconstruction -> SetRadiusOffSet(setradiusoffset -> GetNewDoubleValue(newValue));	
 	}
-    //-------------------------------------------------------------------------------------------------------------------------------
     else if (command == set_xtiltangle)
     {
         set_xtiltangle->GetNewUnitValue(newValue);
@@ -209,7 +214,13 @@ void SampleConstructionMessenger::SetNewValue(G4UIcommand* command, G4String new
 	{
 		//sampleconstruction -> SetOverlapCheck(checkforoverlaps -> GetNewBoolValue(newValue));
 	}
+	else if (command == checkforalloverlaps)
+	{
+	    sampleconstruction->SetCheckForAllOverLaps(checkforalloverlaps->GetNewBoolValue(newValue));
+	}
 }
+
+//New custom method to apply custom commands that require more error checking. Has a return type which can be used to identify the issue with the command.
 
 int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String newValue)
 {

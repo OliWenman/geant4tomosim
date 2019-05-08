@@ -32,10 +32,11 @@ class SampleDescription
         //Build the samples G4VSolid, G4LogicalVolume and G4PVPlacement
         virtual void BuildSolid();
         void BuildLogicVolume();
-        bool BuildPlacement(bool darkflatfields, 
-                            double tiltangleX, 
-                            double tiltangleY, 
-                            G4ThreeVector tiltcentre);
+        bool BuildPlacement(bool          darkflatfields, 
+                            double        tiltangleX, 
+                            double        tiltangleY, 
+                            G4ThreeVector tiltcentre,
+                            bool          checkforoverlaps);
 
         void ApplyTransforms(double        deltaTheta, 
                              double        deltaZ, 
