@@ -98,6 +98,9 @@ cdef class G4TomoSim:
         dotPosition  = filename.find('.')
         filepath_log = path + filename[0:dotPosition] + '_log.txt'
         
+        self.thisptr.setupvis_pywrapped(path,
+                                        filename[0:dotPosition])
+        
         self.thisptr.printinfo_pywrapped(filepath_log,
                                          n_particles, 
                                          totalprojections, 
@@ -275,27 +278,10 @@ cdef class G4TomoSim:
         plt.ylabel("Photons")
         plt.show()
         
-    def plotDiffraction(self):
-        
-        print "function being used"
-        data = self.thisptr.GetDiffractionData()
-        data = np.array(data)
-        
-        #plt.figure(220)
-        #plt.plot(data[0])
-        #plt.show()
-        #plt.figure(330)
-        #plt.plot(data[1])
-        #plt.show()
-        plt.figure(440)
-        plt.imshow(data, cmap="Greys")
-        #plt.
-        plt.show()
-        
-    def ApplyCommand(self, command):
+    def execute_command(self, command):
         self.thisptr.applycommand_pywrapped(command)
         
-    def ApplyMacroFile(self, macrofile):
+    def execute_macro(self, macrofile):
         self.thisptr.applymacrofile_pywrapped(macrofile)
     
     def RunSingleProjection(self, 
