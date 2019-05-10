@@ -98,7 +98,8 @@ class Simulation
 */
         int run_pywrapped(unsigned long long int totalparticles, 
                           int_vector1D           imageInfo, 
-                          double                 rotation_angles);
+                          double                 rotation_angles,
+                          double                 zposition);
 
 //================================================================================================================		                          
 /*

@@ -8,7 +8,7 @@ import tomosim_input as tsi
 
 #Can optionally add a file path and name for the data to be saved when running script
 if __name__ == '__main__':
-    defaultpath = this_directory + "/../Output/HDF5/SimulationData.nxs"
+    defaultpath = this_directory + "/../output/tomosimData.nxs"
     
     #Get the filepath from the first arguement
     try:
@@ -32,9 +32,10 @@ tomosim = sim.G4TomoSim(tsi.verbose,
 tomosim.addMacroFiles(tsi.macrofiles)
 
 tomosim.simulatetomography(filepath        = filepath,
-                           n_particles     = tsi.nParticles, 
-                           rotation_angles = tsi.rotation_angles, 
-                           nDarkFlatFields = tsi.nDarkFlatFields)
+                           n_particles     = tsi.particles, 
+                           nDarkFlatFields = tsi.ndarkflatfields,
+                           rotation_angles = tsi.rotation_angles,
+                           zpositions      = tsi.zpos )
                       
 """
 Sim.RunSingleProjection(1.e2,

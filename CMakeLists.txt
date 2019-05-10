@@ -79,7 +79,7 @@ add_subdirectory( src )
 add_subdirectory( bin )
 
 #Copy the Data_Output folder to the build directory
-file(COPY  ${CMAKE_CURRENT_SOURCE_DIR}/Output
+file(COPY  ${CMAKE_CURRENT_SOURCE_DIR}/output
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/settings 
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)

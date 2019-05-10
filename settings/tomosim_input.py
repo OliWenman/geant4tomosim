@@ -16,17 +16,23 @@ verbose         = 5
 interactive     = True
 
 #Image variables
-NumberOfImages  = 10
-nDarkFlatFields = 1
-nParticles      = 1.e6
+projections     = 10
+ndarkflatfields = 1
+particles       = 1.e6
 
 #Rotation angles
-startRotation   = 0*G4.deg
-TotalRotation   = 180.*G4.deg
-rotation_angles = np.linspace(start    = startRotation,  \
-                              stop     = TotalRotation,  \
-                              num      = NumberOfImages, \
+startrotation   = 0*G4.deg
+endrotation     = 180.*G4.deg
+rotation_angles = np.linspace(start    = startrotation,  \
+                              stop     = endrotation,    \
+                              num      = projections,    \
                               endpoint = False)
+startpos = +5.*G4.mm
+endpos   = -5.*G4.mm
+zpos     = np.linspace(start    = startpos,    \
+                       stop     = endpos,      \
+                       num      = projections, \
+                       endpoint = True)
 
 #Macro files to be included
 physics         = this_directory + "/physics.mac"

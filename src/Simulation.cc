@@ -306,7 +306,8 @@ void Simulation::applycommand_pywrapped(std::string command)
 
 int Simulation::run_pywrapped(unsigned long long int n_particles, 
                               std::vector<int>       imageinfo, 
-                              double                 rotation_angle)
+                              double                 rotation_angle,
+                              double                 zposition)
 {   
     //Get image parameters from the imageinfo
     int n_projection    = imageinfo[0];
@@ -358,7 +359,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
     //After it has been constructed, if the G4VPhysicalVolume still exists, apply the needed transformations
     //to the sample such as rotation and translation
     sampleconstruction->Construct(darkflatfields);
-    sampleconstruction->ApplyTransforms(rotation_angle, 0);
+    sampleconstruction->ApplyTransforms(rotation_angle, zposition);
 
     //Prepare for next run. Check if energy or gun has changed 
     beamManager -> ResetEvents(n_projection + 1);   

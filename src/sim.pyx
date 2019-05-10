@@ -39,8 +39,9 @@ cdef class G4TomoSim:
     def simulatetomography(self, 
                            str        filepath,
                            int        n_particles, 
-                           np.ndarray rotation_angles, 
-                           int        nDarkFlatFields):
+                           int        nDarkFlatFields,
+                           np.ndarray rotation_angles,
+                           np.ndarray zpositions = None ):
 
         """
         The main function to use if running the simulation on your local machine. Supply the filepsth to save the data. number of particles to simulate
@@ -153,17 +154,25 @@ cdef class G4TomoSim:
            
             #Get the rotation_angle
             if projection < totalprojections - nDarkFlatFields:        
-                 rotation_angle = rotation_angles[projection]
+                rotation_angle = rotation_angles[projection]
+                                 
+                if zpositions is None:
+                    zposition = 0
+                else :
+                    zposition = zpositions[projection]
+                
             elif projection >= totalprojections - nDarkFlatFields:
-                 rotation_angle = 0
+                rotation_angle = 0
+                zposition      = 0
             
             #Group the image info into a list   
             imageInfo = [projection, nDarkFlatFields, totalprojections]
-                            
+                       
             #Runs the simulation
             self.thisptr.run_pywrapped(n_particles, 
                                        imageInfo, 
-                                       rotation_angle)  
+                                       rotation_angle,
+                                       zposition)  
                
             iSavingTime = time.time()
 
@@ -283,15 +292,4 @@ cdef class G4TomoSim:
         
     def execute_macro(self, macrofile):
         self.thisptr.applymacrofile_pywrapped(macrofile)
-    
-    def RunSingleProjection(self, 
-                            n_particles, 
-                            n_projection, 
-                            n_darkflatfields,
-                            totalprojections, 
-                            rotation_angle):
-    
-        imageInfo = [n_projection, n_darkflatfields, totalprojections]
-        self.thisptr.run_pywrapped(n_particles, imageInfo, rotation_angle)
-        
      

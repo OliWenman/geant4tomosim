@@ -14,6 +14,8 @@ cdef extern from "Simulation.hh":
       void addmacros_pywrapped(vector[string])
       void applymacrofile_pywrapped(string)
       void applycommand_pywrapped(string)
+
+#===================================================================================================
       
       #Print information to the user about the simulation
       void printinfo_pywrapped(string,
@@ -24,17 +26,20 @@ cdef extern from "Simulation.hh":
       void setupvis_pywrapped(string,
 		                      string)
 
-#===================================================================================================
-
       #Run the simulation 
       int                         run_pywrapped(unsigned long long int, 
                                                 vector[int], 
+                                                double,
                                                 double)
+
+#===================================================================================================
                                                 
       int                         runsingleprojection_pywrapped(unsigned long long int,
                                                                 bint,
                                                                 double,
                                                                 double )
+
+#===================================================================================================
       
       #Get the data after the simulation is finished
       #Absorption data
@@ -66,3 +71,5 @@ cdef extern from "Simulation.hh":
       
       #Free memory
       void freedataMemory_pywrapped()
+      
+      

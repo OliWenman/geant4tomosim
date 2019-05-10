@@ -99,6 +99,10 @@ class SampleDescription
         G4VSolid          *solid;
         G4LogicalVolume   *logic;
         G4VPhysicalVolume *placement;
+        
+        std::string solidname;
+        std::string logicname;
+        std::string placementname;
 };
 
 #endif

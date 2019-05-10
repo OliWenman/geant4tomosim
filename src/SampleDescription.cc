@@ -232,7 +232,7 @@ bool SampleDescription::BuildPlacement(bool          darkflatfields,
 }
 
 void SampleDescription::ApplyTransforms(double        deltaTheta, 
-                                        double        deltaZ, 
+                                        double        zpos, 
                                         double        radius,
                                         G4ThreeVector centre)
 {
@@ -268,11 +268,12 @@ void SampleDescription::ApplyTransforms(double        deltaTheta,
 		    {
                 double newX = iposition.x() + (currentpos.x() - iposition.x()) * std::cos(-deltaTheta) - (currentpos.y() - iposition.y()) * std::sin(-deltaTheta);
                 double newY = iposition.y() + (currentpos.x() - iposition.x()) * std::sin(-deltaTheta) + (currentpos.y() - iposition.y()) * std::cos(-deltaTheta);
-			    newpos = G4ThreeVector(newX, newY, currentpos.z());   
+			    newpos = G4ThreeVector(newX, newY, iposition.z() + zpos);   
 		    }
 		    else 
 			{
-                newpos = placement->GetTranslation();			
+                newpos = placement->GetTranslation();	
+                newpos.setZ(iposition.z() + zpos);	
 			}
 	    }
 	    else
@@ -280,7 +281,7 @@ void SampleDescription::ApplyTransforms(double        deltaTheta,
 		    double newX = centre.x() + (currentpos.x() - centre.x()) * std::cos(-deltaTheta) - (currentpos.y() - centre.y()) * std::sin(-deltaTheta);
             double newY = centre.y() + (currentpos.x() - centre.x()) * std::sin(-deltaTheta) + (currentpos.y() - centre.y()) * std::cos(-deltaTheta);
 		    
-		    newpos = G4ThreeVector(newX, newY, currentpos.z());
+		    newpos = G4ThreeVector(newX, newY, iposition.z() + zpos);
         }   
         
         placement->SetTranslation(newpos); 
