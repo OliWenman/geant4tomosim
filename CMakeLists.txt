@@ -55,6 +55,8 @@ else()
     message(STATUS "ERROR: Couldn't find xraylib!")
 endif()
 
+find_package(Numpy REQUIRED)
+
 # With CMake, a clean separation can be made between the source tree and the
 # build tree.  When all source is compiled, as with pure C/C++, the source is
 # no-longer needed in the build tree.  However, with pure *.py source, the

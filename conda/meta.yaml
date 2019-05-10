@@ -3,8 +3,7 @@ package:
         version: "1.0.0"
 
 source:
-        git_url: https://github.com/OliWenman/geant4tomosim.git
-        git_rev: 1bd54c73a7fa951acbf9530c74ddb2b0ef646636
+        path: ..
 
 build:
         number: 0
@@ -13,11 +12,13 @@ requirements:
         build:
                 - cmake
                 - {{ compiler('cxx') }}
+                - pkg-config
         host:
                 - geant4
                 - python
                 - cython
                 - xraylib
+                - numpy
         run:
                 - python
                 - geant4
@@ -27,7 +28,7 @@ requirements:
                 - matplotlib
 
 test:
-        import:
+        imports:
                 - sim
 
 

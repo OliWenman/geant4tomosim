@@ -8,6 +8,6 @@ set_source_files_properties(${CYTHON_CMAKE_EXAMPLE_SOURCE_DIR}/src/sim.pyx
 cython_add_module( sim sim.pyx Simulation.cc ${sources})
 
 #Link any external libraries used with .so file
-target_include_directories(sim PUBLIC ${LIBXRL_INCLUDE_DIRS})
+target_include_directories(sim PUBLIC ${LIBXRL_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIR})
 target_link_libraries( sim ${Geant4_LIBRARIES} ${pkgcfg_lib_LIBXRL_xrl})
 
