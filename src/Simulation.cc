@@ -35,12 +35,14 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
-Simulation::Simulation()
-{
-
-}
-
-Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0), PGA(0), visManager(0), particleManager(0), stepManager(0) 
+Simulation::Simulation(int verb, bool interactive) : runManager(0), 
+                                                     detectorManager(0), 
+                                                     physicsManager(0), 
+                                                     beamManager(0), 
+                                                     visManager(0), 
+                                                     particleManager(0), 
+                                                     stepManager(0)
+                                                     
 {	
     globalVerbose = verb;
     interactiveOn = interactive;
@@ -66,14 +68,14 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
     //Create the objects needed for the G4RunManager class	
 	runManager = new G4RunManager();
 	
-  	DC = new DetectorConstruction(); 
-  	runManager -> SetUserInitialization(DC); 
+  	detectorManager = new DetectorConstruction(); 
+  	runManager -> SetUserInitialization(detectorManager); 
   	
-	PL = new PhysicsList();              
-	runManager -> SetUserInitialization(PL);
+	physicsManager = new PhysicsList();              
+	runManager -> SetUserInitialization(physicsManager);
 	
-	PGA = new PrimaryGeneratorAction(); 
-	runManager -> SetUserAction(PGA);
+	beamManager = new PrimaryGeneratorAction(); 
+	runManager -> SetUserAction(beamManager);
 	
 	particleManager = new StackingAction(); particleManager -> SetKillElectrons(true);
     runManager -> SetUserAction(particleManager);
@@ -88,7 +90,7 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
 
-    sampleconstruction = DC->GetSampleConstruction();
+    sampleconstruction = detectorManager->GetSampleConstruction();
 
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
@@ -113,8 +115,6 @@ Simulation::~Simulation()
 	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
-#include "CommandStatus.hh"
-
 void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
 {
     int nFiles = macroFiles.size();
@@ -126,7 +126,10 @@ void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
     
     macrofiles = macroFiles;
     
-    G4cout << "\nCOMPLETE! " << G4endl;
+    if (globalVerbose > 0)
+    {
+        G4cout << "\nCOMPLETE! " << G4endl;
+    }
 }
 
 void Simulation::applymacrofile_pywrapped(std::string macro)
@@ -139,14 +142,14 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
         G4cout << "Reading file '" << macro << "' " << G4endl;
      }
 
-    std::ifstream ReadFile;
+    std::ifstream readfile;
         
     //Try to open the macro file      
-    ReadFile.open(macro);
-    if (!ReadFile) 
+    readfile.open(macro);
+    if (!readfile) 
     {
-        G4cout << "\nERROR: Unable to open " << macro << " to apply commands. " << G4endl;
-        exit(1); 
+        G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
+        return; 
     }
       
     G4cout << "\n";  
@@ -154,7 +157,7 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
     //Read the file
     std::string command;    
     int line = 0;
-    while ((std::getline(ReadFile, command))) 
+    while ((std::getline(readfile, command))) 
     {
         ++line;
         // TAB-> ' ' conversion
@@ -184,13 +187,14 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
         }
     }
     
-    ReadFile.close();
+    readfile.close();
     if (globalVerbose > 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
 }
 
 #include "G4UIcommandTree.hh"
 #include "G4UIcommand.hh"
 #include "strfunctions.hh"
+#include "CommandStatus.hh"
 
 void Simulation::applycommand_pywrapped(std::string command)
 {
@@ -323,15 +327,14 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 	    else                  {verbose = globalVerbose - 3;}
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
-	    PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
-		PGA -> SetNumberOfEvents(n_particles, totalprojections);
+	    beamManager -> DoAutoBeamPlacement(-detectorManager->GetWorldSize().x());
+		beamManager -> SetNumberOfEvents(n_particles, totalprojections);
 		
-	    PL -> Fluorescence(); 
+	    physicsManager -> Fluorescence(); 
 	 
 	    runManager -> Initialize(); 
 	    runManager -> SetNumberOfEventsToBeStored (0);
-	    PL -> ActivateUserPhysics();
-        Visualisation();
+	    physicsManager -> ActivateUserPhysics();
 	    
 	    if (globalVerbose > 0)
 	    { 
@@ -347,7 +350,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
         }
         else 
         {
-            PGA->GetProgressTracker().print = false;
+            beamManager->GetProgressTracker().print = false;
         }
 	}
     
@@ -358,10 +361,10 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
     sampleconstruction->ApplyTransforms(rotation_angle, 0);
 
     //Prepare for next run. Check if energy or gun has changed 
-    PGA -> ResetEvents(n_projection + 1);   
+    beamManager -> ResetEvents(n_projection + 1);   
     
     Initialise_dataSets();
-    PGA -> GetProgressTracker().rotationangle = rotation_angle;
+    beamManager -> GetProgressTracker().rotationangle = rotation_angle;
      
     //Beam on to start the simulation
     BeamOn(n_particles);
@@ -376,7 +379,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 	    }
 	    
 	    //Reset needed variables for next run
-        PGA -> ResetEvents(0);
+        beamManager -> ResetEvents(0);
         sampleconstruction->SetLastRotation(0);
 	}
 
@@ -389,21 +392,20 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
                                                double zposition)
 {
     globalVerbose = 0;
-    PGA->GetProgressTracker().print = false;
+    beamManager->GetProgressTracker().print = false;
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
     	  	    	
     //Let the PrimaryGeneratorAction class know where to position the start of the beam
-	PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
-    PGA -> SetNumberOfEvents(n_particles, 0);
+	beamManager -> DoAutoBeamPlacement(-detectorManager->GetWorldSize().x());
+    beamManager -> SetNumberOfEvents(n_particles, 0);
 		
-	PL -> Fluorescence(); 
+	physicsManager -> Fluorescence(); 
 	 
 	runManager -> Initialize(); 
 	runManager -> SetNumberOfEventsToBeStored(0);
-	PL -> ActivateUserPhysics();
-    Visualisation();
+	physicsManager -> ActivateUserPhysics();
     
     //Construct the samples. If darkflatfields are on, then it will remove the samples G4VPhysicalVolume.
     //After it has been constructed, if the G4VPhysicalVolume still exists, apply the needed transformations
@@ -412,10 +414,10 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
     sampleconstruction->ApplyTransforms(rotation_angle, 0);
 
     //Prepare for next run. Check if energy or gun has changed 
-    PGA -> ResetEvents(0);   
+    beamManager -> ResetEvents(0);   
     
     Initialise_dataSets();
-    PGA -> GetProgressTracker().rotationangle = rotation_angle;
+    beamManager -> GetProgressTracker().rotationangle = rotation_angle;
      
     //Beam on to start the simulation
     BeamOn(n_particles);
@@ -426,11 +428,11 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
 	return 0;
 }    
 
-void Simulation::Visualisation()
+void Simulation::setupvis_pywrapped(std::string path,
+		                            std::string filename)
 {
-	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
-	/*
-	if (DC -> GetVisualization() == true)
+    //Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
+	if (detectorManager -> GetVisualization() == true)
 	{	
 	    if (globalVerbose > 0)
 	    {
@@ -438,37 +440,29 @@ void Simulation::Visualisation()
             G4cout << "GRAPHICS TURNED ON!";
         }
         
+        runManager->Initialize();
 		visManager = new G4VisExecutive("quiet");
 		visManager -> Initialize();
-        //Make the name of the file the same as the logname, remove the "_log.txt" at the end and replace with _vis
-        std::string visFileName = FileName.substr (0, FileName.length() - 8) + "_vis";    
         
-        //Set the filepath to save it, if the defualt is used, save in the Visualization folder
-        std::string filePath;
-        std::string defaultPath = "./../Output/HDF5/";
-        if (SaveLogPath == defaultPath){
-            filePath = "./../Output/Visualization/";
-        }
-        else {
-            //If a different path is used, create a folder to store the visualization data 
-            filePath = SaveLogPath + "Visualization/";
-            const char *filepath_char = filePath.c_str();
+        //If a different path is used, create a folder to store the visualization data 
+        path = path + "visualization_" + filename + "/";
+        const char *path_char = path.c_str();
             
-            //Check if the directory exists
-            DIR* Directory_exists = opendir(filepath_char);
+        //Check if the directory exists
+        DIR* directory_exists = opendir(path_char);
             
-            //If it doesn't exist, create it
-            if (!Directory_exists){
-                std::string mkdir = "mkdir " + filePath;
-                const char *mkdir_char = mkdir.c_str();
-                system(mkdir_char);
-            }
+        //If it doesn't exist, create it
+        if (!directory_exists)
+        {
+            std::string mkdir = "mkdir " + path;
+            const char *mkdir_char = mkdir.c_str();
+            system(mkdir_char);
         }
 		
 		//Setup the vis manager
 		UImanager -> ApplyCommand("/vis/open HepRepFile");
-		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + filePath);
-		UImanager -> ApplyCommand("/vis/heprep/setFileName " + visFileName);
+		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + path);
+		UImanager -> ApplyCommand("/vis/heprep/setFileName " + filename);
 		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh false");
 		//UImanager -> ApplyCommand("/vis/verbose errors");
 		UImanager -> ApplyCommand("/vis/viewer/flush");
@@ -490,13 +484,12 @@ void Simulation::Visualisation()
 		UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
 		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
 		
-		if (globalVerbose > 0) {G4cout << "\nSaving as " << filePath + visFileName + "N.heprep where N is an integer "<< G4endl;}
+		if (globalVerbose > 0) {G4cout << "\nSaving as " << path + filename + "N.heprep where N is an integer. "<< G4endl;}
 			
-		PGA->GetProgressTracker().singleline = false;
-		PGA->GetProgressTracker().graphicsOn = true;
+		beamManager->GetProgressTracker().singleline = false;
+		beamManager->GetProgressTracker().graphicsOn = true;
 	}
-	*/
-}
+}		
 
 //Function to run the simulation, will repeat simulation if over max limit
 void Simulation::BeamOn(unsigned long long int nParticles)
@@ -534,7 +527,7 @@ void Simulation::BeamOn(unsigned long long int nParticles)
 //Function to limit the number of particles if graphics is turned on
 unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticles, int nImage, std::string Mode)
 {
-    if (DC -> GetVisualization() == true && nParticles > 5000)
+    if (detectorManager -> GetVisualization() == true && nParticles > 5000)
     {   
         int limit = 100;
         nParticles = limit;     
@@ -572,7 +565,7 @@ void Simulation::printinfo_pywrapped(std::string filepath,
         SettingsLog log(SaveToFile);
         PrintInformation(log);
 
-        double particleperpixel = n_particles/(DC->GetAbsorptionDetector()->GetNumberOfxPixels() * DC->GetAbsorptionDetector()->GetNumberOfyPixels());
+        double particleperpixel = n_particles/(detectorManager->GetAbsorptionDetector()->GetNumberOfxPixels() * detectorManager->GetAbsorptionDetector()->GetNumberOfyPixels());
 	
 	    PrintToEndOfTerminal(log, '-');
 	    log << "META DATA: "
@@ -599,12 +592,12 @@ void Simulation::PrintInformation(SettingsLog log)
         int nFiles = macrofiles.size();
         for (int n = 0 ; n < nFiles ; n++)
         {      
-            std::ifstream ReadFile;
+            std::ifstream readfile;
         
             PrintToEndOfTerminal(log, '-');
             //Try to open the macro file      
-            ReadFile.open(macrofiles[n]);
-            if (!ReadFile) {
+            readfile.open(macrofiles[n]);
+            if (!readfile) {
                 G4cout << "\nERROR: Unable to open " << macrofiles[n] << " for log output. " << G4endl;
                 exit(1); 
             }
@@ -612,20 +605,20 @@ void Simulation::PrintInformation(SettingsLog log)
       
             //Read the file
             std::string Line;    
-            while ((std::getline(ReadFile, Line))) {
+            while ((std::getline(readfile, Line))) {
                 //if (Line.find('#') == std::string::npos)
                 if(Line[1] != '/') {log << Line << G4endl;}
             }
-            ReadFile.close();
+            readfile.close();
         }
     
         if (globalVerbose >= 1) {log.terminalOn = true;}
         else                    {log.terminalOn = false;}
     
         //Log the info from other classes
-        DC -> ReadOutInfo(log);
-	    PGA -> ReadOutInfo(log);
-	    PL -> ReadOutInfo(log);
+        detectorManager -> ReadOutInfo(log);
+	    beamManager -> ReadOutInfo(log);
+	    physicsManager -> ReadOutInfo(log);
     
     }
 }
@@ -672,7 +665,7 @@ void Simulation::CalculateStorageSpace(int projections)
         G4cout << "\n- Absorption: " << absorpStorageSpace << unit;
     
         //Beam energy
-        size_t beam_ByteTypeSize = PGA -> GetBeamEnergyByteTypeSize();
+        size_t beam_ByteTypeSize = beamManager -> GetBeamEnergyByteTypeSize();
         double beamStorageSpace = bins * beam_ByteTypeSize * projections;
         totalStorage += beamStorageSpace;
         unit = GetStorageUnit(beamStorageSpace);
@@ -714,36 +707,34 @@ std::string Simulation::GetStorageUnit(double &storage)
     double kilo = 1.e3;
     double byte = 1.;
 
-    if (storage < kilo)
+    if (storage > kilo)
     {
-        if (storage > kilo)
+        if (storage > mega)
         {
-            if (storage > mega)
+            if (storage > giga)
             {
-                if (storage > giga)
-                {
-                    if(storage > tera)
-                    { 
-                        if(storage > peta)
-                        {
-                            storage = storage/peta;
-                            return " PB";
-                        }
-                        storage = storage/tera;
-                        return " TB";
+                if(storage > tera)
+                { 
+                    if(storage > peta)
+                    {
+                        storage = storage/peta;
+                        return " pb";
                     }
-                    storage = storage/giga;
-                    return " GB";
+                    storage = storage/tera;
+                    return " tb";
                 }
-                storage = storage/mega;
-                return " MB";
+                storage = storage/giga;
+                return " gb";
             }
-            storage = storage/kilo;
-            return " KB";
+            storage = storage/mega;
+            return " mb";
         }
-        storage = storage/byte;
-        return " Bytes";
-    }              
+        storage = storage/kilo;
+        return " kb";
+    }
+    
+    storage = storage/byte;
+    return " bytes";           
 }
 
 void Simulation::SetSeed(long int seedinput)
@@ -768,7 +759,7 @@ void Simulation::SetSeed(long int seedinput)
 void Simulation::Initialise_dataSets()
 {
     if (globalVerbose > 2) {G4cout << "\nInitialising data... " << G4endl;}
-    DC->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
-    DC->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
-    PGA->SetupData();
+    detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
+    detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
+    beamManager->SetupData();
 }
