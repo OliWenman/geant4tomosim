@@ -16,7 +16,7 @@ verbose         = 5
 interactive     = True
 
 #Image variables
-NumberOfImages  = 1
+NumberOfImages  = 10
 nDarkFlatFields = 1
 nParticles      = 1.e6
 

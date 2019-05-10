@@ -20,6 +20,9 @@ cdef extern from "Simulation.hh":
                                unsigned long long int, 
                                int, 
                                int)
+      
+      void setupvis_pywrapped(string,
+		                      string)
 
 #===================================================================================================
 

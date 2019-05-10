@@ -63,9 +63,9 @@ find_package(Numpy REQUIRED)
 # source is processed directly.  To handle this, we reproduce the availability
 # of the source files in the build tree.
 add_custom_target( ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
-  		   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ReplicatePythonSourceTree.cmake
-  		   ${CMAKE_CURRENT_BINARY_DIR}
-  		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
+        		   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ReplicatePythonSourceTree.cmake
+  		           ${CMAKE_CURRENT_BINARY_DIR}
+  		           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
 #Include the relevant directories for the project
 include_directories( ${CYTHON_CMAKE_EXAMPLE_SOURCE_DIR}/include)

@@ -27,8 +27,8 @@ SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 	
 	progressSingleline = new G4UIcmdWithoutParameter("/simulation/progress/singleline", this);
 	
-	applymacrofile = new G4UIcmdWithAString("/tomosim/applymacro", this);
-	applymacrofile->SetGuidance("Apply a macro file to apply a list of commands with error checking");
+	applymacrofile = new G4UIcmdWithAString("/tomosim/execute", this);
+	applymacrofile->SetGuidance("Execute a macro file, which contains a list of commands, with error checking and handling");
 }
 
 SimulationMessenger::~SimulationMessenger()
