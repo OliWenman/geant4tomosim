@@ -59,8 +59,6 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0), DC(0), PL(0)
             G4cout << "\nInteractivity is turned off. The simulation will be interupted if there are any problems.";
         }
     }
-    
-    SaveLogPath = "./../Output/HDF5/";	
 
     simMessenger = new SimulationMessenger(this);	
 	materials    = new DefineMaterials(); 
@@ -379,15 +377,59 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 	    
 	    //Reset needed variables for next run
         PGA -> ResetEvents(0);
-        sampleconstruction->SetLastFullRotation(0);
+        sampleconstruction->SetLastRotation(0);
 	}
 
 	return 0;
 }
 
+int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particles,
+                                               bool   flatfield,
+                                               double rotation_angle,
+                                               double zposition)
+{
+    globalVerbose = 0;
+    PGA->GetProgressTracker().print = false;
+    
+    //Set the seed for this image by calling the rand function (next number in the sequence)
+	CLHEP::HepRandom::setTheSeed(rand());
+    	  	    	
+    //Let the PrimaryGeneratorAction class know where to position the start of the beam
+	PGA -> DoAutoBeamPlacement(-DC->GetWorldSize().x());
+    PGA -> SetNumberOfEvents(n_particles, 0);
+		
+	PL -> Fluorescence(); 
+	 
+	runManager -> Initialize(); 
+	runManager -> SetNumberOfEventsToBeStored(0);
+	PL -> ActivateUserPhysics();
+    Visualisation();
+    
+    //Construct the samples. If darkflatfields are on, then it will remove the samples G4VPhysicalVolume.
+    //After it has been constructed, if the G4VPhysicalVolume still exists, apply the needed transformations
+    //to the sample such as rotation and translation
+    sampleconstruction->Construct(flatfield);
+    sampleconstruction->ApplyTransforms(rotation_angle, 0);
+
+    //Prepare for next run. Check if energy or gun has changed 
+    PGA -> ResetEvents(0);   
+    
+    Initialise_dataSets();
+    PGA -> GetProgressTracker().rotationangle = rotation_angle;
+     
+    //Beam on to start the simulation
+    BeamOn(n_particles);
+
+	sampleconstruction->ApplyTransforms(0, 0);
+    sampleconstruction->SetLastRotation(0);
+
+	return 0;
+}    
+
 void Simulation::Visualisation()
 {
 	//Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
+	/*
 	if (DC -> GetVisualization() == true)
 	{	
 	    if (globalVerbose > 0)
@@ -453,6 +495,7 @@ void Simulation::Visualisation()
 		PGA->GetProgressTracker().singleline = false;
 		PGA->GetProgressTracker().graphicsOn = true;
 	}
+	*/
 }
 
 //Function to run the simulation, will repeat simulation if over max limit
@@ -509,16 +552,19 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::printinfo_pywrapped(unsigned long long int n_particles, int totalprojections, int nDarkFlatFields)
+void Simulation::printinfo_pywrapped(std::string filepath, 
+                                     unsigned long long int n_particles, 
+                                     int totalprojections, 
+                                     int nDarkFlatFields)
 {   
     if (globalVerbose > 0)
     {
         std::ofstream SaveToFile;
     
         //Try to open the file 
-        SaveToFile.open(SaveLogPath + FileName); 
+        SaveToFile.open(filepath); 
         if( !SaveToFile ) { 	
-            G4cout << "\nError: " << SaveLogPath + FileName << " file could not be opened from Simulation. " << "\n" << G4endl;
+            G4cout << "\nError: " << filepath << " file could not be opened from Simulation. " << "\n" << G4endl;
             exit(1);
         }
         

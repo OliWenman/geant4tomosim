@@ -26,6 +26,9 @@ SimulationMessenger::SimulationMessenger(Simulation* SimObject): sim(SimObject)
 	setgraphics -> SetGuidance("Set if you want the simulation to output a file that can viewed to see the geometry");
 	
 	progressSingleline = new G4UIcmdWithoutParameter("/simulation/progress/singleline", this);
+	
+	applymacrofile = new G4UIcmdWithAString("/tomosim/applymacro", this);
+	applymacrofile->SetGuidance("Apply a macro file to apply a list of commands with error checking");
 }
 
 SimulationMessenger::~SimulationMessenger()
@@ -34,6 +37,7 @@ SimulationMessenger::~SimulationMessenger()
 	delete setseed;
 	delete setgraphics;
 	delete progressSingleline;
+	delete applymacrofile;
 }
 
 void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -48,7 +52,10 @@ void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if (command == progressSingleline)
 	{
-	
+	    
 	}
-	
+	else if (command == applymacrofile)
+	{
+	    sim->applymacrofile_pywrapped(newValue);
+	}
 }

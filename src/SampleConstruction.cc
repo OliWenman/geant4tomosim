@@ -11,7 +11,7 @@ SampleConstruction::SampleConstruction()
     masterplacementSet = false;
     
     radius = 0.*cm;
-    lastfullrotation = 0;
+    lastrotation = 0;
     
     tiltangleX = 0.*deg;
     tiltangleY = 0.*deg;
@@ -70,12 +70,12 @@ void SampleConstruction::Construct(bool darkflatfields)
 
 #include "G4PhysicalVolumeStore.hh"
 
-void SampleConstruction::ApplyTransforms(double fullrotation, double position)
+void SampleConstruction::ApplyTransforms(double rotation, double position)
 {
     //Work out the change in angle
-    double deltaTheta = fullrotation - lastfullrotation;
-    lastfullrotation = fullrotation;
-    G4ThreeVector centre = CalculateCentre();
+    double deltaTheta = rotation - lastrotation;
+    lastrotation = rotation;
+    //G4ThreeVector centre = CalculateCentre();
 
     //Loop through the samples and apply the placement transforms needed to them
     for (int i = 0 ; i < samplelist.size() ; i++)

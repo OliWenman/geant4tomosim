@@ -7,21 +7,21 @@
 
 /simulation/seed 0
 /simulation/graphics false
-/world/visualization true	
+/world/visualization false	
 
 #--------------------------------------------------------------------------------
 # World
 
-/world/size 15 10 2.1 cm		
+/world/size 150 100 30 mm		
 /world/material G4_Galactic
 
 #--------------------------------------------------------------------------------
 # Detectors
 
 # - Absorption
-/detector/absorption/halfdimensions 0.001 1.25 1.05 cm
-/detector/absorption/rows 2
-/detector/absorption/columns 2
+/detector/absorption/halfdimensions 00.01 10.00 05.6 mm
+/detector/absorption/rows 450
+/detector/absorption/columns 252
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm

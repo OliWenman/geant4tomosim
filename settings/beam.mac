@@ -21,8 +21,8 @@
 # - Position commands
 /beam/autoposition true
 #/beam/pos/centre -3 0.0 0.0 cm
-/beam/pos/halfx 1.25 cm
-/beam/pos/halfy 1.05 cm
+/beam/pos/halfx 10.00 mm
+/beam/pos/halfy 05.6 mm
 #/beam/momentum 1.00 0.00 0.00 
 
 # - Particle commands

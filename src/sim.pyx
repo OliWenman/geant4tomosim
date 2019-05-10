@@ -1,5 +1,6 @@
-# creating a cython wrapper class
+#Creating a cython wrapper class
 import numpy as np
+cimport numpy as np
 import h5py
 import time
 import os
@@ -9,143 +10,241 @@ import sys
 
 import NexusFormatter
 
-cdef class PySim:
+"""
+G4TomoSim is for the simulation of tomography data using the C++ toolkit Geant4.
+Designed to be accessed by Python, functions wrapped in Cython.
+
+Author: Oliver Wenman
+
+"""
+
+cdef class G4TomoSim:
 
     cdef Simulation *thisptr        
-    cdef public nexusfile
-
-    #Simulation time
-    cdef public double SimTime
-    
-    cdef public str SaveFilePath  
-    cdef public str NexusName
   
     #Constructor, create an instance of the C++ class
-    def __cinit__(self, verbose = 1, interactive = True):
-       
-        #Creates the default path to save file 
-        WorkingDirectory = os.path.dirname(os.getcwd())
-        BuildDirectory = "/Output/HDF5/"
-        self.SaveFilePath = WorkingDirectory + BuildDirectory
-        self.NexusName = "SimulationData.nxs"
-        
+    def __cinit__(self, 
+                  verbose = 1, 
+                  interactive = True):
+                  
         self.thisptr = new Simulation(verbose, interactive)
-        self.nexusfile = NexusFormatter.NexusFormatter()
 
     #Delete the C++ class
     def __dealloc__(self):
         del self.thisptr
-        del self.nexusfile
    
-    def addMacroFiles(self, macroFiles):
+    def addMacroFiles(self, list macroFiles):
         self.thisptr.addmacros_pywrapped(macroFiles)
 
-    def run(self, TotalParticles, rotation_angles, nDarkFlatFields):
+    def simulatetomography(self, 
+                           str        filepath,
+                           int        n_particles, 
+                           np.ndarray rotation_angles, 
+                           int        nDarkFlatFields):
+
+        """
+        The main function to use if running the simulation on your local machine. Supply the filepsth to save the data. number of particles to simulate
+        per image, a numpy.darray of rotation angles, and the number of dark and flat fields.
         
-        if TotalParticles >= 1:
-
-           Path = './../Output/HDF5/'
-           
-           
-           TotalImages = len(rotation_angles) + nDarkFlatFields
-
-           self.thisptr.printinfo_pywrapped(TotalParticles, TotalImages, nDarkFlatFields)
-          
-           FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
-           FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
-           
-           self.nexusfile.openFile(self.SaveFilePath + self.NexusName)
-           if self.nexusfile.setupSuccess == False:
-              print "\nAborting run..." 
-              return 0
-           
-           fluoreBins = self.thisptr.getNumFluorbins_pywrapped()
-           beamBins   = self.thisptr.getbeambins_pywrapped()
-           xPixels = self.thisptr.getNumAbsXpixels_pywrapped()
-           yPixels = self.thisptr.getNumAbsYpixels_pywrapped()
-           
-           self.nexusfile.CreateProjectionFolder(nDarkFlatFields, TotalImages, yPixels, xPixels, self.thisptr.getAbsHalf3Dim_pywrapped(), rotation_angles)
-           self.nexusfile.CreateDataGroup("Beam_Energy", nImages = TotalImages, eBins = beamBins)
-           
-           if FFFluorescence == True:
-              self.nexusfile.CreateDataGroup("Fluorescence", nImages = TotalImages, eBins = fluoreBins)
-              
-           if FMFluorescence == True:
-              self.nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", nImages = TotalImages, eBins = fluoreBins, xBins = xPixels, yBins = yPixels)
-           
-           iTime = time.time()
-           
-           for CurrentImage in range(TotalImages):
-           
-               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               if CurrentImage < TotalImages - nDarkFlatFields:
-                  
-                  #if (deletatheta = 
-                  rotation_angle = rotation_angles[CurrentImage]
-                  
-               elif CurrentImage >= TotalImages - nDarkFlatFields:
-                  rotation_angle = 0
-               
-               imageInfo = [CurrentImage, nDarkFlatFields, TotalImages]
-                            
-               #pyRun returns the 1D array at the end of each run. Reshape it to make it 2D
-               self.thisptr.run_pywrapped(TotalParticles, imageInfo, rotation_angle)  
-               
-               iSavingTime = time.time()
-               
-               self.nexusfile.AddProjectionData(self.absorptionData(), CurrentImage)
-               
-               if CurrentImage == 0:
-                  energy_xaxis = self.beamEnergyBins()
-                  
-                  self.nexusfile.AddxAxis("Beam_Energy", energy_xaxis)
-                  
-                  energy_xaxis = self.thisptr.getFluoreEneBins_pywrapped()
-                  if FFFluorescence == True:
-                     self.nexusfile.AddxAxis("Fluorescence", energy_xaxis)
-                     
-                  if FMFluorescence == True:
-                     self.nexusfile.AddxAxis("Full_Mapping_Fluorescence", energy_xaxis)
-               
-               self.nexusfile.AddData("Beam_Energy", self.beamEnergyData(), nImage = CurrentImage)    
-               
-               if FFFluorescence == True:
-                  self.nexusfile.AddData("Fluorescence", data = self.fullfieldfluoreData(), nImage = CurrentImage)
-                  
-               if FMFluorescence == True:
-                  data = self.fullmappingfluoreData()
-
-                  self.nexusfile.AddData("Full_Mapping_Fluorescence", data = data, nImage = CurrentImage)
-               
-               eSavingTime = time.time()
-               SavingTime  = eSavingTime - iSavingTime
-               self.thisptr.setSavingTime_pywrapped (SavingTime)
-
-           #Ouput the time in the appropriate units
-           eTime = time.time()
-           self.SimTime = eTime -iTime
-           
-           self.nexusfile.LinkData()   
-
-           message = "The total simulation time is"
-           if self.SimTime < 60:
-              print message, round(self.SimTime, 3), "seconds. "
-           elif self.SimTime < 60*60:
-              print message, round(self.SimTime/60, 3), "minutes. "
-           else:
-              print message, round(self.SimTime/(60*60), 3), "hours. "
+        The function will loop through the rotation_angles supplied, saving at the end of each projection the appropiate data in a nexus format.
+        Other variables for the simulation can be controlled via macrofiles supplied before this function, such as the sample, physics used, 
+        beam and detector configurations, and creation of materials. 
+        
+        """
+        totalprojections = len(rotation_angles) + nDarkFlatFields
+        
+        if n_particles <= 1:
+            print ("\nERROR: n_particles should be greater or equal to 1! ")
+            return 0
             
-           print "\nData was saved in", self.SaveFilePath 
-           self.nexusfile.closeFile()
-           
-           self.thisptr.freedataMemory_pywrapped()
-            
-        else:
-           print("\nERROR: The number of particles and number of images should be greater or equal to 1! ")
-
+        if nDarkFlatFields <= 0:
+            print("\nERROR: nDarkFlatFields can't be negative! ")
+            return 0
+        
+        stringLength = len(filepath)
     
+        pathFound = False
+        filepathokay = False;
+
+        #Loop through the string to find the path and the name
+        for i in reversed(range(stringLength)):
+            char = filepath[i]
+        
+            #Finds the path and then can seperate the variables to path and name
+            if char == '/':
+  
+                filename = filepath[i+1:stringLength]      
+                path = filepath[0:i+1]
+                pathFound = True
+                filepathokay = True
+        
+                break
+        
+        nexusExtension = filepath[-4:stringLength]
+        #If the file doesn't have the .nxs extension, ask for another input
+        if nexusExtension != '.nxs':
+            print "\nERROR: the extension", filename,"is not valid. Please input the file with a \'.nxs\' extension. "
+            filepathokay = False
+    
+        pathOkay = os.path.isdir(path)
+            
+        if not pathOkay :
+            print "\nERROR: the directory \'", path, "\' doesn't exist."
+            filepathokay = False
+    
+        if not filepathokay :
+            return 0   
+    
+        dotPosition  = filename.find('.')
+        filepath_log = path + filename[0:dotPosition] + '_log.txt'
+        
+        self.thisptr.printinfo_pywrapped(filepath_log,
+                                         n_particles, 
+                                         totalprojections, 
+                                         nDarkFlatFields)   
+                 
+        #Checks to see if the nexus template was created successfully  
+        nexusfile = NexusFormatter.NexusFormatter()
+        nexusfile.openFile(filepath)
+        if nexusfile.setupSuccess == False:
+            print "\nAborting run..." 
+            return 0
+        
+        #Get needed variables from the C++ side    
+        FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
+        FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
+        fluoreBins = self.thisptr.getNumFluorbins_pywrapped()
+        beamBins   = self.thisptr.getbeambins_pywrapped()
+        xPixels = self.thisptr.getNumAbsXpixels_pywrapped()
+        yPixels = self.thisptr.getNumAbsYpixels_pywrapped()
+           
+        #Create the path to save the projection data
+        nexusfile.CreateProjectionFolder(nDarkFlatFields, 
+                                         totalprojections, 
+                                         yPixels, 
+                                         xPixels, 
+                                         self.thisptr.getAbsHalf3Dim_pywrapped(), 
+                                         rotation_angles)
+                                                 
+        #Create the other data groups in the nexus file template   
+        nexusfile.CreateDataGroup("Beam_Energy", 
+                                   nImages = totalprojections, 
+                                   eBins = beamBins)
+           
+        if FFFluorescence == True:
+            nexusfile.CreateDataGroup("Fluorescence", 
+                                       nImages = totalprojections, 
+                                       eBins = fluoreBins)
+              
+        if FMFluorescence == True:
+            nexusfile.CreateDataGroup("Full_Mapping_Fluorescence", 
+                                       nImages = totalprojections, 
+                                       eBins = fluoreBins, 
+                                       xBins = xPixels, 
+                                       yBins = yPixels)
+        
+        iTime = time.time()
+        
+        #Start the loop for the simulation
+        for projection in range(totalprojections):
+           
+            #Get the rotation_angle
+            if projection < totalprojections - nDarkFlatFields:        
+                 rotation_angle = rotation_angles[projection]
+            elif projection >= totalprojections - nDarkFlatFields:
+                 rotation_angle = 0
+            
+            #Group the image info into a list   
+            imageInfo = [projection, nDarkFlatFields, totalprojections]
+                            
+            #Runs the simulation
+            self.thisptr.run_pywrapped(n_particles, 
+                                       imageInfo, 
+                                       rotation_angle)  
+               
+            iSavingTime = time.time()
+
+            #Save the projection data                           
+            nexusfile.AddProjectionData(self.absorptionData(), projection)
+               
+            #Add axes to the other data
+            if projection == 0:
+                energy_xaxis = self.beamEnergyBins()
+                  
+                nexusfile.AddxAxis("Beam_Energy", energy_xaxis)
+                  
+                energy_xaxis = self.thisptr.getFluoreEneBins_pywrapped()
+                if FFFluorescence == True:
+                    nexusfile.AddxAxis("Fluorescence", energy_xaxis)
+                     
+                if FMFluorescence == True:
+                    nexusfile.AddxAxis("Full_Mapping_Fluorescence", energy_xaxis)
+               
+            #Save other data
+            nexusfile.AddData("Beam_Energy", 
+                               self.beamEnergyData(), 
+                               nImage = projection)    
+               
+            if FFFluorescence == True:
+                nexusfile.AddData("Fluorescence", 
+                                   data = self.fullfieldfluoreData(), 
+                                   nImage = projection)
+                  
+            if FMFluorescence == True:
+                data = self.fullmappingfluoreData()
+                nexusfile.AddData("Full_Mapping_Fluorescence", 
+                                   data = data, 
+                                   nImage = projection)
+            
+            #Record the saving time, estimated time can be adjusted with this into account   
+            eSavingTime = time.time()
+            SavingTime  = eSavingTime - iSavingTime
+            self.thisptr.setSavingTime_pywrapped (SavingTime)
+
+        #Ouput the time in the appropriate units
+        eTime = time.time()
+        simtime = eTime -iTime
+
+        message = "The total simulation time is"
+        if simtime < 60:
+            print message, round(simtime, 3), "seconds. "
+        elif simtime < 60*60:
+            print message, round(simtime/60, 3), "minutes. "
+        else:
+            print message, round(simtime/(60*60), 3), "hours. "
+            
+        nexusfile.LinkData()   
+        
+        print "\nData was saved in", 
+        nexusfile.closeFile()
+        del nexusfile
+        
+        #Frees the memory by reducing the arrays to store the data back to a size of 0.   
+        self.thisptr.freedataMemory_pywrapped()
+
+
+    def runsingleprojection(self, 
+                            int n_particles, 
+                            bint flatfields,
+                            double rotation_angle,
+                            double zposition):
+        
+        """
+        Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
+        
+        """
+        
+        return self.thisptr.runsingleprojection_pywrapped(n_particles,
+                                                          flatfields,
+                                                          rotation_angle,
+                                                          zposition)
+       
     def absorptionData(self):
-        return np.reshape(self.thisptr.getAbsorption_pywrapped(), (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
+        """
+        Return the absorption data. Is orginally 1D, reshapes it too 2D.  
+        """
+        return np.reshape(self.thisptr.getAbsorption_pywrapped(), 
+                         (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
     
     def photonTransmission(self):
         return np.sum(self.thisptr.getAbsorption_pywrapped())
@@ -161,14 +260,6 @@ cdef class PySim:
 
     def fullmappingfluoreData(self):
         return np.array(self.thisptr.getFullMappingFluore_pywrapped())
-        
-    def setFilePath(self, FilePath, NexusName, logName):
-        self.SaveFilePath = FilePath
-        self.NexusName = NexusName
-        self.thisptr.setlogfile_pywrapped (FilePath, logName)
-        
-    def printNexusTree(self):
-        self.nexusfile.DisplayTree()
         
     def plotBeamEnergy(self):
         plt.plot(self.beamEnergyBins(), self.thisptr.getBeamEnergy_pywrapped())
@@ -206,3 +297,15 @@ cdef class PySim:
         
     def ApplyMacroFile(self, macrofile):
         self.thisptr.applymacrofile_pywrapped(macrofile)
+    
+    def RunSingleProjection(self, 
+                            n_particles, 
+                            n_projection, 
+                            n_darkflatfields,
+                            totalprojections, 
+                            rotation_angle):
+    
+        imageInfo = [n_projection, n_darkflatfields, totalprojections]
+        self.thisptr.run_pywrapped(n_particles, imageInfo, rotation_angle)
+        
+     

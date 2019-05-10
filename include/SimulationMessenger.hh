@@ -31,6 +31,7 @@ class SimulationMessenger: public G4UImessenger
 
 		//Pointers to different commands
 		G4UIdirectory*           directory;
+		G4UIcmdWithAString*      applymacrofile;
 		G4UIcmdWithAnInteger*    setseed;
 		G4UIcmdWithAString*      setgraphics;
 		G4UIcmdWithoutParameter* progressSingleline;

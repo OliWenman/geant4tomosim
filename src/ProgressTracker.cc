@@ -18,7 +18,7 @@ ProgressTracker::ProgressTracker(): Timer()
 	print      = true; 
 	graphicsOn = false;
 	
-	dprogress = 20;
+	dprogress = 5;
 }
 
 ProgressTracker::~ProgressTracker()
@@ -86,15 +86,15 @@ void ProgressTracker::PrintProgress(int CurrentEvent, int currentprojection)
 	        }
 	        else
 	        {
+	            if (CurrentEvent == 1) 
+		        {
+		            G4cout << "projection " << currentprojection << " of " << totalprojections
+		                   << ", sample rotation: " << std::fixed << rotationangle*180./3.14159265359 << " deg\n";
+		        }
+	        
 	            //Prints the information on a new line. Useful if extra information needs to be printed during simulation
 	            if(projectionprogress % dprogress == 0)
 		        {	
-		            if (projectionprogress == 0) 
-		            {
-		                G4cout << "projection " << currentprojection << " of " << totalprojections
-		                       << ", sample rotation: " << std::fixed << rotationangle*180./3.14159265359 << " deg\n";
-		            }
-		            
 		            G4cout << std::setw(3) << projectionprogress << "\% ";
 		            
 		            if (projectionprogress == 100)

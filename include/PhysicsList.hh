@@ -11,6 +11,7 @@ class PhysicsListMessenger;
 class G4StepLimiter;
 
 class G4PhotoElectricEffect;
+class G4LivermorePhotoElectricModel;
 class G4LivermorePolarizedPhotoElectricModel;
 
 class G4ComptonScattering;
@@ -64,12 +65,13 @@ class PhysicsList: public G4VModularPhysicsList
 		
 		//Pointers to the physics processes and models
 		G4PhotoElectricEffect* photoelectriceffect;
-		G4LivermorePolarizedPhotoElectricModel* livpol_photoeletriceffect;
+		//G4LivermorePolarizedPhotoElectricModel* livpol_photoeletriceffect;
+		G4LivermorePhotoElectricModel* liv_photoelectric; 
 		
-		G4ComptonScattering* comptonscattering;
+		G4ComptonScattering*     comptonscattering;
 		G4LivermoreComptonModel* liv_comptonscattering;
 		
-		G4RayleighScattering* rayleighscattering;
+		G4RayleighScattering*     rayleighscattering;
 		G4LivermoreRayleighModel* liv_rayleighscattering;
 		
 		GammaOpticalRefraction* gamma_refraction;

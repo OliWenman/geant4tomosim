@@ -13,9 +13,9 @@
 /sample/G4VPhysicalVolume/position ObjectB 00.00 00.00 03.60 mm
 /sample/G4VPhysicalVolume/rotation ObjectB 00.00 00.00 02.00 deg
 
-/sample/checkforalloverlaps true
-/sample/rotation/radius     00.00 mm			
-/sample/tilt/anglex         10.00 deg
+/sample/checkforalloverlaps false
+/sample/rotation/radius     0.00 mm			
+/sample/tilt/anglex         2.00 deg
 /sample/tilt/angley         00.00 deg
 /sample/tilt/centre         00.00 00.00 00.00 mm
 

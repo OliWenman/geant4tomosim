@@ -44,9 +44,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 		                                                                      totalruns = TotalImages; 
 		                                                                      progress.Setup(value, TotalImages);}
 		void SetNumberOfBins(int value){bins = value;}
-		void ResetEvents(int nImage){currentevent = 0; 
-		                             currentrun = nImage; 
-		                             progress.ResetEvents();}
+		void ResetEvents(int n_projection){currentevent = 0; 
+		                                   currentrun = n_projection; 
+		                                   progress.ResetEvents();}
 		
 		void SetSavingTime(double value){progress.SetSavingTime(value);}
 		

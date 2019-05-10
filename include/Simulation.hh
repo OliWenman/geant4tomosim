@@ -44,7 +44,10 @@ class Simulation
 		void applymacrofile_pywrapped (std::string macro);
 		
 		//Print information about the simulation to the user. Amount of info depends on verbose setting
-		void printinfo_pywrapped(unsigned long long int totalparticles, int numberOfimages, int ndarkflatFields);
+		void printinfo_pywrapped(std::string filepath,
+		                         unsigned long long int totalparticles, 
+		                         int numberOfimages, 
+		                         int ndarkflatFields);
 		
 //================================================================================================================		
 	
@@ -52,6 +55,11 @@ class Simulation
         int run_pywrapped(unsigned long long int totalparticles, 
                           int_vector1D           imageInfo, 
                           double                 rotation_angles);
+                          
+        int runsingleprojection_pywrapped (unsigned long long int totalparticles,
+                                           bool   flatfield,
+                                           double rotation_angle,
+                                           double zposition);    
 
         //Functions to get data from detectors
 
@@ -80,7 +88,6 @@ class Simulation
 //================================================================================================================
 		
 		//Set pywrapped functions
-		void setlogfile_pywrapped    (std::string path, std::string fileName) {SaveLogPath = path; FileName = fileName; }
 		void setSavingTime_pywrapped (double Time)                            {PGA -> SetSavingTime(Time);              }
 		
 		//Free memory of data
@@ -118,9 +125,6 @@ class Simulation
 
 		long int seedCmd;
 		bool randseed;
-
-		std::string SaveLogPath;
-		std::string FileName;
 		
 		int globalVerbose;
 		

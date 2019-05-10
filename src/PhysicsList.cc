@@ -47,7 +47,7 @@
 
 #include "G4RunManager.hh"
 
-PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), livpol_photoeletriceffect(0),
+PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), liv_photoelectric(0)/*livpol_photoeletriceffect(0)*/,
                                                       comptonscattering(0), liv_comptonscattering(0),
                                                       rayleighscattering(0), liv_rayleighscattering(0),
                                                       gamma_refraction(0), 
@@ -73,7 +73,8 @@ PhysicsList::~PhysicsList()
   	delete physicsMessenger; physicsMessenger = 0;
   	
   	delete photoelectriceffect; photoelectriceffect = 0;
-  	delete livpol_photoeletriceffect; livpol_photoeletriceffect = 0;
+  	delete liv_photoelectric;   liv_photoelectric = 0;
+  	//delete livpol_photoeletriceffect; livpol_photoeletriceffect = 0;
   	
   	delete comptonscattering; comptonscattering = 0;
   	delete liv_comptonscattering; liv_comptonscattering = 0;
@@ -106,6 +107,7 @@ void PhysicsList::ConstructProcess()
 	AddTransportation();
 	//Register EM physics
 	ConstructEM();
+	//AddStepMax();
 }
 void PhysicsList::ConstructEM()
 {
@@ -128,9 +130,17 @@ void PhysicsList::ConstructEM()
 		    if (!photoelectriceffect)
 		    {
 		        photoelectriceffect = new G4PhotoElectricEffect();
+		        photoelectriceffect->SetMaxKinEnergy(175*keV);
+			    liv_photoelectric = new G4LivermorePhotoElectricModel();
+			    photoelectriceffect->SetEmModel(liv_photoelectric);
+			    pmanager->AddDiscreteProcess(photoelectriceffect);
+			    
+			    /*
+			     photoelectriceffect = new G4PhotoElectricEffect();
 			    livpol_photoeletriceffect = new G4LivermorePolarizedPhotoElectricModel();
 			    photoelectriceffect->SetEmModel(livpol_photoeletriceffect);
 			    pmanager->AddDiscreteProcess(photoelectriceffect);
+			    */		    
 		    }
 		
 			/*G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
@@ -143,6 +153,7 @@ void PhysicsList::ConstructEM()
             if (!comptonscattering)
             {
 			    comptonscattering = new G4ComptonScattering();
+			    comptonscattering->SetMaxKinEnergy(175*keV);
 			    liv_comptonscattering = new G4LivermoreComptonModel();
 			    comptonscattering->SetEmModel(liv_comptonscattering);
 			    pmanager->AddDiscreteProcess(comptonscattering); 
@@ -152,6 +163,7 @@ void PhysicsList::ConstructEM()
 			if (!rayleighscattering)
 			{
 			    rayleighscattering = new G4RayleighScattering();
+			    rayleighscattering->SetMaxKinEnergy(175*keV);
 			    liv_rayleighscattering = new G4LivermoreRayleighModel();
 			    rayleighscattering->SetEmModel(liv_rayleighscattering);
 			    pmanager->AddDiscreteProcess(rayleighscattering); 
@@ -181,7 +193,7 @@ void PhysicsList::ConstructEM()
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
 		 }
-	    //G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 1*GeV);
+	    G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 175*keV);
 	}
 }
 
@@ -303,7 +315,7 @@ void PhysicsList::SetCuts()
 //Loop through each particle and add its max step for each process
 void PhysicsList::AddStepMax()
 {
-    /*// Step limitation seen as a process
+    // Step limitation seen as a process
     fStepMaxProcess = new StepMax();
 
     auto particleIterator=GetParticleIterator();
@@ -317,7 +329,7 @@ void PhysicsList::AddStepMax()
         {
             pmanager->AddDiscreteProcess(fStepMaxProcess);
         }
-  }*/
+  }
 }
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)
@@ -332,7 +344,5 @@ void PhysicsList::ReadOutInfo(SettingsLog& log)
 	if (fluorescenceOn)       {log << "\n- Fluorescence";}
 	if (refractionOn)         {log << "\n- Gamma refraction";}
 	if (gamma_absorptionOn)   {log << "\n- Gamma absorption";}
-	
-	
 }
 

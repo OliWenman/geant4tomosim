@@ -16,12 +16,22 @@ cdef extern from "Simulation.hh":
       void applycommand_pywrapped(string)
       
       #Print information to the user about the simulation
-      void printinfo_pywrapped(unsigned long long int TotalParticles, int NumberOfImages, int nDarkFlatFields)
+      void printinfo_pywrapped(string,
+                               unsigned long long int, 
+                               int, 
+                               int)
 
 #===================================================================================================
 
       #Run the simulation 
-      int                         run_pywrapped(unsigned long long int, vector[int], double)
+      int                         run_pywrapped(unsigned long long int, 
+                                                vector[int], 
+                                                double)
+                                                
+      int                         runsingleprojection_pywrapped(unsigned long long int,
+                                                                bint,
+                                                                double,
+                                                                double )
       
       #Get the data after the simulation is finished
       #Absorption data
@@ -50,7 +60,6 @@ cdef extern from "Simulation.hh":
   
       #Set functions
       void setSavingTime_pywrapped (double)
-      void setlogfile_pywrapped (string, string)
       
       #Free memory
       void freedataMemory_pywrapped()

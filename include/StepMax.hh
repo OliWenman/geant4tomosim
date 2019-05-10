@@ -36,9 +36,9 @@ inline G4double StepMax::PostStepGetPhysicalInteractionLength(const G4Track& aTr
                                                               G4ForceCondition* condition)
 {
     // condition is set to "Not Forced"
-    *condition = NotForced;
+    *condition = Forced;
   
-    G4double limit = 100; 
+    G4double limit = 10000; 
     
     return limit;
 }

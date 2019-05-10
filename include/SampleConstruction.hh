@@ -47,7 +47,7 @@ class SampleConstruction
 		SampleDescription* FindSample(std::string name);
 		Boolean_Sample*    FindSample_Boolean(std::string name);
 		
-		void SetLastFullRotation(double value){lastfullrotation = 0;}
+		void SetLastRotation(double value){lastrotation = 0;}
 		
 		//Set commands from messenger
 		void SetRadiusOffSet       (double r)        {radius = r;}
@@ -65,7 +65,7 @@ class SampleConstruction
         SampleDescription* master;  
 
         bool removeplacement;
-        double lastfullrotation;   
+        double lastrotation;   
         
         bool masterplacementSet;
         std::string mastername;
