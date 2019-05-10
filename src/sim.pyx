@@ -52,15 +52,25 @@ cdef class G4TomoSim:
         beam and detector configurations, and creation of materials. 
         
         """
-        totalprojections = len(rotation_angles) + nDarkFlatFields
+
+        #Error check the inputs to make sure they are correct
+        if zpositions is not None:
+            if len(zpositions) != len(rotation_angles):
+                raise Exception("zpositions and rotation_angles should be the same shape.")
+            
+            if zpositions.ndim != 1:
+                raise Exception("zpositions should be 1D.")
         
+        if rotation_angles.ndim != 1:
+            raise Exception ("rotation_angles should be 1D.")
+            
         if n_particles <= 1:
-            print ("\nERROR: n_particles should be greater or equal to 1! ")
-            return 0
+            raise Exception("n_particles should be greater or equal to 1.")
             
         if nDarkFlatFields <= 0:
-            print("\nERROR: nDarkFlatFields can't be negative! ")
-            return 0
+            raise Exception("nDarkFlatFields can't be negative.")
+
+        totalprojections = len(rotation_angles) + nDarkFlatFields
         
         stringLength = len(filepath)
     
