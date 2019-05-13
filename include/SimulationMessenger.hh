@@ -1,3 +1,9 @@
+/*
+Control general settings for the simulation via commands.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef SimulationMessenger_h
 #define SimulationMessenger_h 1
 

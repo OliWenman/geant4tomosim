@@ -1,3 +1,9 @@
+/*
+Class to use PhysicsList functions via commands.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef PhysicsListMessenger_h
 #define PhysicsListMessenger_h 1
 

@@ -1,3 +1,14 @@
+/*
+A class assigned to a AbsorptionDetectors G4LogicalVolume. Inherits 
+from Geant4's G4SenstiveDetector class which is used to determines
+the process taken when a particle is detected.
+
+Each pixel is assigned a copy number, data is stored as a 1D vector.
+Converted to 2D on python side via numpy.shape method.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef AbsorptionSD_h
 #define AbsorptionSD_h 1
 

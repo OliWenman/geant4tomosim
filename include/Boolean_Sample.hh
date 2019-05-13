@@ -1,11 +1,12 @@
-//Auther: Oliver Wenman
+/*
+A class that inherits from SampleDescription, Boolean_Sample is used to
+extend its ability to make more complicated boolean solids by joining
+and subtracting geometry away from other solids. Therefore it needs
+additional attributes and methods to know which solids to use as well as
+at what rotation and position to subtract the solids away from each other.
 
-//A class that inherits from SampleDescription, Boolean_Sample is used to
-//extend its ability to make more complicated boolean solids by joining
-//and subtracting geometry away from other solids. Therefore it needs
-//additional attributes and methods to know which solids to use as well as
-//at what rotation and position to subtract the solids away from each other.
-
+Author: Oliver Wenman
+*/
 #ifndef Boolean_Sample_h
 #define Boolean_Sample_h 1
 

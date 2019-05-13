@@ -1,3 +1,10 @@
+/*
+A messenger class for AbsorptionDetector, interfaces commands to control variables
+with in that class.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef AbsorptionDetectorMessenger_h
 #define AbsorptionDetectorMessenger_h 1
 

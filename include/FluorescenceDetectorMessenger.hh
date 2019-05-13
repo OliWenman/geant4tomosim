@@ -1,3 +1,9 @@
+/*
+Messenger class for FluorescenceDetector, apply its functions via commands.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef FluorescenceDetectorMessenger_h
 #define FluorescenceDetectorMessenger_h 1
 

@@ -1,3 +1,12 @@
+/*
+A class to control and manage physics used for a simulation.
+Note: Using Geant4 version 10.4 doesn't allow for changing
+fluorescence on or off once set due to a lock method done
+internally inside G4VAtomDeexcitation.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef PhysicsList_h
 #define PhysicsList_h 1
 
@@ -32,6 +41,16 @@ class PhysicsList: public G4VModularPhysicsList
 	public:
   		PhysicsList();
   		~PhysicsList();
+/*
+        ConstructEM(), ConstructParticle() and ConstructProcess() are inherited methods
+        from G4VModularPhysicsList.
+*/
+        //Construct the particles and processes
+		void ConstructEM();
+  		void ConstructParticle();
+  		void ConstructProcess();
+		void SetCuts();
+		void AddStepMax();
 
 		//Used to set the type of phyiscs package you want
 		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
@@ -48,13 +67,6 @@ class PhysicsList: public G4VModularPhysicsList
 
         void ActivateUserPhysics();     
         void Fluorescence();   
-        
-		//Construct the particles and processes
-		void ConstructEM();
-  		void ConstructParticle();
-  		void ConstructProcess();
-		void SetCuts();
-		void AddStepMax();
 
 		//Read and save info user has inputted
 		void ReadOutInfo(SettingsLog& log);

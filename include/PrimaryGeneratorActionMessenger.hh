@@ -1,3 +1,7 @@
+/*
+Class to control PrimaryGeneratorAction class via commands.
+*/
+
 #ifndef PrimaryGeneratorActionMessenger_h
 #define PrimaryGeneratorActionMessenger_h 1
 

@@ -1,3 +1,11 @@
+"""
+G4TomoSim is for the simulation of tomography data using the C++ toolkit Geant4.
+Designed to be accessed by Python, functions wrapped in Cython.
+
+Author: Oliver Wenman
+
+"""
+
 #Creating a cython wrapper class
 import numpy as np
 cimport numpy as np
@@ -9,14 +17,6 @@ import matplotlib.pyplot as plt
 import sys
 
 import NexusFormatter
-
-"""
-G4TomoSim is for the simulation of tomography data using the C++ toolkit Geant4.
-Designed to be accessed by Python, functions wrapped in Cython.
-
-Author: Oliver Wenman
-
-"""
 
 cdef class G4TomoSim:
 
@@ -32,9 +32,26 @@ cdef class G4TomoSim:
     #Delete the C++ class
     def __dealloc__(self):
         del self.thisptr
-   
+
+    #===============================================================================================
+    """
+    Functions for executing macro files (.mac). Used to control the settings of the simulation by
+    containing a list of commands.
+    """
+
+    #Execute a list containing paths to macro files
     def addMacroFiles(self, list macroFiles):
         self.thisptr.addmacros_pywrapped(macroFiles)
+    
+    #Execute a single macro file by providing the path to the file    
+    def execute_macro(self, str macrofile):
+        self.thisptr.applymacrofile_pywrapped(macrofile)
+
+    #Execute a command. Error checking in command done via C++ in "Simulation.hh".
+    def execute_command(self, str command):
+        self.thisptr.applycommand_pywrapped(command)
+
+    #===============================================================================================
 
     def simulatetomography(self, 
                            str        filepath,
@@ -44,8 +61,9 @@ cdef class G4TomoSim:
                            np.ndarray zpositions = None ):
 
         """
-        The main function to use if running the simulation on your local machine. Supply the filepsth to save the data. number of particles to simulate
-        per image, a numpy.darray of rotation angles, and the number of dark and flat fields.
+        The main function to use if running the simulation on your local machine. Supply the filepath to save the data, number of particles to simulate
+        per projection, the number of dark and flat fields, a numpy.darray of rotation angles, and optionally a numpy.darray of zpositions for a helical
+        scan.
         
         The function will loop through the rotation_angles supplied, saving at the end of each projection the appropiate data in a nexus format.
         Other variables for the simulation can be controlled via macrofiles supplied before this function, such as the sample, physics used, 
@@ -65,7 +83,7 @@ cdef class G4TomoSim:
             raise Exception ("rotation_angles should be 1D.")
             
         if n_particles <= 1:
-            raise Exception("n_particles should be greater or equal to 1.")
+            raise Exception("n_particles can't be less than 1.")
             
         if nDarkFlatFields <= 0:
             raise Exception("nDarkFlatFields can't be negative.")
@@ -74,7 +92,7 @@ cdef class G4TomoSim:
         
         stringLength = len(filepath)
     
-        pathFound = False
+        pathfound = False
         filepathokay = False;
 
         #Loop through the string to find the path and the name
@@ -86,32 +104,29 @@ cdef class G4TomoSim:
   
                 filename = filepath[i+1:stringLength]      
                 path = filepath[0:i+1]
-                pathFound = True
-                filepathokay = True
+                pathfound = filepathokay = True
         
                 break
         
         nexusExtension = filepath[-4:stringLength]
+        
         #If the file doesn't have the .nxs extension, ask for another input
         if nexusExtension != '.nxs':
-            print "\nERROR: the extension", filename,"is not valid. Please input the file with a \'.nxs\' extension. "
-            filepathokay = False
+            raise Exception ("the extension", filename,"is not valid for file. Please input the file with a \'.nxs\' extension.")
+        
+        #Checks to see if path exists
+        if not os.path.isdir(path) :
+            raise Exception ("the directory \'", path, "\' doesn't exist.")
     
-        pathOkay = os.path.isdir(path)
-            
-        if not pathOkay :
-            print "\nERROR: the directory \'", path, "\' doesn't exist."
-            filepathokay = False
-    
-        if not filepathokay :
-            return 0   
-    
+        #Create the log file name
         dotPosition  = filename.find('.')
         filepath_log = path + filename[0:dotPosition] + '_log.txt'
         
+        #Setup any external visualisation
         self.thisptr.setupvis_pywrapped(path,
                                         filename[0:dotPosition])
         
+        #Print information about the settings of the simulation to the user and save in a log file
         self.thisptr.printinfo_pywrapped(filepath_log,
                                          n_particles, 
                                          totalprojections, 
@@ -127,10 +142,10 @@ cdef class G4TomoSim:
         #Get needed variables from the C++ side    
         FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
         FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
-        fluoreBins = self.thisptr.getNumFluorbins_pywrapped()
-        beamBins   = self.thisptr.getbeambins_pywrapped()
-        xPixels = self.thisptr.getNumAbsXpixels_pywrapped()
-        yPixels = self.thisptr.getNumAbsYpixels_pywrapped()
+        fluoreBins     = self.thisptr.getNumFluorbins_pywrapped()
+        beamBins       = self.thisptr.getbeambins_pywrapped()
+        xPixels        = self.thisptr.getNumAbsXpixels_pywrapped()
+        yPixels        = self.thisptr.getNumAbsYpixels_pywrapped()
            
         #Create the path to save the projection data
         nexusfile.CreateProjectionFolder(nDarkFlatFields, 
@@ -244,7 +259,6 @@ cdef class G4TomoSim:
         #Frees the memory by reducing the arrays to store the data back to a size of 0.   
         self.thisptr.freedataMemory_pywrapped()
 
-
     def runsingleprojection(self, 
                             int n_particles, 
                             bint flatfields,
@@ -255,6 +269,9 @@ cdef class G4TomoSim:
         Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
         
         """
+        
+        if n_particles <= 1:
+            raise Exception("n_particles can't be less than 1.")
         
         return self.thisptr.runsingleprojection_pywrapped(n_particles,
                                                           flatfields,
@@ -296,10 +313,4 @@ cdef class G4TomoSim:
         plt.xlabel("Energy (keV)")
         plt.ylabel("Photons")
         plt.show()
-        
-    def execute_command(self, command):
-        self.thisptr.applycommand_pywrapped(command)
-        
-    def execute_macro(self, macrofile):
-        self.thisptr.applymacrofile_pywrapped(macrofile)
      

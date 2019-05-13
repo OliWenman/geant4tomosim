@@ -19,9 +19,9 @@
 # Detectors
 
 # - Absorption
-/detector/absorption/halfdimensions 00.01 10.00 05.6 mm
-/detector/absorption/rows 450
-/detector/absorption/columns 252
+/detector/absorption/halfdimensions 00.0001 1.00112 0.6004 cm
+/detector/absorption/rows 432
+/detector/absorption/columns 304
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm

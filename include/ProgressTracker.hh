@@ -1,3 +1,11 @@
+/*
+Class to track the progress of a simulation. It does this by
+knowing how many events there are, the current event its on,
+how many runs there will be and what the current run is.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef ProgressTracker_h
 #define ProgressTracker_h 1
 

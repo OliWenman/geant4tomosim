@@ -1,3 +1,13 @@
+/*
+A class that can define new G4Element's, G4Isotope's and G4Material's to be used.
+
+Author: Oliver Jack Wenman
+
+To do list:
+- Update methods to accomidate for new error checking via commands like in SampleConstruction
+  and SampleConstructionMessenger.
+*/
+
 #ifndef DefineMaterials_h
 #define DefineMaterials_h 1
 

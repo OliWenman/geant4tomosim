@@ -1,3 +1,10 @@
+/*
+Messenger class for DefineMaterials. Interfaces its functions to be able
+to work via commands.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef DefineMaterialsMessenger_h
 #define DefineMaterialsMessenger_h 1
 

@@ -1,3 +1,9 @@
+/*
+Class to build a fluorescence detector.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef FluorescenceDetector_h
 #define FluorescenceDetector_h 1
 

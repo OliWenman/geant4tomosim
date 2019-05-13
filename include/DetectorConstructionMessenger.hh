@@ -1,3 +1,9 @@
+/*
+Messenger class for DetectorConstruction, control variables via commands
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef DetectorConstructionMessenger_h
 #define DetectorConstructionMessenger_h 1
 

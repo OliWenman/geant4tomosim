@@ -1,3 +1,10 @@
+/*
+Manages all geometry a user can build such as the world and 
+detectors.
+
+Author: Oliver Jack Wenmans
+*/
+
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 

@@ -1,3 +1,12 @@
+/*
+A class that builds the absorption detectors used in a simulation. 
+It will build the detectors G4VSolids, G4LogicalVolume and G4PhysicalVolume 
+as well as contain the pointer to the sensitive detector class
+AbsorptionSD, which determines what happens when a particle is detected.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef AbsorptionDetector_h
 #define AbsorptionDetector_h 1
 

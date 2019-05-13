@@ -1,3 +1,7 @@
+/*
+Function to print a symbol to the end of the terminal
+*/
+
 #ifndef PrintLines_h
 #define PrintLines_h 1
 

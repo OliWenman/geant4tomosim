@@ -1,7 +1,13 @@
-//A intermediate class that inherits from G4UImessenger. Needed as its SetNewValue
-//method has no return type. Return type useful to make custom error checks for complex
-//commands that have multiple inputs of different types
+/*
+A intermediate class that inherits from G4UImessenger. Needed as its SetNewValue
+method has no return type. Return type useful to make custom error checks for complex
+commands that have multiple inputs of different types.
 
+SetNewMethod will be used for standard commands, ApplyCommand will be used for any
+custom commands.
+
+Author: Oliver Jack Wenman
+*/
 #ifndef MyG4UImessenger_h
 #define MyG4UImessenger_h 1
 

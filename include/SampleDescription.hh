@@ -1,12 +1,13 @@
-//Author: Oliver Wenman    
+/*
+SampleDescription stores all the variables needed to build the G4VSolids, G4LogicalVolumes,
+and G4VPhysicalVolumes. It works by only building the G4 classes if it has the appropiate 
+variables to do so. If one of the G4 classes is modified via commands, this class has the 
+ability to update the material for instance in G4LogicalVolume by rebuilding it.
 
-//SampleDescription stores all the variables needed to build the G4VSolids, G4LogicalVolumes,
-//and G4VPhysicalVolumes. It works by only building the G4 classes if it has the appropiate 
-//variables to do so. If one of the G4 classes is modified via commands, this class has the 
-//ability to update the material for instance in G4LogicalVolume by rebuilding it.
+Allows for very flexible sample construction and modifying mid simulation
 
-//Allows for very flexible sample construction and modifying mid simulation
-
+Author: Oliver Wenman  
+*/
 #ifndef SampleDescription_h 
 #define SampleDescription_h 1
 

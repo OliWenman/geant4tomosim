@@ -1,5 +1,9 @@
-//Rename the vectors so they are easier to read and dont take as much space
+/*
+Rename the vectors so they are easier to read and dont take as much space
+for multidimensional vectors.
 
+Author: Oliver Jack Wenman
+*/
 #ifndef MyVectors_h
 #define MyVectors_h 1
 

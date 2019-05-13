@@ -1,3 +1,10 @@
+/*
+Class with the ability to simultaneously write to a file and
+output to a terminal. Can toggle each option on and off.
+
+Author: Oliver Jack Wenman 
+*/
+
 #ifndef SettingsLog_h
 #define SettingsLog_h 1
 

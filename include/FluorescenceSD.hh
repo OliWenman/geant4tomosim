@@ -1,3 +1,10 @@
+/*
+Sensitive Detector class for FluorescenceDetector. Can record full-mapping
+and full-field fluorescence. 
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef FluorescenceSD_h
 #define FluorescenceSD_h 1
 
@@ -13,9 +20,13 @@ class FluorescenceSD : public G4VSensitiveDetector
   	public:
   	    FluorescenceSD();
     	~FluorescenceSD();
-  
-    	virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
-    	virtual void   Initialize(G4HCofThisEvent* hitCollection);
+/*
+        The ProcessHits method is a function inherited from G4VSensitiveDetector. It returns
+        true or false when a particle enters the volume. Assuming the detectors are 100%
+        efficient, the detector will always process the hit of the particle.
+*/
+    	G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
+    	void   Initialize(G4HCofThisEvent* hitCollection);
 		
 		void InitialiseData();
 		void FreeMemory();

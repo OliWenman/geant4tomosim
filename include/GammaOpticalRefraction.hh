@@ -1,3 +1,12 @@
+/*
+A way to allow the particle G4Gamma to have access to refraction physics as
+Geant4 has a seperate particle, G4OpticalPhoton, for this physics process.
+Overriding the IsApplicable method to accpect the G4Gamma particle instead.
+NOTES: This is experimental and may have unintended side effects. One
+of these is that fluorescence will no longer occur at all with this process
+on for some reason.
+*/
+
 #ifndef GammaOpticalRefraction_h
 #define GammaOpticalRefraction_h 1
 

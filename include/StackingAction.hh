@@ -1,3 +1,9 @@
+/*
+Optional Geant4 class used to stop tracking and killing unnecessary particles
+that don't need to be tracked and take computational time. In this case, 
+all electrons are killed. 
+*/
+
 #ifndef StackingAction_h
 #define StackingAction_h 1
 

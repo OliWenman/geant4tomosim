@@ -1,3 +1,12 @@
+/*
+Inherited from a mandatory Geant4 class to control the particle beam. This class has access
+to the ParticleBeam class, which determines which method to create the beam. This in turn
+will then create an event.
+
+Author: Oliver Jack Wenman
+
+*/
+
 #ifndef PrimaryGeneratorAction_h
 #define PrimaryGeneratorAction_h 1
 
@@ -25,14 +34,15 @@ class G4GeneralParticleSource;
 
 class ParticleBeam;
 
-//It defines a single particle which hits the detectors perpendicular to the input face
-
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   	public:
     	PrimaryGeneratorAction();    
     	~PrimaryGeneratorAction();
     	
+/*
+        GeneratePrimaries(G4Event* ) is a inherited function used to create an event in Geant4.
+*/    	
    		void GeneratePrimaries(G4Event* );
    		void SetupData();
 		void ReadOutInfo(SettingsLog& log);

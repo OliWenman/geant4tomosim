@@ -27,8 +27,8 @@ rotation_angles = np.linspace(start    = startrotation,  \
                               stop     = endrotation,    \
                               num      = projections,    \
                               endpoint = False)
-startpos = +5.*G4.mm
-endpos   = -5.*G4.mm
+startpos = +0.*G4.mm
+endpos   = -0.*G4.mm
 zpos     = np.linspace(start    = startpos,    \
                        stop     = endpos,      \
                        num      = projections, \

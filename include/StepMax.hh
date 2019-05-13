@@ -1,3 +1,10 @@
+/*
+Class to set the maximum step a particle can take. If optimised,
+can save computational time.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef StepMax_h
 #define StepMax_h 1
 

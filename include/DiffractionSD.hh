@@ -1,3 +1,7 @@
+/*
+Sensitive detector class for DiffractionDetector. 
+*/
+
 #ifndef DiffractionSD_h
 #define DiffractionSD_h 1
 
@@ -10,8 +14,7 @@ class G4HCofThisEvent;
 
 //Tracker sensitive detector class.
 //The hits are accounted in hits in ProcessHits() function which is called
-//by Geant4 kernel at each step. A hit is created with each step with non zero 
-//energy deposit.
+//by Geant4 kernel at each step. 
 
 class DiffractionSD : public G4VSensitiveDetector
 {

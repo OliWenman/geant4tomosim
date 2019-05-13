@@ -1,3 +1,10 @@
+/*
+Optinal Geant4 class that is called every single step a particle takes. Useful for 
+debugging.
+
+Author: Oliver Jack Wenman 
+*/
+
 #ifndef SteppingAction_h
 #define SteppingAction_h 1
 

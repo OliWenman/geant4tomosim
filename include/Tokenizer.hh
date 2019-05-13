@@ -1,3 +1,10 @@
+/*
+Class used to tokenize strings. Can have optinal Flags, used for
+error checking a string command.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef Tokenizer_h
 #define Tokenizer_h 1
 

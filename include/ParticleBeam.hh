@@ -1,3 +1,15 @@
+/*
+Class to control the particle beam. 
+Two different methods viabale. Using the G4GeneralParticleSource (GPS) 
+has its own built in messenger class and is very flexible on building the 
+beam such as custom energy spectrum, position biasing, beam shape etc. 
+Can also switch to using the G4ParticleGun, more basic but slightly 
+faster than the GPS method (around 5 - 20%).
+
+Author: Oliver Jack Wenman
+
+*/
+
 #ifndef ParticleBeam_h 
 #define ParticleBeam_h 1
 

@@ -1,3 +1,11 @@
+/*
+Class to build a diffraction detector.
+NOTE: Currently Geant4 does not simulate diffraction physics. May be removed
+in future version.
+
+Author: Oliver Jack Wenman
+*/
+
 #ifndef DiffractionDetector_h
 #define DiffractionDetector_h 1
 
