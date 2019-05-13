@@ -23,7 +23,8 @@ class MultiParameters : public G4UIcmdWithAString
 {
     public:
         MultiParameters(const char *theCommandPath, MyG4UImessenger *theMessenger);
-        void SetNumberOfParameters(int value) {numberofparameters = value;}
+        void SetNumberOfParameters(int value)    {numberofparameters = value;}
+        void MoreParametersAvailable(bool value) {moreparameters = value;}
 
         G4int DoIt(G4String parameterList);
         
@@ -31,7 +32,8 @@ class MultiParameters : public G4UIcmdWithAString
         G4int CheckCorrectNumberOfParameters(G4String parameterList);
         G4int CheckCorrectType(G4String parameterList);
         
-        G4int numberofparameters;               
+        G4int numberofparameters;  
+        bool  moreparameters;             
         MyG4UImessenger *ownmessenger;
 };
 

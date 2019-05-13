@@ -137,6 +137,9 @@ SampleConstructionMessenger::SampleConstructionMessenger(SampleConstruction* sc)
 	checkforalloverlaps = new G4UIcmdWithABool("/sample/checkforalloverlaps", this);
 	checkforalloverlaps -> SetGuidance("Check for overlaps for all the samples placed");
 	
+	groupsamples = new MultiParameters("/sample/group", this);
+	groupsamples -> SetNumberOfParameters(2);
+	groupsamples->MoreParametersAvailable(true);
 //=================================================================================================
 //  UNIT DICTIONARY
 
@@ -176,6 +179,8 @@ SampleConstructionMessenger::~SampleConstructionMessenger()
 	delete set_tiltcentre;
 	
 	delete checkforalloverlaps;
+	
+	delete groupsamples;
 }
 
 #include "SampleDescription.hh"

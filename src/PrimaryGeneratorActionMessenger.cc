@@ -63,7 +63,7 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
     numberofbins = new G4UIcmdWithAnInteger("/beam/bins", this);
     
     auto_setupbeam = new G4UIcmdWithABool("/beam/pos/auto", this);
-          
+    auto_setupbeam->SetGuidance("Automatically setup the beam to be placed at the end of the world volume and have the same dimensions as the absorption detector");  
 }
 
 PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()

@@ -57,6 +57,8 @@ class SampleConstructionMessenger : public MyG4UImessenger
 		MultiParameters *build_unionsolid;	
 		MultiParameters *setsample_innerPosition;
 		MultiParameters *setsample_innerRotation;
+		
+		MultiParameters *groupsamples;
 
         //Geant4 commands
 		//Adjusted positioning and rotation of the sample

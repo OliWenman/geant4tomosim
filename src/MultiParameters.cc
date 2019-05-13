@@ -6,6 +6,7 @@
 MultiParameters::MultiParameters(const char *theCommandPath, MyG4UImessenger *theMessenger) : G4UIcmdWithAString(theCommandPath, theMessenger), ownmessenger(theMessenger)
 {
     numberofparameters = 1;
+    moreparameters = false;
 }
 
 G4int MultiParameters::CheckCorrectNumberOfParameters(G4String parameterList)
@@ -40,7 +41,14 @@ G4int MultiParameters::CheckCorrectNumberOfParameters(G4String parameterList)
     
     if (parametercounter != numberofparameters)
     {
-        return fNotEnoughParameters;
+        if (moreparameters == true && parametercounter > numberofparameters)
+        {
+            return 0;
+        }
+        else
+        {
+            return fNotEnoughParameters;
+        }
     }    
     
     return 0;
