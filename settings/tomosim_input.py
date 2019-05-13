@@ -18,7 +18,7 @@ interactive     = True
 #Image variables
 projections     = 10
 ndarkflatfields = 1
-particles       = 1.e6
+particles       = 1#1.e6
 
 #Rotation angles
 startrotation   = 0*G4.deg
@@ -39,14 +39,16 @@ physics         = this_directory + "/physics.mac"
 materials       = this_directory + "/materials.mac"
 detectors       = this_directory + "/detectors.mac"
 beam            = this_directory + "/beam.mac"
-sampleGeometry  = this_directory + "/sampleGeometry.mac"
-samplePlacement = this_directory + "/samplePlacement.mac"
 
-macrofiles      = [physics,       
-                   materials,     
-                   detectors,     
-                   beam,          
-                   sampleGeometry, 
-                   samplePlacement]
+sample   = this_directory + "/samples/Al_Ni_block.mac"
+
+#sampleGeometry  = this_directory + "/sampleGeometry.mac"
+#samplePlacement = this_directory + "/samplePlacement.mac"
+
+macrofiles      = [physics,
+                   materials,
+                   detectors,
+                   beam,
+                   sample]
                    
 #========================================================================================

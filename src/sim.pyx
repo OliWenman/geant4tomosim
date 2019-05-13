@@ -82,7 +82,7 @@ cdef class G4TomoSim:
         if rotation_angles.ndim != 1:
             raise Exception ("rotation_angles should be 1D.")
             
-        if n_particles <= 1:
+        if n_particles < 1:
             raise Exception("n_particles can't be less than 1.")
             
         if nDarkFlatFields <= 0:

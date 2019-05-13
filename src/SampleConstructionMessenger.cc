@@ -336,8 +336,8 @@ int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String new
 		G4String angleUnitstr = next();
 		
 		//Check if its an appropiate unit, if it isn't return error code
-		bool correctunit2 = angle_units.count(radiusUnitstr);
-		if (correctunit2) { angleUnit = angle_units[radiusUnitstr];}
+		bool correctunit2 = angle_units.count(angleUnitstr);
+		if (correctunit2) { angleUnit = angle_units[angleUnitstr];}
 		else              { return fIncorrectUnit;}
 		
 		//Multiply the values by the correct unit
