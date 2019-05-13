@@ -76,8 +76,8 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         const int           GetNumberOfBins() const {return bins;}
         const int           GetBeamEnergyByteTypeSize(){return sizeof(beamintensity[0]);}
 
+        bool auto_posbeam;
   	private:
-        //Data
 
         //Objects
         PrimaryGeneratorActionMessenger *gunMessenger;

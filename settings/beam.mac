@@ -19,11 +19,11 @@
 /beam/energy/mono 40 keV
 
 # - Position commands
-/beam/autoposition true
+/beam/pos/auto true
 #/beam/pos/centre -3 0.0 0.0 cm
-/beam/pos/halfx 10.0112 mm
-/beam/pos/halfy 06.004  mm
-#/beam/momentum 1.00 0.00 0.00 
+#/beam/pos/halfx 10.0112 mm
+#/beam/pos/halfy 06.004  mm
+/beam/momentum 1.00 0.00 0.00 
 
 # - Particle commands
 /beam/particle gamma

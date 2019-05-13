@@ -27,6 +27,18 @@ Author: Oliver Wenman
 
 typedef std::vector<SampleDescription*>  SampleCollection;
 
+/*
+Group together samples to make it easier to move a sample that is made up of lots of 
+different materials.
+*/
+struct SampleGroup
+{
+    std::string name;
+    SampleCollection group;
+};
+
+typedef std::vector<SampleGroup*> SampleGroupCollection; 
+
 class SampleConstructionMessenger;
 
 class SampleConstruction

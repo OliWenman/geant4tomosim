@@ -43,10 +43,10 @@ class PrimaryGeneratorActionMessenger: public G4UImessenger
 		G4UIcmdWith3VectorAndUnit *polizationCmd;
 		
 		//Position commands
-		G4UIcmdWithABool          *autoPlacement;
 		G4UIcmdWithADoubleAndUnit *beamHalfXCmd;
 		G4UIcmdWithADoubleAndUnit *beamHalfYCmd;
 		G4UIcmdWith3VectorAndUnit *centreCoordinates;
+		G4UIcmdWithABool          *auto_setupbeam;
 		
 		//Angle commands
 		G4UIcmdWith3Vector *momentumDirection;

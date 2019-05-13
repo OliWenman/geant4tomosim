@@ -43,6 +43,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction():G4VUserPrimaryGeneratorAction()
 	
 	//Set the max energy value (in keV)
     eMax = 175.;
+    auto_posbeam = true;
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -51,16 +52,41 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 	delete beam;
 }
 
+#include "G4SolidStore.hh"
+#include "G4Box.hh"
+
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {    
     if(currentevent == 0)
 	{   
 	    //Cleans the beam energy data at the start of each run    
-	    memset(&beamintensity[0], 0, sizeof(beamintensity[0]) * bins);
+	    memset(&beamintensity[0], 
+	           0, 
+	           sizeof(beamintensity[0]) * bins);
 	    
 	    if (currentrun == 1)
 	    {
-	        progress.Timer.Start();	
+	        progress.Timer.Start();
+	        
+	        //Automatically set the beam dimensions to be the same as the absorption detector dimensions if option is on
+	        //and place it at the end of the world volume
+	        if (!beam->CheckIfFan() && auto_posbeam)
+	        {
+	            const G4Box* absdet = dynamic_cast<const G4Box*> (G4SolidStore::GetInstance()->GetSolid("Absorptioncontainer"));
+	        
+	            if (absdet)
+	            {
+	                beam->SetHalfX(absdet->GetZHalfLength());
+	                beam->SetHalfY(absdet->GetYHalfLength());
+	            }   
+	            
+	            const G4Box* world = dynamic_cast<const G4Box*> (G4SolidStore::GetInstance()->GetSolid("World"));
+	        
+	            if (world)
+	            {
+	                beam->DoAutoSourcePlacement(-world->GetXHalfLength());
+	            }
+	        }
 	    }
     }
     particleposition = beam->FireParticle(event);

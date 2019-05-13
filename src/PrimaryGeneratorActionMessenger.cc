@@ -49,9 +49,6 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
 	beamHalfYCmd -> SetUnitCandidates("nm um mm cm m");
 	beamHalfYCmd -> SetParameterName("Height", true);
 	beamHalfYCmd -> SetRange("Height > 0");
-	
-	autoPlacement = new G4UIcmdWithABool("/beam/autoposition", this);
-    autoPlacement -> SetGuidance("Automatically place the beam at the edge of the world in the -x direction");
     
     centreCoordinates = new G4UIcmdWith3VectorAndUnit("/beam/pos/centre", this);
     centreCoordinates -> SetGuidance("Place the centre of the beam");
@@ -64,6 +61,8 @@ PrimaryGeneratorActionMessenger::PrimaryGeneratorActionMessenger(PrimaryGenerato
     momentumDirection -> SetRange("px <= 1 && px >= -1 && py <=1 && py >= -1 && py >= -1 && pz <= 1 && pz >= -1");
     
     numberofbins = new G4UIcmdWithAnInteger("/beam/bins", this);
+    
+    auto_setupbeam = new G4UIcmdWithABool("/beam/pos/auto", this);
           
 }
 
@@ -82,12 +81,13 @@ PrimaryGeneratorActionMessenger::~PrimaryGeneratorActionMessenger()
 	delete polizationCmd;
 	delete maxEnergyBinCmd;
 	
-	delete autoPlacement;
 	delete centreCoordinates;
 	
 	delete momentumDirection;
 	
 	delete numberofbins;
+	
+	delete auto_setupbeam;
 }
 
 void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -121,12 +121,7 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	} 
 	else if(command == maxEnergyBinCmd)
 	{
-	    //maxEnergyBinCmd
 		PGAction -> SetMaxEnergyBinCmd(maxEnergyBinCmd -> GetNewDoubleValue(newValue)); 
-	}
-	else if (command == autoPlacement)
-	{
-	    PGAction -> SetAutoBeamPlacement(autoPlacement->GetNewBoolValue(newValue));
 	}
 	else if (command == centreCoordinates)
 	{
@@ -139,5 +134,9 @@ void PrimaryGeneratorActionMessenger::SetNewValue(G4UIcommand* command, G4String
 	else if (command == numberofbins)
 	{
 	    PGAction->SetNumberOfBins(numberofbins->GetNewIntValue(newValue));
+	}
+	else if( command == auto_setupbeam)
+	{
+	    PGAction->auto_posbeam = auto_setupbeam->GetNewBoolValue(newValue);
 	}
 }

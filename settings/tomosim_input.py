@@ -18,7 +18,7 @@ interactive     = True
 #Image variables
 projections     = 10
 ndarkflatfields = 1
-particles       = 1#1.e6
+particles       = 1.e3
 
 #Rotation angles
 startrotation   = 0*G4.deg

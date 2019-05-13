@@ -1,4 +1,6 @@
+
 # Create the Aluminium base with a hole cut in the centre
+
 /sample/G4VSolid/box           Al_base  06.00 06.00 25.00 mm
 /sample/G4VSolid/cylinder      hole     00.00 02.50 10.00 mm 00 360 deg
 /sample/G4VSolid/subtract      Al_box   Al_base hole
@@ -7,12 +9,16 @@
 /sample/G4LogicalVolume/material   Al_box G4_Al
 /sample/G4VPhysicalVolume/position Al_box 00.00 00.00 00.00 mm
 
+
 # Create the x side of the nickel
+
 /sample/G4VSolid/box               Ni_side1 00.25 06.00 25.00 mm
 /sample/G4LogicalVolume/material   Ni_side1 G4_Ni 
 /sample/G4VPhysicalVolume/position Ni_side1 06.25 00.00 00.00 mm
 
+
 # Create the y side of the nickel and cut a hole
+
 /sample/G4VSolid/box               Ni_side2        06.25 00.25 25.00 mm
 /sample/G4VSolid/subtract          Ni_side2_cutout Ni_side2 hole
 /sample/G4VSolid/insiderotation    Ni_side2_cutout 90.00 00.00 00.00 deg

@@ -322,20 +322,19 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
     else if (n_projection >= totalprojections - nDarkFlatFields) {darkflatfields = true;}
     
     if(n_projection == 0)
-    {		  	    
+    {	
 	    int verbose;    
 	    if (globalVerbose < 3){verbose = 3;}
 	    else                  {verbose = globalVerbose - 3;}
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
-	    beamManager -> DoAutoBeamPlacement(-detectorManager->GetWorldSize().x());
-		beamManager -> SetNumberOfEvents(n_particles, totalprojections);
+		beamManager->SetNumberOfEvents(n_particles, totalprojections);
 		
-	    physicsManager -> Fluorescence(); 
+	    physicsManager->Fluorescence(); 
 	 
-	    runManager -> Initialize(); 
-	    runManager -> SetNumberOfEventsToBeStored (0);
-	    physicsManager -> ActivateUserPhysics();
+	    runManager->Initialize(); 
+	    runManager->SetNumberOfEventsToBeStored (0);
+	    physicsManager->ActivateUserPhysics();
 	    
 	    if (globalVerbose > 0)
 	    { 
@@ -399,7 +398,6 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
 	CLHEP::HepRandom::setTheSeed(rand());
     	  	    	
     //Let the PrimaryGeneratorAction class know where to position the start of the beam
-	beamManager -> DoAutoBeamPlacement(-detectorManager->GetWorldSize().x());
     beamManager -> SetNumberOfEvents(n_particles, 0);
 		
 	physicsManager -> Fluorescence(); 

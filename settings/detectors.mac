@@ -12,16 +12,16 @@
 #--------------------------------------------------------------------------------
 # World
 
-/world/size 150 100 100 mm		
+/world/size 150 100 30 mm		
 /world/material G4_Galactic
 
 #--------------------------------------------------------------------------------
 # Detectors
 
 # - Absorption
-/detector/absorption/halfdimensions 00.001 20.0112 12.004 mm
-/detector/absorption/rows 432
-/detector/absorption/columns 304
+/detector/absorption/halfdimensions 00.001 10.0112 6.004 mm
+/detector/absorption/rows 43
+/detector/absorption/columns 30
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 2 0.01 1 cm

@@ -50,7 +50,7 @@ void AbsorptionDetector::CreateVolumes()
     if (container) {delete container; container = 0;}
 
 	//Create the phantom container for the detectors to go into
-	container = new G4Box("container",
+	container = new G4Box("Absorptioncontainer",
 			              halfdimensions.x(),
 			              halfdimensions.y(), 
 			              halfdimensions.z());
