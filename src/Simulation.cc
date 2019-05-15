@@ -35,19 +35,36 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
+#include "G4MPImanager.hh"
+#include "G4MPIsession.hh"
+
 Simulation::Simulation(int verb, bool interactive) : runManager(0), 
                                                      detectorManager(0), 
                                                      physicsManager(0), 
                                                      beamManager(0), 
                                                      visManager(0), 
                                                      particleManager(0), 
-                                                     stepManager(0)
+                                                     stepManager(0),
+                                                     g4MPI(0)
                                                      
-{	
-    globalVerbose = verb;
-    interactiveOn = interactive;
+{
+    // At first, G4MPImanager/G4MPIsession should be created.
+    g4MPI = new G4MPImanager();
     
-    if (globalVerbose > 0)
+    mpi_rank = G4MPImanager::GetManager()-> GetRank();
+
+    globalVerbose = verb;
+    
+    if (mpi_rank > 0)
+    {
+         interactiveOn = false;
+    }
+    else
+    {
+        interactiveOn = interactive;
+    }
+    
+    if (globalVerbose > 0 && mpi_rank == 0)
     {
         G4cout << "\nWelcome to the tomography data simulation!"
                   "\nSetting up... " << G4endl;
@@ -61,7 +78,7 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
             G4cout << "\nInteractivity is turned off. The simulation will be interupted if there are any problems.";
         }
     }
-
+    
     simMessenger = new SimulationMessenger(this);	
 	materials    = new DefineMaterials(); 
 
@@ -95,24 +112,27 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 	SetSeed(0);
+
 }
 
 Simulation::~Simulation()
 {
-    if (globalVerbose > 0) {G4cout << "\nClosing simulation..." << G4endl;}
+    delete g4MPI;
+
+    if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nClosing simulation..." << G4endl;}
 	int showDeletion = 3;
 	
-	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
+	if(globalVerbose > showDeletion && mpi_rank == 0) {runManager -> SetVerboseLevel(showDeletion);}
 
-    delete sampleconstruction; if(globalVerbose > showDeletion) {G4cout << "\nSampleConstrction deleted " << std::flush;}
-	delete materials;          if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
-	delete simMessenger;       if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
+    delete sampleconstruction; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nSampleConstrction deleted " << std::flush;}
+	delete materials;          if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nDefineMaterials deleted " << std::flush;}
+	delete simMessenger;       if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
 
-    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted\n" << std::flush;}
-    delete runManager; if(globalVerbose > showDeletion) {G4cout << "RunManager deleted" << std::flush;}
+    delete visManager; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nVisualizationManager deleted\n" << std::flush;}
+    delete runManager; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "RunManager deleted" << std::flush;}
     
     delete CLHEP::HepRandom::getTheEngine();
-	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
+	if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
 void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
@@ -126,7 +146,7 @@ void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
     
     macrofiles = macroFiles;
     
-    if (globalVerbose > 0)
+    if (globalVerbose > 0 && mpi_rank == 0)
     {
         G4cout << "\nCOMPLETE! " << G4endl;
     }
@@ -136,7 +156,7 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
 {
     //Read the macro file line by line and extract the commands from the file
 
-     if (globalVerbose > 0)
+     if (globalVerbose > 0 && mpi_rank == 0)
      {
         PrintToEndOfTerminal('-');        
         G4cout << "Reading file '" << macro << "' " << G4endl;
@@ -148,11 +168,14 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
     readfile.open(macro);
     if (!readfile) 
     {
-        G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
-        return; 
+        if (mpi_rank == 0)
+        {
+            G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
+        }
+            return; 
     }
       
-    G4cout << "\n";  
+    if (mpi_rank == 0) {G4cout << "\n";}  
       
     //Read the file
     std::string command;    
@@ -181,14 +204,14 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
         //Check if string isn't just spaces
         if (command.find_first_not_of(' ') != std::string::npos)
         {
-            if (globalVerbose > 3) {G4cout << line << ")";}
+            if (globalVerbose > 3 && mpi_rank == 0) {G4cout << line << ")";}
             applycommand_pywrapped(command);
             
         }
     }
     
     readfile.close();
-    if (globalVerbose > 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
+    if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
 }
 
 #include "G4UIcommandTree.hh"
@@ -207,7 +230,7 @@ void Simulation::applycommand_pywrapped(std::string command)
     //Check the status of the command. If successful, continue with the simulation
     if (status == fCommandSucceeded)
     {
-        if (globalVerbose > 3) {G4cout << command << " successful!" << G4endl;}
+        if (globalVerbose > 3 && mpi_rank == 0) {G4cout << command << " successful!" << G4endl;}
     }
     else
     {
@@ -391,8 +414,10 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
                                                double rotation_angle,
                                                double zposition)
 {
-    globalVerbose = 0;
+    //globalVerbose = 0;
     beamManager->GetProgressTracker().print = false;
+    
+    G4cout << "\nrotation = " << rotation_angle << G4endl;
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
@@ -757,7 +782,7 @@ void Simulation::SetSeed(long int seedinput)
 
 void Simulation::Initialise_dataSets()
 {
-    if (globalVerbose > 2) {G4cout << "\nInitialising data... " << G4endl;}
+    if (globalVerbose > 2 && mpi_rank == 0) {G4cout << "\nInitialising data... " << G4endl;}
     detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
     detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
     beamManager->SetupData();

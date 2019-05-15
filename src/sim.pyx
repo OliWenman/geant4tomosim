@@ -15,6 +15,8 @@ import os
 import gc
 import matplotlib.pyplot as plt
 import sys
+#cimport mpi4py.MPI as MPI
+#cimport mpi4py.libmpi as libmpi
 
 import NexusFormatter
 

@@ -24,6 +24,7 @@ Author: Oliver Wenman
 #include "G4ThreeVector.hh"
 #include "SampleDescription.hh"
 #include "Boolean_Sample.hh"
+#include "MyVectors.hh"
 
 typedef std::vector<SampleDescription*>  SampleCollection;
 
@@ -33,8 +34,10 @@ different materials.
 */
 struct SampleGroup
 {
-    std::string name;
+    std::string      name;
     SampleCollection group;
+    G4ThreeVector    position;
+    G4ThreeVector    rotation;
 };
 
 typedef std::vector<SampleGroup*> SampleGroupCollection; 
@@ -57,10 +60,12 @@ class SampleConstruction
 		int AddToSampleList(std::string name, std::string, double_vector1D);
 		int CloneSample(std::string name, std::string name_to_clone);
 		
+		int GroupTogetherSamples(std::string groupname, string_vector1D samplenames);
+		
 		SampleDescription* FindSample(std::string name);
 		Boolean_Sample*    FindSample_Boolean(std::string name);
 		
-		void SetLastRotation(double value){lastrotation = 0;}
+		void SetLastRotation(double value){lastrotation = value;}
 		
 		//Set commands from messenger
 		void SetRadiusOffSet       (double r)        {radius = r;}
@@ -69,12 +74,11 @@ class SampleConstruction
 		void SetTiltCentre         (G4ThreeVector c) {tiltcentre = c;}
 		void SetCheckForAllOverLaps(bool value)      {checkforoverlaps = value;}
 		
-	    G4ThreeVector CalculateCentre();
-		
     private:
         
         SampleConstructionMessenger* messenger;
         SampleCollection samplelist;   
+        std::vector<SampleGroup> samplegroups;
         SampleDescription* master;  
 
         bool removeplacement;

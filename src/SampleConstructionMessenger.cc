@@ -708,6 +708,10 @@ int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String new
 	    sample->SetColour(colour);
 	}
 //-------------------------------------------------------------------------------------------------------------------------------
+    else if (command == groupsamples)
+    {
+    
+    }
 
     //If command was successful, return 0
 	return 0;

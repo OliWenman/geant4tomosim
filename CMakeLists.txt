@@ -12,6 +12,15 @@ set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake )
 # Instruction for use can be found at the top of cmake/UseCython.cmake.
 include( UseCython )
 
+# check MPI package...
+find_package(MPI REQUIRED)
+if(MPI_FOUND)
+  	message(STATUS "MPI version " ${MPI_VERSION})
+  	message(STATUS "MPI_include_dirs = ${MPI_INCLUDE_DIRS}")
+  	#message(STATUS "Geant4_libraries:\n ${Geant4_LIBRARIES}")
+else()
+  	message(STATUS "ERROR: Couldnt find MPI")
+endif()
 #Find the Geant4 library and display it's info
 find_package(Geant4 REQUIRED)
 if(Geant4_FOUND)
@@ -21,6 +30,22 @@ if(Geant4_FOUND)
 else()
   	message(STATUS "ERROR: Couldnt find Geant4")
 endif()
+
+find_package(G4mpi REQUIRED)
+if(G4mpi_FOUND)
+    message(STATUS "G4mpi version " ${G4mpi_VERSION})
+  	message(STATUS "MPI_include_dirs = ${G4mpi_INCLUDE_DIRS}")
+else()
+    message(STATUS "ERROR")
+endif()
+
+#----------------------------------------------------------------------------
+# Setup Geant4 include directories and compile definitions
+#
+include(${Geant4_USE_FILE})
+
+#------------------------------------------------------------------------------
+add_definitions(-DTOOLS_USE_NATIVE_MPI) 
 
 #Find Python interpreter
 find_package(PythonInterp)

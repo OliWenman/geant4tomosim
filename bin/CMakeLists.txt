@@ -12,4 +12,4 @@
 #Link any external libraires to the executable
 #target_link_libraries(X-Ray_Simulation ${Geant4_LIBRARIES})
 
-file(COPY run.py DESTINATION ./)
+file(COPY run.py mpi_run.py DESTINATION ./)

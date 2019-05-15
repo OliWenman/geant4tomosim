@@ -26,6 +26,7 @@ Author: Oliver Jack Wenman
 
 #include "SampleConstruction.hh"
 
+class G4MPImanager;
 class SampleConstruction;
 class SimulationMessenger;
 class DefineMaterials;
@@ -161,6 +162,7 @@ class Simulation
 		void PrintInformation(SettingsLog log);
 		
 		//Pointers to different classes
+		G4MPImanager           *g4MPI;
 		SimulationMessenger    *simMessenger;
 		G4RunManager           *runManager;
 		G4VisManager           *visManager;
@@ -180,6 +182,8 @@ class Simulation
 		
 		bool interactiveOn;
 		string_vector1D macrofiles;
+		
+		int mpi_rank;
 };
 
 #endif

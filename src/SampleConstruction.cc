@@ -126,6 +126,37 @@ int SampleConstruction::AddToSampleList(std::string     name,
     return 0;
 }
 
+int SampleConstruction::GroupTogetherSamples(std::string groupname, string_vector1D samplenames)
+{
+    SampleGroup samplegroup;
+    samplegroup.name = groupname;
+    
+    //Check if a group containing that name already exists
+    for (int i = 0 ; i < samplegroups.size() ; i++)
+    {
+        if(samplegroups[i].name == groupname)
+        {
+            G4cout << "\nWARNING: Cannot create sample group\"" << groupname << "\" because it already exists. Ignoring command... " << G4endl;
+            return fParameterAlreadyExists;
+        }
+    }
+
+    //Loop through samples, grouping them
+    for (int i = 0 ; i < samplenames.size() ; i++)
+    {
+        for (int n = 0 ; n < samplelist.size() ; n++)
+        {
+            if(samplelist[n]->GetName() == samplenames[i])
+            {
+                samplegroup.group.push_back(samplelist[n]);
+            }
+        }
+    }
+    samplegroups.push_back(samplegroup);
+    
+    return 0;
+}
+
 int SampleConstruction::CloneSample(std::string name, std::string name_to_clone)
 {   
     /*
@@ -201,29 +232,4 @@ void SampleConstruction::Reset()
     }
     samplelist.clear();
 }
-
-G4ThreeVector SampleConstruction::CalculateCentre()
-{
-    std::vector<G4ThreeVector> objectpositions;
-
-    for (int i = 0 ; i < samplelist.size() ; i++)
-    {
-        SampleDescription* sample = samplelist[i];
-        
-        if (sample->HasPlacement())
-        {
-            objectpositions.push_back (sample->GetPosition());
-        }
-    }  
-    
-    G4ThreeVector centre (0, 0, 0);
-    
-    for (int i = 0; i < objectpositions.size() ; i++)
-    {
-        centre = centre + objectpositions[i];
-    }
-    
-    return centre = centre/objectpositions.size();
-}
-
 
