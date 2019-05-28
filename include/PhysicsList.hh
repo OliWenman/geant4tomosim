@@ -66,7 +66,6 @@ class PhysicsList: public G4VModularPhysicsList
 		G4bool GetFluorescence(){return fluorescenceOn;}
 
         void ActivateUserPhysics();     
-        void Fluorescence();   
 
 		//Read and save info user has inputted
 		void ReadOutInfo(SettingsLog& log);

@@ -19,7 +19,7 @@ void AbsorptionSD::InitialiseData()
         int_vector1D temp(xpixels*ypixels, initialValue);
         absorptionData = temp;
         
-        G4cout << "\nAbsorption data is empty, creating a " << xpixels << " x " << ypixels << " array" << G4endl;
+        //G4cout << "\nAbsorption data is empty, creating a " << xpixels << " x " << ypixels << " array" << G4endl;
     }
     else
     {

@@ -21,7 +21,7 @@ if __name__ == '__main__':
         print "\nSaving data in the default place", filepath
 
 
-filepath = this_directory + "/../output/tomosimData.nxs"
+#filepath = this_directory + "/../output/tomosimData.nxs"
 
 #===================================================================
 

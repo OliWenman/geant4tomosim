@@ -87,7 +87,7 @@ cdef class G4TomoSim:
         if n_particles < 1:
             raise Exception("n_particles can't be less than 1.")
             
-        if nDarkFlatFields <= 0:
+        if nDarkFlatFields < 0:
             raise Exception("nDarkFlatFields can't be negative.")
 
         totalprojections = len(rotation_angles) + nDarkFlatFields
@@ -272,7 +272,7 @@ cdef class G4TomoSim:
         
         """
         
-        if n_particles <= 1:
+        if n_particles < 1:
             raise Exception("n_particles can't be less than 1.")
         
         return self.thisptr.runsingleprojection_pywrapped(n_particles,
@@ -283,9 +283,9 @@ cdef class G4TomoSim:
     def absorptionData(self):
         """
         Return the absorption data. Is orginally 1D, reshapes it too 2D.  
-        """
-        return np.reshape(self.thisptr.getAbsorption_pywrapped(), 
-                         (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
+        """       
+        return np.reshape(np.array(self.thisptr.getAbsorption_pywrapped(), dtype = np.uint16), 
+                          (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
     
     def photonTransmission(self):
         return np.sum(self.thisptr.getAbsorption_pywrapped())

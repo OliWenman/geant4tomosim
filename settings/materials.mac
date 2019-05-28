@@ -1,46 +1,42 @@
 #==============================================
 #CREATE CUSTOM MATERIALS
 
-/Materials/Define/Compound Test 4 2.67 g/cm3
-/Materials/AddTo/Compound Test Si 25 %
-/Materials/AddTo/Compound Test O 25 %
-/Materials/AddTo/Compound Test N 25 %
-/Materials/AddTo/Compound Test Na 25 %
-#/Materials/AddTo/Compound Test P 25 %
-#/Materials/AddTo/Compound Test C 25 %
-
 /Materials/Define/Compound AlSi10Mg 5 2.67 g/cm3
-/Materials/AddTo/Compound AlSi10Mg Si 10 %
-/Materials/AddTo/Compound AlSi10Mg Mg 0.35 %
-/Materials/AddTo/Compound AlSi10Mg Fe 0.55 %
-/Materials/AddTo/Compound AlSi10Mg Mn 0.45 %
-/Materials/AddTo/Compound AlSi10Mg Al 88.65 %
+/Materials/AddTo/Compound AlSi10Mg Si 10.000 %
+/Materials/AddTo/Compound AlSi10Mg Mg 00.350 %
+/Materials/AddTo/Compound AlSi10Mg Fe 00.550 %
+/Materials/AddTo/Compound AlSi10Mg Mn 00.450 %
+/Materials/AddTo/Compound AlSi10Mg Al 88.650 %
 /Materials/AutoOpticalProperties name=AlSi10Mg energy=linspace(0,80,50)[keV]
 
-/Materials/Define/Compound TI64 5 4.4705 g/cm3
-/Materials/AddTo/Compound TI64 V 4 %
-/Materials/AddTo/Compound TI64 Al 6.125 %
-/Materials/AddTo/Compound TI64 Fe 0.3 %
-/Materials/AddTo/Compound TI64 O 0.2 %
+/Materials/Define/Compound TI64 5 04.4705 g/cm3
+/Materials/AddTo/Compound TI64 V  04.000 %
+/Materials/AddTo/Compound TI64 Al 06.125 %
+/Materials/AddTo/Compound TI64 Fe 00.300 %
+/Materials/AddTo/Compound TI64 O  00.200 %
 /Materials/AddTo/Compound TI64 Ti 89.375 %
 /Materials/AutoOpticalProperties name=TI64 energy=linspace(0,100,50)[keV]
 
 /Materials/Define/Compound MS1 6 8.05 g/cm3
-/Materials/AddTo/Compound MS1 Ni 18 %
-/Materials/AddTo/Compound MS1 Co 9 %
-/Materials/AddTo/Compound MS1 Mo 4.85 %
-/Materials/AddTo/Compound MS1 Ti 0.7 %
-/Materials/AddTo/Compound MS1 Al 0.1 %
-/Materials/AddTo/Compound MS1 Fe 67.35 %
+/Materials/AddTo/Compound MS1 Ni 18.000 %
+/Materials/AddTo/Compound MS1 Co 09.000 %
+/Materials/AddTo/Compound MS1 Mo 04.850 %
+/Materials/AddTo/Compound MS1 Ti 00.700 %
+/Materials/AddTo/Compound MS1 Al 00.100 %
+/Materials/AddTo/Compound MS1 Fe 67.350 %
 /Materials/AutoOpticalProperties name=MS1 energy=linspace(0,100,50)[keV]
 
-/Materials/Define/Compound IN625 6 8.5 g/cm3
-/Materials/AddTo/Compound IN625 Cr 21.5 %
-/Materials/AddTo/Compound IN625 Mo 9 %
-/Materials/AddTo/Compound IN625 Nb 3.65 %
-/Materials/AddTo/Compound IN625 Fe 5 %
-/Materials/AddTo/Compound IN625 Ti 0.4 %
-/Materials/AddTo/Compound IN625 Ni 60.45 %
+/Materials/Define/Compound IN625 10 8.5 g/cm3
+/Materials/AddTo/Compound IN625 Ni 60.000 %
+/Materials/AddTo/Compound IN625 Cr 23.000 %
+/Materials/AddTo/Compound IN625 Mo 08.000 %
+/Materials/AddTo/Compound IN625 Nb 03.150 %
+/Materials/AddTo/Compound IN625 Fe 04.520 %
+/Materials/AddTo/Compound IN625 Ti 00.400 %
+/Materials/AddTo/Compound IN625 Al 00.400 %
+/Materials/AddTo/Compound IN625 Co 00.500 %
+/Materials/AddTo/Compound IN625 S  00.015 %
+/Materials/AddTo/Compound IN625 P  00.015 %
 /Materials/AutoOpticalProperties name=IN625 energy=linspace(0,100,50)[keV]
 #/Materials/PrintMaterialPropertiesTable IN625
 
@@ -48,9 +44,12 @@
 /Materials/AutoOpticalProperties name=N energy=linspace(0,100,50)[keV]
 #/Materials/PrintMaterialPropertiesTable N
 
-/Materials/Define/Element Al 13 26.98 g/mole 2.7 g/cm3
-#/Materials/Define/Element name=Al z=13 Mr=26.98[g/mol] density=2.7[g/cm3] 
+/Materials/Define/Element Al 13 26.980 g/mole 2.700 g/cm3
 /Materials/AutoOpticalProperties name=Al energy=linspace(0,100,50)[keV]
+
+/Materials/Define/Element Ti 22 47.867 g/mole 4.506 g/cm3 
+/Materials/AutoOpticalProperties name=Ti energy=linspace(0,100,50)[keV]
+
 #/Materials/AddRefractiveIndex name=Al energy=(05,06,07,08,09,10)[keV] rIndex=(1.05,1.05,1.05,1.05,1.05,1.05)
 #/Materials/AddAbsorptionLength name=Al energy=(05,06,07,08,09,10)[keV] absLength=(1,1,1,1,1,0.8)[mm]
 #/Materials/PrintMaterialPropertiesTable Al

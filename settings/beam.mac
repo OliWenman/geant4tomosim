@@ -13,17 +13,17 @@
 #--------------------------------------------------------------
 # Beam commands
 
-/beam/gps false
+/beam/gps true
 
 # - Energy commands
-/beam/energy/mono 40 keV
+/beam/energy/mono 32 keV
 
 # - Position commands
 /beam/pos/auto true
+/beam/momentum 1.00 0.00 0.00 
 #/beam/pos/centre -3 0.0 0.0 cm
 #/beam/pos/halfx 10.0112 mm
 #/beam/pos/halfy 06.004  mm
-/beam/momentum 1.00 0.00 0.00 
 
 # - Particle commands
 /beam/particle gamma
@@ -38,8 +38,8 @@
 
 # - Energy commands
 /gps/ene/type Gauss
-/gps/ene/mono 6 keV
-/gps/ene/sigma 2 keV
+/gps/ene/mono 8 keV
+/gps/ene/sigma 5 keV
 
 # Bias the position of a 2d beam (leads to segmentation fault at end?)
 /gps/hist/type biasx

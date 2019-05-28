@@ -63,7 +63,7 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 	    memset(&beamintensity[0], 
 	           0, 
 	           sizeof(beamintensity[0]) * bins);
-	    
+	    G4cout << std::flush;
 	    if (currentrun == 1)
 	    {
 	        progress.Timer.Start();
@@ -90,7 +90,6 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 	    }
     }
     particleposition = beam->FireParticle(event);
-   
     //Save beam energy data    	
     int bin = floor(beam->GetEnergyOfEvent()*1000/(eMax/bins)) -1;
     if (bin > beamintensity.size()) {bin = beamintensity.size();}

@@ -188,11 +188,27 @@ void PhysicsList::ConstructEM()
 		        gamma_absorption = new GammaOpticalAbsorption();
 		        pmanager -> AddDiscreteProcess(gamma_absorption);
 		    }
+		}
+        else if (particleName == "opticalphoton")
+        {
+            /*
+            if (opticalabsorption)
+		    {
+		        G4OpAbsorption* optical_absorption = new G4OpAbsorption();
+		        pmanager -> AddDiscreteProcess(optical_absorption);
+		    }
+		    
+		    if (refraction)
+		    {
+		        G4OpBoundaryProcess* refraction = new G4OpBoundaryProcess();
+		        pmanager -> AddDiscreteProcess(refraction);
+		    }
+            */
 		    /*fRayleighScatteringProcess = new G4OpRayleigh();
             fMieHGScatteringProcess = new G4OpMieHG();
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
-		 }
+		}
 	    G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 175*keV);
 	}
 }
@@ -266,40 +282,6 @@ void PhysicsList::ActivateUserPhysics()
     }
 }
 
-void PhysicsList::Fluorescence()
-{
-    /*if(!G4LossTableManager::Instance())
-    {
-        G4cout << "\nERROR" << G4endl;
-    }
-
-    G4VAtomDeexcitation* atomDeexcitation = G4LossTableManager::Instance()->AtomDeexcitation();
-    
-    if(!atomDeexcitation)
-    {
-        G4VAtomDeexcitation* de = new G4UAtomicDeexcitation();
-	    de -> SetVerboseLevel(0);
-  	    //G4LossTableManager::Instance()->SetAtomDeexcitation(de);
-    }
-    
-    if (fluorescenceOn)
-    {   
-        atomDeexcitation->SetFluo(true);
-  		atomDeexcitation->SetAuger(true);   
-  		atomDeexcitation->SetPIXE(true);  
-    }
-    else// if (flu
-    {  
-        atomDeexcitation->SetFluo(false);
-  		atomDeexcitation->SetAuger(false);   
-  		atomDeexcitation->SetPIXE(false);  
-    }
-    
-    //G4RunManager::GetRunManager()->PhysicsHasBeenModified();
-    
-    G4cout << "\nGeant4 design flaw, cannot unlock " << G4endl;*/
-}
-
 void PhysicsList::SetCuts()
 {	
     //SetCutValue(10000*mm, "gamma");
@@ -315,7 +297,7 @@ void PhysicsList::SetCuts()
 //Loop through each particle and add its max step for each process
 void PhysicsList::AddStepMax()
 {
-    // Step limitation seen as a process
+    /*// Step limitation seen as a process
     fStepMaxProcess = new StepMax();
 
     auto particleIterator=GetParticleIterator();
@@ -329,7 +311,7 @@ void PhysicsList::AddStepMax()
         {
             pmanager->AddDiscreteProcess(fStepMaxProcess);
         }
-  }
+  }*/
 }
 
 void PhysicsList::ReadOutInfo(SettingsLog& log)
