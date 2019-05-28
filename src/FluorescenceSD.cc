@@ -56,16 +56,22 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
         int energybin = floor(energy*1000/(maxenergy/nbins) -1);
     
         if (energybin > nbins - 1) {energybin = nbins -1;}
-
+               
         G4ThreeVector ipos = pga->GetParticlePosition();
     
-        int xbin = floor(ipos.y()/(pga->GetBeamHalfx()*2/absorb_xpixels) + 0.5*absorb_xpixels -1);
-	    int ybin = floor(ipos.z()/(pga->GetBeamHalfy()*2/absorb_ypixels) + 0.5*absorb_ypixels -1);
+        //Get the needed dimenions and positions
+        double particlepositionx     = ipos.y();
+        double particlepositiony     = ipos.z();
+        double halfdimensionx        = absorb_halfdimensions.y();
+        double halfdimensiony        = absorb_halfdimensions.z();
+        double pixelx_halfdimensions = halfdimensionx/absorb_xpixels;
+        double pixely_halfdimensions = halfdimensiony/absorb_ypixels;
     
-        ++fullmappingfluorescence[xbin][ybin][energybin];
+        int xbin = floor(particlepositionx/(pixelx_halfdimensions*2) + 0.5*absorb_xpixels);
+	    int ybin = floor(particlepositiony/(pixely_halfdimensions*2) + 0.5*absorb_ypixels);
+    
+        ++fullmappingfluorescence[ybin][xbin][energybin];
     }
-	//if (fullmappingOn){data -> SaveFullMapping(energy);}
-	//if (fullfieldOn)  {data -> SaveFluorescence(energy);}
 	
 	if(graphicsOn)
 	{
@@ -114,11 +120,11 @@ void FluorescenceSD::InitialiseData()
         {
             const DetectorConstruction* detectorconstruction = dynamic_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
             
-            const int xpixels = detectorconstruction->GetAbsorptionDetector()->GetNumberOfxPixels();
-            const int ypixels = detectorconstruction->GetAbsorptionDetector()->GetNumberOfyPixels();
+            const int xpixels = detectorconstruction->GetAbsorptionDetector()->GetxPixels();
+            const int ypixels = detectorconstruction->GetAbsorptionDetector()->GetyPixels();
             
-            int_vector3D temp (xpixels, int_vector2D
-				              (ypixels, int_vector1D
+            int_vector3D temp (ypixels, int_vector2D
+				              (xpixels, int_vector1D
 				              (nbins)));
 				              
             fullmappingfluorescence = temp;
@@ -126,12 +132,14 @@ void FluorescenceSD::InitialiseData()
             absorb_xpixels = xpixels;
             absorb_ypixels = ypixels;
             
+            absorb_halfdimensions = detectorconstruction->GetAbsorptionDetector()->GetG4HalfDimensions();
+            
             G4cout << "\nfullmapping fluorescence empty, created " << xpixels << " x " << ypixels << " x " << nbins << G4endl;
         }
         else
         {
             std::fill(fullmappingfluorescence.begin(), fullmappingfluorescence.end(), 
-		              int_vector2D (absorb_ypixels, 
+		              int_vector2D (absorb_xpixels, 
 		              int_vector1D (nbins)));
         }
     }

@@ -60,10 +60,11 @@ class FluorescenceSD : public G4VSensitiveDetector
   	    double_vector1D energybins;
   	
   	    //Variables to build the data
-		int    nbins;
-		double absorb_xpixels;
-		double absorb_ypixels;
-        double maxenergy;
+		int           nbins;
+		double        maxenergy;
+		double        absorb_xpixels;
+		double        absorb_ypixels;
+		G4ThreeVector absorb_halfdimensions;
 
         //Options to turn on
 		bool fullfieldOn;
