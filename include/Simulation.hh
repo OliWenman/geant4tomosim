@@ -117,8 +117,8 @@ class Simulation
 		//Absorption
 		int_vector1D    getAbsorption_pywrapped()    {return detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }
 		double_vector1D getAbsHalf3Dim_pywrapped()   {return detectorManager->GetAbsorptionDetector()->GetHalfDimensions();               }
-		int             getNumAbsXpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetNumberOfxPixels();              }
-		int             getNumAbsYpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetNumberOfyPixels();              }
+		int             getNumAbsXpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetxPixels();                      }
+		int             getNumAbsYpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetyPixels();                      }
 		
 		//Fluorescence
 		int_vector3D    getFullMappingFluore_pywrapped() {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping();    }

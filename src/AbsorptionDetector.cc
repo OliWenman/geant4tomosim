@@ -60,14 +60,14 @@ void AbsorptionDetector::CreateVolumes()
 	//Create the dimensiosn of the phantom boxes to go inside the container
 	cells = new G4Box("AbsorptionCell",
 				       halfdimensions.x()/1,
-				       halfdimensions.y()/rows,
-				       halfdimensions.z()/columns);
+				       halfdimensions.y()/xpixels,
+				       halfdimensions.z()/ypixels);
 
 	//Voxel dimensions in the three dimensions
-	param->SetVoxelDimensions(halfdimensions.x()/1, halfdimensions.y()/rows, halfdimensions.z()/columns);
+	param->SetVoxelDimensions(halfdimensions.x()/1, halfdimensions.y()/xpixels, halfdimensions.z()/ypixels);
 	
 	//Number of voxels in the three dimensions
-	param->SetNoVoxel(1, rows, columns);
+	param->SetNoVoxel(1, xpixels, ypixels);
 	
 	//Assure that the voxels are completely filling the container volume
 	param->CheckVoxelsFillContainer(container->GetXHalfLength(),
@@ -112,7 +112,7 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
     G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
   	cells_logic -> SetVisAttributes(Cyan);
   	
-  	if (rows*columns > 30*30)
+  	if (xpixels*ypixels > 30*30)
     {
 	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
 	    VisAttributes -> SetVisibility(false);
@@ -142,7 +142,7 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 
 void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
 {
-	G4int NumberOfVoxels = rows * columns;
+	G4int NumberOfVoxels = xpixels * ypixels;
 	
     if (container_placement) {delete container_placement; container_placement = 0;}
 	container_placement = new G4PVPlacement(0,                          // rotation
@@ -167,8 +167,8 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 
 	//Gives warning messages when set to 1?
 	cells_placement->SetRegularStructureId(1);
-	absorSD->Set_xpixels(rows);
-	absorSD->Set_ypixels(columns);
+	absorSD->Set_xpixels(xpixels);
+	absorSD->Set_ypixels(ypixels);
 }
 
 #include "PrintLines.hh"
@@ -177,8 +177,8 @@ void AbsorptionDetector::ReadOutInfo(SettingsLog& log)
 {
     PrintToEndOfTerminal(log, '-');
 	log << "ABSORPTION DETECTOR:"
-		   "\n - Number of pixels: " << rows << " x " << columns << " = " << rows*columns <<
-		   "\n - Pixel half dimensions: " << G4BestUnit(G4ThreeVector(halfdimensions.x(), halfdimensions.y()/rows, halfdimensions.z()/columns), "Length") <<
+		   "\n - Number of pixels: " << xpixels << " x " << ypixels << " = " << xpixels*ypixels <<
+		   "\n - Pixel half dimensions: " << G4BestUnit(G4ThreeVector(halfdimensions.x(), halfdimensions.y()/xpixels, halfdimensions.z()/ypixels), "Length") <<
 		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length");
 		    
 }

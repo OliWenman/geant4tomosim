@@ -44,13 +44,21 @@
 #include "G4RegionStore.hh"
 #include "G4GeometryManager.hh"
 
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), solidWorld(0), logicWorld(0), physWorld(0)
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), 
+                                               solidWorld(0), 
+                                               logicWorld(0), 
+                                               physWorld(0),
+                                               detectorMessenger(0),
+                                               absDetector(0),
+                                               fluorescenceDetector(0),
+                                               diffractionDetector(0),
+                                               sampleconstruction(0)
 { 	
 	//Create a messenger for this class
   	detectorMessenger    = new DetectorConstructionMessenger(this);	
 	absDetector          = new AbsorptionDetector();
 	fluorescenceDetector = new FluorescenceDetector();
-	diffractionDetector  = new DiffractionDetector();
+	//diffractionDetector  = new DiffractionDetector();
 	
 	sampleconstruction  = new SampleConstruction(); 
 	
@@ -87,10 +95,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		//Creates the dimenions of the detectors
 		absDetector -> CreateVolumes();
         fluorescenceDetector -> CreateVolumes();
+        /*
         diffractionDetector -> SetNumberOfxPixels(absDetector->GetNumberOfxPixels());
         diffractionDetector -> SetNumberOfyPixels(absDetector->GetNumberOfyPixels());
         diffractionDetector -> SetHalfDimensions(absDetector->GetG4VectHalfDimensions());
         diffractionDetector -> CreateVolumes();
+	    */
 	
 	    G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(world_material);
 	    G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
@@ -133,10 +143,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	    //Creates the logic and physical volumes for the detectors each run
 	    absDetector -> AddProperties(Visualization_Cmd);
         fluorescenceDetector -> AddProperties(Visualization_Cmd);
-        diffractionDetector -> AddProperties(Visualization_Cmd);
+        //diffractionDetector -> AddProperties(Visualization_Cmd);
 	
 	    absDetector -> PlaceDetectors(logicWorld, G4ThreeVector(solidWorld->GetXHalfLength(),0,0) );
-	    fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4VectHalfDimensions().y()*1.10, 0));
+	    fluorescenceDetector -> PlaceDetectors(logicWorld, G4ThreeVector(0, absDetector->GetG4HalfDimensions().y()*1.15, 0));
 	
 	    sampleconstruction->RemovePlacement(true);
 	

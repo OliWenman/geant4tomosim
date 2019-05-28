@@ -48,10 +48,14 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
                                                      g4MPI(0)
                                                      
 {
+     mpi_rank = 0;
+
     // At first, G4MPImanager/G4MPIsession should be created.
     g4MPI = new G4MPImanager();
     
     mpi_rank = G4MPImanager::GetManager()-> GetRank();
+    
+    G4cout << "\nmpi_rank = " << mpi_rank << G4endl;
 
     globalVerbose = verb;
     
@@ -352,8 +356,6 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 		
 		//Let the PrimaryGeneratorAction class know where to position the start of the beam
 		beamManager->SetNumberOfEvents(n_particles, totalprojections);
-		
-	    physicsManager->Fluorescence(); 
 	 
 	    runManager->Initialize(); 
 	    runManager->SetNumberOfEventsToBeStored (0);
@@ -391,7 +393,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
      
     //Beam on to start the simulation
     BeamOn(n_particles);
-
+    
 	if (n_projection + 1 == totalprojections)
 	{
 	    if (globalVerbose > 0)
@@ -402,7 +404,7 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 	    }
 	    
 	    //Reset needed variables for next run
-        beamManager -> ResetEvents(0);
+        beamManager -> ResetEvents(1);
         sampleconstruction->SetLastRotation(0);
 	}
 
@@ -414,18 +416,17 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
                                                double rotation_angle,
                                                double zposition)
 {
+
     //globalVerbose = 0;
     beamManager->GetProgressTracker().print = false;
     
-    G4cout << "\nrotation = " << rotation_angle << G4endl;
+    //G4cout << "\nrotation = " << rotation_angle << G4endl;
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
     	  	    	
     //Let the PrimaryGeneratorAction class know where to position the start of the beam
-    beamManager -> SetNumberOfEvents(n_particles, 0);
-		
-	physicsManager -> Fluorescence(); 
+    beamManager -> SetNumberOfEvents(n_particles, 1);
 	 
 	runManager -> Initialize(); 
 	runManager -> SetNumberOfEventsToBeStored(0);
@@ -435,16 +436,19 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
     //After it has been constructed, if the G4VPhysicalVolume still exists, apply the needed transformations
     //to the sample such as rotation and translation
     sampleconstruction->Construct(flatfield);
-    sampleconstruction->ApplyTransforms(rotation_angle, 0);
+    sampleconstruction->ApplyTransforms(rotation_angle, zposition);
 
     //Prepare for next run. Check if energy or gun has changed 
-    beamManager -> ResetEvents(0);   
+    beamManager -> ResetEvents(1);   
     
     Initialise_dataSets();
     beamManager -> GetProgressTracker().rotationangle = rotation_angle;
      
     //Beam on to start the simulation
     BeamOn(n_particles);
+    //std::string str = std::to_string(n_particles);
+    //UImanager->ApplyCommand("/mpi/.beamOn " + str + " false");
+
 
 	sampleconstruction->ApplyTransforms(0, 0);
     sampleconstruction->SetLastRotation(0);
@@ -589,7 +593,7 @@ void Simulation::printinfo_pywrapped(std::string filepath,
         SettingsLog log(SaveToFile);
         PrintInformation(log);
 
-        double particleperpixel = n_particles/(detectorManager->GetAbsorptionDetector()->GetNumberOfxPixels() * detectorManager->GetAbsorptionDetector()->GetNumberOfyPixels());
+        double particleperpixel = n_particles/(detectorManager->GetAbsorptionDetector()->GetxPixels() * detectorManager->GetAbsorptionDetector()->GetyPixels());
 	
 	    PrintToEndOfTerminal(log, '-');
 	    log << "META DATA: "
@@ -768,7 +772,7 @@ void Simulation::SetSeed(long int seedinput)
     if (seedinput == 0)
     {
         //Set random seed sequence with system time
-        seedCmd = time(0);
+        seedCmd = time(0) *(mpi_rank + 1);
         srand(seedCmd);	 
         randseed = true;
     }

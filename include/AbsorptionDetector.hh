@@ -46,21 +46,16 @@ class AbsorptionDetector
         
         //SetFunctions
         void SetHalfDimensions(G4ThreeVector value){halfdimensions = value;}
-        void SetRows(G4int value){rows = value;}
-        void SetColumns(G4int value){columns = value;}
+        void SetxPixels(int value) {xpixels = value;}
+        void SetyPixels(int value) {ypixels = value;}
         
-        //GetFunctions
-        G4int GetRows(){return rows;}
-        G4int GetColumns(){return columns;}
-        
-        G4int GetNumberOfxPixels()             {return rows;}
-        G4int GetNumberOfyPixels()             {return columns;}
-        G4ThreeVector GetHalfDimenions()       {return halfdimensions;}
-        double_vector1D GetHalfDimensions(){return {halfdimensions.x(),halfdimensions.y(),halfdimensions.z()};}
-        
-        G4ThreeVector GetG4VectHalfDimensions()       {return halfdimensions;}
-        
-        AbsorptionSD* GetSensitiveDetector(){return absorSD;}
+        //Get functions
+        int             GetxPixels()           {return xpixels;}
+        int             GetyPixels()           {return ypixels;}     
+        G4ThreeVector   GetHalfDimenions()     {return halfdimensions;}
+        double_vector1D GetHalfDimensions()    {return {halfdimensions.x(),halfdimensions.y(),halfdimensions.z()};}
+        G4ThreeVector   GetG4HalfDimensions()  {return halfdimensions;}
+        AbsorptionSD*   GetSensitiveDetector() {return absorSD;}
     private:
         //Pointers
         AbsorptionDetectorMessenger *messenger;
@@ -76,10 +71,11 @@ class AbsorptionDetector
 		AbsorptionSD                *absorSD;
     
         //Variables
-        G4int         rows;
-		G4int         columns;
 		G4ThreeVector halfdimensions;
 		G4String      materialName;
 		G4bool        realDetector;
+		
+		int xpixels;
+		int ypixels;
 };
 #endif

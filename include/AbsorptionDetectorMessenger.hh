@@ -42,8 +42,8 @@ class AbsorptionDetectorMessenger: public G4UImessenger
 		G4UIdirectory *Directory;
 
 		//DETECTOR VARIABLES
-		G4UIcmdWithAnInteger *SetRows;
-   		G4UIcmdWithAnInteger *SetColumns;
+		G4UIcmdWithAnInteger *xpixels;
+   		G4UIcmdWithAnInteger *ypixels;
         G4UIcmdWith3VectorAndUnit *SetDimensions;
 
 };

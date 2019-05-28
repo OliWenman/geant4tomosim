@@ -24,19 +24,19 @@ AbsorptionDetectorMessenger::AbsorptionDetectorMessenger(AbsorptionDetector* Det
 	SetDimensions -> SetUnitCandidates("mm cm m um ");
 	SetDimensions -> SetRange("x > 0 || y > 0 || z > 0");
 
-	SetRows = new G4UIcmdWithAnInteger("/detector/absorption/rows", this);
-	SetRows -> SetGuidance("Set the number of cells along the detectors rows");
+	xpixels = new G4UIcmdWithAnInteger("/detector/absorption/xpixels", this);
+	xpixels -> SetGuidance("Set the number of cells along the detectors rows");
 
-	SetColumns = new G4UIcmdWithAnInteger("/detector/absorption/columns", this);
-	SetColumns -> SetGuidance("Set the number of cells along the detectors columns");
+	ypixels = new G4UIcmdWithAnInteger("/detector/absorption/ypixels", this);
+	ypixels -> SetGuidance("Set the number of cells along the detectors columns");
 }
 
 AbsorptionDetectorMessenger::~AbsorptionDetectorMessenger()
 {
     //delete Directory;
     delete SetDimensions;
-    delete SetRows;
-    delete SetColumns;
+    delete xpixels;
+    delete ypixels;
 }
 
 void AbsorptionDetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
@@ -45,12 +45,12 @@ void AbsorptionDetectorMessenger::SetNewValue(G4UIcommand* command, G4String new
     {
 		AD -> SetHalfDimensions(SetDimensions -> GetNew3VectorValue(newValue));
     }
-    else if (command == SetRows)
+    else if (command == xpixels)
     {
-        AD -> SetRows(SetRows -> GetNewIntValue(newValue));	
+        AD -> SetxPixels(xpixels -> GetNewIntValue(newValue));	
     }
-    else if (command == SetColumns)
+    else if (command == ypixels)
     {
-        AD -> SetColumns(SetColumns -> GetNewIntValue(newValue));	
+        AD -> SetyPixels(ypixels -> GetNewIntValue(newValue));	
     }
 }
