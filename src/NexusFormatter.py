@@ -8,29 +8,57 @@ import sys
 import datetime
 
 class NexusFormatter:
-    
+        
     #When class is created
     def __init__(self):
-        
+            
         self.fileOpen = False
         self.SimReady = False
         self.setupSuccess = False
         
-    def openFile(self, FilePath):
+    def openFile(self, filepath, interactivity = True):
+        
+        print "\nOpening Nexus file:", filepath
+        
+        stringLength = len(filepath)
     
-        print "\nOpening Nexus file:", FilePath
+        pathfound = False
+        filepathokay = False;
+
+        #Loop through the string to find the path and the name
+        for i in reversed(range(stringLength)):
+            char = filepath[i]
         
+            #Finds the path and then can seperate the variables to path and name
+            if char == '/':
+  
+                filename = filepath[i+1:stringLength]      
+                path = filepath[0:i+1]
+                pathfound = filepathokay = True
+        
+                break
+        
+        nexusExtension = filepath[-4:stringLength]
+        
+        #If the file doesn't have the .nxs extension, ask for another input
+        if nexusExtension != '.nxs':
+            raise Exception ("the extension", filename,"is not valid for file. Please input the file with a \'.nxs\' extension.")
+        
+        #Checks to see if path exists
+        if not os.path.isdir(path) :
+            raise Exception ("the directory \'", path, "\' doesn't exist.")
+            
         #Check if file exists       
-        if os.path.isfile(FilePath):
-        
+        if os.path.isfile(filepath) and interactivity == True:
+                
             #If it exits, check it's size
-            fileInfo = os.stat(FilePath)
+            fileInfo = os.stat(filepath)
             Modified_time = datetime.datetime.fromtimestamp(fileInfo.st_mtime)
             fileSizeB  = fileInfo.st_size #In B 
             fileSizeKB = fileInfo.st_size/(10**3) #In KB 
             fileSizeMB = fileInfo.st_size/(10**6) #In MB           
             fileSizeGB = fileInfo.st_size/(10**9) #In GB
-                
+                        
             if fileSizeB > 10**3:
                 if fileSizeKB > 10**3:
                     if fileSizeMB > 10**3: 
@@ -45,7 +73,8 @@ class NexusFormatter:
             else:
                 fileSize = fileSizeB
                 Unit = "bytes"
-                
+            
+            
             print "\nThis file already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n"              
             contin = False
                 
@@ -64,14 +93,15 @@ class NexusFormatter:
                    contin = False
                 
                 print "\n"
-        
+            
+            
         #Try to open file, delete file if can't open it as it's going to override it anyway       
         try:     
-            self.h5file1 = h5py.File(FilePath, 'w')
+            self.h5file1 = h5py.File(filepath, 'w')
         
         except OSError:
-            os.remove(FilePath)
-            self.h5file1 = h5py.File(FilePath, 'w')
+            os.remove(filepath)
+            self.h5file1 = h5py.File(filepath, 'w')
         
         self.fileOpen = True
         
@@ -122,7 +152,13 @@ class NexusFormatter:
             print "File closed!"
         
     #The dataset that stores the information to do with the transmission data
-    def CreateProjectionFolder(self, nCalibrations, NumberOfImages, nDetectorsZ, nDetectorsY, detectorDimensions, rotation):
+    def CreateProjectionFolder(self, 
+                               nCalibrations, 
+                               NumberOfImages, 
+                               nDetectorsZ, 
+                               nDetectorsY, 
+                               detectorDimensions, 
+                               rotation):
         
         #entry/entry1/tomo_entry/data/instrument/detector/data
         DetectorPath = '/entry1/tomo_entry/instrument/detector/'
@@ -153,13 +189,20 @@ class NexusFormatter:
         
        
     #Appened to the transmission data
-    def AddProjectionData(self, theData, nImage):
+    def AddProjectionData(self, 
+                          theData, 
+                          nImage):
         
         dataSet = self.h5file1['/entry1/tomo_entry/instrument/detector/data']
         dataSet[nImage, :, :] = theData[:, :]
     
     #Function to create the data for the beam energy, fluorescence or full mapping fluorescence
-    def CreateDataGroup(self, dataType, nImages = 1, eBins = 1, xBins = 1, yBins = 1):
+    def CreateDataGroup(self, 
+                        dataType, 
+                        nImages = 1, 
+                        eBins = 1, 
+                        xBins = 1, 
+                        yBins = 1):
         
         #DataPath = '/entry1/tomo_entry/data/'
         xLabel = "energy"
@@ -197,14 +240,16 @@ class NexusFormatter:
             xScaleDataSet = dataGroup.create_dataset(xLabel, shape = (eBins,), dtype = 'f8')  # X axis data
             
             dataGroup.attrs[xLabel + '_indices'] = [3,] #
-            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, xBins, yBins, eBins), dtype = 'i4')  # Y axis data
+            dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, yBins, xBins, eBins), dtype = 'i4')  # Y axis data
         
         else:
             print "Unrecognised dataType", dataType,"using CreateDataGroup."
             sys.exit()  
      
     #Function to add the x axis to the data   
-    def AddxAxis(self, dataType, data):
+    def AddxAxis(self, 
+                 dataType, 
+                 data):
         
         DataPath = 'entry1/tomo_entry/instrument/detector'
         
@@ -250,7 +295,10 @@ class NexusFormatter:
         dataSet[:] = data
         
     #Function to appened the data
-    def AddData(self, dataType, data, nImage):
+    def AddData(self, 
+                dataType, 
+                data, 
+                nImage):
         
         if dataType == "Beam_Energy":
             dataSet = self.h5file1['entry1/tomo_entry/instrument/detector_BE/photons']
