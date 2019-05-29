@@ -60,8 +60,8 @@ G4int MultiParameters::DoIt(G4String parameterList)
 
     if (CheckCorrectNumberOfParameters(parameterList) == fNotEnoughParameters) {return fNotEnoughParameters;}
         
-    int checkifokay = G4UIcmdWithAString::DoIt(parameterList);    
-    if (checkifokay != success) {return checkifokay;}
+    int status = G4UIcmdWithAString::DoIt(parameterList);    
+    if (status != success) {return status;}
 
     int commandstatus = ownmessenger->ApplyCommand(this, parameterList);
     

@@ -300,7 +300,7 @@ void Simulation::applycommand_pywrapped(std::string command)
                         {
                             breakLoop2 = true;
                             G4cout << "\nExiting..." << G4endl;
-                            exit(0);
+                            throw std::runtime_error("Invalid command");
                         }
                         else if (continueSimulation == "y")
                         {
@@ -320,8 +320,7 @@ void Simulation::applycommand_pywrapped(std::string command)
         }
         else
         {
-            G4cout << "\nAborting simulation..." << G4endl;
-            exit(0);
+             throw std::runtime_error("Invalid command");
         }
     }
 }

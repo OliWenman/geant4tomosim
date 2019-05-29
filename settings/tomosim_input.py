@@ -12,7 +12,7 @@ import numpy as np
 #========================================================================================
 
 #General settings
-verbose         = 5
+verbose         = 0
 interactive     = False
 
 #Image variables

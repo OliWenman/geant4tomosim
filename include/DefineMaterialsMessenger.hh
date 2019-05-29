@@ -10,13 +10,13 @@ Author: Oliver Jack Wenman
 
 #include "globals.hh"
 #include <map>
-#include "G4UImessenger.hh"
+#include "MyG4UImessenger.hh"
 #include "G4Tokenizer.hh"
 #include "G4UIcommand.hh"
 
 class DefineMaterials;
 
-class G4UImessenger;
+class MyG4UImessenger;
 
 class G4UIdirectory;
 class G4UIcmdWithoutParameters;
@@ -28,45 +28,52 @@ class G4UIcmdWith3VectorAndUnit;
 class G4UIcmdWith2Vector;
 class G4UIcmdWithABool;
 
+class MultiParameters;
 
-class DefineMaterialsMessenger: public G4UImessenger
+class DefineMaterialsMessenger: public MyG4UImessenger
 {
 	public:
 		DefineMaterialsMessenger(DefineMaterials* materials);
 		~DefineMaterialsMessenger();
 	
 		//Methods
-		void SetNewValue(G4UIcommand* command, G4String newValue);
+		void SetNewValue (G4UIcommand* command, G4String newValue);
+		int  ApplyCommand(G4UIcommand* command, G4String newValue);
 	private:
 	    G4double CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit);
+	    
+	    int CheckUnits(std::map<std::string, double> correctunits, 
+                       std::string                   unit_str,
+                       double                        &unit);
+	    
 	    template <typename T> T ConvertToNumber(G4Tokenizer &next, G4String input, G4UIcommand* command);
 	
 		DefineMaterials *materials;		
 
 		G4UIdirectory *MaterialsDirectory;
 
-		G4UIcmdWithAString *DefElement;
-		G4UIcmdWithAString *DefIsotope;
-		G4UIcmdWithAString *IsotopeMix;
-		G4UIcmdWithAString *AddTo_IsotopeMix;
-		G4UIcmdWithAString *Density_IsotopeMix;
+		MultiParameters* DefElement;
+		MultiParameters* DefIsotope;
+		MultiParameters* IsotopeMix;
+		MultiParameters* AddTo_IsotopeMix;
+		MultiParameters* Density_IsotopeMix;
 		
-		G4UIcmdWithAString *DefMolecule;
-		G4UIcmdWithAString *AddElementToMolecule;
+		MultiParameters* DefMolecule;
+		MultiParameters* AddElementToMolecule;
 		
-		G4UIcmdWithAString *DefCompound;
-	    G4UIcmdWithAString *AddElementToCompound;	
+		MultiParameters* DefCompound;
+	    MultiParameters* AddElementToCompound;	
 	    
-	    G4UIcmdWithAString *DefMixture;
-	    G4UIcmdWithAString *AddMaterialToMixture;
+	    MultiParameters* DefMixture;
+	    MultiParameters* AddMaterialToMixture;
 	    
-	    G4UIcmdWithAString *AutoOpticalProperties_El;
-	    G4UIcmdWithAString *AddRefractiveIndex;
-	    G4UIcmdWithAString *AddRefracticeIndex_Im;
-	    G4UIcmdWithAString *AddAbsorptionLength;
-	    G4UIcmdWithAString *AddAbsorptionLength_xraylib;
-	    G4UIcmdWithAString *AddEfficiency;
-	    G4UIcmdWithAString *PrintMPT;
+	    MultiParameters* AutoOpticalProperties_El;
+	    MultiParameters* AddRefractiveIndex;
+	    MultiParameters* AddRefracticeIndex_Im;
+	    MultiParameters* AddAbsorptionLength;
+	    MultiParameters* AddAbsorptionLength_xraylib;
+	    MultiParameters* AddEfficiency;
+	    G4UIcmdWithAString* PrintMPT;
 
 		std::map<std::string, double> densityUnits;
 		std::map<std::string, double> atomicWeightUnits;
@@ -76,4 +83,5 @@ class DefineMaterialsMessenger: public G4UImessenger
 	    std::map<std::string, double> xraylibDensity;
 	    std::map<std::string, double> xraylibEnergy;
 };
+
 #endif

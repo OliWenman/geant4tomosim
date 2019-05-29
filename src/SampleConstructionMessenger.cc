@@ -263,9 +263,9 @@ int SampleConstructionMessenger::ApplyCommand(G4UIcommand* command, G4String new
 		try
 		{
 		    startingPhi   = std::stod(next());
-		    endPhi         = std::stod(next());
+		    endPhi        = std::stod(next());
             startingTheta = std::stod(next());
-            endPhi         = std::stod(next());
+            endPhi        = std::stod(next());
 		}
 		//Catch errors, return error code
 		catch (const std::invalid_argument& ia)

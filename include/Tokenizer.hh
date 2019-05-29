@@ -15,16 +15,18 @@ Author: Oliver Jack Wenman
 #include <cstring>
 #include <sstream> 
 #include "G4UIcommand.hh"
+#include "Exceptions.hh"
 
 struct Flag
 {
-    Flag(std::string Name, std::map<std::string, double> Units) {name = Name; units = Units; hasUnits = true;}
-    Flag(std::map<std::string, double> Units, std::string Name) {name = Name; units = Units; hasUnits = true;}
-    Flag(std::string Name)                                      {name = Name, hasUnits = false;}
-    Flag()                                                      {hasUnits = false;}
+    Flag(int _parameter, std::string _name, std::map<std::string, double> _units) {parameter = _parameter, name = _name; units = _units; hasUnits = true; optional = true;}
+    Flag(int _parameter, std::string _name)                                       {parameter = _parameter, name = _name, hasUnits = false; optional = true;}
+    Flag(int _parameter)                                                          {parameter = _parameter, hasUnits = false; optional = true;}
 
     std::string name;
+    bool optional;
     bool hasUnits;
+    int  parameter;
     std::map<std::string, double> units;
 };
 
@@ -48,6 +50,7 @@ class Tokenizer
         double FindDouble(Flag flag);
         std::string FindString(Flag flag);
         doubleArray FindArray(Flag flag);
+        std::vector<std::string> tokens;
    
         void PrintInput(){std::cout << "\ninput = " << input << std::endl;}
    
@@ -56,6 +59,5 @@ class Tokenizer
    
         G4UIcommand* Command;
         std::vector<Flag> FlagContainer;
-        std::vector<std::string> tokens;
 };
 

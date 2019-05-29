@@ -226,6 +226,17 @@ bool SampleDescription::BuildPlacement(bool          darkflatfields,
                 
                 return true;
             }
+            else
+            {
+                //Check if the sample has been assigned a material. If it has it means theres an error, its logical volume should be created
+                if (material != "EMPTY") 
+                {
+                    std::string message = "bool SampleDescription::BuildPlacement(bool, double, double, G4ThreeVector, bool) failed to create G4PVPlacement for sample " + 
+                                          name + " as it has no G4LogicalVolume but has a material assigned \'" + material + "\'";
+                
+                    throw std::runtime_error(message);
+                }
+            }
         }
     }
     return false;

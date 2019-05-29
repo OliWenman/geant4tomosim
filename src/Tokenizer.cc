@@ -34,80 +34,61 @@ double Tokenizer::FindDouble(Flag flag)
 {
     std::size_t foundFlag;
     std::string answer;
-    std::string errorMessage = "\nERROR: " + Command -> GetCommandPath() + " " + input + " ";  
     int errorcounter = 0;
     
-    bool flagfound = false;
     int units = 1;
+ 
+    int i = flag.parameter;
+ 
+    foundFlag = tokens[i].find(flag.name + "=");
     
-    //Loop through the tokens and find the flag
-    for (int i = 0; i < tokens.size() ; i++)
+    //If flag found, seperate the answer from the flag
+    if (foundFlag !=std::string::npos)
     {
-        foundFlag = tokens[i].find(flag.name + "=");
-        
-        //If flag found, seperate the answer from the flag
-        if (foundFlag !=std::string::npos)
-        {
-            answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
-            flagfound = true;
-            
-            //Check if the flag has units
-            if(flag.hasUnits)
-            {
-                size_t firstbracket = answer.find("[");
-                size_t endbracket = answer.find("]");
-
-                //If it does then check if theres units in the string
-                if(firstbracket !=std::string::npos && endbracket !=std::string::npos)
-                {
-                    std::string unitkey = answer.substr(firstbracket + 1, endbracket - firstbracket -1);
-                    if(flag.units.count(unitkey))
-                    {
-                        units = units * flag.units[unitkey];          
-                    }
-                    else
-                    {
-                        G4cout << errorMessage << " -> Invalid units";
-                        ++errorcounter;
-                    }            
-                    answer = answer.substr(0, firstbracket);
-                }
-                else       
-                {
-                    G4cout << errorMessage << " -> No units given";
-                    ++errorcounter;
-                }   
-            }
-            break;
-        } 
-        else 
-        {
-            flagfound = false;
-        }  
+        answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
     }
-    if (!flagfound)
+    else
     {
-        G4cout << errorMessage << " -> Invalid flags";
-        ++errorcounter;
+
+        if (tokens[i].find('=') != std::string::npos)
+        {
+            throw InvalidFlag();
+        }
+        else if (tokens[i].find('=')  == std::string::npos && flag.optional)
+        {
+            answer = tokens[i];
+        }
+    }  
+    
+    //Check if the flag has units
+    if(flag.hasUnits)
+    {
+        size_t firstbracket = answer.find("[");
+        size_t endbracket = answer.find("]");
+
+        //If it does then check if theres units in the string
+        if(firstbracket !=std::string::npos && endbracket !=std::string::npos)
+        {
+            std::string unitkey = answer.substr(firstbracket + 1, endbracket - firstbracket -1);
+            if(flag.units.count(unitkey))
+            {
+                units = units * flag.units[unitkey];          
+            }
+            else
+            {
+                throw InvalidUnits();
+            }            
+            answer = answer.substr(0, firstbracket);
+        }
+        else       
+        {
+            throw InvalidUnits();
+        }   
     }
     
     double value = 0;
     
-    try
-    {
-        value = std::stod(answer)*units;
-    }
-    catch (const std::invalid_argument& ia)
-    {
-        G4cout << errorMessage << " -> Invalid number";  
-        ++errorcounter;
-    }  
-    
-    if (errorcounter > 0)
-    {
-        G4cout << "\nUnsuccessful" << G4endl;
-        exit(0);
-    }
+    value = std::stod(answer)*units;
     
     return value;
 }
@@ -116,40 +97,28 @@ std::string Tokenizer::FindString(Flag flag)
 {
     std::size_t foundFlag;
     std::string answer;
-    std::string errorMessage = "\nERROR: " + Command -> GetCommandPath() + " " + input + " ";  
     int errorcounter = 0;
+    int i = flag.parameter;
     
-    bool flagfound = false;
+    foundFlag = tokens[i].find(flag.name + "=");
     
-    //Loop through the tokens and find the flag
-    for (int i = 0; i < tokens.size() ; i++)
+    //If flag found, seperate the answer from the flag
+    if (foundFlag !=std::string::npos)
     {
-        foundFlag = tokens[i].find(flag.name + "=");
-        
-        //If flag found, seperate the answer from the flag
-        if (foundFlag !=std::string::npos)
+        answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
+    } 
+    else 
+    {
+        if (tokens[i].find('=') != std::string::npos)
         {
-            answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
-            flagfound = true;
-            
-            break;
-        } 
-        else 
+            throw InvalidFlag();
+        }
+        else if (tokens[i].find('=')  == std::string::npos && flag.optional)
         {
-            flagfound = false;
-        }  
-    }
-    if (!flagfound)
-    {
-        G4cout << errorMessage << " -> Invalid flags";
-        ++errorcounter;
-    }
-    
-    if (errorcounter > 0)
-    {
-        G4cout << "\nUnsuccessful" << G4endl;
-        exit(0);
-    }
+            answer = tokens[i];
+        }
+        //throw InvalidFlag();
+    }  
     
     return answer;
 }
@@ -157,72 +126,55 @@ doubleArray Tokenizer::FindArray(Flag flag)
 {
     std::size_t foundFlag;
     std::string answer;
-    std::string errorMessage = "\nERROR: " + Command -> GetCommandPath() + " " + input + " ";  
-    int errorcounter = 0;
-    
-    bool flagfound = false;
     double units = 1.;
     
     std::vector<double> theArray;
-    
-    //Loop through the tokens and find the flag
-    for (int i = 0; i < tokens.size() ; i++)
+     
+    int i = flag.parameter;
+     
+    foundFlag = tokens[i].find(flag.name + "=");
+    if (foundFlag == std::string::npos)
     {
-        foundFlag = tokens[i].find(flag.name + "=");
-        
+        if (tokens[i].find('=') != std::string::npos)
+        {
+            throw InvalidFlag();
+        }
+        else if (tokens[i].find('=')  == std::string::npos && flag.optional)
+        {
+            answer = tokens[i];
+        }
+    }
+    else
+    {
         //If flag found, seperate the answer from the flag
-        if (foundFlag !=std::string::npos)
-        {
-            answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
-            flagfound = true;
-            //G4cout << "answer = " << answer;
-            
-            //Check if the flag has units
-            if(flag.hasUnits)
-            {
-                size_t firstbracket = answer.find("[");
-                size_t endbracket = answer.find("]");
-
-                //If it does then check if theres units in the string
-                if(firstbracket !=std::string::npos && endbracket !=std::string::npos)
-                {
-                    std::string unitkey = answer.substr(firstbracket + 1, endbracket - firstbracket -1);
-                    if(flag.units.count(unitkey))
-                    {
-                        units = units * flag.units[unitkey];          
-                    }
-                    else
-                    {
-                        G4cout << errorMessage << " -> Invalid units!";
-                        G4cout << "\nAvaliable units are: \n";
-                        
-                        for (std::map<std::string, double>::iterator it = flag.units.begin(); it != flag.units.end(); ++it){
-                            G4cout << it -> first << " ";}
-                        ++errorcounter;
-                    }            
-                    answer = answer.substr(0, firstbracket);
-                }
-                else       
-                {
-                    G4cout << errorMessage << " -> No units given";
-                    G4cout << "\nAvaliable units are: \n";
-                    for (std::map<std::string, double>::iterator it = flag.units.begin(); it != flag.units.end(); ++it){
-                        G4cout << it -> first << " ";}
-                    ++errorcounter;
-                }   
-            }
-            break;
-        } 
-        else 
-        {
-            flagfound = false;
-        }  
+        answer = tokens[i].substr(flag.name.size() + 1, tokens[i].size());
     }
-    if (!flagfound)
+                    
+    //Check if the flag has units
+    if(flag.hasUnits)
     {
-        G4cout << errorMessage << " -> Invalid flag \'" << flag.name << "\'";
-        ++errorcounter;
-    }
+        size_t firstbracket = answer.find("[");
+        size_t endbracket = answer.find("]");
+
+        //If it does then check if theres units in the string at the end
+        if(firstbracket !=std::string::npos && endbracket !=std::string::npos && endbracket == answer.size()-1)
+        {
+            std::string unitkey = answer.substr(firstbracket + 1, endbracket - firstbracket -1);
+            if(flag.units.count(unitkey))
+            {
+                units = units * flag.units[unitkey];          
+            }
+            else
+            {           
+                throw InvalidUnits();
+            }            
+            answer = answer.substr(0, firstbracket);
+        }
+        else       
+        {                    
+            throw InvalidUnits();
+        }   
+    } 
     
     //Checking for brackets to define array
     size_t firstbracket = answer.find("(");
@@ -269,14 +221,15 @@ doubleArray Tokenizer::FindArray(Flag flag)
             }
             catch (const std::invalid_argument& ia)
             {
-                G4cout << errorMessage << " -> Invalid array: " << arraystring << " (" << errorcounter << ")" << std::flush;  
-                ++errorcounter;
+                throw InvalidArray();
             }
         }
         
         //If the function linspace is detected, create the array
-        if(linespaceTrue !=std::string::npos )
+        if(linespaceTrue !=std::string::npos)
         {
+            if (linespaceTrue != 0 || answer.find("linspace(") == std::string::npos) { throw InvalidLinspace();} 
+        
             if (tempArray.size() == 3)
             {
                 double nElements = tempArray[2]/units;
@@ -291,8 +244,7 @@ doubleArray Tokenizer::FindArray(Flag flag)
             }
             else
             {
-                G4cout << errorMessage << " -> linspace should only have 3 inputs (" << errorcounter << ")" << std::flush;
-                ++errorcounter;  
+                throw InvalidLinspace();
             }
         } 
         else
@@ -309,12 +261,6 @@ doubleArray Tokenizer::FindArray(Flag flag)
     for (int i = 0; i < theArray.size() ; i++)
     {
         array.values[i] = theArray[i];
-    }
-    
-    if (errorcounter > 0)
-    {
-        G4cout << G4endl;
-        exit(0);
     }
     
     return array;

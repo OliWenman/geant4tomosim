@@ -11,11 +11,14 @@
 #include "G4UIcmdWithABool.hh"
 #include "G4UIcmdWith3VectorAndUnit.hh"
 
+#include "MultiParameters.hh"
+
+
 #include "G4TwoVector.hh"
 #include "G4Tokenizer.hh"
 #include "Tokenizer.hh"
 
-DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials): materials(DefMaterials)
+DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials): MyG4UImessenger(), materials(DefMaterials)
 {
 //=================================================================================================
 	MaterialsDirectory = new G4UIdirectory("/Materials/", this);
@@ -24,57 +27,68 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 //=================================================================================================
     //DEFINING ELEMENTS/ISOTOPES
     
-	DefElement = new G4UIcmdWithAString("/Materials/Define/Element", this);
-	DefElement -> SetGuidance("Define an element"
-	                          "Element_name Z_number Atomic_weight Unit Density Unit");
+	DefElement = new MultiParameters("/Materials/Define/Element", this);
+	DefElement -> SetNumberOfParameters(6);
+	DefElement -> SetGuidance("Define an element\n"
+	                          "name z atomicweight unit density unit");
 
-	DefIsotope = new G4UIcmdWithAString("/Materials/Define/Isotope", this);
+	DefIsotope = new MultiParameters("/Materials/Define/Isotope", this);
+	DefIsotope -> SetNumberOfParameters(5);
 	DefIsotope -> SetGuidance("Define an isotope\n"
-	                          "Isotope_name, Z_number, Nucleon_number Atomic_weight Unit");
+	                          "name z nucleonnumber atomicweight unit");
 	                          
-	IsotopeMix = new G4UIcmdWithAString("/Materials/Define/IsotopeMix", this);
+	IsotopeMix = new MultiParameters("/Materials/Define/IsotopeMix", this);
+	IsotopeMix -> SetNumberOfParameters(3);
 	IsotopeMix -> SetGuidance("Create an element with a certain mixture of isotopes\n"
-	                          "Isotope_mix_Name  Symbol Number_of_isotopes");
+	                          "name  symbol numberofisotopes");
 	
-	AddTo_IsotopeMix = new G4UIcmdWithAString("/Materials/AddTo/IsotopeMix", this);
+	AddTo_IsotopeMix = new MultiParameters("/Materials/AddTo/IsotopeMix", this);
+	AddTo_IsotopeMix -> SetNumberOfParameters(3);
 	AddTo_IsotopeMix -> SetGuidance("Add specific isotopes of an element to the isotope mixture\n"
-	                                "Isotope_mixture_name Density Element_symbol Abundance Unit"); 
+	                                "name elementsymbol abundance unit"); 
 	                                
-	Density_IsotopeMix = new G4UIcmdWithAString("/Materials/AddDensity/IsotopeMix", this);
-	Density_IsotopeMix -> SetGuidance("Add the density to the isotope mix\n"
-	                                  "Isotope_mixture_name Density Unit");
+	Density_IsotopeMix = new MultiParameters("/Materials/AddDensity/IsotopeMix", this);
+	Density_IsotopeMix -> SetNumberOfParameters(3);
+	Density_IsotopeMix -> SetGuidance("Set the density to the isotope mix\n"
+	                                  "name density unit");
 
 //=================================================================================================
     //DEFINING A NEW MOLECULE
-	DefMolecule = new G4UIcmdWithAString("/Materials/Define/Molecule", this);
+	DefMolecule = new MultiParameters("/Materials/Define/Molecule", this);
+	DefMolecule -> SetNumberOfParameters(4);
 	DefMolecule -> SetGuidance("Define a new molecule\n"
-	                           "Molecule_name Number_of_atoms Density Unit");
+	                           "name no.atoms density unit");
 	
-	AddElementToMolecule = new G4UIcmdWithAString("/Materials/AddTo/Molecule", this);
+	AddElementToMolecule = new MultiParameters("/Materials/AddTo/Molecule", this);
+	AddElementToMolecule -> SetNumberOfParameters(3);
     AddElementToMolecule -> SetGuidance("Choose an element to be added to an existing molecule\n"
-                                        "Molecule_name Elemenet_name Number_of_atoms");
+                                        "moleculename elemenetname no.atoms");
                                         
 //=================================================================================================
     //DEFINING A NEW COMPOUND (PERCENTAGE OF DIFFERENT ELEMENTS, FOR EXAMPLE ALLOYS)                                       
     
-    DefCompound = new G4UIcmdWithAString("/Materials/Define/Compound", this);
+    DefCompound = new MultiParameters("/Materials/Define/Compound", this);
+    DefCompound -> SetNumberOfParameters(4);
     DefCompound -> SetGuidance("Create a compound of elements\n"
-                               "Compound_name Number_of_elements Density Unit");
+                               "compoundname no.elements density unit");
     
-    AddElementToCompound = new G4UIcmdWithAString("/Materials/AddTo/Compound", this);
+    AddElementToCompound = new MultiParameters("/Materials/AddTo/Compound", this);
+    AddElementToCompound -> SetNumberOfParameters(4);
     AddElementToCompound -> SetGuidance("Add elements to a custom compound\n"
-                                        "Compound_name Element_name Fractional_mass Unit");
+                                        "compoundname elementname fractionalmass unit");
                                         
 //=================================================================================================
     //DEFINING A NEW MIXTURE (MADE UP OF A PERCENTAGE OF DIFFERENT ELEMENTS OR MATERIALS) 
                                         
-    DefMixture = new G4UIcmdWithAString("/Materials/Define/Mixture", this);
+    DefMixture = new MultiParameters("/Materials/Define/Mixture", this);
+    DefMixture -> SetNumberOfParameters(4);
     DefMixture -> SetGuidance("Create a material made from a mixture of elements and materials\n"
-                              "Mixture_name Number_of_componenets Density Unit");
+                              "mixturename no.componenets density unit");
                               
-    AddMaterialToMixture = new G4UIcmdWithAString("Materials/AddTo/Mixture", this);
+    AddMaterialToMixture = new MultiParameters("Materials/AddTo/Mixture", this);
+    AddMaterialToMixture -> SetNumberOfParameters(4);
     AddMaterialToMixture -> SetGuidance("Add materials/elements to a mixture\n"
-                                        "Mixture_name Material/Element_name Fractional_mass Unit");                          
+                                        "mixturename materialname fractionalmass unit");                          
                                         
 //=================================================================================================                                        
     //DEFINING UNITS THAT A USER CAN USE WHEN USING THESE COMMANDS
@@ -108,18 +122,42 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	xraylibEnergy.insert(std::make_pair("MeV", 1.e3));
 //=================================================================================================
 
-    AutoOpticalProperties_El = new G4UIcmdWithAString("/Materials/AutoOpticalProperties", this);
-    AutoOpticalProperties_El -> SetGuidance("Automatically set the optical properties of a material (compound or element) for refraction and absorption"
-                                            "\nname energy=(e1,e2,eN...)[units]"
-                                            "\nFor the array input you can specifiy to use the function linspace. energy=linspace(startE,endE,numValues)[units] ");
+    AutoOpticalProperties_El = new MultiParameters("/Materials/AutoOpticalProperties", this);
+    AutoOpticalProperties_El -> SetNumberOfParameters(2);
+    AutoOpticalProperties_El -> SetGuidance("Automatically set the optical properties of a material (compound or element) for refraction and absorption by specifying the material and an array of energy values.\n"
+                                            "Example: material=name energy=(e1,e2,eN...)[units]\n"
+                                            "Flags optional. For the array input you can specifiy to use the function linspace. energy=linspace(starte,ende,no.values)[units] ");
                                             
-    AddRefractiveIndex = new G4UIcmdWithAString("/Materials/AddRefractiveIndex", this);
-    AddRefracticeIndex_Im = new G4UIcmdWithAString("/Materials/AddRefractiveIndex_Im", this);
+    AddRefractiveIndex = new MultiParameters("/Materials/AddRefractiveIndex", this);
+    AddRefractiveIndex -> SetNumberOfParameters(3);
+    AddRefractiveIndex -> SetGuidance("Set the optical properties of a material (compound or element) for refraction by specifying the material, "
+                                      "an array of energy values and an array of corrosponding refraction values.\n"
+                                      "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
+                                      "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
     
-    AddAbsorptionLength = new G4UIcmdWithAString("/Materials/AddAbsorptionLength", this);
-    AddAbsorptionLength_xraylib = new G4UIcmdWithAString("/Materials/xraylib/AddAbsorptionLength",this);
+    AddRefracticeIndex_Im = new MultiParameters("/Materials/AddRefractiveIndex_Im", this);
+    AddRefracticeIndex_Im -> SetNumberOfParameters(3);
+    AddRefracticeIndex_Im -> SetGuidance("Set the optical properties of a material (compound or element) for complex refraction values by specifying the material, "
+                                         "an array of energy values and an array of corrosponding refraction values.\n"
+                                         "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
+                                         "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
     
-    AddEfficiency = new G4UIcmdWithAString("/Materials/AddEfficiency", this);
+    AddAbsorptionLength = new MultiParameters("/Materials/AddAbsorptionLength", this);
+    AddAbsorptionLength -> SetNumberOfParameters(2);
+    AddAbsorptionLength -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values by specifying the material, "
+                                       "an array of energy values and an array of corrosponding absorption length values.\n"
+                                       "Example: material=name energy=(e1,e2,eN...)[units] abslength=(a1,a2,aN...)\n"
+                                       "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
+    
+    AddAbsorptionLength_xraylib = new MultiParameters("/Materials/xraylib/AddAbsorptionLength",this);
+    AddAbsorptionLength_xraylib -> SetNumberOfParameters(2);
+    AddAbsorptionLength_xraylib -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values automatically using the xraylib library. Specify the material, "
+                                               "and array of energy values.\n"
+                                               "Example: material=name energy=(e1,e2,eN...)[units]\n"
+                                               "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
+    
+    AddEfficiency = new MultiParameters("/Materials/AddEfficiency", this);
+    AddEfficiency -> SetNumberOfParameters(2);
     
     PrintMPT = new G4UIcmdWithAString("/Materials/PrintMaterialPropertiesTable", this);
 }
@@ -152,342 +190,408 @@ DefineMaterialsMessenger::~DefineMaterialsMessenger()
     delete PrintMPT;
 }
 
-void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+#include "CommandStatus.hh"
+
+int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newValue)
 {
-	if (command == DefElement)
+    if (command == DefElement)
 	{
+	    std::string name;
+		int    z;
+		double a;
+		double awUnit;
+	    double density;
+	    double denUnit;
+	
 		G4Tokenizer next(newValue);
-		G4String name = next();
+        name = next();
 		
-		G4int z = ConvertToNumber<int> (next, newValue, command);
-		G4double a = ConvertToNumber<int> (next, newValue, command);
-		G4double awUnit = CheckUnits(next, command, newValue, "AtomicWeight");
+		//convert to numbers and units
+		try { z = stoi(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
+		try { a = stod(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotADouble;}
 		
+		int status = CheckUnits(atomicWeightUnits, next(), awUnit);
+		if (status != 0) {return status;}
+		
+		try { density = stod(next()); }
+		catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+		
+		status = CheckUnits(densityUnits, next(), denUnit);
+		if (status != 0) {return status;}
 
-		G4double density = ConvertToNumber<double> (next, newValue, command);
-		G4double denUnit = CheckUnits(next, command, newValue, "Density");
-
-		materials -> DefineElement(name, z, a*awUnit, density*denUnit);
+		try {materials -> DefineElement(name, z, a*awUnit, density*denUnit);}
+		catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if(command == DefIsotope)
-	{
+	{	
+		std::string name;
+		int    z;
+		int    A;
+		double atomicWeight;
+		double unit;
+		
 		G4Tokenizer next(newValue);
-		G4String name = next();
-	
-		G4int z = ConvertToNumber<int> (next, newValue, command);
-		G4int A = ConvertToNumber<int> (next, newValue, command);
+		name = next();
 
-		G4double atomicWeight = ConvertToNumber<double> (next, newValue, command);
-		G4double unit = CheckUnits(next, command, newValue, "AtomicWeight");
-
-		materials -> DefineIsotope(name, z, A, atomicWeight*unit);
+		//convert to numbers and units
+		try { z = stoi(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
+		try { A = stoi(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
+		
+		int status = CheckUnits(atomicWeightUnits, next(), unit);
+		if (status != 0) {return status;}
+		
+		try {materials -> DefineIsotope(name, z, A, atomicWeight*unit);}
+		catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if(command == IsotopeMix)
     {
         G4Tokenizer next(newValue);
-		G4String Name = next();
-		G4String Symbol = next();
+		G4String name = next();
+		G4String symbol = next();		
+		int nComponents;
 		
-		G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+		try   {nComponents = std::stoi(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
 
-        materials -> DefineIsotopeMix(Name, Symbol, nComponents);
+        try {materials -> DefineIsotopeMix(name, symbol, nComponents);}
+        catch (parameterNotFound& pnf) {return fParameterNotFound;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if(command == AddTo_IsotopeMix)
     {
         G4Tokenizer next(newValue);
-		G4String IsotopeMixName = next();
-		G4String IsotopeName = next();
+		G4String isotopeMixName = next();
+		G4String isotopeName = next();
+		double abundance;
+		double unit;
 		
-		G4int Abundance = ConvertToNumber<int> (next, newValue, command);
-		G4double AbUnit = CheckUnits(next, command, newValue, "Percentage");
+		try {abundance = std::stod(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotADouble;}
 		
-		materials -> AddToIsoMix(IsotopeMixName, IsotopeName, Abundance*AbUnit);
+		int status = CheckUnits(percentageUnit, next(), unit);
+		if (status != 0) {return status;}
+		
+		try {materials -> AddToIsoMix(isotopeMixName, isotopeName, abundance*unit);}
+		catch (parameterNotFound& pnf) {return fParameterNotFound;}
+		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if(command == Density_IsotopeMix)
     {
         G4Tokenizer next(newValue);
-		G4String IsotopeMixName = next();
+		G4String isotopeMixName = next();
+        double density;
+        double unit;
+        
+		try {density = std::stod(next());}
+		catch (std::invalid_argument& ia) {return fParameterNotADouble;}
 		
-		G4double Density = ConvertToNumber<double> (next, newValue, command);
-		G4double denUnit = CheckUnits(next, command, newValue, "Density");
+		int status = CheckUnits(densityUnits, next(), unit);
+		if (status != 0) {return status;}
 		
-		materials -> AddIsoMixDensity(IsotopeMixName, Density*denUnit);
+		try {materials -> AddIsoMixDensity(isotopeMixName, density*unit);}
+		catch (parameterNotFound& pnf) {return fParameterNotFound;}
+		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if (command == DefMolecule)
     {
         G4Tokenizer next(newValue);     
-        G4String Name = next();
+        G4String name = next();
+        int nComponents;
+        double density;
+        double unit;
+        try {nComponents = std::stoi(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
         
-        G4int nComponents = std::stoi(next());
+        try {density = std::stod(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotADouble;}
         
-        G4double density = ConvertToNumber<double> (next, newValue, command);
-        G4double unit = CheckUnits(next, command, newValue, "Density");
+        int status = CheckUnits(densityUnits, next(), unit);
+        if (status != 0) {return status;}
         
-        materials -> DefineMolecule(Name, density*unit, nComponents);
+        try { materials -> DefineMolecule(name, density*unit, nComponents);}
+        catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if (command == AddElementToMolecule)
     {
         G4Tokenizer next(newValue);
-        G4String NameMolecule = next();
-        G4String NameElement = next();
+        G4String nameMolecule = next();
+        G4String nameElement = next();
+        int ncomponents;
         
-        G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+        try {ncomponents = std::stoi(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotAInteger;}      
         
-        materials -> AddElementToMolecule(NameMolecule, NameElement, nComponents);
+        try {materials -> AddElementToMolecule(nameMolecule, nameElement, ncomponents);}
+        catch (parameterNotFound& pnf) {return fParameterNotFound;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if (command == DefCompound)
     {
         G4Tokenizer next(newValue);
-        G4String NameCompound = next();
+        G4String nameCompound = next();
+        int nComponents;
+        double density;
+        double unit;
         
-        G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+        try {nComponents = std::stoi(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotAInteger;}
         
-        G4double density = ConvertToNumber<double> (next, newValue, command);
-        G4double unit = CheckUnits(next, command, newValue, "Density");
+        try {density = std::stod(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotADouble;}
         
-        materials -> DefineCompound(NameCompound, density*unit, nComponents);
+        int status = CheckUnits(densityUnits, next(), unit);
+        if (status != 0) {return status;}
+        
+        try {materials -> DefineCompound(nameCompound, density*unit, nComponents);}
+        catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
     else if (command == AddElementToCompound)
     {
         G4Tokenizer next(newValue);
-        G4String NameCompound = next();
-        G4String NameElement = next();
+        G4String nameCompound = next();
+        G4String nameElement = next();
+        double fractionalMass;
+        double unit;
         
-        G4double fractionalMass = ConvertToNumber<double> (next, newValue, command);
-        G4double unit = CheckUnits(next, command, newValue, "Percentage");
+        try {fractionalMass = std::stod(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotADouble;}
         
-        materials -> AddElementToCompound(NameCompound, NameElement, fractionalMass*unit);
+        int status = CheckUnits(percentageUnit, next(), unit);
+        if (status != 0) {return status;}
+        
+        try {materials -> AddElementToCompound(nameCompound, nameElement, fractionalMass*unit);}
+        catch (parameterNotFound& pnf) {return fParameterNotFound;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
 	else if (command == DefMixture)
 	{
 	    G4Tokenizer next(newValue);
-        G4String NameMixture = next();
+        G4String nameMixture = next();
+        int    nComponents;
+        double density;
+        double unit;
         
-        G4int nComponents = ConvertToNumber<int> (next, newValue, command);
+        try {nComponents = std::stoi(next());}
+        catch (std::invalid_argument& ia) { return fParameterNotAInteger;}
         
-        G4double density = ConvertToNumber<double> (next, newValue, command);
-        G4double unit = CheckUnits(next, command, newValue, "Density");
+        try {density = std::stod(next());}
+        catch (std::invalid_argument& ia) { return fParameterNotADouble;}
         
-        materials -> DefineMixture(NameMixture, density*unit, nComponents);
+        int status = CheckUnits(densityUnits, next(), unit);
+        if (status != 0) {return status;}
+        
+        try {materials -> DefineMixture(nameMixture, density*unit, nComponents);}
+        catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AddMaterialToMixture)
 	{
 	    G4Tokenizer next(newValue);
-        G4String NameMixture = next();
-        G4String NameMaterial = next();
+        G4String nameMixture = next();
+        G4String nameMaterial = next();
+        double fractionalMass;
+        double unit;
         
-        G4double fractionalMass = ConvertToNumber<double> (next, newValue, command);
-        G4double unit = CheckUnits(next, command, newValue, "Percentage");
+        try {fractionalMass = std::stod(next());}
+        catch (std::invalid_argument& ia) {return fParameterNotADouble;}
         
-        materials -> AddMaterialToMixture(NameMixture, NameMaterial, fractionalMass*unit);
+        int status = CheckUnits(percentageUnit, next(), unit);
+        if (status !=0 ) {return status;}
+        
+        try {materials -> AddMaterialToMixture(nameMixture, nameMaterial, fractionalMass*unit);}
+        catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
+        catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AutoOpticalProperties_El)
-	{
-	    /*G4Tokenizer next(newValue);
-	    
-	    std::string MaterialName = next();
-	    
-	    double startEnergy = ConvertToNumber<double> (next, newValue, command);
-	    double endEnergy = ConvertToNumber<double> (next, newValue, command);
-	    int numElements = ConvertToNumber<int> (next, newValue, command);
-	    double dStep = (endEnergy - startEnergy)/numElements;
-	    
-	    double energyValues[numElements];
-	    
-	    for (int i = 0; i < numElements ; i++){energyValues[i] = dStep * (i + 1);}
-	    
-	    materials -> AddOpticalProperties(MaterialName, energyValues, numElements);*/
-	    
+	{    
 	    Tokenizer token(newValue, command);
 	    
-	    Flag namef("name");
-	    Flag arrayf("energy", xraylibEnergy);
+	    Flag namef(0, "material");
+	    Flag arrayf(1, "energy", xraylibEnergy);
+	    //arrayf.
+	    namef.parameter = 0;
+	    arrayf.parameter = 1;
 	    
-	    //std::vector<Flag> Flags = {namef, arrayf};
+	    std::string material;
+	    doubleArray energy;
+	    try 
+	    {
+	        material = token.FindString(namef);
+	        energy   = token.FindArray(arrayf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
 	    
-	    //token.SetFlags(Flags);
-	    
-	    //double density = token.FindDouble(densityf);
-	    std::string element = token.FindString(namef);
-	    doubleArray energy = token.FindArray(arrayf);
-	    
-	    materials -> FillOpticalProperties_xraylib(element, energy.values, energy.size);
+	    try {materials -> FillOpticalProperties_xraylib(material, energy.values, energy.size);}
+	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
+	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AddRefractiveIndex)
 	{
 	    Tokenizer token(newValue, command);
 	    
-	    Flag namef("name");
-	    Flag energyf("energy", energyUnits);
-	    Flag refractiveIndexf("rIndex");
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    Flag refractiveIndexf(2, "rindex");
 	    
-	    std::string material = token.FindString(namef);
-	    doubleArray energy = token.FindArray(energyf);
-	    doubleArray rIndex = token.FindArray(refractiveIndexf);
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray rIndex;
 	    
-	    //materials -> AddRefractiveIndex_Re(material, energy.values, rIndex.values, energy.size);
-	    materials -> AddOpticalProperty(material, "RINDEX", energy.values, rIndex.values, energy.size);
+	    try
+	    {
+	        material = token.FindString(namef);
+	        energy = token.FindArray(energyf);
+	        rIndex = token.FindArray(refractiveIndexf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	    
+	    try {materials -> AddOpticalProperty(material, "RINDEX", energy.values, rIndex.values, energy.size);}
+	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
+	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AddRefracticeIndex_Im)
 	{
 	    Tokenizer token(newValue, command);
 	    
-	    Flag namef("name");
-	    Flag energyf("energy", energyUnits);
-	    Flag refractiveIndexf("rIndex");
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    Flag refractiveIndexf(2, "rindex");
 	    
-	    std::string material = token.FindString(namef);
-	    doubleArray energy = token.FindArray(energyf);
-	    doubleArray rIndex = token.FindArray(refractiveIndexf);
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray rIndex;
 	    
-	    materials -> AddOpticalProperty(material, "IMAGINARYRINDEX", energy.values, rIndex.values, energy.size);
-	    //materials -> AddRefractiveIndex_Im(material, energy.values, rIndex.values, energy.size);
+	    try 
+	    {
+	        material = token.FindString(namef);
+	        energy = token.FindArray(energyf);
+	        rIndex = token.FindArray(refractiveIndexf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	    
+	    try {materials -> AddOpticalProperty(material, "IMAGINARYRINDEX", energy.values, rIndex.values, energy.size);}
+	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
+	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AddAbsorptionLength)
 	{
 	    Tokenizer token(newValue, command);
 	
-	    Flag namef("name");
-	    Flag energyf("energy", energyUnits);
-	    Flag absLengthf("absLength", lengthUnits);
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    Flag absLengthf(2, "abslength", lengthUnits);
 	    
-	    std::string material = token.FindString(namef);
-	    doubleArray energy = token.FindArray(energyf);
-	    doubleArray absLength = token.FindArray(absLengthf);
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray absLength;
 	    
-	    materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);
-	    //materials -> AddAbsorptionLength(material, energy.values, absLength.values, energy.size);
+	    try
+	    {
+	        material = token.FindString(namef);
+	        energy = token.FindArray(energyf);
+	        absLength = token.FindArray(absLengthf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	    
+	    try {materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);}
+	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
+	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
 	else if (command == AddAbsorptionLength_xraylib)
 	{
 	    Tokenizer token(newValue, command);
 	
-	    Flag namef("name");
-	    Flag energyf("energy", energyUnits);
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
 	    
-	    std::string material = token.FindString(namef);
-	    doubleArray energy = token.FindArray(energyf);
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray absLength;
 	    
+	    try
+	    {
+	        material  = token.FindString(namef);
+	        energy    = token.FindArray(energyf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	         
 	    //materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);
-	
-	    
-	
 	}
 	else if (command == AddEfficiency)
 	{
 	    Tokenizer token(newValue, command);
 	
-	    Flag namef("name");
-	    Flag energyf("energy", energyUnits);
-	    Flag efficiencyf("efficiency");
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    Flag efficiencyf(2, "efficiency");
 	    
-	    std::string material = token.FindString(namef);
-	    doubleArray energy = token.FindArray(energyf);
-	    doubleArray efficiency = token.FindArray(efficiencyf);
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray efficiency;
 	    
-	    materials -> AddOpticalProperty(material, "EFFICIENCY", energy.values, efficiency.values, energy.size);
+	    try
+	    {
+	        material = token.FindString(namef);
+	        energy = token.FindArray(energyf);
+	        efficiency = token.FindArray(efficiencyf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	    
+	    try {materials -> AddOpticalProperty(material, "EFFICIENCY", energy.values, efficiency.values, energy.size);}
+	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
+	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == PrintMPT)
+	
+	return 0;
+}
+
+void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
+{
+	if (command == PrintMPT)
 	{
 	    materials -> PrintMPT(newValue);
 	}
 }
 
-G4double DefineMaterialsMessenger::CheckUnits(G4Tokenizer &next, G4UIcommand* command, G4String newValue, G4String TypeOfUnit)
+int DefineMaterialsMessenger::CheckUnits(std::map<std::string, double> correctunits, 
+                                         std::string                   unit_str,
+                                         double                        &unit)
 {
-    G4String UnitString = next();
-    G4bool Success;
-    
-    //Checks to see if unit exists depending on which type of unit it is. If it does, it will return it
-    if (TypeOfUnit == "Density")
-    {
-        if (densityUnits.count(UnitString) == false)
-            Success = false;
-        else 
-        {
-            Success = true;
-            return densityUnits[UnitString];    
-        }
-    }
-    else if (TypeOfUnit == "AtomicWeight")
-    {    
-        if (atomicWeightUnits.count(UnitString) == false)
-            Success = false;
-        else 
-        {
-            Success = true;
-            return atomicWeightUnits[UnitString];   
-        }
-    }
-    else if (TypeOfUnit == "Percentage")
-    {  
-        if (percentageUnit.count(UnitString) == false)
-            Success == true;
-        else
-        {
-            Success = true;
-            return percentageUnit[UnitString];   
-        }
-    }
-    else if (TypeOfUnit == "xlibDensity")
-    {
-        if (xraylibDensity.count(UnitString) == false)
-            Success = false;
-        else 
-        {
-            Success = true;
-            return xraylibDensity[UnitString];   
-        }
-    
-    }
-    
-    //If Success is false, then output reason for error and stop the programm
-    if (Success == false)
-    {
-        G4cout << "\nERROR: " << command -> GetCommandPath() << " " << newValue << " -> Invalid ";
-        
-        if (TypeOfUnit == "Density")
-        {
-            G4cout << "denisty unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";   
-            for (std::map<std::string, double>::iterator it = densityUnits.begin(); it != densityUnits.end(); ++it){
-                G4cout << it -> first << " ";}
-        }
-        else if (TypeOfUnit == "AtomicWeight")
-        {
-            G4cout << "atomic weight unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-            for (std::map<std::string, double>::iterator it = atomicWeightUnits.begin(); it != atomicWeightUnits.end(); ++it){
-                G4cout << it -> first << " ";}
-        }
-        else if (TypeOfUnit == "Percentage")
-        {
-            G4cout << "percentage unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";
-            for (std::map<std::string, double>::iterator it = percentageUnit.begin(); it != percentageUnit.end(); ++it){
-                G4cout << it -> first << " ";}
-        }
-        else if (TypeOfUnit == "xlibDensity")
-        {
-            G4cout << "denisty unit!\nGuidance: " << command -> GetGuidanceLine(0) << "\n\nAvailable units \n";  
-         
-            for (std::map<std::string, double>::iterator it = xraylibDensity.begin(); it != xraylibDensity.end(); ++it){
-                G4cout << it -> first << " ";}
-        }  
-        G4cout << G4endl; 
-        exit(0);
-    }
-}
-		
-//Function to convert string input to the type of number you need	
-template <typename T> T DefineMaterialsMessenger::ConvertToNumber(G4Tokenizer &next, G4String input, G4UIcommand* command)
-{
-    try
-    {   return static_cast<T> (std::stod(next()));} 
-        
-    catch (const std::invalid_argument& ia)
-    {
-        G4cout << "\nERROR: Invalid input for " << command -> GetCommandPath() << " " << input
-               << "\nGuidance: " << command -> GetGuidanceLine(0) << G4endl;
-        exit(1);
-    }
+	bool unit_iscorrect = correctunits.count(unit_str);
+	if (unit_iscorrect) { unit = correctunits[unit_str]; return 0;}
+	else                { return fIncorrectUnit;}
 }
 
 

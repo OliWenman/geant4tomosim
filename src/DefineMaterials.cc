@@ -10,6 +10,7 @@
 #include "G4OpticalSurface.hh"
 //#include "G4UnitDefinition.hh"
 
+#include "Exceptions.hh"
 #include "xraylib.h"
 
 DefineMaterials::DefineMaterials()
@@ -20,11 +21,9 @@ DefineMaterials::DefineMaterials()
 DefineMaterials::~DefineMaterials()
 {	
     //Free up memory of stored custom G4Elements and G4Isotopes
-    for (int i =0; i< ElementList.size();i++)
-        delete (ElementList[i]);
+    for (int i =0; i< ElementList.size();i++) {delete (ElementList[i]);}
    
-    for (int i =0; i< IsotopeList.size();i++)
-        delete (IsotopeList[i]); 
+    for (int i =0; i< IsotopeList.size();i++) {delete (IsotopeList[i]);} 
     
     ElementList.clear();
     IsotopeList.clear();
@@ -34,18 +33,37 @@ DefineMaterials::~DefineMaterials()
 
 void DefineMaterials::DefineElement(G4String name, G4int z, G4double a, G4double density)
 {
+    if (z <= 0. || a <= 0. || density <= 0.) { throw parameterIsNegative();}
+
+    //Check if the element already exists
     G4Material* element = G4NistManager::Instance() -> FindOrBuildMaterial(name);
     if (!element) {G4Material* newElement = new G4Material(name, z, a, density);}
+    else          {throw (materialAlreadyExists());}
 }
 
 void DefineMaterials::DefineIsotope(G4String name, G4int z, G4int A, G4double atomicWeight)
 {
+    if (z <= 0. || A <= 0. || atomicWeight <= 0.) { throw parameterIsNegative();}
+
+    //Check if isotope already exists
+    for (int i = 0 ; i < IsotopeList.size() ; i++)
+    {
+        if (IsotopeList[i]->GetName() == name) {throw (materialAlreadyExists());}
+    } 
 	G4Isotope* newIsotope = new G4Isotope(name, z, A, atomicWeight);
 	IsotopeList.push_back(newIsotope);
 }
 
 void DefineMaterials::DefineIsotopeMix(G4String name, G4String symbol, G4int nComponents)
 {
+    if (nComponents <= 0.) { throw parameterIsNegative();}
+
+    //Check if element already exists
+    for (int i = 0 ; i < ElementList.size() ; i++)
+    {
+        if (ElementList[i]->GetName() == name) {throw (materialAlreadyExists());}
+    } 
+
     G4Element* newIsotopeMix = new G4Element(name, symbol, nComponents);
     ElementList.push_back(newIsotopeMix);
 }
@@ -56,6 +74,8 @@ void DefineMaterials::AddToIsoMix(G4String IsotopeMixName, G4String IsotopeName,
     int IsoMixNumber;
     bool IsoFound = false;
     bool IsoMixFound = false;
+ 
+    if (Abundance <= 0.) { throw parameterIsNegative();}
     
     for(int n = 0 ; n < IsotopeList.size() ; n++)
     {
@@ -73,7 +93,6 @@ void DefineMaterials::AddToIsoMix(G4String IsotopeMixName, G4String IsotopeName,
         {    
             IsoMixNumber = n;
             IsoMixFound = true;
-            G4cout << "\nIsotopeMix nComp = " << ElementList[n] -> GetNumberOfIsotopes() << G4endl;
             break;
         } 
     } 
@@ -85,18 +104,21 @@ void DefineMaterials::AddToIsoMix(G4String IsotopeMixName, G4String IsotopeName,
     else
     {
         if(IsoMixFound == false)
-            G4cout << "ERROR: Couldn't find isotope mix \"" << IsotopeMixName << "\" to add the isotope \"" << IsotopeName << "\"" << G4endl;
+            G4cout << "Warning: Couldn't find isotope mix \"" << IsotopeMixName << "\" to add the isotope \"" << IsotopeName << "\"" << G4endl;
         if (IsoFound == false)
-            G4cout << "ERROR: Couldn't find isotope \"" << IsotopeName << "\" " << G4endl;
+            G4cout << "Warning: Couldn't find isotope \"" << IsotopeName << "\" " << G4endl;
         
-        exit(1);
+        throw (parameterNotFound());
     }   
 }
 
 void DefineMaterials::AddIsoMixDensity(G4String IsotopeMixName, G4double Density)
 {
+    int noAtoms = 1;
     int IsoMixNumber;
     bool IsoMixFound = false;
+    
+    if (Density <= 0.) { throw parameterIsNegative();}
     
     for(int n = 0 ; n < ElementList.size() ; n++)
     {
@@ -110,23 +132,28 @@ void DefineMaterials::AddIsoMixDensity(G4String IsotopeMixName, G4double Density
     
     if(IsoMixFound == true )
     {
-        G4Material* newMaterial = new G4Material(IsotopeMixName, Density, 1);
-        newMaterial -> AddElement(ElementList[IsoMixNumber], 1);
+        G4Material* newMaterial = new G4Material(IsotopeMixName, Density, noAtoms);
+        newMaterial -> AddElement(ElementList[IsoMixNumber], noAtoms);
     }
     else
     {
-        G4cout << "ERROR: Couldn't find isotope mix \"" << IsotopeMixName << "\" to add the density \"" << G4BestUnit(Density, "Density") << "\"" << G4endl;
+        throw (parameterNotFound());
     }
 }
 
 void DefineMaterials::DefineMolecule(G4String Name, G4double density, G4int n_components)
 {
+    if (n_components <= 0. || density <= 0.) { throw parameterIsNegative();}
+
     G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(Name);
     if (!material) {G4Material* newMaterial = new G4Material(Name, density, n_components);}
+    else           {throw materialAlreadyExists();}
 }
 
 void DefineMaterials::AddElementToMolecule(G4String MoleculeName, G4String ElementName, G4int NumberOfAtoms)
 {
+    if (NumberOfAtoms <= 0.) { throw parameterIsNegative();}
+
     G4Material* Molecule = FindMaterial(MoleculeName);
     G4Element* Element = FindElement(ElementName);
     
@@ -139,19 +166,24 @@ void DefineMaterials::AddElementToMolecule(G4String MoleculeName, G4String Eleme
         if (!Molecule)
             G4cout << "ERROR: Couldn't find compound \"" << MoleculeName << "\" " << G4endl;
         
-        exit(1);
+        throw (parameterNotFound());
     }
 }
 
 void DefineMaterials::DefineCompound(G4String Name, G4double density, G4int n_components)
 {
+    if (density <= 0. || n_components <= 0.) { throw parameterIsNegative();}
+
     G4Material* compound = G4NistManager::Instance() -> FindOrBuildMaterial(Name);
     
     if (!compound){G4Material* newCompound = new G4Material(Name, density, n_components);}
+    else {throw (materialAlreadyExists());}
 }
 
 void DefineMaterials::AddElementToCompound(G4String CompoundName, G4String ElementName, G4double FractionalMass)
 {
+    if (FractionalMass <= 0.) { throw parameterIsNegative();}
+
     G4Material* Compound = G4NistManager::Instance() -> FindOrBuildMaterial(CompoundName);;
     G4Element* Element = FindElement(ElementName);
     
@@ -163,17 +195,24 @@ void DefineMaterials::AddElementToCompound(G4String CompoundName, G4String Eleme
         if (!Compound)
             G4cout << "ERROR: Couldn't find compound \"" << CompoundName << "\" " << G4endl;
         
-        exit(1);
+        throw (parameterNotFound());
     }
 }
 
 void DefineMaterials::DefineMixture(G4String Name, G4double density, G4int n_components)
 {
-    G4Material* newMaterial = new G4Material(Name, density, n_components);
+    if (density <= 0. || n_components <= 0.) { throw parameterIsNegative();}
+
+    G4Material* mixture = G4NistManager::Instance() -> FindOrBuildMaterial(Name);
+    if (!mixture){G4Material* newMixture = new G4Material(Name, density, n_components);}
+    else         {throw (materialAlreadyExists());}
+    
 }
 
 void DefineMaterials::AddMaterialToMixture(G4String MixtureName, G4String MaterialName, G4double FractionalMass)
 {
+    if (FractionalMass <= 0.) { throw parameterIsNegative();}
+
     G4Material* Mixture = FindMaterial(MixtureName);
     G4Material* AddMaterial = FindMaterial(MaterialName);
     G4Element* AddElement = FindElement(MaterialName);
@@ -191,7 +230,7 @@ void DefineMaterials::AddMaterialToMixture(G4String MixtureName, G4String Materi
         if (!AddElement && !AddMaterial)
              G4cout << "ERROR: Couldn't find \"" << MaterialName << "\" to add to mixture \"" << MixtureName << "\"" << G4endl;
         
-        exit(1);
+        throw (parameterNotFound());
     }
 }
 
@@ -235,7 +274,7 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string MaterialsName, d
     }
     else
     {
-        G4cout << "\nWARNING: couldn't find material " << MaterialFound -> GetName() << G4endl;
+        throw (parameterNotFound());
     }
     
     //TotalValues
@@ -249,6 +288,8 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string MaterialsName, d
         //Loop through the elements, find its refractive index and absoprtion length
         for (int ele = 0; ele < elementTable.size() ; ele++)
         { 
+            if (energyValues[energyValue] <= 0) { throw (parameterIsNegative()); } 
+        
             //Add to the total values the fractional values
             total_RI_Re = total_RI_Re + (elementTable[ele].frac_mass * Refractive_Index_Re(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density)); 
             total_RI_Im = total_RI_Im + (elementTable[ele].frac_mass * Refractive_Index_Im(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density)); 
@@ -303,8 +344,17 @@ void DefineMaterials::AddOpticalProperty(std::string MaterialsName, const char *
             MPT = new G4MaterialPropertiesTable();
         }
         
+        for (int i = 0; i < NumElements ; i++)
+        {
+            if (energyValues[i] <= 0.) { throw (parameterIsNegative()); } 
+        }
+        
         MPT -> AddProperty(key, energyValues, opticalProperty, NumElements);
         MaterialFound -> SetMaterialPropertiesTable(MPT); 
+    }
+    else
+    {
+        throw parameterNotFound();
     }
 }
 
@@ -338,7 +388,8 @@ G4Material* DefineMaterials::FindMaterial(G4String MaterialName)
 	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(MaterialName);
 	
 	if (!material){material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_" + MaterialName);}
-	if (!material){G4cout << "\nERROR: material " << MaterialName << " not found " << G4endl;}
+	
+	if (!material) {throw (parameterNotFound());}
 	
 	return material;
 }
@@ -360,6 +411,8 @@ G4Element* DefineMaterials::FindElement(G4String ElementName)
             } 
         } 
 	}
+	
+	if (!element) {throw (parameterNotFound());}
 	
 	return element;
 	
