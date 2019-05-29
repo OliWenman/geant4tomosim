@@ -1,11 +1,8 @@
 /*
-A class that can define new G4Element's, G4Isotope's and G4Material's to be used.
+A class that can define new G4Element's, G4Isotope's and G4material's to be used.
 
 Author: Oliver Jack Wenman
 
-To do list:
-- Update methods to accomidate for new error checking via commands like in SampleConstruction
-  and SampleConstructionMessenger.
 */
 
 #ifndef DefineMaterials_h
@@ -30,28 +27,28 @@ class DefineMaterials
 		void DefineElement(G4String name, G4int z, G4double a, G4double density);
 		void DefineIsotope(G4String name, G4int z, G4int A, G4double atomicWeight);
 		void DefineIsotopeMix(G4String name, G4String symbol, G4int nComponents);
-		void AddToIsoMix(G4String IsotopeMixName, G4String IsotopeName, G4double Abundance);
-		void AddIsoMixDensity(G4String IsotopeMixName, G4double Density);
+		void AddToIsoMix(G4String isotopemix, G4String isotopename, G4double abundance);
+		void AddIsoMixDensity(G4String isotopemix, G4double denisty);
 		
-		void DefineMolecule(G4String Name, G4double density, G4int n_components);
-		void AddElementToMolecule(G4String MoleculeName, G4String ElementName, G4int NumberOfAtoms);
+		void DefineMolecule(G4String name, G4double density, G4int n_components);
+		void AddElementToMolecule(G4String molecule, G4String element, G4int nAtoms);
 		
-		void DefineCompound(G4String Name, G4double density, G4int n_components);
-		void AddElementToCompound(G4String CompoundName, G4String ElementName, G4double FractionalMass);
+		void DefineCompound(G4String name, G4double density, G4int n_components);
+		void AddElementToCompound(G4String compound, G4String element, G4double fractionalmass);
 		
-        void DefineMixture(G4String Name, G4double density, G4int n_components);
-	    void AddMaterialToMixture(G4String MixtureName, G4String MaterialName, G4double FractionMass);
+        void DefineMixture(G4String name, G4double density, G4int n_components);
+	    void AddMaterialToMixture(G4String mixture, G4String material, G4double fractionalmass);
 	    
-	    void FillOpticalProperties_xraylib(std::string MaterialsName, double energyValues[], int NumElements);
-	    void AddOpticalProperty(std::string MaterialsName, const char *key, double energyValues[], double opticalProperty[], int NumElements);
-	    void AddOpticalProperty_xraylib(std::string MaterialsName, const char *key, double energyValues[], int NumElements);
-	    void PrintMPT(std::string Material);
+	    void FillOpticalProperties_xraylib(std::string material, double energyValues[], int nElements);
+	    void AddOpticalProperty(std::string material, const char *key, double energyValues[], double opticalProperty[], int nElements);
+	    void AddOpticalProperty_xraylib(std::string material, const char *key, double energyValues[], int nElements);
+	    void PrintMPT(std::string material);
 	    
 	private:
 	
-	    G4Material* FindMaterial(G4String MaterialName);
-		G4Element* FindElement(G4String ElementName);
-		G4Isotope* FindIsotope(G4String IsoName);
+	    G4Material* FindMaterial(G4String material);
+		G4Element*  FindElement (G4String element);
+		G4Isotope*  FindIsotope (G4String isotope);
 	
 		DefineMaterialsMessenger* materialsMessenger;
 
