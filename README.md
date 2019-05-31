@@ -1,13 +1,15 @@
 # What is Geant4TomoSim?
-The simulation of tomography data using the C++ Geant4 toolkit. Wrapped in Python via Cython. Saves its data as a NeXus file (.nxs) and uses the NXtomo format. 
+It utilizes the C++ toolkit Geant4 that simulates particles through matter for tomography simulations. A user can easily setup their experiment via macro files and run it from Python. 
 
 # Required dependcies
 - Geant4 10.04
+- Geant4 mpi
 - xraylib 3.30
 - GCC Compiler 8.0 or higher
 - Cmake 2.7 or higher
 - Cython 0.19.1
 - Python 2.7.1.5
+- Numpy
 - h5py
 
 # Build instructions
@@ -21,12 +23,12 @@ Once downloaded, you can then create a build direcotry in a place of your choosi
 - $ module load python/anaconda-savu 
 - $ module load geant4/10.04
 - $ module load xraylib 
-- $ cmake /path/to/source/code
+- $ cmake -DCMAKE_PREFIX_PATH=/dls_sw/apps/Geant4/geant4.10.04/g4mpi -DGeant4_DIR=/dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/Geant4-10.4.2 -DG4mpi_DIR=/dls_sw/apps/Geant4/geant4.10.04/g4mpi/lib /path/to/source/code
 - $ make -jN
   
 Where N is the number of cores on your machine that you want to use. For example make -j4. 
 
-Once complete, your build directory should contain the folders bin, scripts, Output and src.
+Once complete, your build directory should contain the folders bin, scripts, output and src.
   
 # How to use
 The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
