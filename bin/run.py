@@ -18,7 +18,7 @@ if __name__ == '__main__':
     #If no filepath given, save the data in the default filepath
     except IndexError:
         filepath = defaultpath
-        print "\nSaving data in the default place", filepath
+        print ("\nSaving data in the default place", filepath)
 
 
 #filepath = this_directory + "/../output/tomosimData.nxs"
@@ -26,14 +26,12 @@ if __name__ == '__main__':
 #===================================================================
 
 #RUN THE SIMULATION
-import sim
+from g4tomosim import G4TomoSim
 
-print "verbose = ", tsi.verbose
-
-tomosim = sim.G4TomoSim(tsi.verbose, 
-                        tsi.interactive)
+tomosim = G4TomoSim(tsi.verbose, 
+                    tsi.interactive)
                     
-tomosim.addMacroFiles(tsi.macrofiles)
+tomosim.execute_macrolist(tsi.macrofiles)
 
 tomosim.simulatetomography(filepath        = filepath,
                            n_particles     = tsi.particles, 
@@ -41,5 +39,5 @@ tomosim.simulatetomography(filepath        = filepath,
                            rotation_angles = tsi.rotation_angles,
                            zpositions      = tsi.zpos )
 
-print "Finished"
+print ("Finished")
 

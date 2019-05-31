@@ -1,3 +1,6 @@
+# distutils: language = c++
+# distutils: sources = Simulation.cc
+
 """
 G4TomoSim is for the simulation of tomography data using the C++ toolkit Geant4.
 Designed to be accessed by Python, functions wrapped in Cython.
@@ -15,8 +18,6 @@ import os
 import gc
 import matplotlib.pyplot as plt
 import sys
-#cimport mpi4py.MPI as MPI
-#cimport mpi4py.libmpi as libmpi
 
 import NexusFormatter
 
@@ -42,18 +43,108 @@ cdef class G4TomoSim:
     """
 
     #Execute a list containing paths to macro files
-    def addMacroFiles(self, list macroFiles):
-        self.thisptr.addmacros_pywrapped(macroFiles)
+    def execute_macrolist(self, list macroFiles):  
+        return self.thisptr.Execute_Macrolist_pyw(macroFiles)
     
     #Execute a single macro file by providing the path to the file    
     def execute_macro(self, str macrofile):
-        self.thisptr.applymacrofile_pywrapped(macrofile)
+        return self.thisptr.Execute_Macro_pyw(macrofile)
 
     #Execute a command. Error checking in command done via C++ in "Simulation.hh".
     def execute_command(self, str command):
-        self.thisptr.applycommand_pywrapped(command)
+        return self.thisptr.Execute_Command_pyw (command)
+    
+    
+    #===============================================================================================
+    def setup_visualization(self,
+                            str path,
+                            str filename):
+        
+        self.thisptr.Setup_Visualization_pyw(path, filename)
+    
+    #===============================================================================================
+    """
+    Absorption detector functions to return data
+    """
+    
+    def absorptiondetector_getprojection(self):
+        """
+        Return the projection. Is orginally 1D, reshapes it too 2D.  
+        """       
+        return np.reshape(np.array(self.thisptr.AbsorptionDetector_GetProjection_pyw(), dtype = np.uint16), 
+                          (-1, self.thisptr.AbsorptionDetector_GetXPixels_pyw()))
+    
+    def absorptiondetector_getxpixels(self):
+        return self.thisptr.AbsorptionDetector_GetXPixels_pyw()
+        
+    def absorptiondetector_getypixels(self):
+        return self.thisptr.AbsorptionDetector_GetYPixels_pyw()
+        
+    def absorptiondetector_getdimensions(self):
+        return self.thisptr.AbsorptionDetector_GetDimensions_pyw()
+    
+    #===============================================================================================
+    """
+    Fluorescence detector functions to return information and data
+    """
+    
+    def fluorescencedetector_getfullmappingdata(self):
+        return np.array(self.thisptr.FluorescenceDetector_GetFullMapping_pyw(), dtype = np.uint64)
+        
+    def fluorescencedetector_getfullfielddata(self):
+        return np.array(self.thisptr.FluorescenceDetector_GetFullField_pyw(), dtype = np.uint64)
+    
+    def fluorescencedetector_getenergybins(self):
+        return np.array(self.thisptr.FluorescenceDetector_GetEnergyBins_pyw(), dtype = np.uint16)
+    
+    def fluorescencedetector_getnoenergybins(self):
+        return 0
+        
+    def fluorescencedetector_getposition(self):
+        return 0
+        
+    def fluorescencedetector_getdimensions(self):
+        return 0   
+            
+    def fluorescencedetector_fullmappingActive(self):
+        return self.thisptr.FluorescenceDetector_FullMappingActive_pyw()
+        
+    def fluorescencedetector_fullfieldOn(self):
+        return self.thisptr.FluorescenceDetector_FullFieldActive_pyw()
+    
+    #===============================================================================================
+    """
+    Beam functions to return information and data
+    """
+    def beam_getnobins(self):
+        return 0
+    
+    def beam_getenergybins(self):
+        return np.array(self.thisptr.Beam_GetEnergyBins_pyw(), dtype = np.uint16)
+        
+    def beam_getintensity(self):
+        return np.array(self.thisptr.Beam_GetIntensity_pyw(), dtype = np.uint64)  
 
     #===============================================================================================
+
+    def simulateprojection(self, 
+                           int n_particles, 
+                           bint flatfields,
+                           double rotation_angle,
+                           double zposition):
+        
+        """
+        Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
+        
+        """
+        
+        if n_particles < 1:
+            raise Exception("n_particles can't be less than 1.")
+        
+        return self.thisptr.Run_Projection_pyw(n_particles,
+                                               flatfields,
+                                               rotation_angle,
+                                               zposition)
 
     def simulatetomography(self, 
                            str        filepath,
@@ -125,36 +216,36 @@ cdef class G4TomoSim:
         filepath_log = path + filename[0:dotPosition] + '_log.txt'
         
         #Setup any external visualisation
-        self.thisptr.setupvis_pywrapped(path,
-                                        filename[0:dotPosition])
+        self.thisptr.Setup_Visualization_pyw(path,
+                                             filename[0:dotPosition])
         
         #Print information about the settings of the simulation to the user and save in a log file
-        self.thisptr.printinfo_pywrapped(filepath_log,
-                                         n_particles, 
-                                         totalprojections, 
-                                         nDarkFlatFields)   
+        self.thisptr.Print_SimulationInfo_pyw(filepath_log,
+                                              n_particles, 
+                                              totalprojections, 
+                                              nDarkFlatFields)   
                  
         #Checks to see if the nexus template was created successfully  
         nexusfile = NexusFormatter.NexusFormatter()
         nexusfile.openFile(filepath)
         if nexusfile.setupSuccess == False:
-            print "\nAborting run..." 
+            print ("\nAborting run...") 
             return 0
         
         #Get needed variables from the C++ side    
-        FMFluorescence = self.thisptr.fluorFMactive_pywrapped()
-        FFFluorescence = self.thisptr.fluorFFactive_pywrapped()
-        fluoreBins     = self.thisptr.getNumFluorbins_pywrapped()
-        beamBins       = self.thisptr.getbeambins_pywrapped()
-        xPixels        = self.thisptr.getNumAbsXpixels_pywrapped()
-        yPixels        = self.thisptr.getNumAbsYpixels_pywrapped()
+        FMFluorescence = self.thisptr.FluorescenceDetector_FullMappingActive_pyw()
+        FFFluorescence = self.thisptr.FluorescenceDetector_FullFieldActive_pyw()
+        fluoreBins     = self.thisptr.FluorescenceDetector_GetNoEnergyBins_pyw()
+        beamBins       = self.thisptr.Beam_GetNoEnergyBins_pyw()
+        xPixels        = self.absorptiondetector_getxpixels()
+        yPixels        = self.absorptiondetector_getypixels()
            
         #Create the path to save the projection data
         nexusfile.CreateProjectionFolder(nDarkFlatFields, 
                                          totalprojections, 
                                          yPixels, 
                                          xPixels, 
-                                         self.thisptr.getAbsHalf3Dim_pywrapped(), 
+                                         self.absorptiondetector_getdimensions(), 
                                          rotation_angles)
                                                  
         #Create the other data groups in the nexus file template   
@@ -196,23 +287,23 @@ cdef class G4TomoSim:
             imageInfo = [projection, nDarkFlatFields, totalprojections]
                        
             #Runs the simulation
-            self.thisptr.run_pywrapped(n_particles, 
-                                       imageInfo, 
-                                       rotation_angle,
-                                       zposition)  
+            self.thisptr.Run_Tomography_pyw(n_particles, 
+                                            imageInfo, 
+                                            rotation_angle,
+                                            zposition)  
                
             iSavingTime = time.time()
 
             #Save the projection data                           
-            nexusfile.AddProjectionData(self.absorptionData(), projection)
+            nexusfile.AddProjectionData(self.absorptiondetector_getprojection(), projection)
                
             #Add axes to the other data
             if projection == 0:
-                energy_xaxis = self.beamEnergyBins()
+                energy_xaxis = self.beam_getenergybins()
                   
                 nexusfile.AddxAxis("Beam_Energy", energy_xaxis)
                   
-                energy_xaxis = self.thisptr.getFluoreEneBins_pywrapped()
+                energy_xaxis = self.thisptr.FluorescenceDetector_GetEnergyBins_pyw()
                 if FFFluorescence == True:
                     nexusfile.AddxAxis("Fluorescence", energy_xaxis)
                      
@@ -221,16 +312,16 @@ cdef class G4TomoSim:
                
             #Save other data
             nexusfile.AddData("Beam_Energy", 
-                               self.beamEnergyData(), 
+                               self.beam_getintensity(), 
                                nImage = projection)    
                
             if FFFluorescence == True:
                 nexusfile.AddData("Fluorescence", 
-                                   data = self.fullfieldfluoreData(), 
+                                   data = self.fluorescencedetector_getfullfielddata(), 
                                    nImage = projection)
                   
             if FMFluorescence == True:
-                data = self.fullmappingfluoreData()
+                data = self.fluorescencedetector_getfullmappingdata()
                 nexusfile.AddData("Full_Mapping_Fluorescence", 
                                    data = data, 
                                    nImage = projection)
@@ -238,7 +329,7 @@ cdef class G4TomoSim:
             #Record the saving time, estimated time can be adjusted with this into account   
             eSavingTime = time.time()
             SavingTime  = eSavingTime - iSavingTime
-            self.thisptr.setSavingTime_pywrapped (SavingTime)
+            self.thisptr.Set_SavingTime_pyw (SavingTime)
 
         #Ouput the time in the appropriate units
         eTime = time.time()
@@ -246,73 +337,19 @@ cdef class G4TomoSim:
 
         message = "The total simulation time is"
         if simtime < 60:
-            print message, round(simtime, 3), "seconds. "
+            print (message, round(simtime, 3), "seconds. ")
         elif simtime < 60*60:
-            print message, round(simtime/60, 3), "minutes. "
+            print (message, round(simtime/60, 3), "minutes. ")
         else:
-            print message, round(simtime/(60*60), 3), "hours. "
+            print (message, round(simtime/(60*60), 3), "hours. ")
             
         nexusfile.LinkData()   
         
-        print "\nData was saved in", 
+        print ("\nData was saved in", filepath) 
         nexusfile.closeFile()
         del nexusfile
         
         #Frees the memory by reducing the arrays to store the data back to a size of 0.   
-        self.thisptr.freedataMemory_pywrapped()
+        self.thisptr.Free_DetectorMemory_pyw()
+        
 
-    def runsingleprojection(self, 
-                            int n_particles, 
-                            bint flatfields,
-                            double rotation_angle,
-                            double zposition):
-        
-        """
-        Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
-        
-        """
-        
-        if n_particles < 1:
-            raise Exception("n_particles can't be less than 1.")
-        
-        return self.thisptr.runsingleprojection_pywrapped(n_particles,
-                                                          flatfields,
-                                                          rotation_angle,
-                                                          zposition)
-       
-    def absorptionData(self):
-        """
-        Return the absorption data. Is orginally 1D, reshapes it too 2D.  
-        """       
-        return np.reshape(np.array(self.thisptr.getAbsorption_pywrapped(), dtype = np.uint16), 
-                          (-1, self.thisptr.getNumAbsXpixels_pywrapped()))
-    
-    def photonTransmission(self):
-        return np.sum(self.thisptr.getAbsorption_pywrapped())
-
-    def beamEnergyBins(self):
-        return np.array(self.thisptr.getBeamEnergyBins_pywrapped())
-
-    def fullfieldfluoreData(self):
-        return np.array(self.thisptr.getFullFieldFluore_pywrapped())
-
-    def beamEnergyData(self):
-        return np.array(self.thisptr.getBeamEnergy_pywrapped())  
-
-    def fullmappingfluoreData(self):
-        return np.array(self.thisptr.getFullMappingFluore_pywrapped())
-        
-    def plotBeamEnergy(self):
-        plt.plot(self.beamEnergyBins(), self.thisptr.getBeamEnergy_pywrapped())
-        plt.title("Beam energy distrubution")
-        plt.xlabel("Energy (keV)")
-        plt.ylabel("Photons")
-        plt.show()
-        
-    def plotFinalFluorescence(self):
-        plt.plot(self.thisptr.getFluoreEneBins_pywrapped(), self.thisptr.getFullFieldFluore_pywrapped())
-        plt.title("Fluorescence")
-        plt.xlabel("Energy (keV)")
-        plt.ylabel("Photons")
-        plt.show()
-     

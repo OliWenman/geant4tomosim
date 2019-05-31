@@ -139,13 +139,13 @@ Simulation::~Simulation()
 	if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
-void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
+void Simulation::Execute_Macrolist_pyw(std::vector<std::string> macroFiles)
 {
     int nFiles = macroFiles.size();
     
     for (int n = 0; n < nFiles ; n++)
     {    
-        applymacrofile_pywrapped(macroFiles[n]);
+        Execute_Macro_pyw(macroFiles[n]);
     }
     
     macrofiles = macroFiles;
@@ -156,7 +156,7 @@ void Simulation::addmacros_pywrapped(std::vector<std::string> macroFiles)
     }
 }
 
-void Simulation::applymacrofile_pywrapped(std::string macro)
+void Simulation::Execute_Macro_pyw(std::string macro)
 {
     //Read the macro file line by line and extract the commands from the file
 
@@ -209,7 +209,7 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
         if (command.find_first_not_of(' ') != std::string::npos)
         {
             if (globalVerbose > 3 && mpi_rank == 0) {G4cout << line << ")";}
-            applycommand_pywrapped(command);
+            Execute_Command_pyw (command);
             
         }
     }
@@ -223,7 +223,7 @@ void Simulation::applymacrofile_pywrapped(std::string macro)
 #include "strfunctions.hh"
 #include "CommandStatus.hh"
 
-void Simulation::applycommand_pywrapped(std::string command)
+void Simulation::Execute_Command_pyw (std::string command)
 {
     //Remove all spaces at the front of the parameters, at the back and any repeated spaces
     strfunctions::RemoveSpaces_repeated_front_back(command);
@@ -282,7 +282,7 @@ void Simulation::applycommand_pywrapped(std::string command)
                     G4cout << G4endl;
                     getline(std::cin, reapplycommand);
                 
-                    applycommand_pywrapped(reapplycommand);
+                    Execute_Command_pyw (reapplycommand);
                 }
                 else if (reapplycommand == "n")
                 {
@@ -330,10 +330,10 @@ void Simulation::applycommand_pywrapped(std::string command)
 #include "G4GeometryManager.hh"
 #include "ProgressTracker.hh"
 
-int Simulation::run_pywrapped(unsigned long long int n_particles, 
-                              std::vector<int>       imageinfo, 
-                              double                 rotation_angle,
-                              double                 zposition)
+int Simulation::Run_Tomography_pyw(unsigned long long int n_particles, 
+                                   std::vector<int>       imageinfo, 
+                                   double                 rotation_angle,
+                                   double                 zposition)
 {   
     //Get image parameters from the imageinfo
     int n_projection    = imageinfo[0];
@@ -410,10 +410,10 @@ int Simulation::run_pywrapped(unsigned long long int n_particles,
 	return 0;
 }
 
-int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particles,
-                                               bool   flatfield,
-                                               double rotation_angle,
-                                               double zposition)
+int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
+                                    bool   flatfield,
+                                    double rotation_angle,
+                                    double zposition)
 {
 
     //globalVerbose = 0;
@@ -455,8 +455,8 @@ int Simulation::runsingleprojection_pywrapped (unsigned long long int n_particle
 	return 0;
 }    
 
-void Simulation::setupvis_pywrapped(std::string path,
-		                            std::string filename)
+void Simulation::Setup_Visualization_pyw(std::string path,
+		                                 std::string filename)
 {
     //Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
 	if (detectorManager -> GetVisualization() == true)
@@ -572,10 +572,10 @@ unsigned long long int Simulation::LimitGraphics(unsigned long long int nParticl
 }
 
 //Function to log the inforimation about the simulation. Outputs to terminal depending on verbose level. Always outputs to _log.txt file
-void Simulation::printinfo_pywrapped(std::string filepath, 
-                                     unsigned long long int n_particles, 
-                                     int totalprojections, 
-                                     int nDarkFlatFields)
+void Simulation::Print_SimulationInfo_pyw(std::string filepath, 
+                                          unsigned long long int n_particles, 
+                                          int totalprojections, 
+                                          int nDarkFlatFields)
 {   
     if (globalVerbose > 0)
     {
@@ -677,15 +677,15 @@ void Simulation::CalculateStorageSpace(int projections)
         double totalStorage = 0;
         std::string unit;
     
-        int abs_xPixels = getNumAbsXpixels_pywrapped();
-        int abs_yPixels = getNumAbsYpixels_pywrapped();
-        int bins = getNumFluorbins_pywrapped();
+        int abs_xPixels = AbsorptionDetector_GetXPixels_pyw();
+        int abs_yPixels = AbsorptionDetector_GetYPixels_pyw();
+        int bins = FluorescenceDetector_GetNoEnergyBins_pyw();
     
         PrintToEndOfTerminal('-');
         G4cout << "DISK SPACE REQUIRED FOR DATA: ";
     
         //Absorption
-        size_t absorpDataSize = sizeof(getAbsorption_pywrapped()[0]);
+        size_t absorpDataSize = sizeof(AbsorptionDetector_GetProjection_pyw()[0]);
         double absorpStorageSpace = abs_xPixels * abs_yPixels * absorpDataSize * projections;
         totalStorage += absorpStorageSpace;
         unit = GetStorageUnit(absorpStorageSpace);
@@ -699,10 +699,10 @@ void Simulation::CalculateStorageSpace(int projections)
         G4cout << "\n- Beam energy: " << beamStorageSpace << unit;
     
         //Fluorecence
-        if (fluorFMactive_pywrapped())
+        if (FluorescenceDetector_FullMappingActive_pyw())
         {
-            size_t FMfluoresenceDataSize = sizeof(getFluoreEneBins_pywrapped()[0]);  
-            double fluorescenceStorageSpace = absorpStorageSpace*getNumFluorbins_pywrapped();
+            size_t FMfluoresenceDataSize = sizeof(FluorescenceDetector_GetEnergyBins_pyw()[0]);  
+            double fluorescenceStorageSpace = absorpStorageSpace*FluorescenceDetector_GetNoEnergyBins_pyw();
             totalStorage += fluorescenceStorageSpace;
             unit = GetStorageUnit(fluorescenceStorageSpace);              
             G4cout << "\n- Full mapping fluorescence: " << fluorescenceStorageSpace << unit;

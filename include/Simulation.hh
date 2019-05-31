@@ -55,23 +55,23 @@ class Simulation
 */
 
 /*
-        Execute a list of macro files. Calls the applymacrofile_pywrapped(string) function in a loop.
+        Execute a list of macro files. Calls the Execute_Macro_pyw(string) function in a loop.
 */
-		void addmacros_pywrapped      (std::vector<std::string> macroFiles);
+		void Execute_Macrolist_pyw      (std::vector<std::string> macroFiles);
 		
 /*
         Reads a macro file, calls the applycommand_pywrapped(string) function when a command is detected.
         Can also be accessed using the command "/tomosim/execute /path/to/macro/file".
 */
-		void applymacrofile_pywrapped (std::string macro);
+		void Execute_Macro_pyw          (std::string macro);
 		
 /*
         Executes a command. A return value is supplied, indicating if it was successful or not. The return type
         corrosponds to a list of error types found in "CommandStatus.hh". If in interactive mode, the user will
         be able to resupply the command if there was an error executing it. This function is called by
-        applymacrofile_pywrapped(string).
+        Execute_Macro_pyw(string).
 */
-		void applycommand_pywrapped   (std::string command);
+		void Execute_Command_pyw        (std::string command);
 
 //================================================================================================================		
 /*
@@ -81,68 +81,68 @@ class Simulation
 /*
         Used to print information about the settings used to the user before the simulation begins.
 */
-		void printinfo_pywrapped(std::string filepath,
-		                         unsigned long long int totalparticles, 
-		                         int numberOfimages, 
-		                         int ndarkflatFields);
+		void Print_SimulationInfo_pyw(std::string filepath,
+		                              unsigned long long int totalparticles, 
+		                              int numberOfimages, 
+		                              int ndarkflatFields);
 
 /*
         Setup any external visualisation for the simulation 
 */	
-		void setupvis_pywrapped(std::string path,
-		                        std::string filename);
+		void Setup_Visualization_pyw(std::string path,
+		                             std::string filename);
 /*
         simulatetomography_pywrapped is called within a loop, simulating a single set of data each time. 
         The Cython side will then retrieve each appropriate data set and save it in a NeXus file at the 
         end of each loop in the NXtomo format. The rotation_angle will then be changed for the next 
         projection in the loop to simulate. 
 */
-        int run_pywrapped(unsigned long long int totalparticles, 
-                          int_vector1D           imageInfo, 
-                          double                 rotation_angles,
-                          double                 zposition);
+        int Run_Tomography_pyw(unsigned long long int totalparticles, 
+                               int_vector1D           imageInfo, 
+                               double                 rotation_angles,
+                               double                 zposition);
 
 //================================================================================================================		                          
 /*
         Functions designed to be wrapped in Savu
 */
-        int runsingleprojection_pywrapped (unsigned long long int totalparticles,
-                                           bool   flatfield,
-                                           double rotation_angle,
-                                           double zposition);    
+        int Run_Projection_pyw (unsigned long long int totalparticles,
+                                bool   flatfield,
+                                double rotation_angle,
+                                double zposition);    
 
 //================================================================================================================		
         //Functions to get data from detectors
 
 		//Absorption
-		int_vector1D    getAbsorption_pywrapped()    {return detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }
-		double_vector1D getAbsHalf3Dim_pywrapped()   {return detectorManager->GetAbsorptionDetector()->GetHalfDimensions();               }
-		int             getNumAbsXpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetxPixels();                      }
-		int             getNumAbsYpixels_pywrapped() {return detectorManager->GetAbsorptionDetector()->GetyPixels();                      }
+		int_vector1D    AbsorptionDetector_GetProjection_pyw() {return detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->GetData(); }
+		double_vector1D AbsorptionDetector_GetDimensions_pyw() {return detectorManager->GetAbsorptionDetector()->GetHalfDimensions();               }
+		int             AbsorptionDetector_GetXPixels_pyw()    {return detectorManager->GetAbsorptionDetector()->GetxPixels();                      }
+		int             AbsorptionDetector_GetYPixels_pyw()    {return detectorManager->GetAbsorptionDetector()->GetyPixels();                      }
 		
 		//Fluorescence
-		int_vector3D    getFullMappingFluore_pywrapped() {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping();    }
-		int_vector1D    getFullFieldFluore_pywrapped()   {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullField();      }
-		double_vector1D getFluoreEneBins_pywrapped()     {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetEnergyBins();     }
-		bool            fluorFMactive_pywrapped()        {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullMappingActive(); }
-		bool            fluorFFactive_pywrapped()        {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullFieldActive();   }
-		int             getNumFluorbins_pywrapped()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
+		int_vector3D    FluorescenceDetector_GetFullMapping_pyw()    {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping();    }
+		int_vector1D    FluorescenceDetector_GetFullField_pyw()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullField();      }
+		double_vector1D FluorescenceDetector_GetEnergyBins_pyw()     {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetEnergyBins();     }
+		bool            FluorescenceDetector_FullMappingActive_pyw() {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullMappingActive(); }
+		bool            FluorescenceDetector_FullFieldActive_pyw()   {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullFieldActive();   }
+		int             FluorescenceDetector_GetNoEnergyBins_pyw()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
 		
 		//Diffraction
 		int_vector2D GetDiffractionData() {return int_vector2D()/*data -> GetDiffractionData()*/;}
 		
 		//Beam energy
-		int_vector1D    getBeamEnergy_pywrapped()     {return beamManager -> GetBeamIntensity();  }
-        double_vector1D getBeamEnergyBins_pywrapped() {return beamManager -> GetBeamEnergy(); }
-        int             getbeambins_pywrapped()       {return beamManager -> GetNumberOfBins();}
+		int_vector1D    Beam_GetIntensity_pyw()     {return beamManager -> GetBeamIntensity();  }
+        double_vector1D Beam_GetEnergyBins_pyw() {return beamManager -> GetBeamEnergy(); }
+        int             Beam_GetNoEnergyBins_pyw()       {return beamManager -> GetNumberOfBins();}
 
 //================================================================================================================
 		
 		//Set pywrapped functions
-		void setSavingTime_pywrapped (double Time)                            {beamManager -> SetSavingTime(Time);              }
+		void Set_SavingTime_pyw (double Time)                            {beamManager -> SetSavingTime(Time);              }
 		
 		//Free memory of data
-		void freedataMemory_pywrapped() {detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->FreeMemory();
+		void Free_DetectorMemory_pyw() {detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->FreeMemory();
 		                                 detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FreeMemory();}	
 		
 		//Set functions

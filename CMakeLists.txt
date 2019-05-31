@@ -48,6 +48,7 @@ include(${Geant4_USE_FILE})
 add_definitions(-DTOOLS_USE_NATIVE_MPI) 
 
 #Find Python interpreter
+
 find_package(PythonInterp)
 if (PYTHONINTERP_FOUND)
     message(STATUS "Python version ${PYTHON_VERSION_STRING}")

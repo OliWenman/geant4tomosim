@@ -56,6 +56,6 @@ void SimulationMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 	}
 	else if (command == applymacrofile)
 	{
-	    sim->applymacrofile_pywrapped(newValue);
+	    sim->Execute_Macro_pyw(newValue);
 	}
 }

@@ -17,24 +17,24 @@ if __name__ == '__main__':
     #If no filepath given, save the data in the default filepath
     except IndexError:
         filepath = defaultpath
-        print "\nSaving data in the default place", filepath
+        print ("\nSaving data in the default place", filepath)
 
 #===================================================================
 
 #RUN THE SIMULATION
-import sim
+import g4tomosim
 import numpy as np
 import NexusFormatter
 import time
 
 #print "verbose = ", tsi.verbose
 
-tomosim = sim.G4TomoSim(tsi.verbose, 
-                        tsi.interactive)            
+tomosim = g4tomosim.G4TomoSim(tsi.verbose, 
+                              tsi.interactive)            
 
 from mpi4py import MPI
-comm        = MPI.COMM_WORLD
-rank        = comm.Get_rank()
+comm           = MPI.COMM_WORLD
+rank           = comm.Get_rank()
 mpi_nprocesses = comm.Get_size()
 """
 data = rank + 10
@@ -62,11 +62,11 @@ if rank == 0:
     nexusfile = NexusFormatter.NexusFormatter()
     nexusfile.openFile(filepath, False)
     if nexusfile.setupSuccess == False:
-        print "\nAborting run..." 
+        print ("\nAborting run...") 
         sys.exit()
     
-    xpixels = 302
-    ypixels = 434
+    xpixels = tomosim.absorptiondetector_getxpixels()
+    ypixels = tomosim.absorptiondetector_getypixels()
     
     #Create the path to save the projection data
     nexusfile.CreateProjectionFolder(tsi.ndarkflatfields, 
@@ -76,10 +76,10 @@ if rank == 0:
                                      [5, 5, 5], 
                                      tsi.rotation_angles)    
     
-tomosim.addMacroFiles(tsi.macrofiles)        
+tomosim.execute_macrolist(tsi.macrofiles)        
 
 if rank == 0:
-    print "Starting simulation"
+    print ("Starting simulation")
     itime = time.time()
 
 i     = 0
@@ -106,7 +106,7 @@ while frame <= nframes:
                                     rotation_angle,
                                     zposition)
 
-        absdata = tomosim.absorptionData() 
+        absdata = tomosim.absorptiondetector_getprojection() 
 
         if rank != 0:
             comm.send(absdata, 
@@ -115,7 +115,7 @@ while frame <= nframes:
 
         if rank == 0:
             if frame == 0:
-                print "==============================================================="
+                print ("===============================================================")
             
             for nrank in range(mpi_nprocesses):
             
@@ -126,16 +126,16 @@ while frame <= nframes:
             
                 if frame+nrank <= nframes:
                     #Save the projection data                          
-                    print "frame =", frame + nrank, "complete" 
+                    print ("frame =", frame + nrank, "complete") 
                     nexusfile.AddProjectionData(absdata, frame + nrank)
     i += 1
 
 if rank == 0:
-    print "Data saved in :", filepath
+    print ("Data saved in :", filepath)
     nexusfile.LinkData()
     nexusfile.closeFile()
     etime = time.time()
-    print "Simulation finished"
+    print ("Simulation finished")
     simtime = etime -itime
     message = "Simulation time:",
     if simtime < 60:
@@ -172,7 +172,7 @@ tomoism.simulateprojection(nparitcles,      #number of particles
                            zposition)       #the z position of the sample
 
 #Collect the data from the absorption detectors
-data = tomosim.get_absorptiondata()
+data = tomosim.get_absorptiondetector_getprojection()
 """
 
 
@@ -183,7 +183,7 @@ tomosim.runsingleprojection(1.e5,
                             False,
                             tsi.rotation_angles[rank],
                             0.)
-localdata = tomosim.absorptionData()
+localdata = tomosim.absorptiondetector_getprojection()
 
 print rank, "Local data"
 print localdata
