@@ -18,8 +18,6 @@ class NexusFormatter:
         
     def openFile(self, filepath, interactivity = True):
         
-        print "\nOpening Nexus file:", filepath
-        
         stringLength = len(filepath)
     
         pathfound = False
@@ -74,12 +72,15 @@ class NexusFormatter:
                 fileSize = fileSizeB
                 Unit = "bytes"
             
-            
-            print "\nThis file already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n"              
+            print ("\nThis file already exits. \nSize:", fileSize, Unit, "\nLast modified:", Modified_time,"\nAre you sure you want to override this?\n")              
             contin = False
                 
             while contin != True:
-                answer = raw_input('yes/no?\n')
+                #raw_input for python2, input for python3
+                try:
+                    answer = raw_input('yes/no?\n')
+                except NameError:
+                    answer = input('yes/no?\n')
                 
                 if answer == 'y' or answer == 'yes' or answer == 'Y':
                    contin = True   
@@ -89,11 +90,10 @@ class NexusFormatter:
                    self.setupSuccess = False 
                    return                
                 else:
-                   print "Input yes or no to continue."
+                   print ("Input yes or no to continue.")
                    contin = False
                 
-                print "\n"
-            
+                print ("\n")
             
         #Try to open file, delete file if can't open it as it's going to override it anyway       
         try:     
@@ -146,10 +146,10 @@ class NexusFormatter:
     def __del__(self):
         
         if self.fileOpen == True:
-            print "\nClosing NeXus file..."
+            print ("\nClosing NeXus file...")
             self.h5file1.close()
             self.fileOpen = False
-            print "File closed!"
+            print ("File closed!")
         
     #The dataset that stores the information to do with the transmission data
     def CreateProjectionFolder(self, 
@@ -243,7 +243,7 @@ class NexusFormatter:
             dataSet = dataGroup.create_dataset(yLabel, shape = (nImages, yBins, xBins, eBins), dtype = 'i4')  # Y axis data
         
         else:
-            print "Unrecognised dataType", dataType,"using CreateDataGroup."
+            print ("Unrecognised dataType", dataType,"using CreateDataGroup.")
             sys.exit()  
      
     #Function to add the x axis to the data   
@@ -313,7 +313,7 @@ class NexusFormatter:
             dataSet[nImage, :, :, :] = data
         
         else:
-            print "Unrecognised dataType", dataType,"using AddData."
+            print ("Unrecognised dataType", dataType,"using AddData.")
             sys.exit()  
             
     def LinkData(self):
@@ -330,13 +330,13 @@ class NexusFormatter:
     def DisplayTree(self):
     
         def printname(name):
-            print name
+            print (name)
     
-        print "The nexus file layout: "    
+        print ("The nexus file layout: ")    
         self.h5file1.visit(printname)
         
     def closeFile(self):
-        print "\nClosing NeXus file..."
+        print ("\nClosing NeXus file...")
         self.h5file1.close()
         self.fileOpen = False
-        print "File closed!"
+        print ("File closed!")

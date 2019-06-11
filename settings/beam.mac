@@ -38,7 +38,7 @@
 
 # - Energy commands
 /gps/ene/type Gauss
-/gps/ene/mono 8 keV
+/gps/ene/mono 30 keV
 /gps/ene/sigma 5 keV
 
 # Bias the position of a 2d beam (leads to segmentation fault at end?)

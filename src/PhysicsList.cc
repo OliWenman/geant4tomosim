@@ -47,6 +47,8 @@
 
 #include "G4RunManager.hh"
 
+#include "G4eIonisation.hh"
+
 PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), liv_photoelectric(0)/*livpol_photoeletriceffect(0)*/,
                                                       comptonscattering(0), liv_comptonscattering(0),
                                                       rayleighscattering(0), liv_rayleighscattering(0),
@@ -176,7 +178,7 @@ void PhysicsList::ConstructEM()
 			    de -> SetVerboseLevel(0);
   			    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
             }
-            
+            /*
             //Setup gamma refraction
             if (!gamma_refraction)
             {
@@ -187,7 +189,7 @@ void PhysicsList::ConstructEM()
 		    {
 		        gamma_absorption = new GammaOpticalAbsorption();
 		        pmanager -> AddDiscreteProcess(gamma_absorption);
-		    }
+		    }*/
 		}
         else if (particleName == "opticalphoton")
         {
@@ -209,12 +211,17 @@ void PhysicsList::ConstructEM()
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
 		}
+		else if (particleName == "e-")
+		{
+		    pmanager->AddProcess(new G4eIonisation,         -1, 2,2);
+		}
 	    G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 175*keV);
 	}
 }
 
 void PhysicsList::ActivateUserPhysics()
 {   
+
     G4ProcessManager* gammaProcessManager = G4Gamma::GammaDefinition()->GetProcessManager();
     
     G4ProcessVector* processlist = gammaProcessManager->GetProcessList();
@@ -280,6 +287,7 @@ void PhysicsList::ActivateUserPhysics()
   		atomDeexcitation->SetAuger(false);   
   		atomDeexcitation->SetPIXE(false);  
     }
+
 }
 
 void PhysicsList::SetCuts()

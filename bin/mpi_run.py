@@ -30,7 +30,7 @@ import time
 #print "verbose = ", tsi.verbose
 
 tomosim = g4tomosim.G4TomoSim(tsi.verbose, 
-                              tsi.interactive)            
+                              False)            
 
 from mpi4py import MPI
 comm           = MPI.COMM_WORLD
@@ -73,7 +73,7 @@ if rank == 0:
                                      nframes + 1, 
                                      xpixels, 
                                      ypixels, 
-                                     [5, 5, 5], 
+                                     tomosim.absorptiondetector_gethalfdimensions(), 
                                      tsi.rotation_angles)    
     
 tomosim.execute_macrolist(tsi.macrofiles)        
@@ -101,7 +101,7 @@ while frame <= nframes:
             rotation_angle = tsi.rotation_angles[frame]
             zposition      = tsi.zpos[frame]
     
-        tomosim.runsingleprojection(tsi.particles,
+        tomosim.simulateprojection(tsi.particles,
                                     doflatfield,
                                     rotation_angle,
                                     zposition)
@@ -139,11 +139,11 @@ if rank == 0:
     simtime = etime -itime
     message = "Simulation time:",
     if simtime < 60:
-        print message, round(simtime, 3), "seconds. "
+        print (message, round(simtime, 3), "seconds. ")
     elif simtime < 60*60:
-        print message, round(simtime/60, 3), "minutes. "
+        print (message, round(simtime/60, 3), "minutes. ")
     else:
-        print message, round(simtime/(60*60), 3), "hours. "
+        print (message, round(simtime/(60*60), 3), "hours. ")
     
     import datetime
     File_object = open("/home/xol73553/git/mpiTest/output/finished.txt", "w")
@@ -152,9 +152,6 @@ if rank == 0:
     File_object.write("\nsim time :" + str(simtime) + " s")
     File_object.close()
         
-
-
-
 """
 import g4tomosim
 

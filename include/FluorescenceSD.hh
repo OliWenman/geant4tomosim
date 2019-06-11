@@ -70,6 +70,9 @@ class FluorescenceSD : public G4VSensitiveDetector
 		bool fullfieldOn;
 		bool fullmappingOn;
 		bool graphicsOn;
+		
+		int primary;
+		int secondary;
 };
 
 #endif

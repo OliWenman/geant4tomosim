@@ -17,6 +17,9 @@
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 
+#include "G4UIcommandTree.hh"
+#include "G4UIcommand.hh"
+
 //Used for timing simulation and getting a random seed
 #include "G4Timer.hh"
 #include "time.h"
@@ -35,8 +38,9 @@
 #include <xraylib.h>
 #include "PrintLines.hh"
 
-#include "G4MPImanager.hh"
-#include "G4MPIsession.hh"
+//#include "G4MPImanager.hh"
+//#include "G4MPIsession.hh"
+
 
 Simulation::Simulation(int verb, bool interactive) : runManager(0), 
                                                      detectorManager(0), 
@@ -44,16 +48,15 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
                                                      beamManager(0), 
                                                      visManager(0), 
                                                      particleManager(0), 
-                                                     stepManager(0),
-                                                     g4MPI(0)
+                                                     stepManager(0)//,
+                                                     //g4MPI(0)
                                                      
 {
      mpi_rank = 0;
 
     // At first, G4MPImanager/G4MPIsession should be created.
-    g4MPI = new G4MPImanager();
-    
-    mpi_rank = G4MPImanager::GetManager()-> GetRank();
+    //g4MPI = new G4MPImanager();
+    //mpi_rank = G4MPImanager::GetManager()-> GetRank();
     
     G4cout << "\nmpi_rank = " << mpi_rank << G4endl;
 
@@ -116,12 +119,13 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 	SetSeed(0);
-
+	
+	//UImanager->GetTree()->List();
 }
 
 Simulation::~Simulation()
 {
-    delete g4MPI;
+    //delete g4MPI;
 
     if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nClosing simulation..." << G4endl;}
 	int showDeletion = 3;

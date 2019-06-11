@@ -23,8 +23,8 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
   	const G4ParticleDefinition* particle = aTrack->GetDefinition();
   	
   	//Kill secondaries
-  	//if(fKillSecondary )//&& aTrack->GetTrackID() > 1) 
-  	//{
+  	if(fKillSecondary )//&& aTrack->GetTrackID() > 1) 
+  	{
   	
   	//G4VPhysicalVolume* nextVolume = aTrack->GetNextVolume();
   	//if (nextVolume){G4cout << "next volume = " << nextVolume -> GetName()<< G4endl;}
@@ -32,19 +32,16 @@ G4ClassificationOfNewTrack StackingAction::ClassifyNewTrack(const G4Track* aTrac
   	    //Kill all secondary electrons
   	    if (particle->GetParticleName() == "e-" && killElectrons == true){return fKill;}//status = fKill;}
   	    //else if (aTrack->GetTrackID() > 3 &&  {return fUrgent;}    
-  	    else {return fUrgent;}
+  	    //else {return fUrgent;}
   	    //Kill all photons that aren't going to hit the fluorescence detector located in the positive y direction    
   	    //if (aTrack -> GetMomentumDirection().y() < 0 && particle -> GetParticleName() == "gamma" ){status = fKill;}    
   	        
-  	//}
-  	
+  	}
 
-  	//return status;
+  	return fUrgent;
 }
 
-void StackingAction::SetKillStatus(G4bool value)    
-	{fKillSecondary = value;}
+void StackingAction::SetKillStatus(G4bool value) {fKillSecondary = value;}
 
 
-void StackingAction::SetKill(const G4String& name)  
-	{fParticle = G4ParticleTable::GetParticleTable()->FindParticle(name);}
+void StackingAction::SetKill(const G4String& name) {fParticle = G4ParticleTable::GetParticleTable()->FindParticle(name);}

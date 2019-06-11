@@ -30,7 +30,7 @@ from g4tomosim import G4TomoSim
 
 tomosim = G4TomoSim(tsi.verbose, 
                     tsi.interactive)
-                    
+                 
 tomosim.execute_macrolist(tsi.macrofiles)
 
 tomosim.simulatetomography(filepath        = filepath,
@@ -38,6 +38,25 @@ tomosim.simulatetomography(filepath        = filepath,
                            nDarkFlatFields = tsi.ndarkflatfields,
                            rotation_angles = tsi.rotation_angles,
                            zpositions      = tsi.zpos )
-
 print ("Finished")
 
+"""
+from g4tomosim import G4TomoSim
+
+tomosim = G4TomoSim(verbose = 1)
+                    
+tomosim.execute_macrolist(macroFiles = ["detector.mac", 
+                                        "physics.mac", 
+                                        "beam.mac",       
+                                        "sample.mac"])
+
+tomosim.simulateprojection(n_particles    = 1.e9,
+                           flatfield      = False,
+                           rotation_angle = 21*deg,
+                           zposition      = 0*m)
+
+absorb_data = tomosim.absorptiondetector_getprojection()
+fluor_data  = tomosim.fluorescencedetector_getfullmappingdata()
+beamIn_data = tomosim.beam_getintensity()
+beamEn_data = tomosim.beam_getenergybins()
+"""

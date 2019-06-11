@@ -17,8 +17,8 @@ ParticleBeam::ParticleBeam()
 
 ParticleBeam::~ParticleBeam()
 {
-    delete fastGun;
     delete advaGun;
+    delete fastGun;
 }
 
 void ParticleBeam::DefualtValues()

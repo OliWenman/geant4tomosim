@@ -43,16 +43,22 @@ cdef class G4TomoSim:
     """
 
     #Execute a list containing paths to macro files
-    def execute_macrolist(self, list macroFiles):  
-        return self.thisptr.Execute_Macrolist_pyw(macroFiles)
+    def execute_macrolist(self, macroFiles):
+    
+        #make strings compatible for python3
+        macrofiles = [] 
+        for i in range(len(macroFiles)):
+            macrofiles.append(str.encode(macroFiles[i]))
+      
+        self.thisptr.Execute_Macrolist_pyw(macrofiles)
     
     #Execute a single macro file by providing the path to the file    
     def execute_macro(self, str macrofile):
-        return self.thisptr.Execute_Macro_pyw(macrofile)
+        self.thisptr.Execute_Macro_pyw(str.encode(macrofile))
 
     #Execute a command. Error checking in command done via C++ in "Simulation.hh".
     def execute_command(self, str command):
-        return self.thisptr.Execute_Command_pyw (command)
+        self.thisptr.Execute_Command_pyw (str.encode(command))
     
     
     #===============================================================================================
@@ -62,6 +68,16 @@ cdef class G4TomoSim:
         
         self.thisptr.Setup_Visualization_pyw(path, filename)
     
+    def log_setup(self,
+                  str filepath,
+                  long long int totalparticles, 
+                  int numberOfimages, 
+                  int ndarkflatFields):
+                  
+        self.thisptr.Print_SimulationInfo_pyw(str.encode(filepath),
+		                                      totalparticles, 
+		                                      numberOfimages, 
+		                                      ndarkflatFields)
     #===============================================================================================
     """
     Absorption detector functions to return data
@@ -98,13 +114,13 @@ cdef class G4TomoSim:
         return np.array(self.thisptr.FluorescenceDetector_GetEnergyBins_pyw(), dtype = np.uint16)
     
     def fluorescencedetector_getnoenergybins(self):
-        return 0
+        return self.thisptr.FluorescenceDetector_GetNoEnergyBins_pyw()
         
     def fluorescencedetector_getposition(self):
-        return 0
+        return self.thisptr.FluorescenceDetector_GetPosition_pyw()
         
     def fluorescencedetector_getdimensions(self):
-        return 0   
+        return self.thisptr.FluorescenceDetector_GetHalfDimensions_pyw()   
             
     def fluorescencedetector_fullmappingActive(self):
         return self.thisptr.FluorescenceDetector_FullMappingActive_pyw()
@@ -117,7 +133,7 @@ cdef class G4TomoSim:
     Beam functions to return information and data
     """
     def beam_getnobins(self):
-        return 0
+        return self.thisptr.Beam_GetNoEnergyBins_pyw()  
     
     def beam_getenergybins(self):
         return np.array(self.thisptr.Beam_GetEnergyBins_pyw(), dtype = np.uint16)
@@ -129,20 +145,19 @@ cdef class G4TomoSim:
 
     def simulateprojection(self, 
                            int n_particles, 
-                           bint flatfields,
+                           bint flatfield,
                            double rotation_angle,
                            double zposition):
         
         """
         Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
-        
         """
         
         if n_particles < 1:
             raise Exception("n_particles can't be less than 1.")
         
         return self.thisptr.Run_Projection_pyw(n_particles,
-                                               flatfields,
+                                               flatfield,
                                                rotation_angle,
                                                zposition)
 
@@ -161,7 +176,6 @@ cdef class G4TomoSim:
         The function will loop through the rotation_angles supplied, saving at the end of each projection the appropiate data in a nexus format.
         Other variables for the simulation can be controlled via macrofiles supplied before this function, such as the sample, physics used, 
         beam and detector configurations, and creation of materials. 
-        
         """
 
         #Error check the inputs to make sure they are correct
@@ -214,11 +228,11 @@ cdef class G4TomoSim:
         #Create the log file name
         dotPosition  = filename.find('.')
         filepath_log = path + filename[0:dotPosition] + '_log.txt'
-        
+        filepath_log = str.encode(filepath_log)
+        filename_log = str.encode(filename[0:dotPosition])
         #Setup any external visualisation
-        self.thisptr.Setup_Visualization_pyw(path,
-                                             filename[0:dotPosition])
-        
+        self.thisptr.Setup_Visualization_pyw(str.encode(path),
+                                             filename_log)       
         #Print information about the settings of the simulation to the user and save in a log file
         self.thisptr.Print_SimulationInfo_pyw(filepath_log,
                                               n_particles, 

@@ -7,15 +7,15 @@ import numpy as np
 #C++ interface to cython
 cdef extern from "Simulation.hh":
    cdef cppclass Simulation:
-      Simulation() except +
-      Simulation(int, bint)
+      Simulation() 
+      Simulation(int, bint) except +
 
 #===================================================================================================
       
       #Functions to apply macro files or commands to the simulation
-      void Execute_Macrolist_pyw      (vector[string])
-      void Execute_Macro_pyw          (string)
-      void Execute_Command_pyw        (string)
+      void Execute_Macrolist_pyw (vector[string]) except +
+      void Execute_Macro_pyw     (string)         except +
+      void Execute_Command_pyw   (string)         except +
 
 #===================================================================================================
       
@@ -53,6 +53,8 @@ cdef extern from "Simulation.hh":
       vector[int]                 FluorescenceDetector_GetFullField_pyw()
       vector[vector[vector[int]]] FluorescenceDetector_GetFullMapping_pyw()
       vector[double]              FluorescenceDetector_GetEnergyBins_pyw()
+      vector[double]              FluorescenceDetector_GetPosition_pyw()
+      vector[double]              FluorescenceDetector_GetHalfDimensions_pyw()
       int                         FluorescenceDetector_GetNoEnergyBins_pyw()  
       bint                        FluorescenceDetector_FullMappingActive_pyw()
       bint                        FluorescenceDetector_FullFieldActive_pyw()

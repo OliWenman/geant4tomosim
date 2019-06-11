@@ -6,79 +6,57 @@ project( CYTHON_CMAKE_EXAMPLE )
 
 # Make the scripts available in the 'cmake' directory available for the
 # 'include()' command, 'find_package()' command.
-set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_LIST_DIR}/cmake )
+set( CMAKE_MODULE_PATH 
+     ${CMAKE_MODULE_PATH} 
+     ${CMAKE_CURRENT_LIST_DIR}/cmake 
+   )
 
 # Include the CMake script UseCython.cmake.  This defines add_cython_module().
 # Instruction for use can be found at the top of cmake/UseCython.cmake.
 include( UseCython )
 
-# check MPI package...
-find_package(MPI REQUIRED)
-if(MPI_FOUND)
-  	message(STATUS "MPI version " ${MPI_VERSION})
-  	message(STATUS "MPI_include_dirs = ${MPI_INCLUDE_DIRS}")
-  	#message(STATUS "Geant4_libraries:\n ${Geant4_LIBRARIES}")
-else()
-  	message(STATUS "ERROR: Couldnt find MPI")
-endif()
 #Find the Geant4 library and display it's info
 find_package(Geant4 REQUIRED)
-if(Geant4_FOUND)
-  	message(STATUS "Geant4 version " ${Geant4_VERSION})
-  	message(STATUS "Geant4_include_dirs = ${Geant4_INCLUDE_DIRS}")
-  	#message(STATUS "Geant4_libraries:\n ${Geant4_LIBRARIES}")
-else()
-  	message(STATUS "ERROR: Couldnt find Geant4")
-endif()
 
-find_package(G4mpi REQUIRED)
-if(G4mpi_FOUND)
-    message(STATUS "G4mpi version " ${G4mpi_VERSION})
-  	message(STATUS "MPI_include_dirs = ${G4mpi_INCLUDE_DIRS}")
-else()
-    message(STATUS "ERROR")
-endif()
+# check MPI package...
+find_package(MPI )
 
-#----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-#
-include(${Geant4_USE_FILE})
+find_package(G4mpi )
 
-#------------------------------------------------------------------------------
 add_definitions(-DTOOLS_USE_NATIVE_MPI) 
 
 #Find Python interpreter
 
-find_package(PythonInterp)
-if (PYTHONINTERP_FOUND)
-    message(STATUS "Python version ${PYTHON_VERSION_STRING}")
-    message(STATUS "Python_executable = ${PYTHON_EXECUTABLE}")
-else()
-    message(STATUS "ERROR: Couldn't find PythonInterpreter!") 
-endif()
+#find_package(PythonInterp REQUIRED)
+#if (PYTHONINTERP_FOUND)
+#    message(STATUS "Python version ${PYTHON_VERSION_STRING}")
+#    message(STATUS "Python_executable = ${PYTHON_EXECUTABLE}")
+#else()
+#    message(STATUS "ERROR: Couldn't find PythonInterpreter!") 
+#endif()
 
 #Find Python libraries
-find_package(PythonLibs)
-if (PYTHONLIBS_FOUND)
-    message(STATUS "Python_include_dirs = ${PYTHON_INCLUDE_DIRS}")
-    message(STATUS "Python_libraries = ${PYTHON_LIBRARIES}")
-else()
-    message(STATUS "ERROR: Couldn't find Python libraries!") 
-endif()
+#find_package(PythonLibs REQUIRED)
+#if (PYTHONLIBS_FOUND)
+#    message(STATUS "Python_include_dirs = ${PYTHON_INCLUDE_DIRS}")
+#    message(STATUS "Python_libraries = ${PYTHON_LIBRARIES}")
+#else()
+#    message(STATUS "ERROR: Couldn't find Python libraries!") 
+#endif()
 
 #Find PkgConfig. If found, find xraylib libraries
 find_package(PkgConfig REQUIRED)
 if (PKGCONFIG_FOUND)
     pkg_check_modules(LIBXRL REQUIRED IMPORTED_TARGET libxrl)
-    if (LIBXRL_FOUND)
-        message(STATUS "xraylib version ${LIBXRL_VERSION}")
-        message(STATUS "xraylib_include_dirs = ${LIBXRL_INCLUDE_DIRS}")
-    else()
-        message(STATUS "ERROR: Couldn't find xraylib!")
-    endif()
-else()
-    message(STATUS "ERROR: Couldn't find PkgConfig")
-    message(STATUS "ERROR: Couldn't find xraylib!")
+    #if (LIBXRL_FOUND)
+    #    message(STATUS "xraylib version ${LIBXRL_VERSION}")
+    #    message(STATUS "xraylib_include_dirs = ${LIBXRL_INCLUDE_DIRS}")
+    #else()
+    #    message(STATUS "ERROR: Couldn't find xraylib!")
+    #endif()
+#else()
+#    message(STATUS "ERROR: Couldn't find PkgConfig")
+#    message(STATUS "ERROR: Couldn't find xraylib!")
 endif()
 
 find_package(Numpy REQUIRED)
@@ -93,9 +71,10 @@ add_custom_target( ReplicatePythonSourceTree ALL ${CMAKE_COMMAND} -P
   		           ${CMAKE_CURRENT_BINARY_DIR}
   		           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
+# Setup Geant4 include directories and compile definitions
+include(${Geant4_USE_FILE})
 #Include the relevant directories for the project
 include_directories( ${CYTHON_CMAKE_EXAMPLE_SOURCE_DIR}/include)
-include(${Geant4_USE_FILE})
 
 #Allows to include .cc files when linking
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)

@@ -1,8 +1,8 @@
 # macrofile to control the physics of the simulation
 
-/physics/gamma/livermore/photoelectric true
+/physics/gamma/livermore/photoelectric false
 /physics/gamma/livermore/comptomscattering true
-/physics/gamma/livermore/raylieghscattering true
+/physics/gamma/livermore/raylieghscattering false
 /physics/gamma/fluorescence true
 /physics/gamma/refraction false
 /physics/gamma/opticalabsorption false

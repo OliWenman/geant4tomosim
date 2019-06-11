@@ -4,34 +4,35 @@
 
 #--------------------------------------------------------------------------------
 # General
-
 /simulation/seed 0
-/simulation/graphics false
-/world/visualization false	
+/simulation/graphics False	
+/world/visualization False
 
 #--------------------------------------------------------------------------------
 # World
 
-/world/size 4400 100 100 mm		
+/world/halfdimensions 2200. 0100. 0100. mm		
 /world/material G4_Galactic
 
 #--------------------------------------------------------------------------------
 # Detectors
 
 # - Absorption
-/detector/absorption/halfdimensions 00.001 10.0112 6.004 mm
+/detector/absorption/halfdimensions 00.001 10.0112 06.004 mm
 /detector/absorption/xpixels 434
 /detector/absorption/ypixels 302
 
 # - Fluorescence
-/detector/fluorescence/halfdimensions 2 0.01 1 cm
-/detector/fluorescence/bins 1000
-/detector/fluorescence/maxenergy 20 keV
-/detector/fluorescence/fullmapping true
-/detector/fluorescence/fullfield true
+/detector/fluorescence/halfdimensions 02.00 00.01 01.00 cm
+/detector/fluorescence/fullmapping True
+/detector/fluorescence/fullfield   True
+/detector/fluorescence/bins        2000
+/detector/fluorescence/maxenergy     100. keV
 
 # - Beam
-/beam/bins 2000
-/beam/maxenergy 175 keV
+/beam/bins      2000
+/beam/maxenergy  175. keV
 
 #--------------------------------------------------------------------------------
+
+

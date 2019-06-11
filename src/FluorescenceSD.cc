@@ -19,11 +19,15 @@ FluorescenceSD::FluorescenceSD (): G4VSensitiveDetector("FluorescenceDetector"),
     fullfieldOn   = true;
     fullmappingOn = true;
     graphicsOn    = false;
+    primary = 0;
+    secondary = 0;
 }
 
 FluorescenceSD::~FluorescenceSD()
 {
     //if (!fullfieldfluorescence.empty()) {fullfieldfluorescence.clear();}
+    G4cout << "\nprimary   = " << primary << G4endl;
+    G4cout << "\nsecondary = " << secondary << G4endl; 
 }
 
 void FluorescenceSD::Initialize(G4HCofThisEvent* hce)
@@ -38,8 +42,13 @@ void FluorescenceSD::Initialize(G4HCofThisEvent* hce)
     }
 }
 
+#include "G4Electron.hh"
 G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 {
+    G4String particle_name = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
+
+    if (particle_name != "gamma" && particle_name != "opticalphoton"){return false;}
+
 	G4double energy = aStep->GetPreStepPoint()->GetKineticEnergy();
 
     if (fullfieldOn)
@@ -71,6 +80,41 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 	    int ybin = floor(particlepositiony/(pixely_halfdimensions*2) + 0.5*absorb_ypixels);
     
         ++fullmappingfluorescence[ybin][xbin][energybin];
+        
+        const G4Track* track = aStep->GetTrack();
+        G4int trackID = track->GetTrackID();
+        const G4VProcess* process = track->GetCreatorProcess();
+        
+        G4String process_name;
+        if (process)
+        {
+            process_name = process->GetProcessName();
+        }
+        else
+        {
+            process_name = "PRIMARY";
+            process_name = aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName();
+        }
+
+        G4double partEnergy = aStep->GetPreStepPoint()->GetKineticEnergy(); 
+        G4double secondEnergy = aStep->GetPostStepPoint()->GetKineticEnergy();
+        
+        //if (process_name == "phot" && trackID > 3)
+        //{
+        G4cout << "\nprocess = " << process_name << G4endl;
+        G4cout << "trackid   = " << trackID << G4endl;
+        G4cout << "particle  = " << particle_name << G4endl;
+        G4cout << "energy    = " << energy << G4endl;
+        //}
+        if (trackID == 3 && process_name == "phot")
+        {
+            ++primary;
+        }
+        else if (trackID > 3 && process_name == "phot")
+        {
+            ++secondary;
+        }
+        
     }
 	
 	if(graphicsOn)

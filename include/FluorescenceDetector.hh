@@ -10,6 +10,7 @@ Author: Oliver Jack Wenman
 #include "globals.hh"
 #include "G4ThreeVector.hh"
 #include "SettingsLog.hh"
+#include "MyVectors.hh"
 
 //My own classes
 class Data;
@@ -39,6 +40,8 @@ class FluorescenceDetector
         
         //Get
         FluorescenceSD* GetSensitiveDetector() {return sensitiveDetector;}
+        double_vector1D GetPosition()          {return {position[0], position[1], position[2]};}
+        double_vector1D GetHalfDimensions()    {return {halfdimensions[0], halfdimensions[1], halfdimensions[2]};}
 
     private:
         FluorescenceDetectorMessenger* FDMessenger;

@@ -8,7 +8,7 @@
 /sample/G4VPhysicalVolume/position ObjectA 00.00 00.00 -01.11 mm
 /sample/G4VPhysicalVolume/rotation ObjectA 00.00 00.00 03.00 deg
 
-/sample/G4LogicalVolume/material ObjectB Ti
+/sample/G4LogicalVolume/material ObjectB IN625
 /sample/G4LogicalVolume/colour ObjectB red
 /sample/G4VPhysicalVolume/position ObjectB 00.00 00.00 03.60 mm
 /sample/G4VPhysicalVolume/rotation ObjectB 00.00 00.00 01.00 deg

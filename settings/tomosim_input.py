@@ -12,13 +12,13 @@ import numpy as np
 #========================================================================================
 
 #General settings
-verbose         = 0
+verbose         = 5
 interactive     = False
 
 #Image variables
 projections     = 1
 ndarkflatfields = 0
-particles       = 1.e5
+particles       = 10
 
 #Rotation angles
 startrotation   = 0*G4.deg

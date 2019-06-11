@@ -121,20 +121,23 @@ class Simulation
 		int             AbsorptionDetector_GetYPixels_pyw()    {return detectorManager->GetAbsorptionDetector()->GetyPixels();                      }
 		
 		//Fluorescence
-		int_vector3D    FluorescenceDetector_GetFullMapping_pyw()    {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping();    }
-		int_vector1D    FluorescenceDetector_GetFullField_pyw()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullField();      }
-		double_vector1D FluorescenceDetector_GetEnergyBins_pyw()     {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetEnergyBins();     }
+		int_vector3D    FluorescenceDetector_GetFullMapping_pyw()    {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullMapping(); }
+		int_vector1D    FluorescenceDetector_GetFullField_pyw()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetFullField();   }
+		double_vector1D FluorescenceDetector_GetEnergyBins_pyw()     {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetEnergyBins();  }
+		
+		double_vector1D FluorescenceDetector_GetPosition_pyw()       {return detectorManager->GetFluorescenceDetector()->GetPosition();                            }
+		double_vector1D FluorescenceDetector_GetHalfDimensions_pyw() {return detectorManager->GetFluorescenceDetector()->GetHalfDimensions();                      }
 		bool            FluorescenceDetector_FullMappingActive_pyw() {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullMappingActive(); }
 		bool            FluorescenceDetector_FullFieldActive_pyw()   {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->FullFieldActive();   }
-		int             FluorescenceDetector_GetNoEnergyBins_pyw()      {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
-		
-		//Diffraction
-		int_vector2D GetDiffractionData() {return int_vector2D()/*data -> GetDiffractionData()*/;}
+		int             FluorescenceDetector_GetNoEnergyBins_pyw()   {return detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->GetNumberOfBins();   }
 		
 		//Beam energy
 		int_vector1D    Beam_GetIntensity_pyw()     {return beamManager -> GetBeamIntensity();  }
         double_vector1D Beam_GetEnergyBins_pyw() {return beamManager -> GetBeamEnergy(); }
         int             Beam_GetNoEnergyBins_pyw()       {return beamManager -> GetNumberOfBins();}
+
+        //Diffraction
+		int_vector2D GetDiffractionData() {return int_vector2D()/*data -> GetDiffractionData()*/;}
 
 //================================================================================================================
 		
@@ -162,7 +165,7 @@ class Simulation
 		void PrintInformation(SettingsLog log);
 		
 		//Pointers to different classes
-		G4MPImanager           *g4MPI;
+		//G4MPImanager           *g4MPI;
 		SimulationMessenger    *simMessenger;
 		G4RunManager           *runManager;
 		G4VisManager           *visManager;
