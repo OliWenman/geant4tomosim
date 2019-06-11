@@ -20,8 +20,8 @@ DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstructio
 	WorldDirectory = new G4UIdirectory("/world/");
 	WorldDirectory -> SetGuidance("Commands to control the world variables. ");	
 
-	setworld_dimensions = new G4UIcmdWith3VectorAndUnit("/world/size", this);
-	setworld_dimensions -> SetGuidance("Set the world size for the x, y and z dimensions ");
+	setworld_dimensions = new G4UIcmdWith3VectorAndUnit("/world/halfdimensions", this);
+	setworld_dimensions -> SetGuidance("Set the world half dimensions ");
 	setworld_dimensions -> SetParameterName("worldX","worldY","worldZ",true,true);
 	setworld_dimensions -> SetUnitCandidates("mm cm m um ");
 	setworld_dimensions -> SetRange("worldX > 0 || worldY > 0 || worldZ > 0");
@@ -47,8 +47,8 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
 {
 	if( command == setworld_dimensions )
 	{
-		G4ThreeVector Dimensions = setworld_dimensions -> GetNew3VectorValue(newValue);
-		ConstructDet -> SetWorldDimensions(Dimensions/2);//SetWorldSize(Dimensions/2);
+		G4ThreeVector dimensions = setworld_dimensions -> GetNew3VectorValue(newValue);
+		ConstructDet -> SetWorldDimensions(dimensions);
 	}
 	if( command == setworld_material )
 	{
