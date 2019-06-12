@@ -27,8 +27,8 @@ cdef class G4TomoSim:
   
     #Constructor, create an instance of the C++ class
     def __cinit__(self, 
-                  verbose = 1, 
-                  interactive = True):
+                  verbose     = 1, 
+                  interactive = False):
                   
         self.thisptr = new Simulation(verbose, interactive)
 
@@ -78,6 +78,10 @@ cdef class G4TomoSim:
 		                                      totalparticles, 
 		                                      numberOfimages, 
 		                                      ndarkflatFields)
+    
+    def set_seed(self, long int seed):
+        self.thisptr.SetSeed(seed)
+    
     #===============================================================================================
     """
     Absorption detector functions to return data
@@ -147,7 +151,8 @@ cdef class G4TomoSim:
                            int n_particles, 
                            bint flatfield,
                            double rotation_angle,
-                           double zposition):
+                           double zposition,
+                           bint   resetdata = True):
         
         """
         Run a single projection of a simulation. Can be used for wrapping the simulation in other software such as Savu.
@@ -159,7 +164,8 @@ cdef class G4TomoSim:
         return self.thisptr.Run_Projection_pyw(n_particles,
                                                flatfield,
                                                rotation_angle,
-                                               zposition)
+                                               zposition,
+                                               resetdata)
 
     def simulatetomography(self, 
                            str        filepath,

@@ -16,6 +16,8 @@ cdef extern from "Simulation.hh":
       void Execute_Macrolist_pyw (vector[string]) except +
       void Execute_Macro_pyw     (string)         except +
       void Execute_Command_pyw   (string)         except +
+      
+      void SetSeed(long int)
 
 #===================================================================================================
       
@@ -38,7 +40,8 @@ cdef extern from "Simulation.hh":
       int Run_Projection_pyw(unsigned long long int,
                              bint,
                              double,
-                             double )
+                             double,
+                             bint )
 
 #===================================================================================================
       
