@@ -109,7 +109,8 @@ class Simulation
         int Run_Projection_pyw (unsigned long long int totalparticles,
                                 bool   flatfield,
                                 double rotation_angle,
-                                double zposition);    
+                                double zposition,
+                                bool   resetdata);    
 
 //================================================================================================================		
         //Functions to get data from detectors

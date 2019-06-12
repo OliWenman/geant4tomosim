@@ -52,39 +52,8 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
                                                      //g4MPI(0)
                                                      
 {
-     mpi_rank = 0;
-
-    // At first, G4MPImanager/G4MPIsession should be created.
-    //g4MPI = new G4MPImanager();
-    //mpi_rank = G4MPImanager::GetManager()-> GetRank();
-    
-    G4cout << "\nmpi_rank = " << mpi_rank << G4endl;
-
     globalVerbose = verb;
-    
-    if (mpi_rank > 0)
-    {
-         interactiveOn = false;
-    }
-    else
-    {
-        interactiveOn = interactive;
-    }
-    
-    if (globalVerbose > 0 && mpi_rank == 0)
-    {
-        G4cout << "\nWelcome to the tomography data simulation!"
-                  "\nSetting up... " << G4endl;
-    
-        if (interactiveOn)
-        {
-            G4cout << "\nInteractivity is turned on. The simulation will be paused for inputs if there are any problems. ";
-        }    
-        else 
-        {
-            G4cout << "\nInteractivity is turned off. The simulation will be interupted if there are any problems.";
-        }
-    }
+    interactiveOn = interactive;
     
     simMessenger = new SimulationMessenger(this);	
 	materials    = new DefineMaterials(); 
@@ -92,6 +61,8 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
     //Create the objects needed for the G4RunManager class	
 	runManager = new G4RunManager();
 	
+	visManager = new G4VisExecutive("quiet");
+    
   	detectorManager = new DetectorConstruction(); 
   	runManager -> SetUserInitialization(detectorManager); 
   	
@@ -118,29 +89,26 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
 
     //Set the seed engine
 	CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
-	SetSeed(0);
 	
 	//UImanager->GetTree()->List();
 }
 
 Simulation::~Simulation()
 {
-    //delete g4MPI;
-
-    if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nClosing simulation..." << G4endl;}
+    if (globalVerbose > 0) {G4cout << "\nClosing simulation..." << G4endl;}
 	int showDeletion = 3;
 	
-	if(globalVerbose > showDeletion && mpi_rank == 0) {runManager -> SetVerboseLevel(showDeletion);}
+	if(globalVerbose > showDeletion) {runManager -> SetVerboseLevel(showDeletion);}
 
-    delete sampleconstruction; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nSampleConstrction deleted " << std::flush;}
-	delete materials;          if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nDefineMaterials deleted " << std::flush;}
-	delete simMessenger;       if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
+    delete sampleconstruction; if(globalVerbose > showDeletion) {G4cout << "\nSampleConstrction deleted " << std::flush;}
+	delete materials;          if(globalVerbose > showDeletion) {G4cout << "\nDefineMaterials deleted " << std::flush;}
+	delete simMessenger;       if(globalVerbose > showDeletion) {G4cout << "\nSimulationMessenger deleted\n" << std::flush;}
 
-    delete visManager; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "\nVisualizationManager deleted\n" << std::flush;}
-    delete runManager; if(globalVerbose > showDeletion && mpi_rank == 0) {G4cout << "RunManager deleted" << std::flush;}
+    delete visManager; if(globalVerbose > showDeletion) {G4cout << "\nVisualizationManager deleted\n" << std::flush;}
+    delete runManager; if(globalVerbose > showDeletion) {G4cout << "RunManager deleted" << std::flush;}
     
     delete CLHEP::HepRandom::getTheEngine();
-	if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
+	if (globalVerbose > 0) {G4cout << "\nSimulation closed! \n" << G4endl;}
 }
 
 void Simulation::Execute_Macrolist_pyw(std::vector<std::string> macroFiles)
@@ -153,18 +121,13 @@ void Simulation::Execute_Macrolist_pyw(std::vector<std::string> macroFiles)
     }
     
     macrofiles = macroFiles;
-    
-    if (globalVerbose > 0 && mpi_rank == 0)
-    {
-        G4cout << "\nCOMPLETE! " << G4endl;
-    }
 }
 
 void Simulation::Execute_Macro_pyw(std::string macro)
 {
     //Read the macro file line by line and extract the commands from the file
 
-     if (globalVerbose > 0 && mpi_rank == 0)
+     if (globalVerbose > 0)
      {
         PrintToEndOfTerminal('-');        
         G4cout << "Reading file '" << macro << "' " << G4endl;
@@ -176,14 +139,9 @@ void Simulation::Execute_Macro_pyw(std::string macro)
     readfile.open(macro);
     if (!readfile) 
     {
-        if (mpi_rank == 0)
-        {
-            G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
-        }
-            return; 
+        G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
+        return; 
     }
-      
-    if (mpi_rank == 0) {G4cout << "\n";}  
       
     //Read the file
     std::string command;    
@@ -212,14 +170,14 @@ void Simulation::Execute_Macro_pyw(std::string macro)
         //Check if string isn't just spaces
         if (command.find_first_not_of(' ') != std::string::npos)
         {
-            if (globalVerbose > 3 && mpi_rank == 0) {G4cout << line << ")";}
+            if (globalVerbose > 3) {G4cout << line << ")";}
             Execute_Command_pyw (command);
             
         }
     }
     
     readfile.close();
-    if (globalVerbose > 0 && mpi_rank == 0) {G4cout << "\n" << macro << " complete! "<< G4endl;}
+    if (globalVerbose > 0) {G4cout << "done "<< G4endl;}
 }
 
 #include "G4UIcommandTree.hh"
@@ -238,7 +196,7 @@ void Simulation::Execute_Command_pyw (std::string command)
     //Check the status of the command. If successful, continue with the simulation
     if (status == fCommandSucceeded)
     {
-        if (globalVerbose > 3 && mpi_rank == 0) {G4cout << command << " successful!" << G4endl;}
+        if (globalVerbose > 3) {G4cout << command << " successful!" << G4endl;}
     }
     else
     {
@@ -417,13 +375,12 @@ int Simulation::Run_Tomography_pyw(unsigned long long int n_particles,
 int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
                                     bool   flatfield,
                                     double rotation_angle,
-                                    double zposition)
+                                    double zposition,
+                                    bool   resetdata)
 {
 
     //globalVerbose = 0;
     beamManager->GetProgressTracker().print = false;
-    
-    //G4cout << "\nrotation = " << rotation_angle << G4endl;
     
     //Set the seed for this image by calling the rand function (next number in the sequence)
 	CLHEP::HepRandom::setTheSeed(rand());
@@ -449,9 +406,6 @@ int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
      
     //Beam on to start the simulation
     BeamOn(n_particles);
-    //std::string str = std::to_string(n_particles);
-    //UImanager->ApplyCommand("/mpi/.beamOn " + str + " false");
-
 
 	sampleconstruction->ApplyTransforms(0, 0);
     sampleconstruction->SetLastRotation(0);
@@ -472,7 +426,6 @@ void Simulation::Setup_Visualization_pyw(std::string path,
         }
         
         runManager->Initialize();
-		visManager = new G4VisExecutive("quiet");
 		visManager -> Initialize();
         
         //If a different path is used, create a folder to store the visualization data 
@@ -775,7 +728,7 @@ void Simulation::SetSeed(long int seedinput)
     if (seedinput == 0)
     {
         //Set random seed sequence with system time
-        seedCmd = time(0) *(mpi_rank + 1);
+        seedCmd = time(0);
         srand(seedCmd);	 
         randseed = true;
     }
@@ -789,7 +742,7 @@ void Simulation::SetSeed(long int seedinput)
 
 void Simulation::Initialise_dataSets()
 {
-    if (globalVerbose > 2 && mpi_rank == 0) {G4cout << "\nInitialising data... " << G4endl;}
+    if (globalVerbose > 2) {G4cout << "\nInitialising data... " << G4endl;}
     detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
     detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
     beamManager->SetupData();
