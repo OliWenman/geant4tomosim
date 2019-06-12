@@ -16,7 +16,7 @@ class NexusFormatter:
         self.SimReady = False
         self.setupSuccess = False
         
-    def openFile(self, filepath, interactivity = True):
+    def openFile(self, filepath, interactivity = True, comm = None):
         
         stringLength = len(filepath)
     
@@ -92,16 +92,22 @@ class NexusFormatter:
                 else:
                    print ("Input yes or no to continue.")
                    contin = False
-                
-                print ("\n")
-            
-        #Try to open file, delete file if can't open it as it's going to override it anyway       
+                print("\n")
+                   
         try:     
-            self.h5file1 = h5py.File(filepath, 'w')
+            self.h5file1 = h5py.File(filepath, 'w', comm = comm)
+        
+        except TypeError:
+            self.h5file1 = h5py.File(filepath, 'w')            
         
         except OSError:
             os.remove(filepath)
-            self.h5file1 = h5py.File(filepath, 'w')
+            
+            try: 
+                self.h5file1 = h5py.File(filepath, 'w', comm = comm)
+            except TypeError:
+                self.h5file1 = h5py.File(filepath, 'w')
+                print ("type error")
         
         self.fileOpen = True
         
@@ -146,39 +152,53 @@ class NexusFormatter:
     def __del__(self):
         
         if self.fileOpen == True:
-            print ("\nClosing NeXus file...")
             self.h5file1.close()
             self.fileOpen = False
-            print ("File closed!")
         
     #The dataset that stores the information to do with the transmission data
     def CreateProjectionFolder(self, 
-                               nCalibrations, 
-                               NumberOfImages, 
-                               nDetectorsZ, 
-                               nDetectorsY, 
-                               detectorDimensions, 
+                               n_darkflatfields, 
+                               n_projections, 
+                               ypixels, 
+                               xpixels, 
+                               detector_dimensions, 
                                rotation):
+                               
+        if n_darkflatfields < 0:
+            raise TypeError("n_darkflatfields can't be less than 0")
+        
+        if n_projections < 1:
+            raise TypeError("n_projections can't be less than 1")
+            
+        if xpixels < 1:
+            raise TypeError("xpixels can't be less than 1")
+            
+        if ypixels < 1:
+            raise TypeError("ypixels can't be less than 1")
+        
+        #if len(detector_dimensions):
+        #    raise TypeError("detector_dimensions can't be less than 
+        
         
         #entry/entry1/tomo_entry/data/instrument/detector/data
         DetectorPath = '/entry1/tomo_entry/instrument/detector/'
                
-        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(NumberOfImages + (nCalibrations), nDetectorsZ, nDetectorsY), dtype = 'i4')
+        self.detectordata = self.h5file1.create_dataset(DetectorPath + 'data', shape=(n_projections + (n_darkflatfields), ypixels, xpixels), dtype = 'i4')
         
         #entry/entry1/tomo_entry/data/instrument/detector/image_key
-        darkFieldKey = np.full(shape = (nCalibrations,), fill_value = 2)
-        flatFieldKey = np.full(shape = (nCalibrations,), fill_value = 1)
-        dataKey = np.zeros(NumberOfImages - nCalibrations)
+        darkFieldKey = np.full(shape = (n_darkflatfields,), fill_value = 2)
+        flatFieldKey = np.full(shape = (n_darkflatfields,), fill_value = 1)
+        dataKey = np.zeros(n_projections - n_darkflatfields)
         
         self.image_key = self.h5file1.create_dataset(DetectorPath + 'image_key', data = np.concatenate((dataKey, flatFieldKey, darkFieldKey)))
         
-        #x_pixel_sizeN = detectorDimensions[1]
-        #y_pixel_sizeN = detectorDimensions[2]
+        #x_pixel_sizeN = detector_dimensions[1]
+        #y_pixel_sizeN = detector_dimensions[2]
         
         #x_pixel_size = self.h5file1.create_dataset(DetectorPath + 'x_pixel_size', data = x_pixel_sizeN)
         #y_pixel_size = self.h5file1.create_dataset(DetectorPath + 'y_pixel_size', data = y_pixel_sizeN)
         
-        rotation = np.concatenate([rotation, np.full(nCalibrations*2, rotation[NumberOfImages - nCalibrations - 1])])
+        rotation = np.concatenate([rotation, np.full(n_darkflatfields*2, rotation[n_projections - n_darkflatfields - 1])])
         
         sample = self.h5file1['/entry1/tomo_entry/sample/']
         
