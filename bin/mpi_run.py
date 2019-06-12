@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+
+"""
+Python mpi script to run the g4tomosim package. HDF5 Parralisation not supported.
+Author: Oliver Jack Wenman
+ 
+"""
 import os 
 this_directory = os.path.dirname(os.path.realpath(__file__))
 
@@ -17,70 +23,63 @@ if __name__ == '__main__':
     #If no filepath given, save the data in the default filepath
     except IndexError:
         filepath = defaultpath
-        print ("\nSaving data in the default place", filepath)
 
 #===================================================================
 
-#RUN THE SIMULATION
 import g4tomosim
 import numpy as np
 import NexusFormatter
 import time
-
-#print "verbose = ", tsi.verbose
-
-tomosim = g4tomosim.G4TomoSim(tsi.verbose, 
-                              False)            
+import random
 
 from mpi4py import MPI
 comm           = MPI.COMM_WORLD
 rank           = comm.Get_rank()
 mpi_nprocesses = comm.Get_size()
-"""
-data = rank + 10
-
-if rank != 0:
-    comm.send(data, dest = 0)
-
-if rank == 0:
-    for i in range(mpi_nprocesses):
-        if i != 0 :
-            data = comm.recv(source = i)
-        
-        print data
-"""
 
 nframes = len(tsi.rotation_angles) -1 + tsi.ndarkflatfields
 
 #Define the channels that each data type will be recieved on
 absportionchannel = 111
 #beamintensity_tag
+#fluorescence_fullmapping_tag = 
+
+tomosim = None
 
 if rank == 0: 
-    #filepath = "/home/xol73553/git/mpiTest/output/tomosim_data.nxs"#"/scratch/Data/I12/simulations/86254/V3/5e8_200proj.nxs"
-    #this_directory + "/../output/tomosimData3.nxs"
+    
+    tomosim = g4tomosim.G4TomoSim(verbose = tsi.verbose, interactive = False)     
+    tomosim.execute_macrolist(tsi.macrofiles)     
+         
+    xpixels = tomosim.absorptiondetector_getxpixels()
+    ypixels = tomosim.absorptiondetector_getypixels()
+    
     nexusfile = NexusFormatter.NexusFormatter()
-    nexusfile.openFile(filepath, False)
+    
+    print ("Opening file:", filepath)
+    
+    nexusfile.openFile(filepath, False, comm = comm)
+    
     if nexusfile.setupSuccess == False:
         print ("\nAborting run...") 
         sys.exit()
     
-    xpixels = tomosim.absorptiondetector_getxpixels()
-    ypixels = tomosim.absorptiondetector_getypixels()
-    
     #Create the path to save the projection data
-    nexusfile.CreateProjectionFolder(tsi.ndarkflatfields, 
-                                     nframes + 1, 
-                                     xpixels, 
-                                     ypixels, 
-                                     tomosim.absorptiondetector_gethalfdimensions(), 
-                                     tsi.rotation_angles)    
-    
-tomosim.execute_macrolist(tsi.macrofiles)        
+    nexusfile.CreateProjectionFolder(n_darkflatfields    = tsi.ndarkflatfields, 
+                                     n_projections       = nframes + 1, 
+                                     ypixels             = ypixels, 
+                                     xpixels             = xpixels, 
+                                     detector_dimensions = tomosim.absorptiondetector_getdimensions(), 
+                                     rotation            = tsi.rotation_angles)
+else:
+    tomosim = g4tomosim.G4TomoSim(verbose     = 0, interactive = False)           
+    tomosim.execute_macrolist(tsi.macrofiles)        
 
 if rank == 0:
     print ("Starting simulation")
     itime = time.time()
+
+tomosim.set_seed(random.randint(1, 1.e9)*(mpi_nprocesses + 1))
 
 i     = 0
 frame = 0
@@ -101,10 +100,11 @@ while frame <= nframes:
             rotation_angle = tsi.rotation_angles[frame]
             zposition      = tsi.zpos[frame]
     
-        tomosim.simulateprojection(tsi.particles,
-                                    doflatfield,
-                                    rotation_angle,
-                                    zposition)
+        tomosim.simulateprojection(n_particles     = tsi.particles,
+                                    flatfield      = doflatfield,
+                                    rotation_angle = rotation_angle,
+                                    zposition      = zposition,
+                                    resetdata      = False)
 
         absdata = tomosim.absorptiondetector_getprojection() 
 
@@ -126,76 +126,35 @@ while frame <= nframes:
             
                 if frame+nrank <= nframes:
                     #Save the projection data                          
-                    print ("frame =", frame + nrank, "complete") 
+                    print ("projection", frame + nrank + 1, "complete") 
                     nexusfile.AddProjectionData(absdata, frame + nrank)
     i += 1
 
 if rank == 0:
-    print ("Data saved in :", filepath)
     nexusfile.LinkData()
     nexusfile.closeFile()
-    etime = time.time()
+    
     print ("Simulation finished")
-    simtime = etime -itime
-    message = "Simulation time:",
+    print ("Data saved in :", filepath)
+    
+    etime         = time.time()
+    simtime       = etime -itime
+    simtime_units = "s" 
+    
     if simtime < 60:
-        print (message, round(simtime, 3), "seconds. ")
+        simtime = round(simtime, 3)
+        simtime_units = "s"       
     elif simtime < 60*60:
-        print (message, round(simtime/60, 3), "minutes. ")
+        simtime_units = "mins" 
+        simtime = round(simtime/60, 3) 
     else:
-        print (message, round(simtime/(60*60), 3), "hours. ")
+        simtime_units = "hrs"
+        simtime = round(simtime/(60*60), 3) 
+    print ("Simulation time:", simtime, simtime_units)
     
-    import datetime
-    File_object = open("/home/xol73553/git/mpiTest/output/finished.txt", "w")
-    File_object.write("Finished")
-    File_object.write("\nTime: " + datetime.datetime.now() + " hrs")
-    File_object.write("\nsim time :" + str(simtime) + " s")
-    File_object.close()
+    finished_message = open(this_directory + "/../output/finished.txt", "w")
+    finished_message.write("Finished simulation")
+    finished_message.write("\nSimulation time :" + str(simtime) + simtime_units)
+    finished_message.close()
         
-"""
-import g4tomosim
-
-#Create an instance of the object
-tomosim = g4tomosim.G4TomoSim(verbose, interactiveOn)
-
-#Pass a list filled with macro files to the object to setup 
-#the simulation settings
-tomosim.execute_macrofiles(macro_list)
-
-#Run a single projection 
-tomoism.simulateprojection(nparitcles,      #number of particles
-                           flatfield,       #True/False do a flat field
-                           rotation_angle,  #the rotation_angle of the sample
-                           zposition)       #the z position of the sample
-
-#Collect the data from the absorption detectors
-data = tomosim.get_absorptiondetector_getprojection()
-"""
-
-
-"""       
-tomosim.addMacroFiles(tsi.macrofiles)                    
-
-tomosim.runsingleprojection(1.e5,
-                            False,
-                            tsi.rotation_angles[rank],
-                            0.)
-localdata = tomosim.absorptiondetector_getprojection()
-
-print rank, "Local data"
-print localdata
-"""
-"""
-comm.Send(localdata, tag=11, dest=0)
-
-if rank == 0:
-    for i in range (mpi_nprocesses):
-        
-        comm.Recv(localdata, source = 1 , tag = 11)
-"""
-    
-    
-
-                          
-#print "Finished"
 
