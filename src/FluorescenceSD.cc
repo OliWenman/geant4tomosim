@@ -14,20 +14,18 @@
 #include "PrimaryGeneratorAction.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
-FluorescenceSD::FluorescenceSD (): G4VSensitiveDetector("FluorescenceDetector"), fHitsCollection(0)
+FluorescenceSD::FluorescenceSD(): G4VSensitiveDetector("FluorescenceDetector"), fHitsCollection(0)
 {
     fullfieldOn   = true;
     fullmappingOn = true;
     graphicsOn    = false;
-    primary = 0;
-    secondary = 0;
+    primary       = 0;
+    secondary     = 0;
 }
 
 FluorescenceSD::~FluorescenceSD()
 {
     //if (!fullfieldfluorescence.empty()) {fullfieldfluorescence.clear();}
-    G4cout << "\nprimary   = " << primary << G4endl;
-    G4cout << "\nsecondary = " << secondary << G4endl; 
 }
 
 void FluorescenceSD::Initialize(G4HCofThisEvent* hce)
@@ -86,6 +84,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
         const G4VProcess* process = track->GetCreatorProcess();
         
         G4String process_name;
+        
         if (process)
         {
             process_name = process->GetProcessName();
@@ -96,16 +95,18 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
             process_name = aStep->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName();
         }
 
-        G4double partEnergy = aStep->GetPreStepPoint()->GetKineticEnergy(); 
-        G4double secondEnergy = aStep->GetPostStepPoint()->GetKineticEnergy();
+        //G4double partEnergy = aStep->GetPreStepPoint()->GetKineticEnergy(); 
+        //G4double secondEnergy = aStep->GetPostStepPoint()->GetKineticEnergy();
         
         //if (process_name == "phot" && trackID > 3)
         //{
+        /*
         G4cout << "\nprocess = " << process_name << G4endl;
         G4cout << "trackid   = " << trackID << G4endl;
         G4cout << "particle  = " << particle_name << G4endl;
         G4cout << "energy    = " << energy << G4endl;
         //}
+        */
         if (trackID == 3 && process_name == "phot")
         {
             ++primary;
@@ -147,7 +148,7 @@ void FluorescenceSD::InitialiseData()
             int_vector1D temp(nbins, initialvalue);
             fullfieldfluorescence = temp;
             
-            G4cout << "\nfullfield fluorescence empty, created" << G4endl;
+            //G4cout << "\nfullfield fluorescence empty, created" << G4endl;
         }
         else
         {
@@ -158,8 +159,7 @@ void FluorescenceSD::InitialiseData()
     }
     
     if (fullmappingOn)
-    {   
-    
+    {      
         if (fullmappingfluorescence.empty())
         {
             const DetectorConstruction* detectorconstruction = dynamic_cast<const DetectorConstruction*> (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
@@ -178,7 +178,7 @@ void FluorescenceSD::InitialiseData()
             
             absorb_halfdimensions = detectorconstruction->GetAbsorptionDetector()->GetG4HalfDimensions();
             
-            G4cout << "\nfullmapping fluorescence empty, created " << xpixels << " x " << ypixels << " x " << nbins << G4endl;
+            //G4cout << "\nfullmapping fluorescence empty, created " << xpixels << " x " << ypixels << " x " << nbins << G4endl;
         }
         else
         {
