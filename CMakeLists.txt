@@ -16,47 +16,15 @@ set( CMAKE_MODULE_PATH
 include( UseCython )
 
 #Find the Geant4 library and display it's info
-find_package(Geant4 REQUIRED)
-
-# check MPI package...
-find_package(MPI )
-
-find_package(G4mpi )
-
-add_definitions(-DTOOLS_USE_NATIVE_MPI) 
-
-#Find Python interpreter
-
-#find_package(PythonInterp REQUIRED)
-#if (PYTHONINTERP_FOUND)
-#    message(STATUS "Python version ${PYTHON_VERSION_STRING}")
-#    message(STATUS "Python_executable = ${PYTHON_EXECUTABLE}")
-#else()
-#    message(STATUS "ERROR: Couldn't find PythonInterpreter!") 
-#endif()
-
-#Find Python libraries
-#find_package(PythonLibs REQUIRED)
-#if (PYTHONLIBS_FOUND)
-#    message(STATUS "Python_include_dirs = ${PYTHON_INCLUDE_DIRS}")
-#    message(STATUS "Python_libraries = ${PYTHON_LIBRARIES}")
-#else()
-#    message(STATUS "ERROR: Couldn't find Python libraries!") 
-#endif()
+find_package(Geant4 10.04 REQUIRED)
+if (Geant4_FOUND)
+    message(STATUS  "Found Geant4_INCLUDE_DIRS: ${Geant4_INCLUDE_DIRS} (found version ${Geant4_VERSION} )" )
+endif()
 
 #Find PkgConfig. If found, find xraylib libraries
 find_package(PkgConfig REQUIRED)
 if (PKGCONFIG_FOUND)
     pkg_check_modules(LIBXRL REQUIRED IMPORTED_TARGET libxrl)
-    #if (LIBXRL_FOUND)
-    #    message(STATUS "xraylib version ${LIBXRL_VERSION}")
-    #    message(STATUS "xraylib_include_dirs = ${LIBXRL_INCLUDE_DIRS}")
-    #else()
-    #    message(STATUS "ERROR: Couldn't find xraylib!")
-    #endif()
-#else()
-#    message(STATUS "ERROR: Couldn't find PkgConfig")
-#    message(STATUS "ERROR: Couldn't find xraylib!")
 endif()
 
 find_package(Numpy REQUIRED)
