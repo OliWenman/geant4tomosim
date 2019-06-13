@@ -10,9 +10,9 @@ AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHit
     collectionName.insert("AbsorptionHitsCollection");
 }
 
-void AbsorptionSD::InitialiseData()
+void AbsorptionSD::InitialiseData(bool cleandata)
 {
-    if (absorptionData.empty())
+    if (absorptionData.empty() || xpixels*ypixels != absorptionData.size())
     {
         int initialValue = 0;
     
@@ -21,7 +21,7 @@ void AbsorptionSD::InitialiseData()
         
         //G4cout << "\nAbsorption data is empty, creating a " << xpixels << " x " << ypixels << " array" << G4endl;
     }
-    else
+    else if (cleandata)
     {
         memset(&absorptionData[0], 0, 
 		       sizeof(absorptionData[0]) * xpixels * ypixels);
