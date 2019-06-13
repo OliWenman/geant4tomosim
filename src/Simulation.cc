@@ -84,6 +84,8 @@ Simulation::Simulation(int verb, bool interactive) : runManager(0),
 	UImanager -> ApplyCommand("/control/verbose 0");	
 	UImanager -> ApplyCommand("/hits/verbose 0");
 	UImanager -> ApplyCommand("/process/em/verbose 0");
+	UImanager -> ApplyCommand("/process/verbose 0");
+	UImanager -> ApplyCommand("/run/verbose 0");
 
     sampleconstruction = detectorManager->GetSampleConstruction();
 
@@ -349,7 +351,7 @@ int Simulation::Run_Tomography_pyw(unsigned long long int n_particles,
     //Prepare for next run. Check if energy or gun has changed 
     beamManager -> ResetEvents(n_projection + 1);   
     
-    Initialise_dataSets();
+    Initialise_dataSets(true);
     beamManager -> GetProgressTracker().rotationangle = rotation_angle;
      
     //Beam on to start the simulation
@@ -389,7 +391,7 @@ int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
     beamManager -> SetNumberOfEvents(n_particles, 1);
 	 
 	runManager -> Initialize(); 
-	runManager -> SetNumberOfEventsToBeStored(0);
+	//runManager -> SetNumberOfEventsToBeStored(0);
 	physicsManager -> ActivateUserPhysics();
     
     //Construct the samples. If darkflatfields are on, then it will remove the samples G4VPhysicalVolume.
@@ -401,8 +403,11 @@ int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
     //Prepare for next run. Check if energy or gun has changed 
     beamManager -> ResetEvents(1);   
     
-    Initialise_dataSets();
+    Initialise_dataSets(resetdata);
     beamManager -> GetProgressTracker().rotationangle = rotation_angle;
+    
+	//UImanager -> ApplyCommand("/process/em/verbose 0");
+	//UImanager -> ApplyCommand("/process/verbose 0");
      
     //Beam on to start the simulation
     BeamOn(n_particles);
@@ -740,10 +745,9 @@ void Simulation::SetSeed(long int seedinput)
     }   
 }
 
-void Simulation::Initialise_dataSets()
+void Simulation::Initialise_dataSets(bool clean_data)
 {
-    if (globalVerbose > 2) {G4cout << "\nInitialising data... " << G4endl;}
-    detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData();
-    detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData();
-    beamManager->SetupData();
+    detectorManager->GetAbsorptionDetector()->GetSensitiveDetector()->InitialiseData(clean_data);
+    detectorManager->GetFluorescenceDetector()->GetSensitiveDetector()->InitialiseData(clean_data);
+    beamManager->SetupData(clean_data);
 }

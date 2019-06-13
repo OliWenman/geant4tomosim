@@ -44,10 +44,13 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
         GeneratePrimaries(G4Event* ) is a inherited function used to create an event in Geant4.
 */    	
    		void GeneratePrimaries(G4Event* );
-   		void SetupData();
+   		
+//      Setup the arrays. cleandata if true will set the data back to 0
+   		void SetupData(bool cleandata);
+   		
 		void ReadOutInfo(SettingsLog& log);
 
-        //Set functions
+//      Set functions
 		void SetMaxEnergyBinCmd(G4double value){eMax = value*1000.;}
 		void SetFluoreFM(bool value){fm_fluorescence = value;}		
 		void SetNumberOfEvents(unsigned long long int value, int TotalImages){totalevents = value; 

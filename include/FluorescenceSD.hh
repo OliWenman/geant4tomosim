@@ -28,7 +28,7 @@ class FluorescenceSD : public G4VSensitiveDetector
     	G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* hisotry);
     	void   Initialize(G4HCofThisEvent* hitCollection);
 		
-		void InitialiseData();
+		void InitialiseData(bool clean_data);
 		void FreeMemory();
 		
 		//Set methods

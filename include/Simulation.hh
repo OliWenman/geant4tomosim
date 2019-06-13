@@ -156,7 +156,7 @@ class Simulation
 		void CleanGeometry();
 
 	private:
-	    void Initialise_dataSets();
+	    void Initialise_dataSets(bool resetdata);
 	    std::string GetStorageUnit(double &storage); 
 	    void CalculateStorageSpace(int projections);
 	    void Setup();

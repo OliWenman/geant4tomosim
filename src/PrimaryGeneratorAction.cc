@@ -152,18 +152,40 @@ void PrimaryGeneratorAction::ReadOutInfo(SettingsLog& log)
 	} 
 }
 
-void PrimaryGeneratorAction::SetupData()
+void PrimaryGeneratorAction::SetupData(bool clean_data)
 {  	
-   	int_vector1D    ibeamintensity(bins, 0);
-   	double_vector1D ienergy(bins, 0);
+    if (beamintensity.empty() || energy.empty())
+    {
+   	    int_vector1D    ibeamintensity(bins, 0);
+   	    double_vector1D ienergy(bins, 0);
    	
-    int ene = 0;
-	for (int i = 0 ; i < bins ; i++)
-	{
-	    ++ene;
-		ienergy[i] = (eMax/bins)*ene;
-	}
+        int ene = 0;
+	    for (int i = 0 ; i < bins ; i++)
+	    {
+	        ++ene;
+		    ienergy[i] = (eMax/bins)*ene;
+	    }
 
-    beamintensity = ibeamintensity;	
-	energy        = ienergy;
+        beamintensity = ibeamintensity;	
+	    energy        = ienergy;
+    }
+    else if (clean_data)
+    {
+        int_vector1D    ibeamintensity(bins, 0);
+   	    double_vector1D ienergy(bins, 0);
+   	
+        int ene = 0;
+	    for (int i = 0 ; i < bins ; i++)
+	    {
+	        ++ene;
+		    ienergy[i] = (eMax/bins)*ene;
+	    }
+
+        beamintensity = ibeamintensity;	
+	    energy        = ienergy;
+    }	    
+	    
 }
+
+
+

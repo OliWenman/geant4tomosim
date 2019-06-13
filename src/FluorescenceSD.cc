@@ -137,7 +137,7 @@ G4bool FluorescenceSD::ProcessHits(G4Step* aStep, G4TouchableHistory* histoy)
 #include "DetectorConstruction.hh"
 #include "AbsorptionDetector.hh"
 
-void FluorescenceSD::InitialiseData()
+void FluorescenceSD::InitialiseData(bool clean_data)
 {   
     int initialvalue = 0;
 
@@ -150,7 +150,7 @@ void FluorescenceSD::InitialiseData()
             
             //G4cout << "\nfullfield fluorescence empty, created" << G4endl;
         }
-        else
+        else if (clean_data)
         {
             memset(&fullfieldfluorescence[0], 
                    0, 
@@ -180,7 +180,7 @@ void FluorescenceSD::InitialiseData()
             
             //G4cout << "\nfullmapping fluorescence empty, created " << xpixels << " x " << ypixels << " x " << nbins << G4endl;
         }
-        else
+        else if (clean_data)
         {
             std::fill(fullmappingfluorescence.begin(), fullmappingfluorescence.end(), 
 		              int_vector2D (absorb_xpixels, 
