@@ -1,31 +1,34 @@
-# What is Geant4TomoSim?
-It utilizes the C++ toolkit Geant4 that simulates particles through matter for tomography simulations. A user can easily setup their experiment via macro files and then create a python script to run their simulation. 
+# Geant4TomoSim
+Geant4TomoSim is a python package developed for the use of easily writing python scripts to simulate tomography data. It utilizes the C++ toolkit Geant4 that simulates particles through matter. Geant4 uses a monte-carlo approach and allows for unique physics to be simulated such as scattering, fluorescence and refraction. A tomography experiment is built using this toolkit and wrapped as a class and wrapped via Cython, making it easily customizable for a user to control and setup their tomography experiemnts in a python script.
 
 # Required dependcies
+- RHEL 7
 - Geant4 10.04
 - xraylib 3.30
-- GCC Compiler 8.0 or higher
-- Cmake 2.7 or higher
+- GCC Compiler 7.0 or higher
+- CMake 2.7 or higher
 - Cython 0.19.1
-- Python 2.7.1.5
+- Python 3.7
 - Numpy
 - h5py
+- mpi4py
 
 # Build instructions
-Download the code in the directoy you want
-- $ cd path/to/source/code
-- $ git clone link
-  
-Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake.
-- $ mkdir build
-- $ cd build
-- $ module load python/3.7
-- $ cmake /path/to/source/code
-- $ make -jN
-  
+In the command prompt, git clone in the directoy of your choosing.
+```bash
+git clone <link>
+```
+Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake. In the command prompt, do the following:
+```bash
+mkdir build
+cd build
+module load python/3.7
+cmake /path/to/source/code
+make -jN
+```
 Where N is the number of cores on your machine that you want to use. For example make -j4. 
 
-Once complete, your build directory should contain the folders bin, scripts, output and src.
+Once complete, your build directory should contain the folders bin, settings, output and src.
 
 # Functions
 The G4TomoSim package has functions to be used in a python script to run and setup your simulation. To use is as follows:
@@ -122,8 +125,8 @@ G4TomoSim.fluorescencedetector_getdimensions()
 G4TomoSim.fluorescencedetector_fullmappingactive()
 G4TomoSim.fluorescencedetector_fullfieldactive()
 ```
-The fluorescence detector data is optional. Therefore the data collected needs to be actived via commands to simulate the fluorescence data and access it in python. 
-```python
+The fluorescence detector data is optional. Therefore the data collected needs to be actived via commands before the simulation starts to simulate the fluorescence data and access it in python. 
+```
 /detector/fluorescence/fullmapping True
 /detector/fluorescence/fullfield   True
 ```
@@ -143,41 +146,41 @@ Custom commands I've built using the Geant4 toolkit to control the G4TomoSim pac
 
 ## Detectors
 ### Absorption
-```python
-/detector/absorption/halfdimensions <double> <double> <double> <unit>
-/detector/absorption/xpixels        <int>
-/detector/absorption/ypixels        <int>
+```
+/detector/absorption/halfdimensions <x_dim> <y_dim> <z_dim> <unit>
+/detector/absorption/xpixels        <no_pixels>
+/detector/absorption/ypixels        <no_pixels>
 ```
 ### Fluorescence
-```python
-/detector/fluorescence/halfdimensions <double> <double> <double> <unit>
+```
+/detector/fluorescence/halfdimensions <x_dim> <y_dim> <z_dim> <unit>
 /detector/fluorescence/fullmapping    <bool>
 /detector/fluorescence/fullfield      <bool>
-/detector/fluorescence/bins           <int>
-/detector/fluorescence/maxenergy      <double> <unit>
+/detector/fluorescence/bins           <no_bins>
+/detector/fluorescence/maxenergy      <energy> <unit>
 ```
 ## World
-```python
-/world/halfdimensions <double> <double> <double> <unit>
+```
+/world/halfdimensions <x_dim> <y_dim> <z_dim> <unit>
 /world/material       <material>
 ```
 ## Beam
-```python
-/beam/bins      <int>
-/beam/maxenergy <double> <unit>
+```
+/beam/bins      <no_bins>
+/beam/maxenergy <energy> <unit>
 
-/beam/energy/mono <int> <unit>
+/beam/energy/mono <energy> <unit>
 /beam/particle    <particle>
 
 # Position commands
 /beam/pos/auto   <bool>
-/beam/momentum   <double> <double> <double> 
-/beam/pos/centre <double> <double> <double> <unit>
-/beam/pos/halfx  <double> <unit>
-/beam/pos/halfy  <double> <unit>
+/beam/momentum   <x_mom> <y_mom> <z_mom> 
+/beam/pos/centre <x_cen> <y_cen> <z_cen> <unit>
+/beam/pos/halfx  <x_dim> <unit>
+/beam/pos/halfy  <y_dim> <unit>
 ```
 Beam commands uses the Geant4 G4ParticleGun classs which is fast and basic. To use a more advanced particle gun, G4GeneralParticleSource, with more functionality, options and pre-built commands, use:
-```python
+```
 /beam/gps <bool>
 ```
 Set it to True. All /beam/ commands will also affect gps commands. For instance "/beam/pos/halfx" is equivalent to "/gps/pos/halfx" if "/beam/gps True". 
@@ -190,26 +193,33 @@ For a list of gps commands and guidance, please visit:
 Warning: there is a known issue that when using gps, the program will end with a segmentation fault with G4TomoSim.
 
 ## Simulation
-```python
+```
 /simulation/seed     <int>
 /simulation/graphics <bool>	
 ```
 
 ## Physics
+Control the physics processes used for the simulation.
 ```python
 /physics/gamma/livermore/photoelectric      <bool>
 /physics/gamma/livermore/comptomscattering  <bool>
 /physics/gamma/livermore/raylieghscattering <bool>
 /physics/gamma/fluorescence                 <bool>
 /physics/gamma/refraction                   <bool>
+
+/physics/opticalphoton/refraction <bool>
+/physics/opticalphoton/absorption <bool>
 ```
+Note: Refraction physics is designed to be used with opticalphoton's and not gamma (Geant4 treats waves and particles properties seperate with opticalphotons and gamma particles respectively). Therefore one side effect is that fluorescence doesn't appear to work when refraction is on. Needs more testing.
 ## Materials
+Create new custom materials for your sample or world material.
+
 ### Create a new element
-```python
+```
 /materials/define/element <new_element> <z> <molecule_mass> <unit> <density> <unit>
 ```
 ### Create a new isotope
-```python
+```
 /materials/define/isotope     <new_isotope> <z> <no_necleans> <atomic_weight> <unit>
 /materials/define/isotope_mix <new_isotope_mix> <symbol> <no_isotopes>
 /materials/addto/isotope_mix  <new_isotope> <element> <abundance> <unit>
@@ -217,33 +227,39 @@ Warning: there is a known issue that when using gps, the program will end with a
 ```
 
 ### Create a new molecule
-```python
+```
 /materials/define/molecule <new_molecule> <no_atoms> <density> <unit> 
 /materials/addto/molecule  <new_molecule> <element> <n_atoms>
 ```
 ### Create a new compound
-```python
+```
 /materials/define/compound <new_material> <no_components> <density> <unit> 
 /materials/addto/compound  <new_material> <element> <fractional_mass> <unit>
 ```
 ### Create a new mixture
-```python
+```
 /materials/define/mixture  <new_mixture> <no_components> <density> <unit>
 /materials/addto/mixture   <new_mixture> <material> <fractional_mass> <unit>
 ```
-### Add optical properties
-```python
-#/material/xraylib/allopticalproperties <
-#/Materials/AutoOpticalProperties AlSi10Mg energy=linspace(0,80,50)[keV]
-```
 ### MaterialsPropertyTable
-```python
-/material/materialspropertytable/print <material>
+```
+/material/mpt/print <material>
+```
+#### Add optical properties
+All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
+```
+/material/mpt/xraylib/add/allopticalproperties <material> <energy_array>
+/material/mpt/xraylib/add/refractive_index     <material> <energy_array>
+/material/mpt/xraylib/add/absorption           <material> <energy_array>
+/material/mpt/add/refractive_index             <material> <energy_array> <refractive_index_array>
+/material/mpt/add/complexrefractive_index      <material> <energy_array> <complexrefractive_index_array>
+/material/mpt/add/absorptionlength             <material> <energy_array> <absorptionlength_array>
 ```
 ## Sample
+Build your own custom samples using the below commands. 
 ### G4VSolids
 #### Basic solids
-```python
+```
 /sample/G4VSolid/box       <name> <x_dimension> <y_dimension> <z_dimension> <unit>
 /sample/G4VSolid/sphere    <name> <inner_r> <outer_r> <unit> <start_phi> <end_phi> <start_theta> <end_theta> <unit>
 /sample/G4VSolid/cylinder  <name> <inner_r> <outer_r> <height> <unit> <start_phi> <end_phi> <unit>
@@ -251,19 +267,22 @@ Warning: there is a known issue that when using gps, the program will end with a
 /sample/G4VSolid/trapezoid <name> <dx1> <dx2> <dy1> <dy2> <dx> <unit>
 ```
 #### Boolean solid
-```python
+Create more complicated shapes by joining or subtracting solids away from each other. The insideposition and insiderotation determines how and where the solids are connected/subtracted relative to each other.
+```
 /sample/G4VSolid/subtract       <name> <component_name1> <component_name2> 
 /sample/G4VSolid/union          <name> <component_name1> <component_name2>
 /sample/G4VSolid/insideposition <name> <x_pos> <y_pos> <z_pos> <unit>
 /sample/G4VSolid/insiderotation <name> <x_rot> <y_rot> <z_rot> <unit>
 ```
 ### G4LogicalVolumes
-```python
+A sample is not automatically placed in the world volume unless is has a material assigned to it (placing it at position 0,0,0)
+```
 /sample/G4LogicalVolume/material <name> <material>
 /sample/G4LogicalVolume/colour   <name> <colour>
 ```
 ### G4PVPlacements
-```python
+Alter the samples starting position, rotation and how it rotates throughout a tomography scan.
+```
 /sample/G4VPhysicalVolume/position <name> <x_pos> <y_pos> <z_pos> <unit>
 /sample/G4VPhysicalVolume/rotation <name> <x_rot> <y_pos> <z_pos> <unit>
 
@@ -273,20 +292,16 @@ Warning: there is a known issue that when using gps, the program will end with a
 
 /sample/checkforoverlaps <bool>
 ```
+# Examples
+In the bin directory are two python scripts. Both scripts simuation variables are controlled via the settings folder. "run.py" is a python script that uses the G4TomoSim.simulatetomography function and automatically saves the data for you. To run the code, simply do in the teriminal (assuming in the build directoy): 
+```bash
+python ./bin/run.py [filepath]
+```
+Where [filepath] is an optinal argument to save the data in a location of your choosing. If no argument supplied, it will save the data in the output folder.
 
-# How to use
-The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
-
-In the bin directory is where the run.py python script is loacted. To change variables for the simulation to do with the projections is within the run.py. This includes the energies of the beam for each image, the rotation angle, the number of projections, etc. Once you have adjusted everything to your simulations needs, you can then run the simulation by doing the following from the bin directory:
-
-  - $ cd bin
-  - $ python run.py /path/to/save/data/fileName.nxs
- 
-If no arguments are supplied, it will save the data in the default place: /path/to/source/code/Output/HDF5/SimulationData.nxs
-
-Once the simulation is finished, you can view the results of the data using DAWN and then use Savu to reconstuct your simulated data.
- 
-# Simulation time
-The simulation time for a single projection depends on a variety of factors such as the geometry and materials of your sample, physics processes used, energy of the beam, the number of particles you use per projection and CPU used. A good guide though is it can range from 20 seconds to a minute using 10,000,000 particles per image depending on the factors explained above running on a Intel(R) Xeon(R) W-2123 CPU @ 3.60GHz. The more photons used the better projection will be, about 1,000 particles+ per pixel will yield a good enough image. However, the more pixels you use, the more particles will have to be used to keep the same ratio of particles/pixels. So it will be a trade off between resolution, exposure and simulation time.   
+The second python script is "mpi_run.py" and is an example on how to utilise mpi4py to parallise the simulation. To run, simply do:
+```bash
+mpiexec -n <no_cores> python ./bin/mpi_run.py [filepath]
+```
 
 
