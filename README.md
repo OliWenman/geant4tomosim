@@ -1,9 +1,8 @@
 # What is Geant4TomoSim?
-It utilizes the C++ toolkit Geant4 that simulates particles through matter for tomography simulations. A user can easily setup their experiment via macro files and run it from Python. 
+It utilizes the C++ toolkit Geant4 that simulates particles through matter for tomography simulations. A user can easily setup their experiment via macro files and then create a python script to run their simulation. 
 
 # Required dependcies
 - Geant4 10.04
-- Geant4 mpi
 - xraylib 3.30
 - GCC Compiler 8.0 or higher
 - Cmake 2.7 or higher
@@ -95,6 +94,168 @@ G4TomoSim.simulatetomography(str           filepath,
 Similiar to the function above but will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and a numpy.ndarray for rotation_angles and zpositions for your sample. 
 
 Not compatible with mpi, use simulateprojection and write your own script to make use of that.
+
+## Get functions
+### Absorption detector
+```python
+#Get the detector data after the simulation has finished 
+G4TomoSim.absorptiondetector_getprojection() 
+
+#Get information about the detector
+G4TomoSim.absorptiondetector_getxpixels()
+G4TomoSim.abosrptiondetector_getypixels()
+G4TomoSim.absorptiondetector_getdimensions()
+```
+
+### Fluorescence detector
+```python
+#Get the detector data after the simulation has finished
+G4TomoSim.fluorescencedetector_getfullmappingdata() #3 dimensional
+G4TomoSim.fluorescencedetector_getfullfielddata()   #1 dimenionsal
+G4TomoSim.fluorescencedetector_getenergybins()      #1 dimensional
+
+#Get information about the detector
+G4TomoSim.fluorescencedetector_getnoenergybins()
+G4TomoSim.fluorescencedetector_getposition()
+G4TomoSim.fluorescencedetector_getdimensions()
+
+G4TomoSim.fluorescencedetector_fullmappingactive()
+G4TomoSim.fluorescencedetector_fullfieldactive()
+```
+The fluorescence detector data is optional. Therefore the data collected needs to be actived via commands to simulate the fluorescence data and access it in python. 
+```python
+/detector/fluorescence/fullmapping True
+/detector/fluorescence/fullfield   True
+```
+
+### Beam data
+```python
+#Get the beam energy used to plot a beam profile for the simulation
+G4TomoSim.beam_getenergybins() #1 dimensional
+G4TomoSim.beam_getintesity()   #1 dimensional
+
+G4TomoSim.beam_getnobins() #Number of bins
+```
+# Macro files and commands
+Macro files contain a list of commands that Geant4 uses to easily control the setup of a simulation. For guidance, help and a full list of Geant4 pre-built commands, please visit http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html.
+
+Custom commands I've built using the Geant4 toolkit to control the G4TomoSim package are below:
+
+## Detectors
+### Absorption
+```python
+/detector/absorption/halfdimensions <double> <double> <double> <unit>
+/detector/absorption/xpixels        <int>
+/detector/absorption/ypixels        <int>
+```
+### Fluorescence
+```python
+/detector/fluorescence/halfdimensions <double> <double> <double> <unit>
+/detector/fluorescence/fullmapping    <bool>
+/detector/fluorescence/fullfield      <bool>
+/detector/fluorescence/bins           <int>
+/detector/fluorescence/maxenergy      <double> <unit>
+```
+## World
+```python
+/world/halfdimensions <double> <double> <double> <unit>
+/world/material       <material>
+```
+## Beam
+```python
+/beam/bins      <int>
+/beam/maxenergy <double> <unit>
+
+/beam/energy/mono <int> <unit>
+/beam/particle    <particle>
+
+# Position commands
+/beam/pos/auto   <bool>
+/beam/momentum   <double> <double> <double> 
+/beam/pos/centre <double> <double> <double> <unit>
+/beam/pos/halfx  <double> <unit>
+/beam/pos/halfy  <double> <unit>
+```
+Beam commands uses the Geant4 G4ParticleGun classs which is fast and basic. To use a more advanced particle gun, G4GeneralParticleSource, with more functionality, options and pre-built commands, use:
+```python
+/beam/gps <bool>
+```
+Set it to True. All /beam/ commands will also affect gps commands. For instance "/beam/pos/halfx" is equivalent to "/gps/pos/halfx" if "/beam/gps True". 
+
+For a list of gps commands and guidance, please visit:
+ - http://www.apc.univ-paris7.fr/~franco/g4doxy/html/classG4GeneralParticleSourceMessenger.html#369e77c64ee8281a4c20bbcad87f476e
+ - http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
+ - http://hurel.hanyang.ac.kr/Geant4/Geant4_GPS/reat.space.qinetiq.com/gps/examples/examples.html
+
+Warning: there is a known issue that when using gps, the program will end with a segmentation fault with G4TomoSim.
+
+## Simulation
+```python
+/simulation/seed     <int>
+/simulation/graphics <bool>	
+```
+
+## Physics
+```python
+/physics/gamma/livermore/photoelectric      <bool>
+/physics/gamma/livermore/comptomscattering  <bool>
+/physics/gamma/livermore/raylieghscattering <bool>
+/physics/gamma/fluorescence                 <bool>
+/physics/gamma/refraction                   <bool>
+```
+## Materials
+### Create a new element
+```python
+/materials/define/element <new_element> <z> <molecule_mass> <unit> <density> <unit>
+```
+### Create a new isotope
+```python
+/materials/define/isotope     <new_isotope> <z> <no_necleans> <atomic_weight> <unit>
+/materials/define/isotope_mix <new_isotope_mix> <symbol> <no_isotopes>
+/materials/addto/isotope_mix  <new_isotope> <element> <abundance> <unit>
+/materials/addto/add_desnity  <new_isotope> <density> <unit> 
+```
+
+### Create a new molecule
+```python
+/materials/define/molecule <new_molecule> <no_atoms> <density> <unit> 
+/materials/addto/molecule  <new_molecule> <element> <n_atoms>
+```
+### Create a new compound
+```python
+/materials/define/compound <new_material> <no_components> <density> <unit> 
+/materials/addto/compound  <new_material> <element> <fractional_mass> <unit>
+```
+### Create a new mixture
+```python
+/materials/define/mixture  <new_mixture> <no_components> <density> <unit>
+/materials/addto/mixture   <new_mixture> <material> <fractional_mass> <unit>
+```
+### Add optical properties
+```python
+#/material/xraylib/allopticalproperties <
+#/Materials/AutoOpticalProperties AlSi10Mg energy=linspace(0,80,50)[keV]
+```
+### MaterialsPropertyTable
+```python
+/material/materialspropertytable/print <material>
+```
+## Sample
+### Basic solids
+```python
+/sample/G4VSolid/box       <name> <x_dimension> <y_dimension> <z_dimension> <unit>
+/sample/G4VSolid/sphere    <name> <inner_r> <outer_r> <unit> <start_phi> <end_phi> <start_theta> <end_theta> <unit>
+/sample/G4VSolid/cylinder  <name> <inner_r> <outer_r> <height> <unit> <start_phi> <end_phi> <unit>
+/sample/G4VSolid/ellipsoid <name> <px_semi_axis> <py_sami_axis> <pz_semi_axis> <pz_bottomcut> <pz_topcut> <unit>
+/sample/G4VSolid/trapezoid <name> <dx1> <dx2> <dy1> <dy2> <dx> <unit>
+```
+### Boolean solid
+```python
+/sample/G4VSolid/subtract       <name> <component_name1> <component_name2> 
+/sample/G4VSolid/union          <name> <component_name1> <component_name2>
+/sample/G4VSolid/insideposition <name> <x_pos> <y_pos> <z_pos> <unit>
+/sample/G4VSolid/insiderotation <name> <x_rot> <y_rot> <z_rot> <unit>
+```
 
 
 # How to use
