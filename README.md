@@ -29,11 +29,73 @@ Where N is the number of cores on your machine that you want to use. For example
 Once complete, your build directory should contain the folders bin, scripts, output and src.
 
 # Functions
-The G4TomoSim package has functions to be used in a python script to run and setup your simulation.
+The G4TomoSim package has functions to be used in a python script to run and setup your simulation. To use is as follows:
 
-'''python
-G4TomoSim.execute_macrolist(list[string] macrolist)
-'''
+## Setup
+```python
+g4tomosim.G4TomoSim(int verbose = 1, bool interactive = False)
+```
+Create an instance of the class. Verbose is used to determine how much output there is to the terminal (use 0 if using mpi) and interactive is used to re-eneter a command if there is an error.
+
+
+```python
+G4TomoSim.execute_macrolist(list[str] macrolist)
+```
+Pass a list of macro files to be executed to control the setup of the simulation.
+
+
+```python
+G4TomoSim.execute_macro(str macro)
+```
+Execute a single macro file to control the setup of the simulation.
+
+
+```python
+G4TomoSim.execute_command(str command)
+```
+Execute a command to control the setup of the simulation.
+
+```python
+G4TomoSim.setup_visualization(str path, str filename)
+```
+Output a .heprep file to later view the geometry and events for your simulation in HepRApp. WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
+
+```python
+G4TomoSim.set_seed(long int seed)
+```
+Set the seed to be used for the simulation. Useful when setting the seed different when using mpi for each rank. Can also be used via command "/simulation/seed 123456" for instance. If seed is equal to 0, a random seed is chosen.
+
+```python
+G4TomoSim.log_setup(str filepath, 
+                    long long int n_particles, 
+                    int n_projections, 
+                    n_darkflatfields)
+```
+Log the setup of your simulation to a file. Copies all commands used and its associated macro file to a file and terminal (if verbose greater than 0).
+
+## Running a simulation
+```python
+G4TomoSim.simulateprojection(long long int n_particles,
+                             bool   flatfield,
+                             double rotation_angle,
+                             double zposition,
+                             bool   resetdata = True)
+```
+Start the simulation by specifying the number of particles you want. To achieve a good projection with reduced noise, you need a high number of n_particles per absorptiondetector_pixel. Around 4,000 to 8,000 particles per pixel will be good, though the higher the better. Specify if this projection is a flat field with the flatfield parameter. If true, the sample being simulated will be not be placed in the world. For a helical scan, zposition is used to shift the sample to the correct position. resetdata is used to reset the detector array data back to 0 if true. If False, it will continue to write data on top of the data array stored in the detectors. This can be useful if you want to add breaks inbetween the simulate to check its progress or simulate image blurring. The data returned for after two different angles for example will be written on top on top of each other.
+
+Use this command when wrapping the package in your own python scrpit, using mpi for example.
+
+```python
+G4TomoSim.simulatetomography(str           filepath,
+                             long long int n_particles
+                             int           n_darkflatfields,
+                             numpy.ndarray rotation_angle,
+                             numpy.ndarray zpositions = None)
+```
+Similiar to the function above but will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and a numpy.ndarray for rotation_angles and zpositions for your sample. 
+
+Not compatible with mpi, use simulateprojection and write your own script to make use of that.
+
 
 # How to use
 The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
