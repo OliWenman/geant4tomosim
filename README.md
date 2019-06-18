@@ -20,16 +20,21 @@ Download the code in the directoy you want
 Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake.
 - $ mkdir build
 - $ cd build
-- $ module load python/anaconda-savu 
-- $ module load geant4/10.04
-- $ module load xraylib 
-- $ cmake -DCMAKE_PREFIX_PATH=/dls_sw/apps/Geant4/geant4.10.04/g4mpi -DGeant4_DIR=/dls_sw/apps/Geant4/geant4.10.04/geant4.10.04-install/lib64/Geant4-10.4.2 -DG4mpi_DIR=/dls_sw/apps/Geant4/geant4.10.04/g4mpi/lib /path/to/source/code
+- $ module load python/3.7
+- $ cmake /path/to/source/code
 - $ make -jN
   
 Where N is the number of cores on your machine that you want to use. For example make -j4. 
 
 Once complete, your build directory should contain the folders bin, scripts, output and src.
-  
+
+# Functions
+The G4TomoSim package has functions to be used in a python script to run and setup your simulation.
+
+'''python
+G4TomoSim.execute_macrolist(list[string] macrolist)
+'''
+
 # How to use
 The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
 
