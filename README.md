@@ -241,7 +241,8 @@ Warning: there is a known issue that when using gps, the program will end with a
 /material/materialspropertytable/print <material>
 ```
 ## Sample
-### Basic solids
+### G4VSolids
+#### Basic solids
 ```python
 /sample/G4VSolid/box       <name> <x_dimension> <y_dimension> <z_dimension> <unit>
 /sample/G4VSolid/sphere    <name> <inner_r> <outer_r> <unit> <start_phi> <end_phi> <start_theta> <end_theta> <unit>
@@ -249,14 +250,29 @@ Warning: there is a known issue that when using gps, the program will end with a
 /sample/G4VSolid/ellipsoid <name> <px_semi_axis> <py_sami_axis> <pz_semi_axis> <pz_bottomcut> <pz_topcut> <unit>
 /sample/G4VSolid/trapezoid <name> <dx1> <dx2> <dy1> <dy2> <dx> <unit>
 ```
-### Boolean solid
+#### Boolean solid
 ```python
 /sample/G4VSolid/subtract       <name> <component_name1> <component_name2> 
 /sample/G4VSolid/union          <name> <component_name1> <component_name2>
 /sample/G4VSolid/insideposition <name> <x_pos> <y_pos> <z_pos> <unit>
 /sample/G4VSolid/insiderotation <name> <x_rot> <y_rot> <z_rot> <unit>
 ```
+### G4LogicalVolumes
+```python
+/sample/G4LogicalVolume/material <name> <material>
+/sample/G4LogicalVolume/colour   <name> <colour>
+```
+### G4PVPlacements
+```python
+/sample/G4VPhysicalVolume/position <name> <x_pos> <y_pos> <z_pos> <unit>
+/sample/G4VPhysicalVolume/rotation <name> <x_rot> <y_pos> <z_pos> <unit>
 
+/sample/G4VPhysicalVolume/tilt/anglex <x_rot> <unit>
+/sample/G4VPhysicalVolume/tilt/angley <y_rot> <unit>
+/sample/G4VPhysicalVolume/tilt/centre <x_centre> <y_centre> <z_zentre>
+
+/sample/checkforoverlaps <bool>
+```
 
 # How to use
 The scripts directory is where the macro files are held. These .mac files control what conditions the simulation will use and can be edited to change the inputs of the commands that are supplied within the macro files. The Settings.mac contains all properties and values to do with the simulation such as the physics processes involved, and seed used. The Geometry.mac one contains commands to construct the sample(s) you want to simulate such as the shape and material it is made of.
