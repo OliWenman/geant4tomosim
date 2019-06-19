@@ -1,5 +1,5 @@
 # Geant4TomoSim
-Geant4TomoSim is a python package developed for the use of easily writing python scripts to simulate tomography data. It utilizes the C++ toolkit Geant4 that simulates particles through matter. Geant4 uses a monte-carlo approach and allows for unique physics to be simulated such as scattering, fluorescence and refraction. A tomography experiment is built using this toolkit and wrapped as a class and wrapped via Cython, making it easily customizable for a user to control and setup their tomography experiemnts in a python script.
+Geant4TomoSim is a python package developed for the use of easily writing python scripts to simulate tomography data. It utilizes the C++ toolkit Geant4 that simulates particles through matter. Geant4 uses a monte-carlo approach and allows for unique physics to be simulated such as scattering, fluorescence and refraction. A tomography experiment is built using this toolkit and wrapped in Cython, making it easily customizable for a user to control and setup using Python.
 
 # Required dependcies
 - RHEL 7
@@ -14,11 +14,11 @@ Geant4TomoSim is a python package developed for the use of easily writing python
 - mpi4py
 
 # Build instructions
-In the command prompt, git clone in the directoy of your choosing.
+In the command prompt, git clone in a place you want to save the source code.
 ```bash
 git clone <link>
 ```
-Once downloaded, you can then create a build direcotry in a place of your choosing and build the code using cmake. In the command prompt, do the following:
+Once downloaded, you can then create a build directory. In the command prompt, do the following:
 ```bash
 mkdir build
 cd build
@@ -26,46 +26,55 @@ module load python/3.7
 cmake /path/to/source/code
 make -jN
 ```
-Where N is the number of cores on your machine that you want to use. For example make -j4. 
+Where N is the number of cores on your machine that you want to use. For example "make -j4". 
 
-Once complete, your build directory should contain the folders bin, settings, output and src.
+Once complete, your build directory should contain the folders /bin, /settings, /output and /src.
 
 # Functions
-The G4TomoSim package has functions to be used in a python script to run and setup your simulation. To use is as follows:
+The G4TomoSim package has functions that run and setup your simulation.
 
 ## Setup
 ```python
-g4tomosim.G4TomoSim(int verbose = 1, bool interactive = False)
+import g4tomosim
+
+g4ts = g4tomosim.G4TomoSim(int verbose = 1, bool interactive = False)
 ```
-Create an instance of the class. Verbose is used to determine how much output there is to the terminal (use 0 if using mpi) and interactive is used to re-eneter a command if there is an error.
+First, create an instance of the class G4TomoSim. 
 
+"verbose" is used to determine how much output there is to the terminal (use 0 if using mpi).
+"interactive" is used to re-eneter a command if there is an error.
 
+There are three different ways of setting up the simulation. 
+
+(See "Macro Files and Commands" section below for information on valid commands.)
 ```python
-G4TomoSim.execute_macrolist(list[str] macrolist)
+g4ts.execute_macrolist(list[str] macrolist)
 ```
-Pass a list of macro files to be executed to control the setup of the simulation.
+1) Pass a list of macro files (containing commands) to be executed.
 
 
 ```python
 G4TomoSim.execute_macro(str macro)
 ```
-Execute a single macro file to control the setup of the simulation.
+2) Execute a single macro file (containing commands).
 
 
 ```python
 G4TomoSim.execute_command(str command)
 ```
-Execute a command to control the setup of the simulation.
+3) Execute a single command.
 
 ```python
 G4TomoSim.setup_visualization(str path, str filename)
 ```
-Output a .heprep file to later view the geometry and events for your simulation in HepRApp. WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
+If you want to visualize the geometry and events of your simulation, use this function to output a .heprep file to later use in HepRApp. 
+
+WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
 
 ```python
 G4TomoSim.set_seed(long int seed)
 ```
-Set the seed to be used for the simulation. Useful when setting the seed different when using mpi for each rank. Can also be used via command "/simulation/seed 123456" for instance. If seed is equal to 0, a random seed is chosen.
+Set the seed to be used for the simulation. Can also be used via command "/simulation/seed 123456". If seed is equal to 0, a random seed is chosen. 
 
 ```python
 G4TomoSim.log_setup(str filepath, 
@@ -73,7 +82,7 @@ G4TomoSim.log_setup(str filepath,
                     int n_projections, 
                     n_darkflatfields)
 ```
-Log the setup of your simulation to a file. Copies all commands used and its associated macro file to a file and terminal (if verbose greater than 0).
+Log the setup of your simulation to a file. This writes all commands used and its associated macro file to a file (and a terminal if verbose is greater than 0).
 
 ## Running a simulation
 ```python
@@ -83,9 +92,15 @@ G4TomoSim.simulateprojection(long long int n_particles,
                              double zposition,
                              bool   resetdata = True)
 ```
-Start the simulation by specifying the number of particles you want. To achieve a good projection with reduced noise, you need a high number of n_particles per absorptiondetector_pixel. Around 4,000 to 8,000 particles per pixel will be good, though the higher the better. Specify if this projection is a flat field with the flatfield parameter. If true, the sample being simulated will be not be placed in the world. For a helical scan, zposition is used to shift the sample to the correct position. resetdata is used to reset the detector array data back to 0 if true. If False, it will continue to write data on top of the data array stored in the detectors. This can be useful if you want to add breaks inbetween the simulate to check its progress or simulate image blurring. The data returned for after two different angles for example will be written on top on top of each other.
+Start the simulation by specifying the number of particles you want. To achieve a good projection with reduced noise, you need a high number of n_particles per absorptiondetector_pixel. Around 4k - 8k particles per pixel, though the higher the better. 
 
-Use this command when wrapping the package in your own python scrpit, using mpi for example.
+Specify if this projection is a flat field with the flatfield parameter. If true, the sample being simulated will be not be placed in the world. 
+
+For a helical scan, zposition is used to shift the sample to the correct position. Rotation of your sample happens along the z axis.
+
+resetdata is used to reset the detector array data back to 0 if True. If False, it will continue to write data on top of the data array stored in the detectors. This can be useful if you want to add breaks inbetween the simulate to check its progress or simulate image blurring. The data returned after two different angles for example, will be written on top on top of each other. 
+
+Use this command when wrapping the package in your own python script, using mpi for example.
 
 ```python
 G4TomoSim.simulatetomography(str           filepath,
@@ -94,9 +109,9 @@ G4TomoSim.simulatetomography(str           filepath,
                              numpy.ndarray rotation_angle,
                              numpy.ndarray zpositions = None)
 ```
-Similiar to the function above but will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and a numpy.ndarray for rotation_angles and zpositions for your sample. 
+Similiar to the previous function simulateprojection. This will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and provide numpy.ndarray for rotation_angles and zpositions for your sample. 
 
-Not compatible with mpi, use simulateprojection and write your own script to make use of that.
+Not compatible with mpi, use simulateprojection and write your own script.
 
 ## Get functions
 ### Absorption detector
@@ -122,10 +137,11 @@ G4TomoSim.fluorescencedetector_getnoenergybins()
 G4TomoSim.fluorescencedetector_getposition()
 G4TomoSim.fluorescencedetector_getdimensions()
 
+#Check if the fluorescence data is active for the simulation - returns True/False
 G4TomoSim.fluorescencedetector_fullmappingactive()
 G4TomoSim.fluorescencedetector_fullfieldactive()
 ```
-The fluorescence detector data is optional. Therefore the data collected needs to be actived via commands before the simulation starts to simulate the fluorescence data and access it in python. 
+The fluorescence detector data is optional. Therefore to simulate the fluorescence data, it needs to be activated via commands before the simulation starts. The fluorescence_get functions then allow you to access the data in python. 
 ```
 /detector/fluorescence/fullmapping True
 /detector/fluorescence/fullfield   True
@@ -139,10 +155,10 @@ G4TomoSim.beam_getintesity()   #1 dimensional
 
 G4TomoSim.beam_getnobins() #Number of bins
 ```
-# Macro files and commands
-Macro files contain a list of commands that Geant4 uses to easily control the setup of a simulation. For guidance, help and a full list of Geant4 pre-built commands, please visit http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html.
+# Macro Files and Commands
+Macro files contain a list of commands that Geant4 uses to control the setup of a simulation. For guidance, help and a full list of Geant4 pre-built commands, please visit http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html.
 
-Custom commands I've built using the Geant4 toolkit to control the G4TomoSim package are below:
+Custom commands are built using the Geant4 toolkit to control the G4TomoSim package are below:
 
 ## Detectors
 ### Absorption
@@ -173,24 +189,30 @@ Custom commands I've built using the Geant4 toolkit to control the G4TomoSim pac
 /beam/particle    <particle>
 
 # Position commands
-/beam/pos/auto   <bool>
-/beam/momentum   <x_mom> <y_mom> <z_mom> 
+/beam/momentum   <x_mom> <y_mom> <z_mom> #By default, beam is travelling 1, 0, 0 (along the x axis) 
+
+# Aligns the beam automatically. 
+# Places the beam at the end of the world volume and sets the beam dimensions to match the absorption detector's.
+# "/beam/pos/centre", "/beam/pos/halfx", and "/beam/pos/halfy" are overwritten.
+# Can only be used for a square beam
+/beam/pos/auto   <bool> 
+
 /beam/pos/centre <x_cen> <y_cen> <z_cen> <unit>
 /beam/pos/halfx  <x_dim> <unit>
 /beam/pos/halfy  <y_dim> <unit>
 ```
-Beam commands uses the Geant4 G4ParticleGun classs which is fast and basic. To use a more advanced particle gun, G4GeneralParticleSource, with more functionality, options and pre-built commands, use:
+Beam commands uses the Geant4 G4ParticleGun class which is fast and basic. To use a more advanced particle gun with more functionality, options and pre-built commands, use G4GeneralParticleSource with command:
 ```
 /beam/gps <bool>
 ```
-Set it to True. All /beam/ commands will also affect gps commands. For instance "/beam/pos/halfx" is equivalent to "/gps/pos/halfx" if "/beam/gps True". 
+Set command to True. All "/beam/" commands will also affect gps commands. For instance "/beam/pos/halfx" is equivalent to "/gps/pos/halfx" if "/beam/gps" is set to True. 
 
-For a list of gps commands and guidance, please visit:
+For a full list of gps commands, guidance and examples, please visit:
  - http://www.apc.univ-paris7.fr/~franco/g4doxy/html/classG4GeneralParticleSourceMessenger.html#369e77c64ee8281a4c20bbcad87f476e
  - http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/GettingStarted/generalParticleSource.html
  - http://hurel.hanyang.ac.kr/Geant4/Geant4_GPS/reat.space.qinetiq.com/gps/examples/examples.html
 
-Warning: there is a known issue that when using gps, the program will end with a segmentation fault with G4TomoSim.
+Warning: there is a known issue that when using gps, the program will finish with a segmentation fault. This will not affect the simulation or saving of data.
 
 ## Simulation
 ```
@@ -210,7 +232,9 @@ Control the physics processes used for the simulation.
 /physics/opticalphoton/refraction <bool>
 /physics/opticalphoton/absorption <bool>
 ```
-Note: Refraction physics is designed to be used with opticalphoton's and not gamma (Geant4 treats waves and particles properties seperate with opticalphotons and gamma particles respectively). Therefore one side effect is that fluorescence doesn't appear to work when refraction is on. Needs more testing.
+Note: Refraction physics is designed to be used with "opticalphoton" and not "gamma". 
+
+Geant4 treats waves and particles properties seperate with "opticalphoton" and "gamma" particles respectively, therefore one side effect is that fluorescence doesn't appear to work when refraction is on using "gamma". Needs more testing.
 ## Materials
 Create new custom materials for your sample or world material.
 
@@ -220,7 +244,7 @@ Create new custom materials for your sample or world material.
 ```
 ### Create a new isotope
 ```
-/materials/define/isotope     <new_isotope> <z> <no_necleans> <atomic_weight> <unit>
+/materials/define/isotope     <new_isotope> <z> <no_nucleon> <atomic_weight> <unit>
 /materials/define/isotope_mix <new_isotope_mix> <symbol> <no_isotopes>
 /materials/addto/isotope_mix  <new_isotope> <element> <abundance> <unit>
 /materials/addto/add_desnity  <new_isotope> <density> <unit> 
@@ -246,11 +270,15 @@ Create new custom materials for your sample or world material.
 /material/mpt/print <material>
 ```
 #### Add optical properties
-All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
+All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace, to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
 ```
+#Uses xraylib to automatically assign optical properties.
+#Only tested on compounds and elements.
 /material/mpt/xraylib/add/allopticalproperties <material> <energy_array>
 /material/mpt/xraylib/add/refractive_index     <material> <energy_array>
 /material/mpt/xraylib/add/absorption           <material> <energy_array>
+
+#Manually add optical properties
 /material/mpt/add/refractive_index             <material> <energy_array> <refractive_index_array>
 /material/mpt/add/complexrefractive_index      <material> <energy_array> <complexrefractive_index_array>
 /material/mpt/add/absorptionlength             <material> <energy_array> <absorptionlength_array>
@@ -293,13 +321,13 @@ Alter the samples starting position, rotation and how it rotates throughout a to
 /sample/checkforoverlaps <bool>
 ```
 # Examples
-In the bin directory are two python scripts. Both scripts simuation variables are controlled via the settings folder. "run.py" is a python script that uses the G4TomoSim.simulatetomography function and automatically saves the data for you. To run the code, simply do in the teriminal (assuming in the build directoy): 
+In the bin directory are two python scripts. Both script's simuation variables are controlled via the settings folder. "run.py" is a python script that uses the G4TomoSim.simulatetomography function and automatically saves the data for you. To run the code, execute the command below (assuming in the build directoy): 
 ```bash
 python ./bin/run.py [filepath]
 ```
-Where [filepath] is an optinal argument to save the data in a location of your choosing. If no argument supplied, it will save the data in the output folder.
+Where [filepath] is an optional argument to save the data in a location of your choosing. If no argument supplied, it will save the data in /output.
 
-The second python script is "mpi_run.py" and is an example on how to utilise mpi4py to parallise the simulation. To run, simply do:
+The second python script is "mpi_run.py" and is an example on how to utilise mpi4py to parallelize the simulation. To run, simply execute:
 ```bash
 mpiexec -n <no_cores> python ./bin/mpi_run.py [filepath]
 ```
