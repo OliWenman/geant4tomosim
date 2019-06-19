@@ -222,7 +222,7 @@ Warning: there is a known issue that when using gps, the program will finish wit
 
 ## Physics
 Control the physics processes used for the simulation.
-```python
+```
 /physics/gamma/livermore/photoelectric      <bool>
 /physics/gamma/livermore/comptomscattering  <bool>
 /physics/gamma/livermore/raylieghscattering <bool>
