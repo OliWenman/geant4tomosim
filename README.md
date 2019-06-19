@@ -1,7 +1,7 @@
 # Geant4TomoSim
 Geant4TomoSim is a python package developed for the use of easily writing python scripts to simulate tomography data. It utilizes the C++ toolkit Geant4 that simulates particles through matter. Geant4 uses a monte-carlo approach and allows for unique physics to be simulated such as scattering, fluorescence and refraction. A tomography experiment is built using this toolkit and wrapped in Cython, making it easily customizable for a user to control and setup using Python.
 
-# Required dependcies
+# Required Dependencies
 - RHEL 7
 - Geant4 10.04
 - xraylib 3.30
@@ -13,7 +13,7 @@ Geant4TomoSim is a python package developed for the use of easily writing python
 - h5py
 - mpi4py
 
-# Build instructions
+# Build Instructions
 In the command prompt, git clone in a place you want to save the source code.
 ```bash
 git clone <link>
@@ -54,43 +54,43 @@ g4ts.execute_macrolist(list[str] macrolist)
 
 
 ```python
-G4TomoSim.execute_macro(str macro)
+g4ts.execute_macro(str macro)
 ```
 2) Execute a single macro file (containing commands).
 
 
 ```python
-G4TomoSim.execute_command(str command)
+g4ts.execute_command(str command)
 ```
 3) Execute a single command.
 
 ```python
-G4TomoSim.setup_visualization(str path, str filename)
+g4ts.setup_visualization(str path, str filename)
 ```
 If you want to visualize the geometry and events of your simulation, use this function to output a .heprep file to later use in HepRApp. 
 
 WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
 
 ```python
-G4TomoSim.set_seed(long int seed)
+g4ts.set_seed(long int seed)
 ```
 Set the seed to be used for the simulation. Can also be used via command "/simulation/seed 123456". If seed is equal to 0, a random seed is chosen. 
 
 ```python
-G4TomoSim.log_setup(str filepath, 
-                    long long int n_particles, 
-                    int n_projections, 
-                    n_darkflatfields)
+g4ts.log_setup(str filepath, 
+               long long int n_particles, 
+               int n_projections, 
+               n_darkflatfields)
 ```
 Log the setup of your simulation to a file. This writes all commands used and its associated macro file to a file (and a terminal if verbose is greater than 0).
 
-## Running a simulation
+## Running a Simulation
 ```python
-G4TomoSim.simulateprojection(long long int n_particles,
-                             bool   flatfield,
-                             double rotation_angle,
-                             double zposition,
-                             bool   resetdata = True)
+g4ts.simulateprojection(long long int n_particles,
+                        bool   flatfield,
+                        double rotation_angle,
+                        double zposition,
+                        bool   resetdata = True)
 ```
 Start the simulation by specifying the number of particles you want. To achieve a good projection with reduced noise, you need a high number of n_particles per absorptiondetector_pixel. Around 4k - 8k particles per pixel, though the higher the better. 
 
@@ -103,43 +103,43 @@ resetdata is used to reset the detector array data back to 0 if True. If False, 
 Use this command when wrapping the package in your own python script, using mpi for example.
 
 ```python
-G4TomoSim.simulatetomography(str           filepath,
-                             long long int n_particles
-                             int           n_darkflatfields,
-                             numpy.ndarray rotation_angle,
-                             numpy.ndarray zpositions = None)
+g4ts.simulatetomography(str           filepath,
+                        long long int n_particles
+                        int           n_darkflatfields,
+                        numpy.ndarray rotation_angle,
+                        numpy.ndarray zpositions = None)
 ```
 Similiar to the previous function simulateprojection. This will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and provide numpy.ndarray for rotation_angles and zpositions for your sample. 
 
 Not compatible with mpi, use simulateprojection and write your own script.
 
-## Get functions
-### Absorption detector
+## Get Functions
+### Absorption Detector
 ```python
 #Get the detector data after the simulation has finished 
-G4TomoSim.absorptiondetector_getprojection() 
+g4ts.absorptiondetector_getprojection() 
 
 #Get information about the detector
-G4TomoSim.absorptiondetector_getxpixels()
-G4TomoSim.abosrptiondetector_getypixels()
-G4TomoSim.absorptiondetector_getdimensions()
+g4ts.absorptiondetector_getxpixels()
+g4ts.abosrptiondetector_getypixels()
+g4ts.absorptiondetector_getdimensions()
 ```
 
-### Fluorescence detector
+### Fluorescence Detector
 ```python
 #Get the detector data after the simulation has finished
-G4TomoSim.fluorescencedetector_getfullmappingdata() #3 dimensional
-G4TomoSim.fluorescencedetector_getfullfielddata()   #1 dimenionsal
-G4TomoSim.fluorescencedetector_getenergybins()      #1 dimensional
+g4ts.fluorescencedetector_getfullmappingdata() #3 dimensional
+g4ts.fluorescencedetector_getfullfielddata()   #1 dimenionsal
+g4ts.fluorescencedetector_getenergybins()      #1 dimensional
 
 #Get information about the detector
-G4TomoSim.fluorescencedetector_getnoenergybins()
-G4TomoSim.fluorescencedetector_getposition()
-G4TomoSim.fluorescencedetector_getdimensions()
+g4ts.fluorescencedetector_getnoenergybins()
+g4ts.fluorescencedetector_getposition()
+g4ts.fluorescencedetector_getdimensions()
 
 #Check if the fluorescence data is active for the simulation - returns True/False
-G4TomoSim.fluorescencedetector_fullmappingactive()
-G4TomoSim.fluorescencedetector_fullfieldactive()
+g4ts.fluorescencedetector_fullmappingactive()
+g4ts.fluorescencedetector_fullfieldactive()
 ```
 The fluorescence detector data is optional. Therefore to simulate the fluorescence data, it needs to be activated via commands before the simulation starts. The fluorescence_get functions then allow you to access the data in python. 
 ```
@@ -147,13 +147,13 @@ The fluorescence detector data is optional. Therefore to simulate the fluorescen
 /detector/fluorescence/fullfield   True
 ```
 
-### Beam data
+### Beam Data
 ```python
 #Get the beam energy used to plot a beam profile for the simulation
-G4TomoSim.beam_getenergybins() #1 dimensional
-G4TomoSim.beam_getintesity()   #1 dimensional
+g4ts.beam_getenergybins() #1 dimensional
+g4ts.beam_getintesity()   #1 dimensional
 
-G4TomoSim.beam_getnobins() #Number of bins
+g4ts.beam_getnobins() #Number of bins
 ```
 # Macro Files and Commands
 Macro files contain a list of commands that Geant4 uses to control the setup of a simulation. For guidance, help and a full list of Geant4 pre-built commands, please visit http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/html/Control/AllResources/Control/UIcommands/_.html.
@@ -238,29 +238,28 @@ Geant4 treats waves and particles properties seperate with "opticalphoton" and "
 ## Materials
 Create new custom materials for your sample or world material.
 
-### Create a new element
+### Create a New Element
 ```
 /materials/define/element <new_element> <z> <molecule_mass> <unit> <density> <unit>
 ```
-### Create a new isotope
+### Create a New Isotope
 ```
 /materials/define/isotope     <new_isotope> <z> <no_nucleon> <atomic_weight> <unit>
 /materials/define/isotope_mix <new_isotope_mix> <symbol> <no_isotopes>
 /materials/addto/isotope_mix  <new_isotope> <element> <abundance> <unit>
 /materials/addto/add_desnity  <new_isotope> <density> <unit> 
 ```
-
-### Create a new molecule
+### Create a New Molecule
 ```
 /materials/define/molecule <new_molecule> <no_atoms> <density> <unit> 
 /materials/addto/molecule  <new_molecule> <element> <n_atoms>
 ```
-### Create a new compound
+### Create a New Compound
 ```
 /materials/define/compound <new_material> <no_components> <density> <unit> 
 /materials/addto/compound  <new_material> <element> <fractional_mass> <unit>
 ```
-### Create a new mixture
+### Create a New Mixture
 ```
 /materials/define/mixture  <new_mixture> <no_components> <density> <unit>
 /materials/addto/mixture   <new_mixture> <material> <fractional_mass> <unit>
@@ -269,7 +268,7 @@ Create new custom materials for your sample or world material.
 ```
 /material/mpt/print <material>
 ```
-#### Add optical properties
+#### Add Optical Properties
 All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace, to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
 ```
 #Uses xraylib to automatically assign optical properties.
@@ -286,7 +285,7 @@ All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays
 ## Sample
 Build your own custom samples using the below commands. 
 ### G4VSolids
-#### Basic solids
+#### Basic Solids
 ```
 /sample/G4VSolid/box       <name> <x_dimension> <y_dimension> <z_dimension> <unit>
 /sample/G4VSolid/sphere    <name> <inner_r> <outer_r> <unit> <start_phi> <end_phi> <start_theta> <end_theta> <unit>
@@ -294,7 +293,7 @@ Build your own custom samples using the below commands.
 /sample/G4VSolid/ellipsoid <name> <px_semi_axis> <py_sami_axis> <pz_semi_axis> <pz_bottomcut> <pz_topcut> <unit>
 /sample/G4VSolid/trapezoid <name> <dx1> <dx2> <dy1> <dy2> <dx> <unit>
 ```
-#### Boolean solid
+#### Boolean Solid
 Create more complicated shapes by joining or subtracting solids away from each other. The insideposition and insiderotation determines how and where the solids are connected/subtracted relative to each other.
 ```
 /sample/G4VSolid/subtract       <name> <component_name1> <component_name2> 
@@ -321,7 +320,7 @@ Alter the samples starting position, rotation and how it rotates throughout a to
 /sample/checkforoverlaps <bool>
 ```
 # Examples
-In the bin directory are two python scripts. Both script's simuation variables are controlled via the settings folder. "run.py" is a python script that uses the G4TomoSim.simulatetomography function and automatically saves the data for you. To run the code, execute the command below (assuming in the build directoy): 
+In the bin directory are two python scripts. Both script's simuation variables are controlled via the settings folder which contain the macro files and python variables. "run.py" is a python script that uses the G4TomoSim.simulatetomography function and automatically saves the data for you. To run the code, execute the command below (assuming in the build directoy): 
 ```bash
 python ./bin/run.py [filepath]
 ```
