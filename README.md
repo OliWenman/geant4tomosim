@@ -42,7 +42,7 @@ g4ts = g4tomosim.G4TomoSim(int verbose = 1, bool interactive = False)
 First, create an instance of the class G4TomoSim. 
 
 "verbose" is used to determine how much output there is to the terminal (use 0 if using mpi).
-"interactive" is used to re-eneter a command if there is an error.
+"interactive" is used to re-enter a command if there is an error.
 
 There are three different ways of setting up the simulation. 
 
