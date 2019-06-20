@@ -64,9 +64,11 @@ g4ts.execute_command(str command)
 ```
 3) Execute a single command.
 
+
 ```python
 g4ts.setup_visualization(str path, str filename)
 ```
+
 If you want to visualize the geometry and events of your simulation, use this function to output a .heprep file to later use in HepRApp. 
 
 WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
@@ -225,7 +227,7 @@ Control the physics processes used for the simulation.
 ```
 /physics/gamma/livermore/photoelectric      <bool>
 /physics/gamma/livermore/comptomscattering  <bool>
-/physics/gamma/livermore/raylieghscattering <bool>
+/physics/gamma/livermore/rayleighscattering <bool>
 /physics/gamma/fluorescence                 <bool>
 /physics/gamma/refraction                   <bool>
 
