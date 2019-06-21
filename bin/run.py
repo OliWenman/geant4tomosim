@@ -53,14 +53,14 @@ tomosim.setup_visualization(path = this_directory + "/../output/",
 tomosim.simulatetomography(filepath         = filepath,
                            n_particles      = 100,
                            rotation_angles  = tsi.rotation_angles,
-                           nDarkFlatFields = tsi.ndarkflatfields,
-                           zpositions      = tsi.zpos)
+                           n_darkflatfields = tsi.ndarkflatfields,
+                           zpositions       = tsi.zpos)
 
 """
 tomosim.simulatetomography(filepath         = filepath,
                            n_particles      = tsi.particles,
                            rotation_angles  = tsi.rotation_angles,
-                           nDarkFlatFields = tsi.ndarkflatfields,
+                           n_darkflatfields = tsi.ndarkflatfields,
                            zpositions      = tsi.zpos)                        
 
 print ("Finished")
