@@ -22,7 +22,11 @@
 
 //Gamma optical physics
 #include "GammaOpticalRefraction.hh"
-#include "GammaOpticalAbsorption.hh"
+
+//Physics for opticalphotons
+#include "G4OpBoundaryProcess.hh"
+#include "G4OpAbsorption.hh"
+
 
 //Particle definations
 #include "G4ParticleDefinition.hh"
@@ -53,21 +57,26 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList(), photoelectriceffect(0), li
                                                       comptonscattering(0), liv_comptonscattering(0),
                                                       rayleighscattering(0), liv_rayleighscattering(0),
                                                       gamma_refraction(0), 
-                                                      gamma_absorption(0)
+                                                      opticalphoton_absorption(0), opticalphoton_refraction(0)
 {
 	//Creates the messenger class
   	physicsMessenger = new PhysicsListMessenger(this);
 
 	//Sets the cutvalues
-	//cutForGamma = 10*mm;
-	//cutForElectron = 1*um;
+	cutForGamma    = 1*mm;
+	cutForElectron = 1*mm;
+	cutForOptical  = 1*mm;
 	
-	photoelectricOn = true;
-	comptonscatteringOn = true;
+	photoelectricOn      = true;
+	comptonscatteringOn  = true;
 	rayleighscatteringOn = true;
-	fluorescenceOn = true;
-	refractionOn = true;
-	gamma_absorptionOn = false;
+	fluorescenceOn       = true;
+	gamma_refractionOn         = true;
+	
+	optical_refractionOn = false;
+	optical_absorptionOn = false;
+	
+	setup = false;
 }
 
 PhysicsList::~PhysicsList()
@@ -85,7 +94,9 @@ PhysicsList::~PhysicsList()
   	delete liv_rayleighscattering; liv_rayleighscattering = 0;
   	
   	delete gamma_refraction; gamma_refraction = 0;
-  	delete gamma_absorption; gamma_absorption = 0;
+  	
+  	delete opticalphoton_absorption; opticalphoton_absorption = 0;
+  	delete opticalphoton_refraction; opticalphoton_refraction = 0;
 }
 void PhysicsList::ConstructParticle()
 {
@@ -115,6 +126,8 @@ void PhysicsList::ConstructEM()
 {
   	auto particleIterator = GetParticleIterator();
   	particleIterator->reset();
+  	
+  	setup = false;
 
 	//Cycles through the different particles	
   	while( (*particleIterator)() )
@@ -136,20 +149,7 @@ void PhysicsList::ConstructEM()
 			    liv_photoelectric = new G4LivermorePhotoElectricModel();
 			    photoelectriceffect->SetEmModel(liv_photoelectric);
 			    pmanager->AddDiscreteProcess(photoelectriceffect);
-			    
-			    /*
-			     photoelectriceffect = new G4PhotoElectricEffect();
-			    livpol_photoeletriceffect = new G4LivermorePolarizedPhotoElectricModel();
-			    photoelectriceffect->SetEmModel(livpol_photoeletriceffect);
-			    pmanager->AddDiscreteProcess(photoelectriceffect);
-			    */		    
 		    }
-		
-			/*G4LivermorePhotoElectricModel* livPhotoElectricEffect = new G4LivermorePhotoElectricModel();
-			//livPhotoElectricEffect->SetVerboseLevel(0);
-			photoelectriceffect->SetVerboseLevel(0);
-			photoelectriceffect->SetEmModel(livPhotoElectricEffect);
-			pmanager->AddDiscreteProcess(photoelectriceffect); */
 
             //Setup compton scattering
             if (!comptonscattering)
@@ -178,92 +178,75 @@ void PhysicsList::ConstructEM()
 			    de -> SetVerboseLevel(0);
   			    G4LossTableManager::Instance()->SetAtomDeexcitation(de);
             }
-            /*
             //Setup gamma refraction
             if (!gamma_refraction)
             {
                 gamma_refraction = new GammaOpticalRefraction();
 		        pmanager -> AddDiscreteProcess(gamma_refraction);
             }
-		    if(!gamma_absorption)
-		    {
-		        gamma_absorption = new GammaOpticalAbsorption();
-		        pmanager -> AddDiscreteProcess(gamma_absorption);
-		    }*/
 		}
         else if (particleName == "opticalphoton")
         {
-            /*
-            if (opticalabsorption)
+            if (!opticalphoton_absorption)
 		    {
-		        G4OpAbsorption* optical_absorption = new G4OpAbsorption();
-		        pmanager -> AddDiscreteProcess(optical_absorption);
+		        opticalphoton_absorption = new G4OpAbsorption();
+		        pmanager -> AddDiscreteProcess(opticalphoton_absorption);
 		    }
 		    
-		    if (refraction)
+		    if (!opticalphoton_refraction)
 		    {
-		        G4OpBoundaryProcess* refraction = new G4OpBoundaryProcess();
-		        pmanager -> AddDiscreteProcess(refraction);
+		        opticalphoton_refraction = new G4OpBoundaryProcess();
+		        pmanager -> AddDiscreteProcess(opticalphoton_refraction);
 		    }
-            */
 		    /*fRayleighScatteringProcess = new G4OpRayleigh();
             fMieHGScatteringProcess = new G4OpMieHG();
             pmanager->AddDiscreteProcess(fRayleighScatteringProcess);
             pmanager->AddDiscreteProcess(fMieHGScatteringProcess);*/
 		}
-		else if (particleName == "e-")
-		{
-		    pmanager->AddProcess(new G4eIonisation,         -1, 2,2);
-		}
+		
 	    G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(250*eV, 175*keV);
 	}
+	
+	SetCuts();
 }
 
 void PhysicsList::ActivateUserPhysics()
 {   
+    if (setup) {return;}
 
-    G4ProcessManager* gammaProcessManager = G4Gamma::GammaDefinition()->GetProcessManager();
-    
-    G4ProcessVector* processlist = gammaProcessManager->GetProcessList();
+    G4ProcessManager* gamma_processmanager = G4Gamma::GammaDefinition()->GetProcessManager();    
+    G4ProcessVector* gamma_processlist = gamma_processmanager->GetProcessList();
     
     //Add photoelectric effect to processes if it doesn't already contain it and user wants it on
-    if (photoelectricOn && !processlist->contains(photoelectriceffect)) {
-        gammaProcessManager->AddProcess(photoelectriceffect);
+    if (photoelectricOn && !gamma_processlist->contains(photoelectriceffect)) {
+        gamma_processmanager->AddProcess(photoelectriceffect);
     }
     else if (!photoelectricOn) {   
-        gammaProcessManager->RemoveProcess(photoelectriceffect);    
+        gamma_processmanager->RemoveProcess(photoelectriceffect);    
     }
    
     //Add compton scattering to processes if it doesn't already contain it and user wants it on
-    if (comptonscatteringOn && !processlist->contains(comptonscattering)) {
-        gammaProcessManager->AddProcess(comptonscattering);
+    if (comptonscatteringOn && !gamma_processlist->contains(comptonscattering)) {
+        gamma_processmanager->AddProcess(comptonscattering);
     }
     else if (!comptonscatteringOn) {
-        gammaProcessManager->RemoveProcess(comptonscattering);
+        gamma_processmanager->RemoveProcess(comptonscattering);
     }
     
     //Add rayleigh scattering to processes if it doesn't already contain it and user wants it on
-    if (rayleighscatteringOn && !processlist->contains(rayleighscattering)) {
-        gammaProcessManager->AddProcess(rayleighscattering);
+    if (rayleighscatteringOn && !gamma_processlist->contains(rayleighscattering)) {
+        gamma_processmanager->AddProcess(rayleighscattering);
     }
     else if (!rayleighscatteringOn) {
-        gammaProcessManager->RemoveProcess(rayleighscattering);
+        gamma_processmanager->RemoveProcess(rayleighscattering);
     }
     
     //Add gamma refraction to processes if it doesn't already contain it and user wants it on  
-    if (refractionOn && !processlist->contains(gamma_refraction)) {
-        gammaProcessManager->AddProcess(gamma_refraction);
+    if (gamma_refractionOn && !gamma_processlist->contains(gamma_refraction)) {
+        gamma_processmanager->AddProcess(gamma_refraction);
     }
-    else if (!refractionOn) {
-        gammaProcessManager->RemoveProcess(gamma_refraction);
-    }
-    
-    //Add gamma absoprtion to processes if it doesn't already contain it and user wants it on  
-    if (gamma_absorptionOn && !processlist->contains(gamma_absorption)) {
-        gammaProcessManager->AddProcess(gamma_absorption);
-    }
-    else if (!gamma_absorptionOn) {
-        gammaProcessManager->RemoveProcess(gamma_absorption);
+    else if (!gamma_refractionOn) {
+        gamma_processmanager->RemoveProcess(gamma_refraction);
     }
     
     G4VAtomDeexcitation* atomDeexcitation = G4LossTableManager::Instance()->AtomDeexcitation();
@@ -281,20 +264,42 @@ void PhysicsList::ActivateUserPhysics()
   		atomDeexcitation->SetAuger(true);   
   		atomDeexcitation->SetPIXE(true);  
     }
-    else// if (flu
+    else
     {  
         atomDeexcitation->SetFluo(false);
   		atomDeexcitation->SetAuger(false);   
   		atomDeexcitation->SetPIXE(false);  
     }
 
+    //Optical process list
+    G4ProcessManager* optical_processmanager = G4OpticalPhoton::OpticalPhotonDefinition()->GetProcessManager();    
+    G4ProcessVector* optical_processlist = optical_processmanager->GetProcessList();
+    
+    if (optical_refractionOn && !optical_processlist->contains(opticalphoton_refraction))
+    {
+        optical_processmanager->AddProcess(opticalphoton_refraction);
+    }
+    else if (!optical_refractionOn)
+    {
+        optical_processmanager->RemoveProcess(opticalphoton_refraction);
+    }
+    if (optical_absorptionOn && !optical_processlist->contains(opticalphoton_absorption))
+    {
+        optical_processmanager->AddProcess(opticalphoton_absorption);
+    }
+    else if (!optical_absorptionOn)
+    {
+        optical_processmanager->RemoveProcess(opticalphoton_absorption);
+    }
+
+    setup = true;
 }
 
 void PhysicsList::SetCuts()
 {	
-    //SetCutValue(10000*mm, "gamma");
-    //SetCutValue(1000*mm, "e-");
-    //SetCutValue(1000*mm, "e+");
+    SetCutValue(cutForGamma, "gamma");
+    SetCutValue(cutForElectron, "e-");
+    SetCutValue(cutForOptical, "opticalphoton");
     //SetCutValue(1000*mm, "proton");
     
     //DumpCutValuesTable();
@@ -332,7 +337,8 @@ void PhysicsList::ReadOutInfo(SettingsLog& log)
 	if (comptonscatteringOn)  {log << "\n- Compton scattering (livermore)";}
 	if (rayleighscatteringOn) {log << "\n- Rayleigh scattreing (livermore)";}
 	if (fluorescenceOn)       {log << "\n- Fluorescence";}
-	if (refractionOn)         {log << "\n- Gamma refraction";}
-	if (gamma_absorptionOn)   {log << "\n- Gamma absorption";}
+	if (gamma_refractionOn)   {log << "\n- Gamma refraction";}
+	if (optical_refractionOn) {log << "\n- OpticalPhoton - refraction";}
+	if (optical_absorptionOn) {log << "\n- OpticalPhoton - absorption";}
 }
 

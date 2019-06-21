@@ -25,23 +25,29 @@ class G4UIcmdWithABool;
 class PhysicsListMessenger: public G4UImessenger 
 { 
 	public:
-		PhysicsListMessenger(PhysicsList* Physics);
+		PhysicsListMessenger(PhysicsList* physics);
 		~PhysicsListMessenger(void);
 
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:
-		PhysicsList* Physics;
+		PhysicsList* physics;
 
 		G4UIdirectory* physicsDirectory;
 		
-		G4UIcmdWithAString* PhysicsPackageCmd;
-		G4UIcmdWithABool* PhotoElectricCmd;
-		G4UIcmdWithABool* ComptonScatteringCmd;
-		G4UIcmdWithABool* RayleighScatteringCmd;
-		G4UIcmdWithABool* FluorescenceCmd;
-		G4UIcmdWithABool* GammaRefractionCmd;
-		G4UIcmdWithABool* GammaAbsorptionCmd;
+		G4UIcmdWithABool* gamma_liv_photoelectricCmd;
+		G4UIcmdWithABool* gamma_liv_comptonscatteringCmd;
+		G4UIcmdWithABool* gamma_liv_rayleighscatteringCmd;
+		G4UIcmdWithABool* gamma_fluorescenceCmd;
+		G4UIcmdWithABool* gamma_refractionCmd;
+		
+		G4UIcmdWithABool* optical_absorptionCmd;
+        G4UIcmdWithABool* optical_refractionCmd;		
+
+        G4UIcmdWithADoubleAndUnit* gammacuts;
+        G4UIcmdWithADoubleAndUnit* opticalcuts;
+        G4UIcmdWithADoubleAndUnit* electroncuts;
+        
 };
 
 #endif 

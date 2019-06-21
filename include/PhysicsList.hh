@@ -32,7 +32,9 @@ class G4LivermoreRayleighModel;
 class G4VAtomDeexcitation;
 
 class GammaOpticalRefraction;
-class GammaOpticalAbsorption;
+
+class G4OpBoundaryProcess;
+class G4OpAbsorption;
 
 class StepMax;
 
@@ -52,16 +54,19 @@ class PhysicsList: public G4VModularPhysicsList
 		void SetCuts();
 		void AddStepMax();
 
-		//Used to set the type of phyiscs package you want
-		void SetPhysicsPackage(G4String value){PhysicsPackageCmd = value;}
-
 		//Used to set the physics processes you want
 		void SetPhotoElectric(G4bool value)     {photoelectricOn = value;}
 		void SetComptonScattering(G4bool value) {comptonscatteringOn = value;}
 		void SetRayleighScattering(G4bool value){rayleighscatteringOn = value;}
 		void SetFluorescence(G4bool value)      {fluorescenceOn = value;}
-		void SetRefraction(G4bool value)        {refractionOn = value;}
-		void SetGammaAbsorption(G4bool value)   {gamma_absorptionOn = value;}
+		void SetRefraction(G4bool value)        {gamma_refractionOn = value;}
+		
+		void SetOpticalRefraction(bool value)   {optical_refractionOn = value;}
+		void SetOpticalAbsorption(bool value)   {optical_absorptionOn = value;}
+        
+        void SetGammaCuts(bool value)    {cutForGamma    = value;}
+        void SetOpticalCuts(bool value)  {cutForOptical  = value;}
+        void SetElectronCuts(bool value) {cutForElectron = value;}
 
 		G4bool GetFluorescence(){return fluorescenceOn;}
 
@@ -76,7 +81,6 @@ class PhysicsList: public G4VModularPhysicsList
 		
 		//Pointers to the physics processes and models
 		G4PhotoElectricEffect* photoelectriceffect;
-		//G4LivermorePolarizedPhotoElectricModel* livpol_photoeletriceffect;
 		G4LivermorePhotoElectricModel* liv_photoelectric; 
 		
 		G4ComptonScattering*     comptonscattering;
@@ -86,21 +90,27 @@ class PhysicsList: public G4VModularPhysicsList
 		G4LivermoreRayleighModel* liv_rayleighscattering;
 		
 		GammaOpticalRefraction* gamma_refraction;
-		GammaOpticalAbsorption* gamma_absorption;	
+		
+		G4OpBoundaryProcess* opticalphoton_refraction;
+		G4OpAbsorption*    opticalphoton_absorption;
 		
 		StepMax* fStepMaxProcess;	
 
 		//Physics options
-		G4String PhysicsPackageCmd;
 		G4bool photoelectricOn;
 		G4bool comptonscatteringOn;
 		G4bool rayleighscatteringOn;
 		G4bool fluorescenceOn;
-		G4bool refractionOn;
-		G4bool gamma_absorptionOn;
+		G4bool gamma_refractionOn;
+		
+		bool   optical_refractionOn;
+		bool   optical_absorptionOn;
+		
+		bool setup;
 		
 		//Cuts for particles
 		G4double cutForGamma;
+		G4double cutForOptical;
   		G4double cutForElectron;
   		G4double cutForPositron;
 };
