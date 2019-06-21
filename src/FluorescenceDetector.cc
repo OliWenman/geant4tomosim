@@ -2,12 +2,7 @@
 #include "FluorescenceDetectorMessenger.hh"
 #include "FluorescenceSD.hh"
 
-//Solid shapes
 #include "G4Box.hh"
-
-//Efficient geometry for the millions of detectors
-#include "G4PVParameterised.hh"
-#include "G4PhantomParameterisation.hh"
 
 #include "G4Material.hh"
 #include "G4NistManager.hh"
@@ -28,16 +23,16 @@
 
 FluorescenceDetector::FluorescenceDetector(): sensitiveDetector(NULL)
 {
-    FDMessenger = new FluorescenceDetectorMessenger(this); 
+    //Create the messenger class to control the setup via macrofiles, FluorescenceDetectorMessenger
+    messenger = new FluorescenceDetectorMessenger(this); 
     
-    // Check if sensitive detector has already been created
- 	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+ 	G4SDManager* sd_manager = G4SDManager::GetSDMpointer();
 
+    //Check if sensitive detector has already been created
   	if (!sensitiveDetector) 
 	{
-		//Create a visual detector
 		sensitiveDetector = new FluorescenceSD();
-		SDmanager->AddNewDetector(sensitiveDetector);	// Store SD if built	
+		sd_manager->AddNewDetector(sensitiveDetector);	
 
 		//G4SDParticleFilter* gammaFilter = new G4SDParticleFilter("GammaFilter", "gamma");
 		//sensitiveDetector -> SetFilter(gammaFilter);
@@ -47,20 +42,20 @@ FluorescenceDetector::FluorescenceDetector(): sensitiveDetector(NULL)
 
 FluorescenceDetector::~FluorescenceDetector()
 {
-    delete FDMessenger;
+    delete messenger;
 }
 
+//Create the G4VSolid for the detector
 void FluorescenceDetector::CreateVolumes()
 {
-    DetectorVolume = new G4Box("FluorescenceDetector",
+    detectorvolume = new G4Box("FluorescenceDetector",
 			         	       halfdimensions.x(),
 					           halfdimensions.y(),
 					           halfdimensions.z());
 }
-
 void FluorescenceDetector::CreateVolumes(G4ThreeVector halfDimensions)
 {
-    DetectorVolume = new G4Box("FluorescenceDetector",
+    detectorvolume = new G4Box("FluorescenceDetector",
 			         	       halfDimensions.x(),
 					           halfDimensions.y(),
 					           halfDimensions.z());
@@ -68,37 +63,41 @@ void FluorescenceDetector::CreateVolumes(G4ThreeVector halfDimensions)
     halfdimensions = halfDimensions;
 }
 
-void FluorescenceDetector::AddProperties(G4bool GraphicsOn)
+//Create the G4LogicalVolume for the detector
+void FluorescenceDetector::AddProperties(G4bool graphicsOn)
 {
-	G4Material* Material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
+    sensitiveDetector->SetGraphics(graphicsOn);
+
+    //Pick the material for the detectors based on if the detectors are 100% efficient
+	G4Material* material = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
 	
-	DetectorLV = new G4LogicalVolume(DetectorVolume, Material, "FluorescenceDetectorLV");
+	//Create the logic volume
+	detector_logic = new G4LogicalVolume(detectorvolume, material, "FluorescenceDetector");
 	
-	G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
-  	DetectorLV -> SetVisAttributes(Cyan);
+	//Set visualization colour
+	G4VisAttributes* cyan = new G4VisAttributes(G4Colour::Cyan);	
+  	detector_logic->SetVisAttributes(cyan);
 
 	//Add the sensitive detector to the logical volume
-	DetectorLV -> SetSensitiveDetector(sensitiveDetector);
+	detector_logic->SetSensitiveDetector(sensitiveDetector);
 }
 
-void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector Position)
+//Create the G4PVPlacement
+void FluorescenceDetector::PlaceDetectors(G4LogicalVolume* motherbox, G4ThreeVector _position)
 {
-    G4VPhysicalVolume* DetectorPlacement = new G4PVPlacement(0,
-							       	                         Position,
-							                                 DetectorLV,
-							                                "Fluorecense detector",
-							                                 MotherBox,
+    G4VPhysicalVolume* detectorPlacement = new G4PVPlacement(0,
+							       	                         _position,
+							                                 detector_logic,
+							                                "FluorescenceDetector",
+							                                 motherbox,
 							                                 false,
 							                                 0,
 							                                 false);
-	position = Position; 
-	
-	//sensitiveDetector->InitialiseData();						          
+	position = _position;         
 }
 
 void FluorescenceDetector::ReadOutInfo(SettingsLog& log)
 {
-    //log << "\n--------------------------------------------------------------------"
     PrintToEndOfTerminal(log, '-');
 	log	<< "FLUORESCENCE DETECTOR:"
 		   "\n - Detector half dimensions: " << G4BestUnit(halfdimensions, "Length")

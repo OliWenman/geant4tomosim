@@ -1,4 +1,6 @@
-# Python script that contains the values to control the python varaibles for the simulation
+"""
+Script that contains the python variables used for run.py and mpi_run.py
+"""
 
 import os 
 this_directory = os.path.dirname(os.path.realpath(__file__))
@@ -12,14 +14,13 @@ import numpy as np
 #========================================================================================
 
 #General settings
-verbose         = 5
+verbose         = 1
 interactive     = False
 
 #Image variables
-projections     = 1
+projections     = 5
 ndarkflatfields = 0
-particles       = 10
-
+particles       = 1.e6
 #Rotation angles
 startrotation   = 0*G4.deg
 endrotation     = 180.*G4.deg
@@ -40,16 +41,18 @@ materials       = this_directory + "/materials.mac"
 detectors       = this_directory + "/detectors.mac"
 beam            = this_directory + "/beam.mac"
 
+#Most basic of samples to most complicated.
+#Uncomment the sample to change.
+sample    = this_directory + "/samples/cube.mac"
 #sample   = this_directory + "/samples/Al_Ni_block.mac"
-
-sampleGeometry  = this_directory + "/sampleGeometry.mac"
-samplePlacement = this_directory + "/samplePlacement.mac"
+#sample   = this_directory + "/samples/objectA.mac"
+#sample   = this_directory + "/samples/objectB.mac"
+#sample   = this_directory + "/samples/objectA_objectB.mac"
 
 macrofiles      = [physics,
                    materials,
                    detectors,
                    beam,
-                   sampleGeometry,
-                   samplePlacement]
+                   sample]
                    
 #========================================================================================

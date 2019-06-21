@@ -1,0 +1,2 @@
+/sample/G4VSolid/box             sample 0.5 0.5 0.5 cm
+/sample/G4LogicalVolume/material sample G4_Al

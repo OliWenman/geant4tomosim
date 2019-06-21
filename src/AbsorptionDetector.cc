@@ -1,11 +1,17 @@
+/*
+A class that builds the absorption detectors used in a simulation. 
+It will build the detectors G4VSolids, G4LogicalVolume and G4PhysicalVolume 
+as well as contain the pointer to the sensitive detector class
+AbsorptionSD, which determines what happens when a particle is detected.
+
+Author: Oliver Jack Wenman
+*/
 
 #include "AbsorptionDetector.hh"
 #include "AbsorptionDetectorMessenger.hh"
 #include "AbsorptionSD.hh"
-//Solid shapes
-#include "G4Box.hh"
 
-//Efficient geometry for the millions of detectors
+#include "G4Box.hh"
 #include "G4PVParameterised.hh"
 #include "G4PhantomParameterisation.hh"
 
@@ -23,47 +29,55 @@
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
 
-#include "PlacementTest.hh"
-
 AbsorptionDetector::AbsorptionDetector() : container(0), cells(0),
                                            container_logic(0), cells_logic(0),
                                            container_placement(0), cells_placement(0)
 {
+    //Create the messenger class to control the setup via macrofiles, AbsorptionDetectorMessenger
     messenger = new AbsorptionDetectorMessenger(this);
-    param = new G4PhantomParameterisation();
     
-    // Check if sensitive detector has already been created
+    //Needed to make millions of volumes of same material
+    param     = new G4PhantomParameterisation();
+    
+    //Create the sensitive detector and add it to Geant4's SDmanager
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
-
-	//Create a visual detector
 	absorSD = new AbsorptionSD();
-	SDmanager->AddNewDetector(absorSD);	// Store SD if built	
+	SDmanager->AddNewDetector(absorSD);	
 }
 
 AbsorptionDetector::~AbsorptionDetector()
 {
     delete messenger;
+     
+    //All other pointers are deleted by respected Geant4 manager class when
+    //Simulated is deleted
 }
-    
+
+//Create the G4VSolids of the detector 
 void AbsorptionDetector::CreateVolumes()
 {
+    //Checks to see if it exists and deletes it if it does.
+    //Allows for rebuilding of geometry correctly.
     if (container) {delete container; container = 0;}
 
-	//Create the phantom container for the detectors to go into
+	//Create the container for the detectors to go into
 	container = new G4Box("Absorptioncontainer",
 			              halfdimensions.x(),
 			              halfdimensions.y(), 
 			              halfdimensions.z());
 
+    //Checks to see if it exists and deletes it if it does.
+    //Allows for rebuilding of geometry correctly.
     if (cells) {delete cells; container = 0;}
 
-	//Create the dimensiosn of the phantom boxes to go inside the container
+	//Create the pixel cell boxes to go inside the container
 	cells = new G4Box("AbsorptionCell",
 				       halfdimensions.x()/1,
 				       halfdimensions.y()/xpixels,
 				       halfdimensions.z()/ypixels);
 
-	//Voxel dimensions in the three dimensions
+	//Tell the param class (G4PhantomParameterisation created in AbsorptionDetector's constructor) the dimensions 
+	//of the pixel cell
 	param->SetVoxelDimensions(halfdimensions.x()/1, halfdimensions.y()/xpixels, halfdimensions.z()/ypixels);
 	
 	//Number of voxels in the three dimensions
@@ -75,14 +89,22 @@ void AbsorptionDetector::CreateVolumes()
                                     container->GetZHalfLength());
 }
 
-void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
+//Create the G4LogicalVolume
+void AbsorptionDetector::AddProperties(G4bool graphicsOn)
 {
-	//Pick the material for the detectors based on if the detectors are 100% efficient or not
+    //Tell the sensitivedetector that graphics are on.
+	//Therefore will visualize a hit
+	absorSD->SetGraphics(graphicsOn);
+
+	//Pick the material for the detectors based on if the detectors are 100% efficient
 	G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial("G4_Galactic");
 	
+	//Check if a G4MaterialPropertiesTable exists for the material chosen.
+	//Needed if opticalphotons used so they interact with particle
 	G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
 	if (!mpt)
 	{
+	    //Create dummy array and add it as a property
 	    mpt = new G4MaterialPropertiesTable();
 	    
 	    double energy[] = {0.2*keV};
@@ -99,9 +121,10 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 	container_logic = new G4LogicalVolume(container, 
                 					      material, 
                 					      "AbsorptionContainer");
-                   					      					      
-    G4VisAttributes* Red = new G4VisAttributes(G4Colour::Red());	
-  	container_logic -> SetVisAttributes(Red);
+                   					     
+    //Add visualisation attribute 					      
+    G4VisAttributes* red = new G4VisAttributes(G4Colour::Red());	
+  	container_logic -> SetVisAttributes(red);
 
     //The parameterised volume which uses this parameterisation is placed in the container logical volume
     if (cells_logic) {delete cells_logic;}
@@ -109,16 +132,9 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
                    				      material,        // material is not relevant here...
                    				      "AbsorptionCells");
 
-    G4VisAttributes* Cyan = new G4VisAttributes(G4Colour::Cyan);	
-  	cells_logic -> SetVisAttributes(Cyan);
-  	
-  	if (xpixels*ypixels > 30*30)
-    {
-	    G4VisAttributes* VisAttributes = new G4VisAttributes();	
-	    VisAttributes -> SetVisibility(false);
-	    cells_logic -> SetVisAttributes(VisAttributes);
-	    //container_logic -> SetDaughtersInvisible(true);
-    }
+    //Add visualisation attribute 					  
+    G4VisAttributes* cyan = new G4VisAttributes(G4Colour::Cyan);	
+  	cells_logic -> SetVisAttributes(cyan);
 	
 	// Check if sensitive detector has already been created
  	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
@@ -128,28 +144,25 @@ void AbsorptionDetector::AddProperties(G4bool GraphicsOn)
 
 	//Add the sensitive detector to the logical volume
 	cells_logic -> SetSensitiveDetector(absorSD);
-	absorSD->SetGraphics(GraphicsOn);
 	
 	//Vector of materials of the voxels
 	std::vector < G4Material* > theMaterials;
 	theMaterials.push_back(material);
 	param -> SetMaterials(theMaterials);
-	
-	absorSD->SetGraphics(GraphicsOn);
 }
 
-#include "G4PhysicalVolumeStore.hh"
-
-void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVector position)
+//Creates the G4PVPlacement for the detector (placing it in the world volume)
+void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* motherbox, G4ThreeVector position)
 {
-	G4int NumberOfVoxels = xpixels * ypixels;
+	G4int n_pixels = xpixels * ypixels;
 	
+	//Place the detector volume
     if (container_placement) {delete container_placement; container_placement = 0;}
 	container_placement = new G4PVPlacement(0,                          // rotation
             						        position,                   // translation
            						            container_logic,            // logical volume
             						        "AbsorptionContainer",      // name
-            						        MotherBox,                  // mother volume
+            						        motherbox,                  // mother volume
             						        false,                      // No op. bool.
            						            0,			                // copy number
 							                false);                     // overlap checking
@@ -157,15 +170,15 @@ void AbsorptionDetector::PlaceDetectors(G4LogicalVolume* MotherBox, G4ThreeVecto
 	//Build the phantom container
 	param -> BuildContainerSolid(container_placement);
 
+    //Build the pixels
     if (cells_placement) {delete cells_placement; cells_placement = 0;}
 	cells_placement = new G4PVParameterised("AbsorptionCells",     // name
                        						cells_logic,           // logical volume
                         					container_logic,       // mother volume
            							        kUndefined,            // optimisation hint
-                       						NumberOfVoxels, 	   // number of voxels
+                       						n_pixels, 	           // number of voxels
                        						param);                // parameterisation
 
-	//Gives warning messages when set to 1?
 	cells_placement->SetRegularStructureId(1);
 	absorSD->Set_xpixels(xpixels);
 	absorSD->Set_ypixels(ypixels);

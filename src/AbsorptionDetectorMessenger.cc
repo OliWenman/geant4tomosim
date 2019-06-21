@@ -13,44 +13,50 @@
 #include "G4TwoVector.hh"
 #include "G4Tokenizer.hh"
 
-AbsorptionDetectorMessenger::AbsorptionDetectorMessenger(AbsorptionDetector* Detector): G4UImessenger(), AD(Detector)
+//Create the commands in the constructor
+AbsorptionDetectorMessenger::AbsorptionDetectorMessenger(AbsorptionDetector* Detector): G4UImessenger(), absorptiondetector(Detector)
 {
-    //Directory = new G4UIdirectory("/detector/absorption");
-	//Directory -> SetGuidance("Commands to control the absorption detector variables. ");	
+    directory = new G4UIdirectory("/detector/absorption/");
+	directory -> SetGuidance("Commands to control the absorption detector variables. ");	
 
-	SetDimensions = new G4UIcmdWith3VectorAndUnit("/detector/absorption/halfdimensions", this);
-	SetDimensions -> SetGuidance("Set the detectors halfdimensions");
-	SetDimensions -> SetParameterName("x","y","z",true,true);
-	SetDimensions -> SetUnitCandidates("mm cm m um ");
-	SetDimensions -> SetRange("x > 0 || y > 0 || z > 0");
+	halfdimensions = new G4UIcmdWith3VectorAndUnit("/detector/absorption/halfdimensions", this);
+	halfdimensions -> SetGuidance("Set the detectors halfdimensions");
+	halfdimensions -> SetParameterName("x","y","z",true,true);
+	halfdimensions -> SetUnitCandidates("mm cm m um ");
+	halfdimensions -> SetRange("x > 0 || y > 0 || z > 0");
 
 	xpixels = new G4UIcmdWithAnInteger("/detector/absorption/xpixels", this);
-	xpixels -> SetGuidance("Set the number of cells along the detectors rows");
+	xpixels -> SetGuidance("Set the number of xpixels for the detector");
+	xpixels -> SetParameterName("x",true,true);
+	xpixels -> SetRange("x > 2");
 
 	ypixels = new G4UIcmdWithAnInteger("/detector/absorption/ypixels", this);
-	ypixels -> SetGuidance("Set the number of cells along the detectors columns");
+	ypixels -> SetGuidance("Set the number of ypixels for the detector");
+	ypixels -> SetParameterName("x",true,true);
+	ypixels -> SetRange("x > 2");
 }
 
 AbsorptionDetectorMessenger::~AbsorptionDetectorMessenger()
 {
-    //delete Directory;
-    delete SetDimensions;
+    delete directory;
+    delete halfdimensions;
     delete xpixels;
     delete ypixels;
 }
 
+//Method for what happens when a command is found
 void AbsorptionDetectorMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-    if (command == SetDimensions)
+    if (command == halfdimensions)
     {
-		AD -> SetHalfDimensions(SetDimensions -> GetNew3VectorValue(newValue));
+		absorptiondetector -> SetHalfDimensions(halfdimensions -> GetNew3VectorValue(newValue));
     }
     else if (command == xpixels)
     {
-        AD -> SetxPixels(xpixels -> GetNewIntValue(newValue));	
+        absorptiondetector -> SetxPixels(xpixels -> GetNewIntValue(newValue));	
     }
     else if (command == ypixels)
     {
-        AD -> SetyPixels(ypixels -> GetNewIntValue(newValue));	
+        absorptiondetector -> SetyPixels(ypixels -> GetNewIntValue(newValue));	
     }
 }

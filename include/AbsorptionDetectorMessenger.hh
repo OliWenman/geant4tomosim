@@ -1,6 +1,6 @@
 /*
 A messenger class for AbsorptionDetector, interfaces commands to control variables
-with in that class.
+with in that class via macrofiles.
 
 Author: Oliver Jack Wenman
 */
@@ -28,23 +28,23 @@ class G4UIcmdWithABool;
 class AbsorptionDetectorMessenger: public G4UImessenger 
 { 
 	public:
-		AbsorptionDetectorMessenger(AbsorptionDetector *AD);
+		AbsorptionDetectorMessenger(AbsorptionDetector *absorptiondetector);
 		~AbsorptionDetectorMessenger(void);
 
-		//Methods
+		//Inherited method from G4UImessenger 
 		void SetNewValue(G4UIcommand* command, G4String newValue);
 		
 	private:		
 		//Pointer to the DetectorConstruction class
-		AbsorptionDetector *AD;
+		AbsorptionDetector *absorptiondetector;
 
 		//Pointer to the G4UIdirectory
-		G4UIdirectory *Directory;
+		G4UIdirectory *directory;
 
 		//DETECTOR VARIABLES
-		G4UIcmdWithAnInteger *xpixels;
-   		G4UIcmdWithAnInteger *ypixels;
-        G4UIcmdWith3VectorAndUnit *SetDimensions;
+		G4UIcmdWithAnInteger      *xpixels;
+   		G4UIcmdWithAnInteger      *ypixels;
+        G4UIcmdWith3VectorAndUnit *halfdimensions;
 
 };
 

@@ -3,35 +3,25 @@
 # and different detectors size, placement, data to record, etc.
 
 #--------------------------------------------------------------------------------
-# General
-/simulation/seed 0
-/simulation/graphics False	
-/world/visualization False
-
-#--------------------------------------------------------------------------------
 # World
-
-/world/halfdimensions 2200. 0100. 0100. mm		
-/world/material G4_Galactic
+# World dimensions must be big enough to contain everything else inside
+/world/halfdimensions 25. 020. 050. mm		
+/world/material G4_Galactic #Vacuum
 
 #--------------------------------------------------------------------------------
 # Detectors
 
 # - Absorption
-/detector/absorption/halfdimensions 00.001 10.0112 06.004 mm
-/detector/absorption/xpixels 434
-/detector/absorption/ypixels 302
+/detector/absorption/halfdimensions 00.001 10.112 06.004 mm
+/detector/absorption/xpixels 512#2560
+/detector/absorption/ypixels 304#1520
 
 # - Fluorescence
 /detector/fluorescence/halfdimensions 02.00 00.01 01.00 cm
-/detector/fluorescence/fullmapping True
-/detector/fluorescence/fullfield   True
+/detector/fluorescence/fullmapping False
+/detector/fluorescence/fullfield   False
 /detector/fluorescence/bins        2000
-/detector/fluorescence/maxenergy     100. keV
-
-# - Beam
-/beam/bins      2000
-/beam/maxenergy  175. keV
+/detector/fluorescence/maxenergy     50. keV
 
 #--------------------------------------------------------------------------------
 

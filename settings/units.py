@@ -1,3 +1,7 @@
+"""
+Used to convert to the right units for Geant4 when using functions via Python side
+"""
+
 #Length
 mm = 1.
 cm = 10.*mm

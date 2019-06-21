@@ -30,6 +30,7 @@ cdef extern from "Simulation.hh":
       void Setup_Visualization_pyw(string, string)
 
       #Run the simulation 
+      # If using MPI via python script this function is obselete
       int Run_Tomography_pyw(unsigned long long int, 
                              vector[int], 
                              double,

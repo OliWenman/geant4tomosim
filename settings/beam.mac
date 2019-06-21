@@ -13,14 +13,21 @@
 #--------------------------------------------------------------
 # Beam commands
 
-/beam/gps true
+# - Beam
+/beam/bins      2000
+/beam/maxenergy  175. keV
+
+/beam/gps false
 
 # - Energy commands
-/beam/energy/mono 32 keV
+/beam/energy/mono 40 keV
 
 # - Position commands
-/beam/pos/auto true
-/beam/momentum 1.00 0.00 0.00 
+#By defualt momentum direction is 1.00 0.00 0.00 
+#/beam/momentum 1.00 0.00 0.00 
+#Automatically alignes the beam with the end of the world volume and same dimensions as the absorption detector.
+/beam/pos/auto true  
+#Below commands are irrelevant due to above command overriding them
 #/beam/pos/centre -3 0.0 0.0 cm
 #/beam/pos/halfx 10.0112 mm
 #/beam/pos/halfy 06.004  mm
@@ -30,6 +37,8 @@
 
 #--------------------------------------------------------------
 # GeneralParticleSource commands
+# To use use the below commands use:
+# /beam/gps true
 
 # - Create a cone fan beam using gps
 #/gps/pos/type Point

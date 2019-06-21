@@ -1,3 +1,8 @@
+"""
+Short script for running G4TomoSim with or without visualization on
+and saving the data automatically with the simulatetomograpy function
+"""
+
 # -*- coding: utf-8 -*-
 import os 
 this_directory = os.path.dirname(os.path.realpath(__file__))
@@ -21,42 +26,42 @@ if __name__ == '__main__':
         print ("\nSaving data in the default place", filepath)
 
 
-#filepath = this_directory + "/../output/tomosimData.nxs"
-
 #===================================================================
+
+import random
 
 #RUN THE SIMULATION
 from g4tomosim import G4TomoSim
 
 tomosim = G4TomoSim(tsi.verbose, 
                     tsi.interactive)
-                 
-tomosim.execute_macrolist(tsi.macrofiles)
 
-tomosim.simulatetomography(filepath        = filepath,
-                           n_particles     = tsi.particles, 
+tomosim.execute_macrolist(tsi.macrofiles)
+tomosim.set_seed(random.randint(1, 1.e9))
+"""
+#For visualization, make there aren't many pixels otherwise will crash 
+#HepRApp viewer
+ 
+tomosim.execute_command("/detector/absorption/xpixels 5")
+tomosim.execute_command("/detector/absorption/ypixels 3")
+
+#Creates a directory to save all the vis data. Each projection simulated creates a 
+#new vis file. 
+tomosim.setup_visualization(path = this_directory + "/../output/",
+                            filename = "simdata_vis")
+
+tomosim.simulatetomography(filepath         = filepath,
+                           n_particles      = 100,
+                           rotation_angles  = tsi.rotation_angles,
                            nDarkFlatFields = tsi.ndarkflatfields,
-                           rotation_angles = tsi.rotation_angles,
-                           zpositions      = tsi.zpos )
+                           zpositions      = tsi.zpos)
+
+"""
+tomosim.simulatetomography(filepath         = filepath,
+                           n_particles      = tsi.particles,
+                           rotation_angles  = tsi.rotation_angles,
+                           nDarkFlatFields = tsi.ndarkflatfields,
+                           zpositions      = tsi.zpos)                        
+
 print ("Finished")
 
-"""
-from g4tomosim import G4TomoSim
-
-tomosim = G4TomoSim(verbose = 1)
-                    
-tomosim.execute_macrolist(macroFiles = ["detector.mac", 
-                                        "physics.mac", 
-                                        "beam.mac",       
-                                        "sample.mac"])
-
-tomosim.simulateprojection(n_particles    = 1.e9,
-                           flatfield      = False,
-                           rotation_angle = 21*deg,
-                           zposition      = 0*m)
-
-absorb_data = tomosim.absorptiondetector_getprojection()
-fluor_data  = tomosim.fluorescencedetector_getfullmappingdata()
-beamIn_data = tomosim.beam_getintensity()
-beamEn_data = tomosim.beam_getenergybins()
-"""

@@ -13,7 +13,6 @@ Author: Oliver Jack Wenman
 #include "MyVectors.hh"
 
 //My own classes
-class Data;
 class FluorescenceSD;
 class FluorescenceDetectorMessenger;
 
@@ -44,10 +43,10 @@ class FluorescenceDetector
         double_vector1D GetHalfDimensions()    {return {halfdimensions[0], halfdimensions[1], halfdimensions[2]};}
 
     private:
-        FluorescenceDetectorMessenger* FDMessenger;
+        FluorescenceDetectorMessenger* messenger;
     
-        G4Box* DetectorVolume;
-        G4LogicalVolume *DetectorLV;
+        G4Box* detectorvolume;
+        G4LogicalVolume *detector_logic;
         FluorescenceSD* sensitiveDetector;        
         
         G4ThreeVector halfdimensions;

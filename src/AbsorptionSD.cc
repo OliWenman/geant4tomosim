@@ -12,6 +12,7 @@ AbsorptionSD::AbsorptionSD() : G4VSensitiveDetector("AbsorptionDetecotor"), fHit
 
 void AbsorptionSD::InitialiseData(bool cleandata)
 {
+    //Create the dataset if it doesn't exist
     if (absorptionData.empty() || xpixels*ypixels != absorptionData.size())
     {
         int initialValue = 0;
@@ -21,6 +22,7 @@ void AbsorptionSD::InitialiseData(bool cleandata)
         
         //G4cout << "\nAbsorption data is empty, creating a " << xpixels << " x " << ypixels << " array" << G4endl;
     }
+    //Wipe the data clean back to zero if the option is on
     else if (cleandata)
     {
         memset(&absorptionData[0], 0, 
@@ -28,6 +30,7 @@ void AbsorptionSD::InitialiseData(bool cleandata)
     }
 }
 
+//Set the vector size back to zero
 void AbsorptionSD::FreeMemory()
 {
     if (!absorptionData.empty())
@@ -39,8 +42,10 @@ void AbsorptionSD::FreeMemory()
 
 AbsorptionSD::~AbsorptionSD() {}
 
+//Inherited method from G4VSensitiveDetector
 void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
 {	
+    //If the graphics are on, make a hits collection to display the hit
     if(graphicsOn)
     {
   	    //Create hits collection object
@@ -51,10 +56,13 @@ void AbsorptionSD::Initialize(G4HCofThisEvent* hce)
     }
 }
 
+//Inherited methods from G4VSensitiveDetector
 G4bool AbsorptionSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {  
+    //Get the pixel number that the particle entered.
     G4int pixel = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();
 
+    //+1 to the hit for the pixel
     ++absorptionData[pixel];
     
 	if(graphicsOn)

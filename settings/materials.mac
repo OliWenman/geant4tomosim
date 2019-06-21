@@ -1,57 +1,64 @@
 #==============================================
-#CREATE CUSTOM MATERIALS
+#CREATE CUSTOM materials
 
-/Materials/Define/Compound AlSi10Mg 5 2.67 g/cm3
-/Materials/AddTo/Compound AlSi10Mg Si 10.000 %
-/Materials/AddTo/Compound AlSi10Mg Mg 00.350 %
-/Materials/AddTo/Compound AlSi10Mg Fe 00.550 %
-/Materials/AddTo/Compound AlSi10Mg Mn 00.450 %
-/Materials/AddTo/Compound AlSi10Mg Al 88.650 %
-/Materials/AutoOpticalProperties AlSi10Mg energy=linspace(0,80,50)[keV]
+/materials/define/compound AlSi10Mg 5 2.67 g/cm3
+/materials/addto/compound AlSi10Mg Si 10.000 %
+/materials/addto/compound AlSi10Mg Mg 00.350 %
+/materials/addto/compound AlSi10Mg Fe 00.550 %
+/materials/addto/compound AlSi10Mg Mn 00.450 %
+/materials/addto/compound AlSi10Mg Al 88.650 %
 
-/Materials/Define/Compound TI64 5 04.4705 g/cm3
-/Materials/AddTo/Compound TI64 V  04.000 %
-/Materials/AddTo/Compound TI64 Al 06.125 %
-/Materials/AddTo/Compound TI64 Fe 00.300 %
-/Materials/AddTo/Compound TI64 O  00.200 %
-/Materials/AddTo/Compound TI64 Ti 89.375 %
-#/Materials/AutoOpticalProperties material=TI64 linspace(0,100,50)[keV]
+#Automatically get xraylib to add optical properties for material
+/materials/mpt/xraylib/add/allopticalproperties AlSi10Mg linspace(0,100,5)[keV]
 
-/Materials/Define/Compound MS1 6 8.05 g/cm3
-/Materials/AddTo/Compound MS1 Ni 18.000 %
-/Materials/AddTo/Compound MS1 Co 09.000 %
-/Materials/AddTo/Compound MS1 Mo 04.850 %
-/Materials/AddTo/Compound MS1 Ti 00.700 %
-/Materials/AddTo/Compound MS1 Al 00.100 %
-/Materials/AddTo/Compound MS1 Fe 67.350 %
-#/Materials/AutoOpticalProperties material=MS1 energy=linspace(0,100,50)[keV]
+/materials/define/compound TI64 5 04.4705 g/cm3
+/materials/addto/compound TI64 V  04.000 %
+/materials/addto/compound TI64 Al 06.125 %
+/materials/addto/compound TI64 Fe 00.300 %
+/materials/addto/compound TI64 O  00.200 %
+/materials/addto/compound TI64 Ti 89.375 %
+/materials/mpt/xraylib/add/allopticalproperties TI64 linspace(0,100,50)[keV]
 
-/Materials/Define/Compound IN625 10 8.5 g/cm3
-/Materials/AddTo/Compound IN625 Ni 60.000 %
-/Materials/AddTo/Compound IN625 Cr 23.000 %
-/Materials/AddTo/Compound IN625 Mo 08.000 %
-/Materials/AddTo/Compound IN625 Nb 03.150 %
-/Materials/AddTo/Compound IN625 Fe 04.520 %
-/Materials/AddTo/Compound IN625 Ti 00.400 %
-/Materials/AddTo/Compound IN625 Al 00.400 %
-/Materials/AddTo/Compound IN625 Co 00.500 %
-/Materials/AddTo/Compound IN625 S  00.015 %
-/Materials/AddTo/Compound IN625 P  00.015 %
-#/Materials/AutoOpticalProperties material=IN625 energy=linspace(0,100,50)[keV]
-#/Materials/PrintMaterialPropertiesTable IN625
+/materials/define/compound MS1 6 8.05 g/cm3
+/materials/addto/compound MS1 Ni 18.000 %
+/materials/addto/compound MS1 Co 09.000 %
+/materials/addto/compound MS1 Mo 04.850 %
+/materials/addto/compound MS1 Ti 00.700 %
+/materials/addto/compound MS1 Al 00.100 %
+/materials/addto/compound MS1 Fe 67.350 %
+/materials/mpt/xraylib/add/allopticalproperties MS1 linspace(0,100,50)[keV]
 
-/Materials/Define/Element N 7 28.014 g/mole 1.165 kg/m3
-#/Materials/AutoOpticalProperties material=N energy=linspace(0,100,50)[keV]
-#/Materials/PrintMaterialPropertiesTable N
+/materials/define/compound IN625 10 8.5 g/cm3
+/materials/addto/compound IN625 Ni 60.000 %
+/materials/addto/compound IN625 Cr 23.000 %
+/materials/addto/compound IN625 Mo 08.000 %
+/materials/addto/compound IN625 Nb 03.150 %
+/materials/addto/compound IN625 Fe 04.520 %
+/materials/addto/compound IN625 Ti 00.400 %
+/materials/addto/compound IN625 Al 00.400 %
+/materials/addto/compound IN625 Co 00.500 %
+/materials/addto/compound IN625 S  00.015 %
+/materials/addto/compound IN625 P  00.015 %
 
-/Materials/Define/Element Al 13 26.980 g/mole 2.700 g/cm3
-#/Materials/AutoOpticalProperties material=Al energy=linspace(0,100,50)[keV]
+#/materials/mpt/xraylib/add/allopticalproperties IN625 linspace(0,100,5)[keV] 
+# Optionally add each mpt seperately using xraylib
+/materials/mpt/xraylib/add/refractive_index IN625 linspace(0,100,5)[keV]             
+/materials/mpt/xraylib/add/absorptionlength IN625 linspace(0,100,5)[keV]
+/materials/mpt/xraylib/add/complexrefractive_index IN625 linspace(0,100,5)[keV]
+/materials/mpt/xraylib/add/absorptionlength IN625 linspace(0,100,5)[keV]
 
-/Materials/Define/Element Ti 22 47.867 g/mole 4.506 g/cm3 
-#/Materials/AutoOpticalProperties material=Ti energy=linspace(0,100,50)[keV]
+#Check the mpt variables are correct. Energy is in MeV. Length is in mm 
+#/materials/mpt/print IN625
 
-#/Materials/AddRefractiveIndex material=Al energy=(05,06,07,08,09,10)[keV] rIndex=(1.05,1.05,1.05,1.05,1.05,1.05)
-#/Materials/AddAbsorptionLength material=Al energy=(05,06,07,08,09,10)[keV] absLength=(1,1,1,1,1,0.8)[mm]
-#/Materials/PrintMaterialPropertiesTable Al
+
+/materials/define/element N 7 28.014 g/mole 1.165 kg/m3
+/materials/mpt/xraylib/add/allopticalproperties material=N energy=linspace(0,100,5)[keV]
+#/materials/mpt/print N
+
+#Optionally add your own material properties table values. Flags are optional
+/materials/define/element Al 13 26.980 g/mole 2.700 g/cm3
+#/materials/mpt/add/refractive_index material=Al energy=(05,06,07,08,09,10)[keV] rIndex=(1.05,1.05,1.05,1.05,1.05,1.05)
+#/materials/mpt/add/absorption_length material=Al energy=(05,06,07,08,09,10)[keV] absLength=(1,1,1,1,1,0.8)[mm]
+#/materials/mpt/print Al
 
 #================================================

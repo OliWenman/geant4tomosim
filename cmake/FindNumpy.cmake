@@ -21,7 +21,7 @@ if (NUMPY_INCLUDE_DIR MATCHES "Traceback")
     set(NUMPY_FOUND FALSE)
 else()
     # successful
-    message(STATUS "Found NUMPY_INCLUDE_DIR='${NUMPY_INCLUDE_DIR}'.")
+    #message(STATUS "Found NUMPY_INCLUDE_DIR='${NUMPY_INCLUDE_DIR}'.")
     if(NOT EXISTS ${NUMPY_INCLUDE_DIR}/numpy/arrayobject.h)
         message(STATUS "Can't find numpy/arrayobject.h, please install python-numpy-devel package")
     else()

@@ -21,22 +21,31 @@ FluorescenceDetectorMessenger::FluorescenceDetectorMessenger(FluorescenceDetecto
 	directory -> SetGuidance("Commands to control the fluorescence detector variables. ");	
 
 	setdimensions = new G4UIcmdWith3VectorAndUnit("/detector/fluorescence/halfdimensions", this);
-	setdimensions -> SetGuidance("Set the detectors halfdimensions");
 	setdimensions -> SetParameterName("x","y","z",true,true);
-	setdimensions -> SetUnitCandidates("mm cm m um ");
+	setdimensions -> SetUnitCandidates("um mm cm m");
 	setdimensions -> SetRange("x > 0 || y > 0 || z > 0");
+	setdimensions -> SetGuidance("Set the detectors halfdimensions. \n"
+	                             "<x_dim> <y_dim> <z_dim> <unit>");
 	
 	setfullmapping = new G4UIcmdWithABool("/detector/fluorescence/fullmapping", this);
 	setfullmapping -> SetGuidance("Set if you want full mapping fluorescence data to be recorded");
 	
 	setfullfield = new G4UIcmdWithABool("/detector/fluorescence/fullfield", this);
-	setfullfield -> SetGuidance("Set if want full field fluorescence data to be recorded");
+	setfullfield -> SetGuidance("Set if full field fluorescence data is to be recorded. \n"
+	                            "<true/false>");
 	
     setbins = new G4UIcmdWithAnInteger("/detector/fluorescence/bins", this);
-    setbins -> SetGuidance("Set the number of bins you would like to record fluorescence with"); 
+    setbins -> SetParameterName("bins",true,true);
+    setbins -> SetRange("bins > 0");
+    setbins -> SetGuidance("Set the number of bins you would like to record fluorescence data with. \n"
+                           "<bins>"); 
     
     setmaxenergy = new G4UIcmdWithADoubleAndUnit("/detector/fluorescence/maxenergy", this);
-    setmaxenergy -> SetGuidance("Set the maximum energy that the detector can record");
+    setmaxenergy -> SetUnitCategory("Energy");
+    setmaxenergy -> SetParameterName("energy",true,true);
+    setmaxenergy -> SetRange("energy > 0");
+    setmaxenergy -> SetGuidance("Set the maximum energy that the detector can record. \n"
+                                "<energy> <unit>");
 }
 
 FluorescenceDetectorMessenger::~FluorescenceDetectorMessenger()

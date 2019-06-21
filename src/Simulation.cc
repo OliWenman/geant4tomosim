@@ -142,7 +142,7 @@ void Simulation::Execute_Macro_pyw(std::string macro)
     if (!readfile) 
     {
         G4cout << "\nERROR: Unable to open file " << macro << " to apply commands. " << G4endl;
-        return; 
+        throw std::runtime_error("Invalid macrofile"); 
     }
       
     //Read the file
@@ -421,63 +421,60 @@ int Simulation::Run_Projection_pyw (unsigned long long int n_particles,
 void Simulation::Setup_Visualization_pyw(std::string path,
 		                                 std::string filename)
 {
-    //Checks to see if visualization setting is turned on, if so a .heprep file will be outputted to be viewed in a HepRApp viewer
-	if (detectorManager -> GetVisualization() == true)
-	{	
-	    if (globalVerbose > 0)
-	    {
-            PrintToEndOfTerminal('-');
-            G4cout << "GRAPHICS TURNED ON!";
-        }
+    if (globalVerbose > 0)
+    {
+        PrintToEndOfTerminal('-');
+        G4cout << "GRAPHICS TURNED ON!";
+    }
+    
+    runManager->Initialize();
+	visManager -> Initialize();
+    
+    //If a different path is used, create a folder to store the visualization data 
+    path = path + "visualization_" + filename + "/";
+    const char *path_char = path.c_str();
         
-        runManager->Initialize();
-		visManager -> Initialize();
+    //Check if the directory exists
+    DIR* directory_exists = opendir(path_char);
         
-        //If a different path is used, create a folder to store the visualization data 
-        path = path + "visualization_" + filename + "/";
-        const char *path_char = path.c_str();
-            
-        //Check if the directory exists
-        DIR* directory_exists = opendir(path_char);
-            
-        //If it doesn't exist, create it
-        if (!directory_exists)
-        {
-            std::string mkdir = "mkdir " + path;
-            const char *mkdir_char = mkdir.c_str();
-            system(mkdir_char);
-        }
+    //If it doesn't exist, create it
+    if (!directory_exists)
+    {
+        std::string mkdir = "mkdir " + path;
+        const char *mkdir_char = mkdir.c_str();
+        system(mkdir_char);
+    }
+	
+	//Setup the vis manager
+	UImanager -> ApplyCommand("/world/visualization true");
+	UImanager -> ApplyCommand("/vis/open HepRepFile");
+	UImanager -> ApplyCommand("/vis/heprep/setFileDir " + path);
+	UImanager -> ApplyCommand("/vis/heprep/setFileName " + filename);
+	UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh false");
+	//UImanager -> ApplyCommand("/vis/verbose errors");
+	UImanager -> ApplyCommand("/vis/viewer/flush");
+	UImanager -> ApplyCommand("/vis/drawVolume");
+	
+	//Set the draw options
+	UImanager -> ApplyCommand("/vis/viewer/set/style wireframe");
+	UImanager -> ApplyCommand("/vis/viewer/set/auxiliaryEdge true");
+	UImanager -> ApplyCommand("/vis/viewer/set/lineSegmentsPerCircle 100");
+	UImanager -> ApplyCommand("/vis/scene/add/trajectories smooth");
+	UImanager -> ApplyCommand("/vis/modeling/trajectories/create/drawByCharge");
+	UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true");
+	UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2");
+	
+	UImanager -> ApplyCommand("/vis/scene/add/axes 0 0 0 1 cm");
+	UImanager -> ApplyCommand("/vis/viewer/zoom 0.5 mm");
+	
+	UImanager -> ApplyCommand("/vis/scene/add/hits");
+	UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
+	UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
+	
+	if (globalVerbose > 0) {G4cout << "\nSaving as " << path + filename + "N.heprep where N is an integer. "<< G4endl;}
 		
-		//Setup the vis manager
-		UImanager -> ApplyCommand("/vis/open HepRepFile");
-		UImanager -> ApplyCommand("/vis/heprep/setFileDir " + path);
-		UImanager -> ApplyCommand("/vis/heprep/setFileName " + filename);
-		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh false");
-		//UImanager -> ApplyCommand("/vis/verbose errors");
-		UImanager -> ApplyCommand("/vis/viewer/flush");
-		UImanager -> ApplyCommand("/vis/drawVolume");
-		
-		//Set the draw options
-		UImanager -> ApplyCommand("/vis/viewer/set/style wireframe");
-		UImanager -> ApplyCommand("/vis/viewer/set/auxiliaryEdge true");
-		UImanager -> ApplyCommand("/vis/viewer/set/lineSegmentsPerCircle 100");
-		UImanager -> ApplyCommand("/vis/scene/add/trajectories smooth");
-		UImanager -> ApplyCommand("/vis/modeling/trajectories/create/drawByCharge");
-		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true");
-		UImanager -> ApplyCommand("/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2");
-		
-		UImanager -> ApplyCommand("/vis/scene/add/axes 0 0 0 1 cm");
-		UImanager -> ApplyCommand("/vis/viewer/zoom 0.5 mm");
-		
-		UImanager -> ApplyCommand("/vis/scene/add/hits");
-		UImanager -> ApplyCommand("/vis/scene/endOfEventAction accumulate");
-		UImanager -> ApplyCommand("/vis/viewer/set/autoRefresh true");
-		
-		if (globalVerbose > 0) {G4cout << "\nSaving as " << path + filename + "N.heprep where N is an integer. "<< G4endl;}
-			
-		beamManager->GetProgressTracker().singleline = false;
-		beamManager->GetProgressTracker().graphicsOn = true;
-	}
+	beamManager->GetProgressTracker().singleline = false;
+	beamManager->GetProgressTracker().graphicsOn = true;
 }		
 
 //Function to run the simulation, will repeat simulation if over max limit
@@ -560,7 +557,7 @@ void Simulation::Print_SimulationInfo_pyw(std::string filepath,
 	    log << "META DATA: "
                "\n- The seed used: " << seedCmd
             << "\n- Total number of projections being processed: " << totalprojections
-	        << "\n  - Dark fields: " << nDarkFlatFields
+	        << "\n  - Flat fields: " << nDarkFlatFields
 	        << "\n  - Sample: " << totalprojections - nDarkFlatFields
             << "\n- Number of photons per image: " << n_particles
             << "\n- Number of particles per pixel on average: " << particleperpixel;

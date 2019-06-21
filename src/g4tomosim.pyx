@@ -66,18 +66,18 @@ cdef class G4TomoSim:
                             str path,
                             str filename):
         
-        self.thisptr.Setup_Visualization_pyw(path, filename)
+        self.thisptr.Setup_Visualization_pyw(str.encode(path), str.encode(filename))
     
     def log_setup(self,
                   str filepath,
-                  long long int totalparticles, 
-                  int numberOfimages, 
-                  int ndarkflatFields):
+                  long long int n_particles, 
+                  int n_projections, 
+                  int n_darkflatfields):
                   
         self.thisptr.Print_SimulationInfo_pyw(str.encode(filepath),
-		                                      totalparticles, 
-		                                      numberOfimages, 
-		                                      ndarkflatFields)
+		                                      n_particles, 
+		                                      n_projections, 
+		                                      n_darkflatfields)
     
     def set_seed(self, long int seed):
         self.thisptr.SetSeed(seed)
@@ -126,10 +126,10 @@ cdef class G4TomoSim:
     def fluorescencedetector_getdimensions(self):
         return self.thisptr.FluorescenceDetector_GetHalfDimensions_pyw()   
             
-    def fluorescencedetector_fullmappingActive(self):
+    def fluorescencedetector_fullmappingactive(self):
         return self.thisptr.FluorescenceDetector_FullMappingActive_pyw()
         
-    def fluorescencedetector_fullfieldOn(self):
+    def fluorescencedetector_fullfieldactive(self):
         return self.thisptr.FluorescenceDetector_FullFieldActive_pyw()
     
     #===============================================================================================
@@ -148,7 +148,7 @@ cdef class G4TomoSim:
     #===============================================================================================
 
     def simulateprojection(self, 
-                           int n_particles, 
+                           long long int n_particles, 
                            bint flatfield,
                            double rotation_angle,
                            double zposition,
@@ -170,7 +170,7 @@ cdef class G4TomoSim:
     def simulatetomography(self, 
                            str        filepath,
                            int        n_particles, 
-                           int        nDarkFlatFields,
+                           int        n_darkflatfields,
                            np.ndarray rotation_angles,
                            np.ndarray zpositions = None ):
 
@@ -198,10 +198,10 @@ cdef class G4TomoSim:
         if n_particles < 1:
             raise Exception("n_particles can't be less than 1.")
             
-        if nDarkFlatFields < 0:
-            raise Exception("nDarkFlatFields can't be negative.")
+        if n_darkflatfields < 0:
+            raise Exception("n_darkflatfields can't be negative.")
 
-        totalprojections = len(rotation_angles) + nDarkFlatFields
+        totalprojections = len(rotation_angles) + n_darkflatfields
         
         stringLength = len(filepath)
     
@@ -236,14 +236,12 @@ cdef class G4TomoSim:
         filepath_log = path + filename[0:dotPosition] + '_log.txt'
         filepath_log = str.encode(filepath_log)
         filename_log = str.encode(filename[0:dotPosition])
-        #Setup any external visualisation
-        self.thisptr.Setup_Visualization_pyw(str.encode(path),
-                                             filename_log)       
+       
         #Print information about the settings of the simulation to the user and save in a log file
         self.thisptr.Print_SimulationInfo_pyw(filepath_log,
                                               n_particles, 
                                               totalprojections, 
-                                              nDarkFlatFields)   
+                                              n_darkflatfields)   
                  
         #Checks to see if the nexus template was created successfully  
         nexusfile = NexusFormatter.NexusFormatter()
@@ -261,7 +259,7 @@ cdef class G4TomoSim:
         yPixels        = self.absorptiondetector_getypixels()
            
         #Create the path to save the projection data
-        nexusfile.CreateProjectionFolder(nDarkFlatFields, 
+        nexusfile.CreateProjectionFolder(n_darkflatfields, 
                                          totalprojections, 
                                          yPixels, 
                                          xPixels, 
@@ -291,7 +289,7 @@ cdef class G4TomoSim:
         for projection in range(totalprojections):
            
             #Get the rotation_angle
-            if projection < totalprojections - nDarkFlatFields:        
+            if projection < totalprojections - n_darkflatfields:        
                 rotation_angle = rotation_angles[projection]
                                  
                 if zpositions is None:
@@ -299,12 +297,12 @@ cdef class G4TomoSim:
                 else :
                     zposition = zpositions[projection]
                 
-            elif projection >= totalprojections - nDarkFlatFields:
+            elif projection >= totalprojections - n_darkflatfields:
                 rotation_angle = 0
                 zposition      = 0
             
             #Group the image info into a list   
-            imageInfo = [projection, nDarkFlatFields, totalprojections]
+            imageInfo = [projection, n_darkflatfields, totalprojections]
                        
             #Runs the simulation
             self.thisptr.Run_Tomography_pyw(n_particles, 

@@ -14,16 +14,20 @@ Boolean_Sample:: Boolean_Sample(std::string     _name,
 
 }
 
+//Inherited method from SampleDescription
+//Override the method to build the boolean versions
 void Boolean_Sample::BuildSolid()
 {
     if (construct_solid)
     {
+        //Delete the solid if it already exists
         if(solid)
         {
             delete solid;
             solid = 0;
         }   
         
+        //Build the correct type of boolean solid
         if (type == "subtract")
         {
             BuildSubtractSolid();
@@ -34,19 +38,19 @@ void Boolean_Sample::BuildSolid()
         }
         else 
         {
-            G4cout << "\nWARNING: Boolean_Sample::BuildSolid() has an unrecogonised type \"" << type << "\". Ignoring build" << G4endl;
+            throw std::invalid_argument("\nWARNING: Boolean_Sample::BuildSolid() has an unrecogonised type \"" + type);
         }
         
+        //Solid has been constructed
         construct_solid = false;
     }
         
 }
 
+#include "Exceptions.hh"
 void Boolean_Sample::BuildSubtractSolid()
 {
-   // G4cout << "\n building SubtractSolid" << name <<G4endl;
-
-    //Create a rotation matrix for the rotation and give it the correct units using the dictionary created in the TCMessenger
+    //Create a rotation matrix for the rotation of the second object in relative to the second object
 	G4RotationMatrix* rotmatrix = new G4RotationMatrix();
 	rotmatrix->rotateX(inside_rot.x());
 	rotmatrix->rotateY(inside_rot.y());
@@ -56,16 +60,19 @@ void Boolean_Sample::BuildSubtractSolid()
 	G4VSolid* outersolid = G4SolidStore::GetInstance() -> GetSolid(componentname1, true); 
 	G4VSolid* innersolid = G4SolidStore::GetInstance() -> GetSolid(componentname2, true); 
 	
-	//G4cout << "\nComponenent name 1 = " << componentname1 << G4endl;
-	//G4cout << "\nComponenent name 2 = " << componentname2 << G4endl;
-
-	//Create the new solid from 
-	solid = new G4SubtractionSolid(name, 
-							       outersolid, 
-							       innersolid, 
-							       rotmatrix, 
-							       inside_pos);
-    //G4cout << "\n Finished SubtractSolid" << name << G4endl;
+	if (outersolid && innersolid)
+	{
+	    //Create the new solid from 
+        solid = new G4SubtractionSolid(name, 
+						               outersolid, 
+						               innersolid, 
+						               rotmatrix, 
+						               inside_pos);
+    }
+    else
+    {   
+        throw parameterNotFound();
+    }
 }
 
 #include "G4UnionSolid.hh"

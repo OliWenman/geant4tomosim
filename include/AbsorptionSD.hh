@@ -4,7 +4,7 @@ from Geant4's G4SenstiveDetector class which is used to determines
 the process taken when a particle is detected.
 
 Each pixel is assigned a copy number, data is stored as a 1D vector.
-Converted to 2D on python side via numpy.shape method.
+Converted to 2D projection on python side via numpy.shape method.
 
 Author: Oliver Jack Wenman
 */
@@ -30,9 +30,9 @@ class AbsorptionSD : public G4VSensitiveDetector
   	    AbsorptionSD();
     	~AbsorptionSD();
   
-    	//Methods
-    	virtual void   Initialize(G4HCofThisEvent* hitCollection);
-    	virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
+    	//Inherited methods from G4VSensitiveDetector
+    	void   Initialize(G4HCofThisEvent* hitCollection);
+    	G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 
         void InitialiseData(bool resetdata);
         void FreeMemory();

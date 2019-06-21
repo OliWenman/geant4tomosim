@@ -1,15 +1,13 @@
 # macrofile to control the physics of the simulation
 
-/physics/gamma/livermore/photoelectric false
-/physics/gamma/livermore/comptomscattering true
-/physics/gamma/livermore/raylieghscattering false
-/physics/gamma/fluorescence true
-/physics/gamma/refraction false
-/physics/gamma/opticalabsorption false
-#/physics/gamma/opticalrayliegh false
+/physics/gamma/livermore/photoelectric True
+/physics/gamma/livermore/comptomscattering True
+/physics/gamma/livermore/rayleighscattering True
+/physics/gamma/fluorescence False
+/physics/gamma/refraction False
 
-#/physics/optical/refraction false
-#/physics/optical/absorption false
-#/physics/optical/raylieghscattering false
-#/physics/optical/meiscattering false
+# Make sure to change particle to opticalphoton if True in /beam/particle
+/physics/opticalphoton/refraction False
+/physics/opticalphoton/absorption False
+
 
