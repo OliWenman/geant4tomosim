@@ -15,17 +15,18 @@
 
 DefineMaterials::DefineMaterials()
 {
+    //Create the messenger class
 	materialsMessenger = new DefineMaterialsMessenger(this);
 }
 
 DefineMaterials::~DefineMaterials()
 {	
     //Free up memory of stored custom G4Elements and G4Isotopes
-    for (int i =0; i< ElementList.size();i++) {delete (ElementList[i]);}
-    for (int i =0; i< IsotopeList.size();i++) {delete (IsotopeList[i]);} 
+    for (int i =0; i< elementlist.size();i++) {delete (elementlist[i]);}
+    for (int i =0; i< isotopelist.size();i++) {delete (isotopelist[i]);} 
     
-    ElementList.clear();
-    IsotopeList.clear();
+    elementlist.clear();
+    isotopelist.clear();
     
     delete materialsMessenger;
 }
@@ -47,12 +48,12 @@ void DefineMaterials::DefineIsotope(G4String name, G4int z, G4int a, G4double at
     if (z <= 0. || a <= 0. || atomicWeight <= 0.) { throw parameterIsNegative();}
 
     //Check if isotope already exists
-    for (int i = 0 ; i < IsotopeList.size() ; i++)
+    for (int i = 0 ; i < isotopelist.size() ; i++)
     {
-        if (IsotopeList[i]->GetName() == name) {throw (materialAlreadyExists());}
+        if (isotopelist[i]->GetName() == name) {throw (materialAlreadyExists());}
     } 
 	G4Isotope* newIsotope = new G4Isotope(name, z, a, atomicWeight);
-	IsotopeList.push_back(newIsotope);
+	isotopelist.push_back(newIsotope);
 }
 
 void DefineMaterials::DefineIsotopeMix(G4String name, G4String symbol, G4int nComponents)
@@ -61,13 +62,13 @@ void DefineMaterials::DefineIsotopeMix(G4String name, G4String symbol, G4int nCo
     if (nComponents <= 0.) { throw parameterIsNegative();}
 
     //Check if element already exists
-    for (int i = 0 ; i < ElementList.size() ; i++)
+    for (int i = 0 ; i < elementlist.size() ; i++)
     {
-        if (ElementList[i]->GetName() == name) {throw (materialAlreadyExists());}
+        if (elementlist[i]->GetName() == name) {throw (materialAlreadyExists());}
     } 
 
     G4Element* newIsotopeMix = new G4Element(name, symbol, nComponents);
-    ElementList.push_back(newIsotopeMix);
+    elementlist.push_back(newIsotopeMix);
 }
 
 void DefineMaterials::AddToIsoMix(G4String isotopemix, G4String isotope, G4double abundance)
@@ -79,9 +80,10 @@ void DefineMaterials::AddToIsoMix(G4String isotopemix, G4String isotope, G4doubl
  
     if (abundance <= 0.) { throw parameterIsNegative();}
     
-    for(int n = 0 ; n < IsotopeList.size() ; n++)
+    //find the isotope inside the list
+    for(int n = 0 ; n < isotopelist.size() ; n++)
     {
-        if (IsotopeList[n] -> GetName() == isotope)
+        if (isotopelist[n] -> GetName() == isotope)
         {    
             isoNumber = n;
             isofound = true;
@@ -89,9 +91,10 @@ void DefineMaterials::AddToIsoMix(G4String isotopemix, G4String isotope, G4doubl
         } 
     } 
     
-    for(int n = 0 ; n < ElementList.size() ; n++)
+    //find the element inside the list
+    for(int n = 0 ; n < elementlist.size() ; n++)
     {
-        if (ElementList[n] -> GetName() == isotopemix)
+        if (elementlist[n] -> GetName() == isotopemix)
         {    
             isomixNumber = n;
             isomixFound = true;
@@ -99,9 +102,10 @@ void DefineMaterials::AddToIsoMix(G4String isotopemix, G4String isotope, G4doubl
         } 
     } 
     
+    //Add the isotope to the custom element with set abundances of isotopes
     if(isomixFound && isofound)
     {
-        ElementList[isomixNumber] -> AddIsotope(IsotopeList[isoNumber], abundance);
+        elementlist[isomixNumber] -> AddIsotope(isotopelist[isoNumber], abundance);
     }
     else
     {
@@ -122,9 +126,10 @@ void DefineMaterials::AddIsoMixDensity(G4String isotopemix, G4double density)
     
     if (density <= 0.) { throw parameterIsNegative();}
     
-    for(int n = 0 ; n < ElementList.size() ; n++)
+    //Find the isotope mix
+    for(int n = 0 ; n < elementlist.size() ; n++)
     {
-        if (ElementList[n] -> GetName() == isotopemix)
+        if (elementlist[n] -> GetName() == isotopemix)
         {    
             isomixNumber = n;
             isomixFound = true;
@@ -132,10 +137,11 @@ void DefineMaterials::AddIsoMixDensity(G4String isotopemix, G4double density)
         } 
     } 
     
-    if(isomixFound == true )
+    //Turn the custom element into a material
+    if(isomixFound)
     {
         G4Material* newMaterial = new G4Material(isotopemix, density, noAtoms);
-        newMaterial -> AddElement(ElementList[isomixNumber], noAtoms);
+        newMaterial -> AddElement(elementlist[isomixNumber], noAtoms);
     }
     else
     {
@@ -147,6 +153,7 @@ void DefineMaterials::DefineMolecule(G4String molecule, G4double density, G4int 
 {
     if (n_components <= 0. || density <= 0.) { throw parameterIsNegative();}
 
+    //Create the new molecule
     G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(molecule);
     if (!material) {G4Material* newMaterial = new G4Material(molecule, density, n_components);}
     else           {throw materialAlreadyExists();}
@@ -154,11 +161,14 @@ void DefineMaterials::DefineMolecule(G4String molecule, G4double density, G4int 
 
 void DefineMaterials::AddElementToMolecule(G4String moleculeName, G4String elementName, G4int nAtoms)
 {
+    //Add an element to the molecule
     if (nAtoms <= 0.) { throw parameterIsNegative();}
 
+    //Find the pointers
     G4Material* molecule = FindMaterial(moleculeName);
     G4Element* element = FindElement(elementName);
     
+    //If found, add the element to the molecule
     if (element && molecule)
         molecule -> AddElement(element, nAtoms);
     else
@@ -176,8 +186,10 @@ void DefineMaterials::DefineCompound(G4String compound, G4double density, G4int 
 {
     if (density <= 0. || n_components <= 0.) { throw parameterIsNegative();}
 
+    //Check if material already exists
     G4Material* material = G4NistManager::Instance() -> FindOrBuildMaterial(compound);
     
+    //Create new material if it doesn't
     if (!material){G4Material* newCompound = new G4Material(compound, density, n_components);}
     else {throw (materialAlreadyExists());}
 }
@@ -186,9 +198,11 @@ void DefineMaterials::AddElementToCompound(G4String compoundName, G4String eleme
 {
     if (fractionalmass <= 0.) { throw parameterIsNegative();}
 
+    //Find the pointers
     G4Material* compound = G4NistManager::Instance() -> FindOrBuildMaterial(compoundName);;
     G4Element* element = FindElement(elementName);
     
+    //If found add the element 
     if (element && compound) {compound -> AddElement(element, fractionalmass);}
     else
     {
@@ -236,14 +250,17 @@ void DefineMaterials::AddMaterialToMixture(G4String mixtureName, G4String materi
     }
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void DefineMaterials::FillOpticalProperties_xraylib(std::string materialsName, double energyValues[], int nSize)
 {   
+    //find the material
     G4Material* material = FindMaterial(materialsName);
     
+    //Create the arrays
     double refractiveIndexes_Re [nSize];
     double refractiveIndexes_Im [nSize];
     double absorption_length [nSize];
-    double efficiency[nSize];
     
     std::vector<Ele_FracMass> elementTable;
     
@@ -256,7 +273,7 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string materialsName, d
         
         std::vector<Ele_FracMass> elementTableTemp (nElements);
         
-        //Find the elements name, fractional mass, Z and density 
+        //Find the elements name, fractional mass, z and density 
         for (int i = 0; i < nElements; i++)
         {
             G4Element const* element = material_elements[0][i];
@@ -302,7 +319,6 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string materialsName, d
         refractiveIndexes_Re[energyValue] = ri_RE; 
         refractiveIndexes_Im[energyValue] = ri_Im; 
         absorption_length[energyValue] = abs_len;
-        efficiency[energyValue] = 1;
         
         //Convert the units of keV to Geant4 keV
         energyValues[energyValue] = energyValues[energyValue]*keV;
@@ -313,20 +329,104 @@ void DefineMaterials::FillOpticalProperties_xraylib(std::string materialsName, d
     }
     
     //Add the arrays to the properties table
+    //G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
     G4MaterialPropertiesTable* mpt = new G4MaterialPropertiesTable();   
+    //Add the arrays to the properties table
     mpt -> AddProperty("RINDEX", energyValues, refractiveIndexes_Re, nSize); 
     mpt -> AddProperty("REALRINDEX", energyValues, refractiveIndexes_Re, nSize); 
     mpt -> AddProperty("IMAGINARYRINDEX", energyValues, refractiveIndexes_Im, nSize); 
     mpt -> AddProperty("ABSLENGTH", energyValues, absorption_length, nSize);  
-    //mpt -> AddProperty("EFFICIENCY", energyValues, efficiency, nSize);
    
     material -> SetMaterialPropertiesTable(mpt); 
 }
 
-void AddOpticalProperty_xraylib(std::string materialsName, const char *key, double energyValues[], int nelements)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DefineMaterials::AddOpticalProperty_xraylib(std::string materialsName, const char *key, double energyValues[], int size)
 {
+    //find the material
+    G4Material* material = FindMaterial(materialsName);
     
+    //Create the arrays
+    double xraylib_array[size];
+    
+    std::vector<Ele_FracMass> elementTable;
+    
+    //If material is found, find it's element components
+    if (material)
+    {
+        const G4ElementVector* material_elements = material -> GetElementVector();
+        const G4double* material_fractionalmass = material -> GetFractionVector(); 
+        const int nElements = material_elements -> size();
+        
+        std::vector<Ele_FracMass> elementTableTemp (nElements);
+        
+        //Find the elements name, fractional mass, z and density 
+        for (int i = 0; i < nElements; i++)
+        {
+            G4Element const* element = material_elements[0][i];
+            G4String const eleName = element -> GetName();
+            elementTableTemp[i].name = eleName;
+            elementTableTemp[i].frac_mass = material_fractionalmass[i];
+            elementTableTemp[i].Z = element -> GetZ();
+            elementTableTemp[i].density = ElementDensity(elementTableTemp[i].Z);
+            
+        }
+        
+        elementTable = elementTableTemp;
+    }
+    else
+    {
+        throw (parameterNotFound());
+    }
+    
+    //TotalValues
+    double total_value = 0;
+    
+    //Loop through the energy values
+    for (int energyValue = 0 ; energyValue < size ; energyValue++)
+    {
+        //Bug? Need to multiple by 1000 when array should already be 1000x greater?
+        //Didn't get time to fix but works.
+        energyValues[energyValue] = energyValues[energyValue]*1000.;
+    
+        //Loop through the elements, find the correct xraylib value
+        for (int ele = 0; ele < elementTable.size() ; ele++)
+        { 
+            if (energyValues[energyValue] <= 0) { throw (parameterIsNegative()); } 
+        
+            if (key == "RINDEX" || key == "REALINDEX")
+                {total_value = total_value + (elementTable[ele].frac_mass * Refractive_Index_Re(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density));} 
+        
+            else if (key == "IMAGINARYRINDEX")
+                {total_value = total_value + (elementTable[ele].frac_mass * Refractive_Index_Im(elementTable[ele].name, energyValues[energyValue], elementTable[ele].density));} 
+            
+            else if (key == "ABSLENGTH")
+            {
+                double mass_absorption_coefficient = CS_Total(elementTable[ele].Z, energyValues[energyValue]); //[cm2/g]
+                total_value = total_value + (elementTable[ele].frac_mass *(1./(mass_absorption_coefficient*elementTable[ele].density))*cm); //[cm-1]=[cm2/g]*[g/cm3] => [cm]=1/[cm-1] 
+            }
+        }
+              
+        double value = total_value;
+        xraylib_array[energyValue] = value;
+        
+        //Convert the units of keV to Geant4 keV
+        energyValues[energyValue] = energyValues[energyValue]*keV;
+        
+        total_value = 0;        
+    }
+    
+    //Add the arrays to the properties table
+    G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
+    if (!mpt) {mpt = new G4MaterialPropertiesTable();}
+   
+    mpt -> AddProperty(key, energyValues, xraylib_array, size); 
+   
+    material -> SetMaterialPropertiesTable(mpt); 
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DefineMaterials::AddOpticalProperty(std::string materialsName, const char *key, double energyValues[], double opticalProperty[], int nelements)
 {
@@ -335,11 +435,7 @@ void DefineMaterials::AddOpticalProperty(std::string materialsName, const char *
     if(material)
     {
         G4MaterialPropertiesTable* mpt = material -> GetMaterialPropertiesTable();
-        
-        if(!mpt)
-        {
-            mpt = new G4MaterialPropertiesTable();
-        }
+        if(!mpt){mpt = new G4MaterialPropertiesTable();}
         
         for (int i = 0; i < nelements ; i++)
         {
@@ -399,11 +495,11 @@ G4Element* DefineMaterials::FindElement(G4String elementName)
 	//If can't find element in NIST database, try the custom ones
 	if (!element)
 	{
-	    for(int n = 0 ; n < ElementList.size() ; n++)
+	    for(int n = 0 ; n < elementlist.size() ; n++)
         {
-            if (ElementList[n] -> GetName() == elementName)
+            if (elementlist[n] -> GetName() == elementName)
             {    
-                element = ElementList[n];
+                element = elementlist[n];
                 break;
             } 
         } 

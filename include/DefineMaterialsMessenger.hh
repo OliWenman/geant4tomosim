@@ -52,28 +52,32 @@ class DefineMaterialsMessenger: public MyG4UImessenger
 
 		G4UIdirectory *MaterialsDirectory;
 
-		MultiParameters* DefElement;
-		MultiParameters* DefIsotope;
-		MultiParameters* IsotopeMix;
-		MultiParameters* AddTo_IsotopeMix;
-		MultiParameters* Density_IsotopeMix;
+		MultiParameters* define_element;
+		MultiParameters* define_isotope;
+		MultiParameters* define_isotopemix;
+		MultiParameters* addto_isotopemix;
+		MultiParameters* addto_isotopemix_density;
 		
-		MultiParameters* DefMolecule;
-		MultiParameters* AddElementToMolecule;
+		MultiParameters* define_molecule;
+		MultiParameters* addto_molecule_element;
 		
-		MultiParameters* DefCompound;
-	    MultiParameters* AddElementToCompound;	
+		MultiParameters* define_compound;
+	    MultiParameters* addto_compound_element;	
 	    
-	    MultiParameters* DefMixture;
-	    MultiParameters* AddMaterialToMixture;
+	    MultiParameters* define_mixture;
+	    MultiParameters* addto_mixture_material;
 	    
-	    MultiParameters* AutoOpticalProperties_El;
-	    MultiParameters* AddRefractiveIndex;
-	    MultiParameters* AddRefracticeIndex_Im;
-	    MultiParameters* AddAbsorptionLength;
-	    MultiParameters* AddAbsorptionLength_xraylib;
-	    MultiParameters* AddEfficiency;
-	    G4UIcmdWithAString* PrintMPT;
+	    //MaterialsPropertyTable commands
+	    G4UIcmdWithAString* mpt_print;
+	    
+	    MultiParameters* mpt_xraylib_add_all_op;
+	    MultiParameters* mpt_xraylib_add_absorptionlen;
+	    MultiParameters* mpt_xraylib_add_refraction;
+	    MultiParameters* mpt_xraylib_add_complexrefraction;
+	    
+	    MultiParameters* mpt_add_refractiveindex;
+	    MultiParameters* mpt_add_imrefractiveindex;
+	    MultiParameters* mpt_add_absorptionlen;
 
 		std::map<std::string, double> densityUnits;
 		std::map<std::string, double> atomicWeightUnits;

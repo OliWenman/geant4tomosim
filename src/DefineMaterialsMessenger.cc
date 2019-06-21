@@ -21,73 +21,73 @@
 DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials): MyG4UImessenger(), materials(DefMaterials)
 {
 //=================================================================================================
-	MaterialsDirectory = new G4UIdirectory("/Materials/", this);
+	MaterialsDirectory = new G4UIdirectory("/materials/", this);
 	MaterialsDirectory -> SetGuidance("Directory to define new materials to be used");
 
 //=================================================================================================
     //DEFINING ELEMENTS/ISOTOPES
     
-	DefElement = new MultiParameters("/Materials/Define/Element", this);
-	DefElement -> SetNumberOfParameters(6);
-	DefElement -> SetGuidance("Define an element\n"
+	define_element = new MultiParameters("/materials/define/element", this);
+	define_element -> SetNumberOfParameters(6);
+	define_element -> SetGuidance("Define an element\n"
 	                          "name z atomicweight unit density unit");
 
-	DefIsotope = new MultiParameters("/Materials/Define/Isotope", this);
-	DefIsotope -> SetNumberOfParameters(5);
-	DefIsotope -> SetGuidance("Define an isotope\n"
+	define_isotope = new MultiParameters("/materials/define/isotope", this);
+	define_isotope -> SetNumberOfParameters(5);
+	define_isotope -> SetGuidance("Define an isotope\n"
 	                          "name z nucleonnumber atomicweight unit");
 	                          
-	IsotopeMix = new MultiParameters("/Materials/Define/IsotopeMix", this);
-	IsotopeMix -> SetNumberOfParameters(3);
-	IsotopeMix -> SetGuidance("Create an element with a certain mixture of isotopes\n"
+	define_isotopemix = new MultiParameters("/materials/define/isotopemix", this);
+	define_isotopemix -> SetNumberOfParameters(3);
+	define_isotopemix -> SetGuidance("Create an element with a certain mixture of isotopes\n"
 	                          "name  symbol numberofisotopes");
 	
-	AddTo_IsotopeMix = new MultiParameters("/Materials/AddTo/IsotopeMix", this);
-	AddTo_IsotopeMix -> SetNumberOfParameters(3);
-	AddTo_IsotopeMix -> SetGuidance("Add specific isotopes of an element to the isotope mixture\n"
+	addto_isotopemix = new MultiParameters("/materials/addyo/isotope_mix", this);
+	addto_isotopemix -> SetNumberOfParameters(3);
+	addto_isotopemix -> SetGuidance("Add specific isotopes of an element to the isotope mixture\n"
 	                                "name elementsymbol abundance unit"); 
 	                                
-	Density_IsotopeMix = new MultiParameters("/Materials/AddDensity/IsotopeMix", this);
-	Density_IsotopeMix -> SetNumberOfParameters(3);
-	Density_IsotopeMix -> SetGuidance("Set the density to the isotope mix\n"
+	addto_isotopemix_density = new MultiParameters("/Materials/addto/isotope_mix/density", this);
+	addto_isotopemix_density -> SetNumberOfParameters(3);
+	addto_isotopemix_density -> SetGuidance("Set the density to the isotope mix\n"
 	                                  "name density unit");
 
 //=================================================================================================
     //DEFINING A NEW MOLECULE
-	DefMolecule = new MultiParameters("/Materials/Define/Molecule", this);
-	DefMolecule -> SetNumberOfParameters(4);
-	DefMolecule -> SetGuidance("Define a new molecule\n"
+	define_molecule = new MultiParameters("/materials/define/molecule", this);
+	define_molecule -> SetNumberOfParameters(4);
+	define_molecule -> SetGuidance("Define a new molecule\n"
 	                           "name no.atoms density unit");
 	
-	AddElementToMolecule = new MultiParameters("/Materials/AddTo/Molecule", this);
-	AddElementToMolecule -> SetNumberOfParameters(3);
-    AddElementToMolecule -> SetGuidance("Choose an element to be added to an existing molecule\n"
+	addto_molecule_element = new MultiParameters("/materials/addto/molecule", this);
+	addto_molecule_element -> SetNumberOfParameters(3);
+    addto_molecule_element -> SetGuidance("Choose an element to be added to an existing molecule\n"
                                         "moleculename elemenetname no.atoms");
                                         
 //=================================================================================================
     //DEFINING A NEW COMPOUND (PERCENTAGE OF DIFFERENT ELEMENTS, FOR EXAMPLE ALLOYS)                                       
     
-    DefCompound = new MultiParameters("/Materials/Define/Compound", this);
-    DefCompound -> SetNumberOfParameters(4);
-    DefCompound -> SetGuidance("Create a compound of elements\n"
+    define_compound = new MultiParameters("/materials/define/compound", this);
+    define_compound -> SetNumberOfParameters(4);
+    define_compound -> SetGuidance("Create a compound of elements\n"
                                "compoundname no.elements density unit");
     
-    AddElementToCompound = new MultiParameters("/Materials/AddTo/Compound", this);
-    AddElementToCompound -> SetNumberOfParameters(4);
-    AddElementToCompound -> SetGuidance("Add elements to a custom compound\n"
+    addto_compound_element = new MultiParameters("/materials/addto/compound", this);
+    addto_compound_element -> SetNumberOfParameters(4);
+    addto_compound_element -> SetGuidance("Add elements to a custom compound\n"
                                         "compoundname elementname fractionalmass unit");
                                         
 //=================================================================================================
     //DEFINING A NEW MIXTURE (MADE UP OF A PERCENTAGE OF DIFFERENT ELEMENTS OR MATERIALS) 
                                         
-    DefMixture = new MultiParameters("/Materials/Define/Mixture", this);
-    DefMixture -> SetNumberOfParameters(4);
-    DefMixture -> SetGuidance("Create a material made from a mixture of elements and materials\n"
+    define_mixture = new MultiParameters("/materials/define/mixture", this);
+    define_mixture -> SetNumberOfParameters(4);
+    define_mixture -> SetGuidance("Create a material made from a mixture of elements and materials\n"
                               "mixturename no.componenets density unit");
                               
-    AddMaterialToMixture = new MultiParameters("Materials/AddTo/Mixture", this);
-    AddMaterialToMixture -> SetNumberOfParameters(4);
-    AddMaterialToMixture -> SetGuidance("Add materials/elements to a mixture\n"
+    addto_mixture_material = new MultiParameters("materials/addto/mixture", this);
+    addto_mixture_material -> SetNumberOfParameters(4);
+    addto_mixture_material -> SetGuidance("Add materials/elements to a mixture\n"
                                         "mixturename materialname fractionalmass unit");                          
                                         
 //=================================================================================================                                        
@@ -122,79 +122,94 @@ DefineMaterialsMessenger::DefineMaterialsMessenger(DefineMaterials* DefMaterials
 	xraylibEnergy.insert(std::make_pair("MeV", 1.e3));
 //=================================================================================================
 
-    AutoOpticalProperties_El = new MultiParameters("/Materials/AutoOpticalProperties", this);
-    AutoOpticalProperties_El -> SetNumberOfParameters(2);
-    AutoOpticalProperties_El -> SetGuidance("Automatically set the optical properties of a material (compound or element) for refraction and absorption by specifying the material and an array of energy values.\n"
+    mpt_print = new G4UIcmdWithAString("/materials/mpt/print", this);
+
+    mpt_xraylib_add_all_op = new MultiParameters("/materials/mpt/xraylib/add/allopticalproperties", this);
+    mpt_xraylib_add_all_op -> SetNumberOfParameters(2);
+    mpt_xraylib_add_all_op -> SetGuidance("Automatically set the optical properties of a material (compound or element) for refraction and absorption by specifying the material and an array of energy values.\n"
                                             "Example: material=name energy=(e1,e2,eN...)[units]\n"
                                             "Flags optional. For the array input you can specifiy to use the function linspace. energy=linspace(starte,ende,no.values)[units] ");
-                                            
-    AddRefractiveIndex = new MultiParameters("/Materials/AddRefractiveIndex", this);
-    AddRefractiveIndex -> SetNumberOfParameters(3);
-    AddRefractiveIndex -> SetGuidance("Set the optical properties of a material (compound or element) for refraction by specifying the material, "
-                                      "an array of energy values and an array of corrosponding refraction values.\n"
-                                      "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
-                                      "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
     
-    AddRefracticeIndex_Im = new MultiParameters("/Materials/AddRefractiveIndex_Im", this);
-    AddRefracticeIndex_Im -> SetNumberOfParameters(3);
-    AddRefracticeIndex_Im -> SetGuidance("Set the optical properties of a material (compound or element) for complex refraction values by specifying the material, "
-                                         "an array of energy values and an array of corrosponding refraction values.\n"
-                                         "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
-                                         "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
-    
-    AddAbsorptionLength = new MultiParameters("/Materials/AddAbsorptionLength", this);
-    AddAbsorptionLength -> SetNumberOfParameters(2);
-    AddAbsorptionLength -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values by specifying the material, "
-                                       "an array of energy values and an array of corrosponding absorption length values.\n"
-                                       "Example: material=name energy=(e1,e2,eN...)[units] abslength=(a1,a2,aN...)\n"
-                                       "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
-    
-    AddAbsorptionLength_xraylib = new MultiParameters("/Materials/xraylib/AddAbsorptionLength",this);
-    AddAbsorptionLength_xraylib -> SetNumberOfParameters(2);
-    AddAbsorptionLength_xraylib -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values automatically using the xraylib library. Specify the material, "
+    mpt_xraylib_add_absorptionlen = new MultiParameters("/materials/mpt/xraylib/add/absorptionlength",this);
+    mpt_xraylib_add_absorptionlen -> SetNumberOfParameters(2);
+    mpt_xraylib_add_absorptionlen -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values automatically using the xraylib library. Specify the material, "
                                                "and array of energy values.\n"
                                                "Example: material=name energy=(e1,e2,eN...)[units]\n"
                                                "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
     
-    AddEfficiency = new MultiParameters("/Materials/AddEfficiency", this);
-    AddEfficiency -> SetNumberOfParameters(2);
+    mpt_xraylib_add_refraction = new MultiParameters("/materials/mpt/xraylib/add/refractive_index",this);
+    mpt_xraylib_add_refraction -> SetNumberOfParameters(2);
+    mpt_xraylib_add_refraction -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values automatically using the xraylib library. Specify the material, "
+                                               "and array of energy values.\n"
+                                               "Example: material=name energy=(e1,e2,eN...)[units]\n"
+                                               "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
     
-    PrintMPT = new G4UIcmdWithAString("/Materials/PrintMaterialPropertiesTable", this);
+    mpt_xraylib_add_complexrefraction = new MultiParameters("/materials/mpt/xraylib/add/complexrefractive_index",this);
+    mpt_xraylib_add_complexrefraction -> SetNumberOfParameters(2);
+    mpt_xraylib_add_complexrefraction -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values automatically using the xraylib library. Specify the material, "
+                                               "and array of energy values.\n"
+                                               "Example: material=name energy=(e1,e2,eN...)[units]\n"
+                                               "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
+                                           
+    mpt_add_refractiveindex = new MultiParameters("/materials/mpt/add/refractive_index", this);
+    mpt_add_refractiveindex -> SetNumberOfParameters(3);
+    mpt_add_refractiveindex -> SetGuidance("Set the optical properties of a material (compound or element) for refraction by specifying the material, "
+                                      "an array of energy values and an array of corrosponding refraction values.\n"
+                                      "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
+                                      "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
+    
+    mpt_add_imrefractiveindex = new MultiParameters("/materials/mpt/add/complexrefractive_index", this);
+    mpt_add_imrefractiveindex -> SetNumberOfParameters(3);
+    mpt_add_imrefractiveindex -> SetGuidance("Set the optical properties of a material (compound or element) for complex refraction values by specifying the material, "
+                                         "an array of energy values and an array of corrosponding refraction values.\n"
+                                         "Example: material=name energy=(e1,e2,eN...)[units] rindex=(r1,r2,rN...)\n"
+                                         "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
+    
+    mpt_add_absorptionlen = new MultiParameters("/materials/mpt/add/absorptionlength", this);
+    mpt_add_absorptionlen -> SetNumberOfParameters(3);
+    mpt_add_absorptionlen -> SetGuidance("Set the optical properties of a material (compound or element) for absorption length values by specifying the material, "
+                                       "an array of energy values and an array of corrosponding absorption length values.\n"
+                                       "Example: material=name energy=(e1,e2,eN...)[units] abslength=(a1,a2,aN...)\n"
+                                       "Flags optional. For the array input you can specifiy to use the function linspace. Example: energy=linspace(starte,ende,no.values)[units] ");
 }
 
 DefineMaterialsMessenger::~DefineMaterialsMessenger()
 {
 	delete MaterialsDirectory;
 
-	delete DefElement;
-	delete DefIsotope;
-	delete IsotopeMix;
-	delete AddTo_IsotopeMix;
-	delete Density_IsotopeMix;
+	delete define_element;
+	delete define_isotope;
+	delete define_isotopemix;
+	delete addto_isotopemix;
+	delete addto_isotopemix_density;
 	
-	delete DefMolecule;
-    delete AddElementToMolecule;
+	delete define_molecule;
+    delete addto_molecule_element;
     
-    delete DefCompound;
-    delete AddElementToCompound;
+    delete define_compound;
+    delete addto_compound_element;
     
-    delete DefMixture;
-    delete AddMaterialToMixture;
+    delete define_mixture;
+    delete addto_mixture_material;
     
-    delete AutoOpticalProperties_El;
-    delete AddRefractiveIndex;
-    delete AddRefracticeIndex_Im;
-    delete AddAbsorptionLength;
-    delete AddAbsorptionLength_xraylib;
-    delete AddEfficiency;
-    delete PrintMPT;
+    
+    delete mpt_print;
+    
+    delete mpt_xraylib_add_all_op;
+    delete mpt_xraylib_add_absorptionlen;
+    delete mpt_xraylib_add_refraction;
+    delete mpt_xraylib_add_complexrefraction;
+    
+    delete mpt_add_refractiveindex;
+    delete mpt_add_imrefractiveindex;
+    delete mpt_add_absorptionlen;
 }
 
 #include "CommandStatus.hh"
 
 int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newValue)
 {
-    if (command == DefElement)
+    if (command == define_element)
 	{
 	    std::string name;
 		int    z;
@@ -225,7 +240,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 		catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
 		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if(command == DefIsotope)
+	else if(command == define_isotope)
 	{	
 		std::string name;
 		int    z;
@@ -249,7 +264,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 		catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
 		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if(command == IsotopeMix)
+    else if(command == define_isotopemix)
     {
         G4Tokenizer next(newValue);
 		G4String name = next();
@@ -263,7 +278,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (parameterNotFound& pnf) {return fParameterNotFound;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if(command == AddTo_IsotopeMix)
+    else if(command == addto_isotopemix)
     {
         G4Tokenizer next(newValue);
 		G4String isotopeMixName = next();
@@ -281,7 +296,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 		catch (parameterNotFound& pnf) {return fParameterNotFound;}
 		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if(command == Density_IsotopeMix)
+    else if(command == addto_isotopemix_density)
     {
         G4Tokenizer next(newValue);
 		G4String isotopeMixName = next();
@@ -298,7 +313,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 		catch (parameterNotFound& pnf) {return fParameterNotFound;}
 		catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if (command == DefMolecule)
+    else if (command == define_molecule)
     {
         G4Tokenizer next(newValue);     
         G4String name = next();
@@ -318,7 +333,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if (command == AddElementToMolecule)
+    else if (command == addto_molecule_element)
     {
         G4Tokenizer next(newValue);
         G4String nameMolecule = next();
@@ -332,7 +347,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (parameterNotFound& pnf) {return fParameterNotFound;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if (command == DefCompound)
+    else if (command == define_compound)
     {
         G4Tokenizer next(newValue);
         G4String nameCompound = next();
@@ -353,7 +368,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-    else if (command == AddElementToCompound)
+    else if (command == addto_compound_element)
     {
         G4Tokenizer next(newValue);
         G4String nameCompound = next();
@@ -371,7 +386,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (parameterNotFound& pnf) {return fParameterNotFound;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
     }
-	else if (command == DefMixture)
+	else if (command == define_mixture)
 	{
 	    G4Tokenizer next(newValue);
         G4String nameMixture = next();
@@ -392,7 +407,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AddMaterialToMixture)
+	else if (command == addto_mixture_material)
 	{
 	    G4Tokenizer next(newValue);
         G4String nameMixture = next();
@@ -410,7 +425,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
         catch (materialAlreadyExists& mae) {return fParameterAlreadyExists;}
         catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AutoOpticalProperties_El)
+	else if (command == mpt_xraylib_add_all_op)
 	{    
 	    Tokenizer token(newValue, command);
 	    
@@ -427,6 +442,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 	        material = token.FindString(namef);
 	        energy   = token.FindArray(arrayf);
 	    }
+	    
 	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
 	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
 	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
@@ -437,8 +453,87 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
 	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AddRefractiveIndex)
+	else if (command == mpt_xraylib_add_absorptionlen)
 	{
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    
+	    namef.parameter = 0;
+	    energyf.parameter = 1;
+	    
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray absLength;
+	    
+	    try
+	    {
+	        material  = token.FindString(namef);
+	        energy    = token.FindArray(energyf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	         
+	    materials -> AddOpticalProperty_xraylib(material, "ABSLENGTH", energy.values, energy.size);
+	}
+	else if (command == mpt_xraylib_add_refraction)
+	{
+	    G4cout << "\nhere" << G4endl;
+	
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray rindex_array;
+	    
+	    try
+	    {
+	        material  = token.FindString(namef);
+	        energy    = token.FindArray(energyf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	         
+	    materials -> AddOpticalProperty_xraylib(material, "RINDEX", energy.values, energy.size);
+	}
+	else if (command == mpt_xraylib_add_complexrefraction)
+	{
+	    Tokenizer token(newValue, command);
+	
+	    Flag namef(0, "material");
+	    Flag energyf(1, "energy", energyUnits);
+	    
+	    std::string material;
+	    doubleArray energy;
+	    doubleArray rindex_array;
+	    
+	    try
+	    {
+	        material  = token.FindString(namef);
+	        energy    = token.FindArray(energyf);
+	    }
+	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
+	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
+	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
+	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
+	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
+	         
+	    materials -> AddOpticalProperty_xraylib(material, "IMAGINARYRINDEX", energy.values, energy.size);
+	}
+	else if (command == mpt_add_refractiveindex)
+	{
+	    G4cout << "\nDoing" << G4endl;
+	
 	    Tokenizer token(newValue, command);
 	    
 	    Flag namef(0, "material");
@@ -465,7 +560,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
 	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AddRefracticeIndex_Im)
+	else if (command == mpt_add_imrefractiveindex)
 	{
 	    Tokenizer token(newValue, command);
 	    
@@ -493,7 +588,7 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
 	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AddAbsorptionLength)
+	else if (command == mpt_add_absorptionlen)
 	{
 	    Tokenizer token(newValue, command);
 	
@@ -521,65 +616,13 @@ int DefineMaterialsMessenger::ApplyCommand(G4UIcommand* command, G4String newVal
 	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
 	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
 	}
-	else if (command == AddAbsorptionLength_xraylib)
-	{
-	    Tokenizer token(newValue, command);
-	
-	    Flag namef(0, "material");
-	    Flag energyf(1, "energy", energyUnits);
-	    
-	    std::string material;
-	    doubleArray energy;
-	    doubleArray absLength;
-	    
-	    try
-	    {
-	        material  = token.FindString(namef);
-	        energy    = token.FindArray(energyf);
-	    }
-	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
-	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
-	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
-	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
-	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
-	         
-	    //materials -> AddOpticalProperty(material, "ABSLENGTH", energy.values, absLength.values, energy.size);
-	}
-	else if (command == AddEfficiency)
-	{
-	    Tokenizer token(newValue, command);
-	
-	    Flag namef(0, "material");
-	    Flag energyf(1, "energy", energyUnits);
-	    Flag efficiencyf(2, "efficiency");
-	    
-	    std::string material;
-	    doubleArray energy;
-	    doubleArray efficiency;
-	    
-	    try
-	    {
-	        material = token.FindString(namef);
-	        energy = token.FindArray(energyf);
-	        efficiency = token.FindArray(efficiencyf);
-	    }
-	    catch (std::invalid_argument& ia) {return fParameterNotADouble;}
-	    catch (InvalidUnits& iu)          {return fIncorrectUnit;}
-	    catch (InvalidArray& ia)          {return fParameterNotADouble;}
-	    catch (InvalidLinspace& ils)      {return fFlagNotFound;}
-	    catch (InvalidFlag&     iflag)    {return fFlagNotFound;}
-	    
-	    try {materials -> AddOpticalProperty(material, "EFFICIENCY", energy.values, efficiency.values, energy.size);}
-	    catch (parameterNotFound& pnf) {return fParameterNotFound;}
-	    catch (parameterIsNegative& pin) {return fParameterOutOfRange;}
-	}
 	
 	return 0;
 }
 
 void DefineMaterialsMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {
-	if (command == PrintMPT)
+	if (command == mpt_print)
 	{
 	    materials -> PrintMPT(newValue);
 	}

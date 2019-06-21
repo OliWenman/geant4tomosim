@@ -52,8 +52,8 @@ class DefineMaterials
 	
 		DefineMaterialsMessenger* materialsMessenger;
 
-        std::vector<G4Isotope*> IsotopeList;
-        std::vector<G4Element*> ElementList;
+        std::vector<G4Isotope*> isotopelist;
+        std::vector<G4Element*> elementlist;
 };
 
 struct Ele_FracMass
