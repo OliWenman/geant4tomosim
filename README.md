@@ -1,6 +1,8 @@
 # Geant4TomoSim
 Geant4TomoSim is a python package developed for the use of easily writing python scripts to simulate tomography data. It utilizes the C++ toolkit Geant4 that simulates particles through matter. Geant4 uses a monte-carlo approach and allows for unique physics to be simulated such as scattering, fluorescence and refraction. A tomography experiment is built using this toolkit and wrapped in Cython, making it easily customizable for a user to control and setup using Python.
 
+This work was a project carried out at Diamond Light Source Ltd for synchrotron tomography experiemnts.
+
 # Required Dependencies
 - RHEL 7
 - Geant4 10.04
@@ -69,7 +71,7 @@ g4ts.execute_command(str command)
 g4ts.setup_visualization(str path, str filename)
 ```
 
-If you want to visualize the geometry and events of your simulation, use this function to output a .heprep file to later use in HepRApp. 
+If you want to visualize the geometry and events of your simulation, use this function to output a .heprep file to later use in HepRApp. It will automatically create a folder to save all the data in. Note there might be trouble displaying some boolean solids http://hypernews.slac.stanford.edu/HyperNews/geant4/get/geometry/1522.html
 
 WARNING: don't use with more than 500 pixels for your absorption detector to visualize or use more than 1,000 particles as will crash HepRApp.
 
@@ -108,7 +110,7 @@ Use this command when wrapping the package in your own python script, using mpi 
 g4ts.simulatetomography(str           filepath,
                         long long int n_particles
                         int           n_darkflatfields,
-                        numpy.ndarray rotation_angle,
+                        numpy.ndarray rotation_angles,
                         numpy.ndarray zpositions = None)
 ```
 Similiar to the previous function simulateprojection. This will automatically save the data for you as a NeXus file and will do tomography for you. Just specify a filepath to save the data and provide numpy.ndarray for rotation_angles and zpositions for your sample. 
@@ -164,6 +166,7 @@ Custom commands are built using the Geant4 toolkit to control the G4TomoSim pack
 
 ## Detectors
 ### Absorption
+The absorption detector is automatically placed at the end of the world volume.
 ```
 /detector/absorption/halfdimensions <x_dim> <y_dim> <z_dim> <unit>
 /detector/absorption/xpixels        <no_pixels>
@@ -178,6 +181,7 @@ Custom commands are built using the Geant4 toolkit to control the G4TomoSim pack
 /detector/fluorescence/maxenergy      <energy> <unit>
 ```
 ## World
+The world dimensions must be large enough the encompass all other geometries such as the sample
 ```
 /world/halfdimensions <x_dim> <y_dim> <z_dim> <unit>
 /world/material       <material>
@@ -218,12 +222,11 @@ Warning: there is a known issue that when using gps, the program will finish wit
 
 ## Simulation
 ```
-/simulation/seed     <int>
-/simulation/graphics <bool>	
+/simulation/seed     <int>	
 ```
 
 ## Physics
-Control the physics processes used for the simulation.
+Control the physics processes used for the simulation for different particles
 ```
 /physics/gamma/livermore/photoelectric      <bool>
 /physics/gamma/livermore/comptomscattering  <bool>
@@ -233,10 +236,15 @@ Control the physics processes used for the simulation.
 
 /physics/opticalphoton/refraction <bool>
 /physics/opticalphoton/absorption <bool>
-```
-Note: Refraction physics is designed to be used with "opticalphoton" and not "gamma". 
 
-Geant4 treats waves and particles properties seperate with "opticalphoton" and "gamma" particles respectively, therefore one side effect is that fluorescence doesn't appear to work when refraction is on using "gamma". Needs more testing.
+# Cuts determines the minimum length a particle must travel if created via an event such as scattering.
+# Larger cuts means less particles will be produced but simulation will be less accurate.
+/physics/gamma/cuts          <length> <unit>
+/physics/opticalphoton/cuts  <length> <unit>
+/physics/electron/cuts       <length> <unit>
+```
+Note: Refraction physics is designed to be used with "opticalphoton" and not "gamma". Geant4 treats waves and particles properties seperate with "opticalphoton" and "gamma" particles respectively, therefore one side effect is that fluorescence doesn't appear to work when refraction is on using "gamma". Needs more testing.
+
 ## Materials
 Create new custom materials for your sample or world material.
 
@@ -246,10 +254,10 @@ Create new custom materials for your sample or world material.
 ```
 ### Create a New Isotope
 ```
-/materials/define/isotope     <new_isotope> <z> <no_nucleon> <atomic_weight> <unit>
-/materials/define/isotope_mix <new_isotope_mix> <symbol> <no_isotopes>
-/materials/addto/isotope_mix  <new_isotope> <element> <abundance> <unit>
-/materials/addto/add_desnity  <new_isotope> <density> <unit> 
+/materials/define/isotope                 <new_isotope> <z> <no_nucleon> <atomic_weight> <unit>
+/materials/define/isotope_mix             <new_isotope_mix> <symbol> <no_isotopes>
+/materials/addto/isotope_mix              <new_isotope> <element> <abundance> <unit>
+/materials/addto/isotope_mix/add_desnity  <new_isotope> <density> <unit> 
 ```
 ### Create a New Molecule
 ```
@@ -271,18 +279,18 @@ Create new custom materials for your sample or world material.
 /material/mpt/print <material>
 ```
 #### Add Optical Properties
-All <_array> values use the notation of {n1,n2,n3,...}[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace, to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
+All <_array> values use the notation of (n1,n2,n3,...)[unit]. For <energy_arrays>, it is possible to use the equivalent python numpy function linspace, to easily create a large array. For instance, <energy_array> = linspace(start,end,steps)[unit].
 ```
 #Uses xraylib to automatically assign optical properties.
 #Only tested on compounds and elements.
-/material/mpt/xraylib/add/allopticalproperties <material> <energy_array>
-/material/mpt/xraylib/add/refractive_index     <material> <energy_array>
-/material/mpt/xraylib/add/absorption           <material> <energy_array>
+/materials/mpt/xraylib/add/allopticalproperties <material> <energy_array>
+/materials/mpt/xraylib/add/refractive_index     <material> <energy_array>
+/materials/mpt/xraylib/add/absorption           <material> <energy_array>
 
 #Manually add optical properties
-/material/mpt/add/refractive_index             <material> <energy_array> <refractive_index_array>
-/material/mpt/add/complexrefractive_index      <material> <energy_array> <complexrefractive_index_array>
-/material/mpt/add/absorptionlength             <material> <energy_array> <absorptionlength_array>
+/materials/mpt/add/refractive_index             <material> <energy_array> <refractive_index_array>
+/materials/mpt/add/complexrefractive_index      <material> <energy_array> <complexrefractive_index_array>
+/materials/mpt/add/absorptionlength             <material> <energy_array> <absorptionlength_array>
 ```
 ## Sample
 Build your own custom samples using the below commands. 
